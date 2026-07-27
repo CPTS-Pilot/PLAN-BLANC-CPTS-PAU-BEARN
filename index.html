@@ -311,16 +311,76 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .ligne .aver{background:#FCF3E4;border-radius:6px;padding:8px 10px;font-size:12.5px;color:#8A5D12}
 .ligne .retirer{background:none;border:1px solid var(--trait);border-radius:6px;color:var(--texte-2);font-size:12px;padding:6px 10px;cursor:pointer;align-self:flex-start}
 .ligne .retirer:hover{border-color:var(--braise);color:var(--braise)}
-.srcs{display:grid;gap:9px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin-bottom:8px}
-.src-c{background:var(--carte);border:1px solid var(--trait);border-radius:9px;padding:13px 14px;display:flex;flex-direction:column;gap:8px}
-.src-c.jamais{border-left:4px solid var(--ambre)}
-.src-c .n{font-weight:600;line-height:1.25}
-.src-c .cat{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-2)}
-.src-c .q{font-size:12.5px;color:var(--texte-2)}
-.src-c .b{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto}
-.src-c .b a,.src-c .b button{flex:1;min-width:110px;min-height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:7px;font-size:13px;cursor:pointer;text-decoration:none;border:1px solid var(--trait);background:#fff;color:var(--texte)}
-.src-c .b a{background:var(--cobalt-clair);border-color:var(--cobalt-clair);color:var(--encre-2);font-weight:600}
-.src-c .b button:hover{border-color:var(--encre-2);color:var(--encre-2)}
+/* Situation régionale — les titres de section portent leur compte,
+   pour qu'on sache d'un coup d'œil s'il reste du travail. */
+.cpt-h{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);font-weight:400}
+.sous-h{color:var(--texte-2);font-size:13.5px;margin:-6px 0 13px;max-width:78ch}
+
+/* Le mode d'emploi, en tête de la veille : les quatre gestes. */
+.guide{border-left:4px solid var(--encre-2)}
+.gestes-g{margin:14px 0 0;padding-left:0;list-style:none;counter-reset:g}
+.gestes-g li{counter-increment:g;position:relative;padding-left:38px;margin-bottom:12px;font-size:14px;line-height:1.5;color:var(--texte-2)}
+.gestes-g li::before{content:counter(g);position:absolute;left:0;top:-1px;width:26px;height:26px;border-radius:50%;
+  background:var(--cobalt-clair);color:var(--encre);font-family:var(--display);font-weight:700;font-size:13px;
+  display:flex;align-items:center;justify-content:center}
+.gestes-g li b{color:var(--encre);font-weight:600}
+.guide .apres{margin:14px 0 0;padding-top:12px;border-top:1px dashed var(--trait);font-size:13px;color:var(--texte-2)}
+
+/* Les feuillets : ce qu'on sait, point par point. Un point vierge
+   se distingue d'un point qui a simplement vieilli. */
+.points{display:grid;gap:11px;grid-template-columns:repeat(auto-fill,minmax(315px,1fr));margin-bottom:8px}
+.pt{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--stable);border-radius:10px;padding:15px 16px;display:flex;flex-direction:column;gap:9px}
+.pt.vieux{border-top-color:var(--ambre)}
+.pt.vierge{border-top-color:var(--trait);background:var(--surface)}
+.pt .n{font-family:var(--display);font-weight:700;font-size:16.5px;line-height:1.25;letter-spacing:-.01em;color:var(--encre)}
+.pt .e{font-size:14px;line-height:1.45}
+.pt .e.rien{color:var(--texte-2);font-style:italic}
+.pt .q{font-size:12.5px;color:var(--texte-2);line-height:1.4}
+.pt .q .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:1px;opacity:.8}
+.pt .meta{font-family:var(--mono);font-size:10.5px;color:var(--texte-2);margin-top:auto;padding-top:4px}
+.pt.vieux .meta{color:#8A5D12}
+.pt .b{display:flex;gap:7px;flex-wrap:wrap}
+.pt .b button{flex:1;min-width:130px;min-height:40px;border-radius:7px;font-size:13px;cursor:pointer;border:1px solid var(--trait);background:#fff;color:var(--texte);font-family:inherit;padding:8px 11px}
+.pt .b .maj{background:var(--encre-2);border-color:var(--encre-2);color:#fff;font-family:var(--display);font-weight:600}
+.pt .b .maj:hover{background:var(--encre)}
+.pt .b .lire{color:var(--texte-2)}
+.pt .b .lire:hover{border-color:var(--encre-2);color:var(--encre-2)}
+
+/* Le classeur : une famille de canaux par feuillet. */
+.familles{display:grid;gap:11px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));margin-bottom:8px}
+.fam{background:var(--carte);border:1px solid var(--trait);border-radius:10px;padding:0 0 12px;display:flex;flex-direction:column}
+.fam.du{border-color:#EBD5A8}
+.fam > .tete{display:flex;gap:9px;align-items:center;width:100%;background:none;border:0;border-bottom:1px solid var(--trait);
+  padding:13px 15px;cursor:pointer;text-align:left;font-family:inherit;color:inherit}
+.fam.du > .tete{background:#FCF9F2}
+.fam > .tete:hover{background:var(--cobalt-clair)}
+.fam > .tete .t{flex:1;min-width:0;font-family:var(--display);font-weight:700;font-size:15px;color:var(--encre);line-height:1.2}
+.fam > .tete .cpt{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--stable);white-space:nowrap}
+.fam > .tete .cpt.du{color:#8A5D12}
+.fam > .tete .chev{font-family:var(--mono);color:var(--texte-2)}
+.fam > .q{font-size:12.5px;color:var(--texte-2);padding:10px 15px 2px;line-height:1.4}
+.fam .cans{padding:4px 15px 0}
+.can{padding:10px 0;border-bottom:1px dashed var(--trait)}
+.can:last-child{border-bottom:0}
+.can .haut{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap}
+.can .n{font-weight:600;font-size:14px;line-height:1.3;color:var(--encre-2);text-decoration:none;flex:1;min-width:150px}
+.can .n:hover{text-decoration:underline}
+.can .d{font-family:var(--mono);font-size:10px;color:var(--texte-2);white-space:nowrap}
+.can.du .d{color:#8A5D12}
+.can.jamais .d{color:var(--braise)}
+.can .al{font-size:12px;color:var(--texte-2);margin-top:2px}
+.can .b{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.can .b button{min-height:36px;border-radius:6px;font-size:12.5px;cursor:pointer;border:1px solid var(--trait);background:#fff;color:var(--texte-2);font-family:inherit;padding:6px 11px}
+.can .b .rien{flex:1;min-width:100px}
+.can .b .rien:hover{border-color:var(--stable);color:#1E5C46}
+.can .b .retiens{flex:1;min-width:100px;background:var(--cobalt-clair);border-color:var(--cobalt-clair);color:var(--encre-2);font-weight:600}
+.can .b .retiens:hover{background:#D6E5F9}
+.can .b .ico{flex:0 0 38px;min-width:38px;opacity:.5}
+.can .b .ico:hover{opacity:1;border-color:var(--encre-2);color:var(--encre-2)}
+.fam .pied{display:flex;gap:7px;padding:12px 15px 0;margin-top:auto;border-top:1px solid var(--trait);flex-wrap:wrap}
+.fam .pied button{min-height:38px;border-radius:7px;font-size:13px;cursor:pointer;border:1px solid var(--trait);background:#fff;color:var(--texte);font-family:inherit;padding:8px 12px;flex:1;min-width:120px}
+.fam .pied button:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.fam .pied button:last-child{flex:0 0 78px;min-width:78px;color:var(--texte-2)}
 /* Le poste de veille : qui la tient, et si le tour du moment est fait.
    L'information que le copil doit lire sans avoir à demander. */
 .poste{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--encre-2);border-radius:11px;padding:18px 20px;margin-bottom:16px;display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
@@ -378,6 +438,14 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .info.i-contexte{border-left-color:#A7B6CA}
 .info .haut{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
 .info .src{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2)}
+/* Le point de situation où l'information est rangée : cliquable,
+   il rappelle le classement sans encombrer la fiche. */
+.info .pt-b{background:#EEF6F2;border:1px solid #CFE4DA;color:#1E5C46;border-radius:20px;padding:3px 10px;font-size:11.5px;cursor:pointer;font-family:inherit;line-height:1.4}
+.info .pt-b:hover{background:#DFEEE7}
+.info .pt-b.hors{background:#FCF3E4;border-color:#EBD5A8;color:#8A5D12}
+.info .pt-b.hors:hover{background:#F7E9CE}
+.filtres.pts{margin-top:-8px}
+.filtres.pts button{font-size:12.5px;padding:4px 11px}
 .info .imp{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;padding:3px 8px;border-radius:3px}
 .imp-direct{background:#F8E0DB;color:#8E2F1D}
 .imp-surveiller{background:#FCF0DA;color:#8A5D12}
@@ -415,6 +483,22 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .coche{display:flex;gap:10px;align-items:flex-start;background:#F1F8F5;border:1px solid #BEDCCE;border-radius:8px;padding:11px 13px;font-size:13.5px}
 .coche input{width:18px;height:18px;flex:0 0 18px;margin-top:2px;accent-color:var(--stable)}
 .coche .d{font-size:12.5px;color:var(--texte-2);margin-top:2px}
+
+/* Reprendre un point de situation sans quitter la saisie : on voit
+   ce qu'il dit, on écrit ce qu'il dira. */
+.maj-pt{margin-top:16px;background:#F1F8F5;border:1px solid #BEDCCE;border-radius:9px;padding:13px 14px}
+.maj-pt .t{font-family:var(--display);font-weight:600;font-size:14.5px;color:#1E5C46;margin-bottom:9px}
+.maj-pt .avant{font-size:13px;color:var(--texte-2);background:#fff;border-radius:7px;padding:9px 11px;margin-bottom:9px;line-height:1.4}
+.maj-pt .avant .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;display:block;margin-bottom:3px}
+.maj-pt textarea{width:100%;min-height:96px}
+/* Ce que la veille a déjà retenu, rappelé au moment d'écrire le point. */
+.rappel{background:var(--cobalt-clair);border-radius:8px;padding:11px 13px;margin-bottom:15px;font-size:13px}
+.rappel.vide{color:var(--texte-2)}
+.rappel .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:6px}
+.rappel ul{margin:0;padding-left:17px}
+.rappel li{margin-bottom:4px;line-height:1.35}
+.rappel .d{font-family:var(--mono);font-size:10px;color:var(--texte-2)}
+.aide{display:block;font-size:12px;color:var(--texte-2);margin-top:4px;line-height:1.35}
 
 /* ---------- registres de traçabilité ---------- */
 .reg-jour{display:flex;align-items:center;gap:11px;margin:24px 0 11px;
@@ -521,6 +605,20 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .don .declaration table.dl td{padding:6px 8px;border-bottom:1px solid var(--trait)}
 .don .declaration .dn{font-size:13.5px;margin-bottom:11px;white-space:pre-line}
 .don .declaration .de{font-size:12.5px;background:#F1F8F5;border:1px solid #BEDCCE;color:#1E5C46;border-radius:6px;padding:9px 11px}
+
+/* Le renfort envisagé se coche depuis la fiche du volontaire :
+   c'est ce qui bouge le plus souvent, au fil des appels. Mêmes
+   étiquettes cochables que les tâches de la collecte. */
+/* Les étiquettes cochables ne tiennent pas dans un <label> : il
+   renverrait tous les clics vers son premier bouton. Elles vivent
+   donc dans un <div>, qui reprend ici l'intitulé du formulaire. */
+.don .detail .form > div > .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:4px}
+.don .taches{display:flex;flex-wrap:wrap;gap:6px;margin-top:3px}
+.don .taches button{font-family:inherit;font-size:12.5px;background:var(--surface);color:var(--texte-2);
+  border:1px solid var(--trait);border-radius:14px;padding:6px 11px;cursor:pointer;min-height:34px}
+.don .taches button:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.don .taches button.on{background:var(--cobalt-clair);border-color:var(--encre-2);color:var(--encre);font-weight:600}
 
 .stocks{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));margin-bottom:20px}
 .stock{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--ambre);border-radius:10px;padding:16px 17px;display:flex;flex-direction:column;gap:9px}
@@ -661,10 +759,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 @media print{
   @page{margin:14mm}
   body{background:#fff;font-size:10.5pt}
-  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.src-c .b,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve,.ref .b,.ref.neuf{display:none!important}
+  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.can .b,.fam .pied,.pt .b,.guide,.lancer,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve,.ref .b,.ref.neuf{display:none!important}
   td.act,th:last-child{display:none!important}
   .contenu{padding:0;max-width:none}
-  .carte,.tw,.mission,.pers,.ligne,.src-c,.ent-r{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
+  .carte,.tw,.mission,.pers,.ligne,.pt,.fam,.ent-r{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
+  .fam > .tete .chev{display:none}
   .reg-jour{break-after:avoid}
   .entete-print{display:block!important;border-bottom:2px solid #062B63;padding-bottom:8px;margin-bottom:16px}
   .entete-print .t{font-family:var(--display);font-weight:700;font-size:15pt;color:#062B63}
@@ -735,7 +834,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
    ========================================================= */
 const CLE = 'cpts_pau_bearn_crise_2026';
 let moi = 'Anonyme';
-let filtreVeille = 'decision';
+let filtreVeille = 'tout';
 let filtreFil = 'Tout';
 let feuillet = null;
 let onglet = 'cockpit';
@@ -776,7 +875,7 @@ Dérouler les appels avec la même trame.
 Noter chaque appel, y compris quand la réponse est « rien ».`, avec:`Agora Lib, CPTS Nord Bassin Océan, Terre de Médoc, Sud Bassin Val de l'Eyre, Ouest Gironde, CPTS landaises.`, pour:`Les équipes de coordination sur place.`, limite:`On n'annonce pas de matériel disponible. Aucun engagement sans lieu de livraison nommé.`}},
     {id:'m5', titre:"Relais de diffusion des appels à renfort", detail:"Uniquement les appels officiels (URPS, ARS, ordres). La CPTS Pau Béarn n'est opératrice d'aucun dispositif.", pilote:'', suppleant:'', mandat:"Non — relais uniquement", statut:'En cours', prochaine:"Préparer une réponse d'attente pour les professionnels hors kinésithérapie.", echeance:'', fiche:{but:`Faire circuler les appels officiels sans que la CPTS Pau Béarn soit prise pour l'opérateur.`, faire:`Relayer les appels URPS, ARS et ordres en nommant qui porte le dispositif.
 Préparer une réponse d'attente pour les professions sans canal ouvert.
-Consigner chaque diffusion en main courante : sa portée, son canal et le canal de retour indiqué.`, avec:`URPS, ordres professionnels, délégation départementale de l'ARS.`, pour:`Les 210 professionnels de santé des groupes de la CPTS Pau Béarn.`, limite:`On ne lance pas d'appel à volontaires en propre.`}},
+Consigner chaque diffusion en main courante : sa portée, son canal et le canal de retour indiqué.`, avec:`URPS, ordres professionnels, délégation départementale de l'ARS.`, pour:`Les 210 professionnels de santé des groupes de la CPTS Pau Béarn.`, limite:`On relaie sans se substituer à l'opérateur du dispositif. Le recensement mené en propre par la CPTS relève de la mission « Appel au renfort », et se distingue de ces relais.`}},
     {id:'m6', titre:"Traçabilité et retour d'expérience", detail:"Alimenter ce cockpit en continu : c'est la matière du futur plan SSE.", pilote:'', suppleant:'', mandat:'Non', statut:'En cours', prochaine:"Rappeler la règle d'alimentation à chaque point quotidien.", echeance:'', fiche:{but:`Que cette semaine laisse une trace exploitable pour écrire le plan SSE.`, faire:`Consigner décisions et informations au fil de l'eau.
 Vérifier chaque soir que rien d'important n'est resté hors du cockpit.
 Rappeler la règle d'alimentation au point quotidien.`, avec:`Toute l'équipe de gestion de crise.`, pour:`La CPTS en septembre, et l'ARS au retour d'expérience.`, limite:`On ne rédige pas de fiches réflexe pendant la crise.`}}
@@ -786,15 +885,19 @@ Marquer chaque canal comme vérifié après consultation.
 Retenir ce qui a un impact pour le territoire, avec le lien vers la source.`, avec:`ARS, préfectures, ATMO, URPS, presse régionale.`, pour:`L'équipe de gestion de crise, et indirectement les adhérents.`, limite:`On ne diffuse rien aux adhérents depuis cette mission : on alimente le fil, la diffusion se décide ailleurs.`}},
     {id:'m8', titre:"Participation à la visio de crise de l'ARS", detail:"Réunion de crise de l'ARS en visio à 15h : la CPTS Pau Béarn y assiste.", pilote:'Eva Poulmarch', suppleant:'', mandat:"Oui — visio de crise de l'ARS", statut:'En cours', prochaine:"Assister à la visio de 15h et consigner ce qui en sort dans « Échanges avec l'ARS » et la main courante.", echeance:'', espace:'ars', fiche:{but:`Entendre la consigne régionale de première main et faire remonter ce qui concerne le territoire béarnais.`, faire:`Assister à la visio de crise de l'ARS à 15h.
 Noter les consignes, les demandes et ce qui appelle une décision de la CPTS.
-Consigner le compte rendu dans « Échanges avec l'ARS » et en main courante après chaque séance.`, avec:`ARS Nouvelle-Aquitaine, délégation départementale 64.`, pour:`L'équipe de gestion de crise, qui décide à partir de ce qui s'y dit.`, limite:`On rapporte ce qui est dit. Rien n'est diffusé aux adhérents avant validation de la gouvernance.`}}
+Consigner le compte rendu dans « Échanges avec l'ARS » et en main courante après chaque séance.`, avec:`ARS Nouvelle-Aquitaine, délégation départementale 64.`, pour:`L'équipe de gestion de crise, qui décide à partir de ce qui s'y dit.`, limite:`On rapporte ce qui est dit. Rien n'est diffusé aux adhérents avant validation de la gouvernance.`}},
+    {id:'m9', titre:"Appel au renfort — recensement des professionnels volontaires", detail:"Recenser les professionnels de santé du territoire prêts à se déplacer, avant même de savoir ce qui sera demandé.", pilote:'', suppleant:'', mandat:"En attente — question posée à la DD ARS 64", statut:'À lancer', prochaine:"Ouvrir le formulaire de recensement et diffuser le lien aux professionnels de santé du territoire, profession par profession. Rappeler chaque inscrit pour vérifier assurance, statut et continuité des soins.", echeance:'', espace:'volontaires', fiche:{but:`Savoir sur qui l'on peut compter avant qu'on nous le demande. Une liste vérifiée le jour où l'ARS appelle vaut mieux qu'un appel lancé dans l'urgence.`, faire:`Diffuser le formulaire de recensement à l'ensemble des professionnels de santé du territoire, canal par canal.
+Recenser nom, prénom, profession, téléphone et disponibilités — et pour chacun, jusqu'où il peut se déplacer et pour quel type de renfort.
+Rappeler chaque inscrit : couverture d'assurance hors cabinet, continuité de sa patientèle, accord pour que ses coordonnées circulent.
+Tenir le registre à jour et ne transmettre que des noms vérifiés.`, avec:`ARS Nouvelle-Aquitaine et sa délégation départementale 64, URPS, ordres professionnels, CPTS des zones touchées.`, pour:`Les zones touchées et les hubs de santé qui demanderont des bras, et les professionnels du territoire qui veulent aider sans savoir comment.`, limite:`On recense, on ne réquisitionne pas et on n'affecte personne. Aucune promesse de mission n'est faite à l'inscription, et aucun nom ne sort du cockpit sans l'accord de la personne.`}}
   ],
   veille: [
-    {id:'v4', date:'2026-07-25', source:'Préfecture', titre:"FR-Alert : évacuation de nouvelles communes girondines", resume:"Saint-Aubin-de-Médoc, Saint-Médard-en-Jalles, Martignas-sur-Jalle, Saint-Jean-d'Illac.", lien:'https://www.gironde.gouv.fr/Actualites/Communiques-de-presse/Communiques-de-presse-2026/Juillet-2026/Incendie-en-Gironde-declenchement-de-FR-Alert-pour-l-evacuation-des-nouvelles-communes', impact:'contexte', suite:'rien', suiteEtat:'traite', suiteNote:''},
-    {id:'v5', date:'2026-07-24', source:'Autre', titre:"CHU de Bordeaux : plan blanc territorial et accueil des patients évacués", resume:"Accueil coordonné des patients de l'hôpital privé Wallerstein d'Arès, répartis à l'échelle départementale par l'ARS.", lien:'https://www.chu-bordeaux.fr/Espace-m%C3%A9dia/Actualit%C3%A9s/Incendies-en-Gironde-:-mobilisation-g%C3%A9n%C3%A9rale-du-CHU-de-Bordeaux-au-service-de-la-solidarit%C3%A9-territoriale-/', impact:'contexte', suite:'rien', suiteEtat:'traite', suiteNote:''},
-    {id:'v6', date:'2026-07-26', source:'Autre', titre:"Parc des Expositions de Bordeaux : ne rien y déposer", resume:"Centre d'accueil tenu par la Croix-Rouge, la réserve citoyenne métropolitaine et les communes, avec des renforts nationaux déjà sur place. Les besoins matériels y sont couverts.", lien:'', impact:'surveiller', suite:'adherents', suiteEtat:'ouvert', suiteNote:''},
-    {id:'v7', date:'2026-07-26', source:'URPS', titre:"Appel à volontaires kinésithérapeutes auprès des sapeurs-pompiers", resume:"Recensement porté par l'URPS Masseurs-Kinésithérapeutes Nouvelle-Aquitaine. Soins de récupération en caserne, en cabinet ou à proximité des zones d'intervention à la demande du SDIS. La CPTS Pau Béarn relaie, elle n'est pas opératrice.", lien:'https://forms.gle/b5UKjn4sTYqnJjSQ8', impact:'surveiller', suite:'adherents', suiteEtat:'traite', suiteNote:"Relayé aux membres le 26/07 par la vice-présidence."},
-    {id:'v8', date:'2026-07-25', source:'CPTS', titre:"Message n°1 diffusé aux membres de la CPTS", resume:"Information sur le déclenchement du plan blanc régional et rappel de la consigne de maintien en ambulatoire.", lien:'', impact:'contexte', suite:'rien', suiteEtat:'traite', suiteNote:''},
-    {id:'v9', date:'2026-07-26', source:'Autre', titre:"Parc des expositions de Bordeaux : tension sur les dispositifs de mesure, pas sur les consommables", resume:"Point du médecin coordonnateur du site, joint le 26/07 à 22h40 par la vice-présidence : le site est fourni en médicaments et n'a besoin d'aucun consommable, mais manque de tensiomètres, thermomètres, lecteurs d'hémoglucotest et saturomètres — 10 appareils pour 500 patients, avec beaucoup de casse. Nuance la consigne publique de ne rien déposer sur le site : elle vaut pour les dons spontanés, pas pour un envoi ciblé demandé par le site lui-même.", lien:'', impact:'direct', suite:'copil', suiteEtat:'traite', suiteNote:"Porté au copil le 27/07 — la collecte de matériel a été ouverte dans la foulée."}
+    {id:'v4', date:'2026-07-25', source:'Préfectures', rubrique:'rb-feux', titre:"FR-Alert : évacuation de nouvelles communes girondines", resume:"Saint-Aubin-de-Médoc, Saint-Médard-en-Jalles, Martignas-sur-Jalle, Saint-Jean-d'Illac.", lien:'https://www.gironde.gouv.fr/Actualites/Communiques-de-presse/Communiques-de-presse-2026/Juillet-2026/Incendie-en-Gironde-declenchement-de-FR-Alert-pour-l-evacuation-des-nouvelles-communes', impact:'contexte', suite:'rien', suiteEtat:'traite', suiteNote:''},
+    {id:'v5', date:'2026-07-24', source:'Établissements de santé', rubrique:'rb-sanitaire', titre:"CHU de Bordeaux : plan blanc territorial et accueil des patients évacués", resume:"Accueil coordonné des patients de l'hôpital privé Wallerstein d'Arès, répartis à l'échelle départementale par l'ARS.", lien:'https://www.chu-bordeaux.fr/Espace-m%C3%A9dia/Actualit%C3%A9s/Incendies-en-Gironde-:-mobilisation-g%C3%A9n%C3%A9rale-du-CHU-de-Bordeaux-au-service-de-la-solidarit%C3%A9-territoriale-/', impact:'contexte', suite:'rien', suiteEtat:'traite', suiteNote:''},
+    {id:'v6', date:'2026-07-26', source:'Collectivités', rubrique:'rb-moyens', titre:"Parc des Expositions de Bordeaux : ne rien y déposer", resume:"Centre d'accueil tenu par la Croix-Rouge, la réserve citoyenne métropolitaine et les communes, avec des renforts nationaux déjà sur place. Les besoins matériels y sont couverts.", lien:'', impact:'surveiller', suite:'adherents', suiteEtat:'ouvert', suiteNote:''},
+    {id:'v7', date:'2026-07-26', source:'URPS et ordres', rubrique:'rb-moyens', titre:"Appel à volontaires kinésithérapeutes auprès des sapeurs-pompiers", resume:"Recensement porté par l'URPS Masseurs-Kinésithérapeutes Nouvelle-Aquitaine. Soins de récupération en caserne, en cabinet ou à proximité des zones d'intervention à la demande du SDIS. La CPTS Pau Béarn relaie, elle n'est pas opératrice.", lien:'https://forms.gle/b5UKjn4sTYqnJjSQ8', impact:'surveiller', suite:'adherents', suiteEtat:'traite', suiteNote:"Relayé aux membres le 26/07 par la vice-présidence."},
+    {id:'v8', date:'2026-07-25', source:'Autre', rubrique:'rb-consignes', titre:"Message n°1 diffusé aux membres de la CPTS", resume:"Information sur le déclenchement du plan blanc régional et rappel de la consigne de maintien en ambulatoire.", lien:'', impact:'contexte', suite:'rien', suiteEtat:'traite', suiteNote:''},
+    {id:'v9', date:'2026-07-26', source:'Collectivités', rubrique:'rb-moyens', titre:"Parc des expositions de Bordeaux : tension sur les dispositifs de mesure, pas sur les consommables", resume:"Point du médecin coordonnateur du site, joint le 26/07 à 22h40 par la vice-présidence : le site est fourni en médicaments et n'a besoin d'aucun consommable, mais manque de tensiomètres, thermomètres, lecteurs d'hémoglucotest et saturomètres — 10 appareils pour 500 patients, avec beaucoup de casse. Nuance la consigne publique de ne rien déposer sur le site : elle vaut pour les dons spontanés, pas pour un envoi ciblé demandé par le site lui-même.", lien:'', impact:'direct', suite:'copil', suiteEtat:'traite', suiteNote:"Porté au copil le 27/07 — la collecte de matériel a été ouverte dans la foulée."}
 
   ],
   cpts: [
@@ -854,19 +957,40 @@ Consigner le compte rendu dans « Échanges avec l'ARS » et en main courante ap
     {id:'r1', nom:"Anne Latisnère", profession:"Infirmière — vice-présidente de la CPTS", tel:'', auteur:'', quand:''},
     {id:'r2', nom:"Eva Poulmarch", profession:"Coordinatrice de la CPTS", tel:'', auteur:'', quand:''}
   ],
+  /* Les canaux surveillés, rangés par famille. La famille dit d'où
+     l'information vient, le point dit ce qu'elle vient alimenter :
+     c'est ce couple qui permet de passer la veille au crible sans
+     connaître le dossier par cœur. */
   sources: [
-    {id:'s1', nom:"ARS Nouvelle-Aquitaine — communiqués", url:'https://www.nouvelle-aquitaine.ars.sante.fr', cat:'Institutionnel', rythme:'Chaque tour', quoi:"Nouveaux communiqués, consignes aux professionnels de santé, évolutions du plan blanc.", verifieLe:'', verifiePar:''},
-    {id:'s2', nom:"Préfecture de la Gironde", url:'https://www.gironde.gouv.fr', cat:'Préfecture', rythme:'Chaque tour', quoi:"Arrêtés, FR-Alert, évacuations et retours de population.", verifieLe:'', verifiePar:''},
-    {id:'s3', nom:"Préfecture des Landes", url:'https://www.landes.gouv.fr', cat:'Préfecture', rythme:'Chaque tour', quoi:"Front sud du feu : évacuations, fermetures de routes.", verifieLe:'', verifiePar:''},
-    {id:'s4', nom:"Préfecture des Pyrénées-Atlantiques", url:'https://www.pyrenees-atlantiques.gouv.fr', cat:'Préfecture', rythme:'Chaque tour', quoi:"Tout ce qui touche le 64 : accueil d'évacués, qualité de l'air, restrictions.", verifieLe:'', verifiePar:''},
-    {id:'s5', nom:"Vigilance Météo-France", url:'https://vigilance.meteofrance.fr', cat:'Environnement', rythme:'Chaque tour', quoi:"Vent, canicule, orages : ce qui fait bouger le feu dans les 24 h.", verifieLe:'', verifiePar:''},
-    {id:'s6', nom:"ATMO Nouvelle-Aquitaine — qualité de l'air", url:'https://www.atmo-nouvelleaquitaine.org', cat:'Environnement', rythme:'Chaque tour', quoi:"Indice sur Pau et le Béarn — c'est ce qui déclenche les consignes aux patients fragiles.", verifieLe:'', verifiePar:''},
-    {id:'s7', nom:"Santé publique France — réserve sanitaire", url:'https://www.santepubliquefrance.fr', cat:'Institutionnel', rythme:'Une fois par jour', quoi:"Appels à la réserve sanitaire pouvant concerner nos adhérents.", verifieLe:'', verifiePar:''},
-    {id:'s8', nom:"CHU de Bordeaux — actualités", url:'https://www.chu-bordeaux.fr', cat:'Établissements', rythme:'Une fois par jour', quoi:"Plan blanc territorial, transferts de patients, saturation des lits.", verifieLe:'', verifiePar:''},
-    {id:'s9', nom:"Bordeaux Métropole", url:'https://www.bordeaux-metropole.fr', cat:'Collectivités', rythme:'Une fois par jour', quoi:"Centres d'accueil, consignes sur les dons, logistique du parc des expositions.", verifieLe:'', verifiePar:''},
-    {id:'s10', nom:"Feux de forêt — suivi Gironde", url:'https://feuxdeforet.fr/nouvelle-aquitaine/gironde/', cat:'Suivi incendies', rythme:'Chaque tour', quoi:"Surface parcourue, communes menacées, sens de propagation.", verifieLe:'', verifiePar:''},
-    {id:'s11', nom:"Alertes feux — besoins en bénévoles", url:'https://alertesfeux.fr/benevoles', cat:'Suivi incendies', rythme:'Une fois par jour', quoi:"Appels à bénévoles — à croiser avec la mission Volontaires.", verifieLe:'', verifiePar:''},
-    {id:'s12', nom:"France 3 Nouvelle-Aquitaine", url:'https://france3-regions.franceinfo.fr/nouvelle-aquitaine/', cat:'Presse', rythme:'Chaque tour', quoi:"Ce qui sort dans la presse avant les canaux officiels, et ce que voient nos adhérents.", verifieLe:'', verifiePar:''}
+    {id:'s1', nom:"ARS Nouvelle-Aquitaine — communiqués", url:'https://www.nouvelle-aquitaine.ars.sante.fr', famille:"ARS et autorités sanitaires", point:'rb-ars', rythme:'Chaque tour', quoi:"Nouveaux communiqués, points de situation, consignes aux professionnels de santé, évolutions du plan blanc.", verifieLe:'', verifiePar:''},
+    {id:'s7', nom:"Santé publique France — réserve sanitaire", url:'https://www.santepubliquefrance.fr', famille:"ARS et autorités sanitaires", point:'rb-moyens', rythme:'Une fois par jour', quoi:"Appels à la réserve sanitaire pouvant concerner nos adhérents.", verifieLe:'', verifiePar:''},
+    {id:'s2', nom:"Préfecture de la Gironde", url:'https://www.gironde.gouv.fr', famille:'Préfectures', point:'rb-feux', rythme:'Chaque tour', quoi:"Arrêtés, FR-Alert, évacuations et retours de population.", verifieLe:'', verifiePar:''},
+    {id:'s3', nom:"Préfecture des Landes", url:'https://www.landes.gouv.fr', famille:'Préfectures', point:'rb-feux', rythme:'Chaque tour', quoi:"Front sud du feu : évacuations, fermetures de routes.", verifieLe:'', verifiePar:''},
+    {id:'s4', nom:"Préfecture des Pyrénées-Atlantiques", url:'https://www.pyrenees-atlantiques.gouv.fr', famille:'Préfectures', point:'rb-evacues', rythme:'Chaque tour', quoi:"Tout ce qui touche le 64 : accueil d'évacués, qualité de l'air, restrictions.", verifieLe:'', verifiePar:''},
+    {id:'s13', nom:"URPS Médecins Libéraux Nouvelle-Aquitaine", url:'https://www.urpsml-na.org/', famille:'URPS et ordres', point:'rb-consignes', rythme:'Chaque tour', quoi:"Consignes et appels aux médecins libéraux de la région : permanence des soins, recensements, relais de l'ARS.", verifieLe:'', verifiePar:''},
+    {id:'s14', nom:"URPS Infirmiers Libéraux Nouvelle-Aquitaine", url:'https://urpsinfirmiers-na.fr/actualites/', famille:'URPS et ordres', point:'rb-consignes', rythme:'Chaque tour', quoi:"Appels à volontaires infirmiers, organisation des soins à domicile pour les personnes évacuées.", verifieLe:'', verifiePar:''},
+    {id:'s15', nom:"URPS Pharmaciens Nouvelle-Aquitaine", url:'https://www.urps-pharmaciens-na.fr/', famille:'URPS et ordres', point:'rb-consignes', rythme:'Une fois par jour', quoi:"Dispensation en urgence, ruptures d'approvisionnement, distribution des masques en officine.", verifieLe:'', verifiePar:''},
+    {id:'s16', nom:"Ordre des médecins — Pyrénées-Atlantiques", url:'https://conseil64.ordre.medecin.fr/', famille:'URPS et ordres', point:'rb-consignes', rythme:'Une fois par jour', quoi:"Cadre déontologique de l'exercice en situation de crise : remplacements, exercice hors cabinet, bénévolat.", verifieLe:'', verifiePar:''},
+    {id:'s5', nom:"Vigilance Météo-France", url:'https://vigilance.meteofrance.fr', famille:'Environnement et météo', point:'rb-air', rythme:'Chaque tour', quoi:"Vent, canicule, orages : ce qui fait bouger le feu dans les 24 h.", verifieLe:'', verifiePar:''},
+    {id:'s6', nom:"ATMO Nouvelle-Aquitaine — qualité de l'air", url:'https://www.atmo-nouvelleaquitaine.org', famille:'Environnement et météo', point:'rb-air', rythme:'Chaque tour', quoi:"Indice sur Pau et le Béarn — c'est ce qui déclenche les consignes aux patients fragiles.", verifieLe:'', verifiePar:''},
+    {id:'s10', nom:"Feux de forêt — suivi Gironde", url:'https://feuxdeforet.fr/nouvelle-aquitaine/gironde/', famille:'Suivi des incendies', point:'rb-feux', rythme:'Chaque tour', quoi:"Surface parcourue, communes menacées, sens de propagation.", verifieLe:'', verifiePar:''},
+    {id:'s11', nom:"Alertes feux — besoins en bénévoles", url:'https://alertesfeux.fr/benevoles', famille:'Suivi des incendies', point:'rb-moyens', rythme:'Une fois par jour', quoi:"Appels à bénévoles — à croiser avec la mission Volontaires.", verifieLe:'', verifiePar:''},
+    {id:'s8', nom:"CHU de Bordeaux — actualités", url:'https://www.chu-bordeaux.fr', famille:'Établissements de santé', point:'rb-sanitaire', rythme:'Une fois par jour', quoi:"Plan blanc territorial, transferts de patients, saturation des lits.", verifieLe:'', verifiePar:''},
+    {id:'s9', nom:"Bordeaux Métropole", url:'https://www.bordeaux-metropole.fr', famille:'Collectivités', point:'rb-moyens', rythme:'Une fois par jour', quoi:"Centres d'accueil, consignes sur les dons, logistique du parc des expositions.", verifieLe:'', verifiePar:''},
+    {id:'s12', nom:"France 3 Nouvelle-Aquitaine", url:'https://france3-regions.franceinfo.fr/nouvelle-aquitaine/', famille:'Presse', point:'rb-feux', rythme:'Chaque tour', quoi:"Ce qui sort dans la presse avant les canaux officiels, et ce que voient nos adhérents.", verifieLe:'', verifiePar:''},
+    {id:'s17', nom:"La République des Pyrénées", url:'https://www.larepubliquedespyrenees.fr/', famille:'Presse', point:'rb-evacues', rythme:'Chaque tour', quoi:"Ce qui se dit dans le Béarn : accueil des évacués, mobilisations locales, réactions des habitants.", verifieLe:'', verifiePar:''}
+  ],
+  /* Les points de situation : les feuillets qu'on tient à jour. Une
+     information retenue se range dans l'un d'eux, et le point se
+     réécrit dans la foulée. C'est ce qui se lit au copil. */
+  rubriques: [
+    {id:'rb-feux', nom:"Avancée des feux", quoi:"Fronts actifs, communes menacées, surface parcourue, sens de propagation, moyens engagés.", ou:"Préfectures de Gironde et des Landes, suivi des incendies, presse régionale.", etat:'', maj:'', par:''},
+    {id:'rb-air', nom:"Qualité de l'air et météo", quoi:"Indice ATMO sur Pau et le Béarn, panache de fumée, vent et vigilances qui feront bouger le feu dans les 24 h.", ou:"ATMO Nouvelle-Aquitaine, vigilance Météo-France.", etat:'', maj:'', par:''},
+    {id:'rb-sanitaire', nom:"Situation sanitaire et hospitalière", quoi:"Plans blancs, évacuations d'établissements, saturation des lits et des urgences, transports sanitaires.", ou:"ARS, CHU de Bordeaux, CH de Pau.", etat:'', maj:'', par:''},
+    {id:'rb-consignes', nom:"Consignes aux professionnels de santé", quoi:"Ce que l'ARS, les URPS et les ordres demandent aux libéraux : maintien des soins en ville, masques, dérogations, permanence.", ou:"ARS, URPS et ordres professionnels.", etat:'', maj:'', par:''},
+    {id:'rb-evacues', nom:"Accueil des évacués dans le 64", quoi:"Personnes évacuées hébergées en Béarn : combien, où, et ce que ça demande à la médecine de ville.", ou:"Préfecture des Pyrénées-Atlantiques, collectivités, presse locale.", etat:'', maj:'', par:''},
+    {id:'rb-moyens', nom:"Moyens, matériel et renforts", quoi:"Appels à volontaires, réserve sanitaire, besoins matériels exprimés et lieux de collecte.", ou:"Santé publique France, collectivités, alertes feux, URPS.", etat:'', maj:'', par:''},
+    {id:'rb-ars', nom:"Points de situation de l'ARS", quoi:"Ce qui ressort des points réguliers de l'ARS : visio de crise de 15 h et communiqués. Le détail des échanges reste dans l'onglet Échanges avec l'ARS.", ou:"ARS Nouvelle-Aquitaine, délégation départementale 64.", etat:'', maj:'', par:''}
   ],
   ars: [
     {id:'a1', date:'2026-07-24', heure:'22:42', sens:"Reçu de l'ARS", canal:'Mail', interlocuteur:"ARS — Délégation départementale 64", objet:"Déclenchement du plan blanc régional / ORSAN AMAVI", demande:"Pour les professionnels de santé libéraux : maintenir la prise en charge des patients en ambulatoire pour éviter le recours non justifié aux urgences. Activation de la CRAPS. Les délégations départementales restent à disposition.", reponse:"Diffusion aux membres le 25/07 par Anne Latisnère, vice-présidente (message n°1) — environ 210 professionnels de santé destinataires via les groupes WhatsApp.", attendu:"Organiser le maintien des soins en ville et limiter le recours aux urgences du CH.", echeance:'', statut:'En cours', auteur:'', quand:''},
@@ -883,7 +1007,16 @@ Consigner le compte rendu dans « Échanges avec l'ARS » et en main courante ap
      tant qu'un besoin validé et un lieu de réception ne sont pas
      connus. Le serveur refuse tout dépôt tant qu'il est fermé. */
   collecte: { ouverte:false, message:'', besoins:"Lecteurs d'hémoglucotest, tensiomètres, thermomètres, saturomètres, stéthoscopes. Rien au-delà de cette liste : aucun consommable, aucun médicament." },
+  /* Interrupteur du formulaire public de recensement des renforts
+     (appel-au-renfort.html). Même mécanique que la collecte : le
+     copil l'ouvre et le ferme d'ici, le serveur refuse toute
+     inscription tant qu'il est fermé. Le « cadre » s'affiche en
+     tête du formulaire : c'est là qu'on dit aux professionnels ce
+     qu'on sait — et ce qu'on ne sait pas encore — du renfort
+     attendu. */
+  renfort: { ouverte:false, message:'', cadre:"Le type exact de renfort n'est pas encore arrêté : la CPTS Pau Béarn recense d'abord qui serait disponible, pour quoi et jusqu'où, afin de pouvoir répondre vite quand une demande précise arrivera. S'inscrire n'engage à rien et ne vaut pas affectation." },
   courante: [
+    {id:'mc13', date:'2026-07-27', heure:'', source:'Coordination', evenement:"Décision de lancer un appel au renfort en propre : un formulaire de recensement sera diffusé à l'ensemble des professionnels de santé du territoire répondant aux critères, pour identifier ceux qui pourraient se déplacer sur les zones touchées ou dans les hubs de santé, auprès de la population blessée ou évacuée. Le type exact de renfort attendu n'est pas encore connu : le recensement est ouvert large, et vaudra base de réponse quand une demande précise arrivera. Deuxième appel lancé en propre par la CPTS après celui de la logistique de collecte — celui-ci porte sur le soin.", suite:"Ouvrir le formulaire depuis l'onglet « Appel au renfort » et diffuser le lien profession par profession. Rappeler chaque inscrit : assurance hors cabinet, continuité de sa patientèle, accord pour que ses coordonnées circulent. La question 5 posée à la DD ARS 64 — souhaitez-vous que la CPTS constitue une liste de volontaires, sous quel statut et via quel canal — reste sans réponse : le recensement se mène sans attendre, la transmission des noms non.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc12', date:'2026-07-27', heure:'', source:'Coordination', evenement:"Patricia Benastre vient en renfort d'Anne Latisnère sur la collecte de matériel médical : elle prend le phoning auprès des pharmaciens du territoire.", suite:"Renfort inscrit sur la mission dans « Missions & organigramme ». Consigner les retours des pharmaciens dans le registre des donateurs.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc11', date:'2026-07-27', heure:'15:30', source:'Coordination', evenement:"Envoi d'un appel à volontaires pour participer à la logistique de la collecte de dons à la Foire Expo de Pau : réception, tri et conditionnement du matériel donné. Diffusé par WhatsApp aux professionnels de santé du territoire, sous la signature d'Eva Poulmarch. Premier appel à volontaires lancé en propre par la CPTS Pau Béarn, et sur de la logistique, non du soin : distinct des appels à renfort officiels qu'elle se contente de relayer.", suite:"Recenser les réponses dans « Volontaires ». Préciser les créneaux, qui encadre sur place et la couverture assurantielle avant d'affecter qui que ce soit. Aucun canal de retour n'a été indiqué dans le message : à corriger dans le suivant.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc10', date:'2026-07-27', heure:'15:00', source:'ARS Nouvelle-Aquitaine', evenement:"Réunion de crise de l'ARS en visioconférence à 15h : la CPTS Pau Béarn y assiste. Eva Poulmarch en a la charge et y représente la CPTS.", suite:"Consigner le compte rendu dans « Échanges avec l'ARS » et ici à l'issue de la séance, et en tirer ce qui appelle une décision du copil.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
@@ -1146,7 +1279,7 @@ function lancerSondage(){
    et qu'elle n'a pas été retirée à la main : ce qui a été saisi
    par le copil n'est jamais touché. C'est par là qu'arrivent les
    éléments consignés hors ligne, au téléphone notamment. */
-const SEEDS = ['missions','veille','ars','sources','lignes','offre','cpts','courante','materiel','stockage','contacts','referents'];
+const SEEDS = ['missions','veille','ars','sources','rubriques','lignes','offre','cpts','courante','materiel','stockage','contacts','referents'];
 function fusionnerNouveautes(){
   etat.retires = etat.retires || [];
   SEEDS.forEach(k => {
@@ -1158,6 +1291,20 @@ function fusionnerNouveautes(){
   });
   reverserDiffusions();
   completerVeille();
+  corrigerRelaisRenfort();
+}
+
+/* La CPTS ne lançait aucun appel à volontaires en propre : c'était
+   écrit noir sur blanc dans la fiche du relais de diffusion. Elle
+   en lance un depuis l'ouverture de l'appel au renfort, et la
+   phrase est devenue fausse. On la corrige une fois, et seulement
+   si elle n'a pas déjà été réécrite à la main. */
+const ANCIENNE_LIMITE_M5 = "On ne lance pas d'appel à volontaires en propre.";
+function corrigerRelaisRenfort(){
+  const m = (etat.missions||[]).find(x => x.id === 'm5');
+  const ref = (etatInitial.missions||[]).find(x => x.id === 'm5');
+  if(!m || !m.fiche || !ref || m.fiche.limite !== ANCIENNE_LIMITE_M5) return;
+  m.fiche.limite = ref.fiche.limite;
 }
 
 /* « Ce qu'on a diffusé » faisait doublon avec la main courante et a été
@@ -1210,6 +1357,11 @@ function completerVeille(){
   (etat.sources||[]).forEach(o => {
     const r = refSrc.get(o.id);
     combler(o, {rythme: r ? r.rythme : 'Chaque tour', quoi: r ? r.quoi : ''});
+    /* Le carnet était rangé par catégorie libre ; il l'est désormais
+       par famille de canal. Les sources déjà enregistrées récupèrent
+       leur famille et leur point de situation à la volée. */
+    if(!o.famille) o.famille = r ? r.famille : familleDeCat(o.cat);
+    if(o.point === undefined) o.point = r ? r.point : '';
   });
   const refV = new Map((etatInitial.veille||[]).map(o => [o.id, o]));
   (etat.veille||[]).forEach(o => {
@@ -1220,7 +1372,27 @@ function completerVeille(){
       suiteEtat: r ? r.suiteEtat : 'traite',
       suiteNote: r ? r.suiteNote : ''
     });
+    if(o.rubrique === undefined) o.rubrique = r ? (r.rubrique || '') : '';
   });
+  etat.rubriques = etat.rubriques || [];
+  const refR = new Map((etatInitial.rubriques||[]).map(o => [o.id, o]));
+  etat.rubriques.forEach(o => {
+    const r = refR.get(o.id);
+    combler(o, {quoi: r ? r.quoi : '', ou: r ? r.ou : '', etat:'', maj:'', par:''});
+  });
+}
+/* Rattrapage des anciennes catégories saisies à la main. */
+function familleDeCat(c){
+  c = (c || '').toLowerCase();
+  if(c.indexOf('ars') === 0 || c.indexOf('institutionnel') === 0) return "ARS et autorités sanitaires";
+  if(c.indexOf('préfecture') === 0 || c.indexOf('prefecture') === 0) return 'Préfectures';
+  if(c.indexOf('urps') === 0 || c.indexOf('ordre') === 0) return 'URPS et ordres';
+  if(c.indexOf('environnement') === 0 || c.indexOf('météo') === 0) return 'Environnement et météo';
+  if(c.indexOf('suivi') === 0 || c.indexOf('feu') === 0 || c.indexOf('incendie') === 0) return 'Suivi des incendies';
+  if(c.indexOf('établissement') === 0 || c.indexOf('etablissement') === 0) return 'Établissements de santé';
+  if(c.indexOf('collectivité') === 0 || c.indexOf('collectivite') === 0) return 'Collectivités';
+  if(c.indexOf('presse') === 0 || c.indexOf('média') === 0) return 'Presse';
+  return 'Autres canaux';
 }
 
 async function sauver(){
@@ -1508,7 +1680,7 @@ const ONGLETS = [
   {id:'terrain',   nom:'Remontées terrain',  groupe:'Traçabilité', cpt:'terrain'},
   {id:'appels',    nom:'Appels CPTS',        groupe:'Actions', cpt:'cpts'},
   {id:'materiel',  nom:'Collecte de matériel', groupe:'Actions', cpt:'dons'},
-  {id:'volontaires',nom:'Volontaires',       groupe:'Actions', cpt:'volontaires'},
+  {id:'volontaires',nom:'Appel au renfort',  groupe:'Actions', cpt:'volontaires'},
   {id:'offre',     nom:'Offre de soins du territoire', groupe:'Ressources', cpt:'offre'},
   {id:'lignes',    nom:'Qui appeler',         groupe:'Ressources', cpt:'lignes'},
   {id:'contacts',  nom:'Contacts de la crise', groupe:'Ressources', cpt:'contacts'}
@@ -1553,6 +1725,50 @@ const BORDEREAU_ACQUIS = ['Engagement en ligne','Signé'];
 const TACHES = ['Transport et enlèvement','Tri et conditionnement','Permanence au point de collecte',
   'Manutention, chargement','Appels aux donateurs','Coordination'];
 const VEHICULES = ['','Aucun','Voiture','Break ou monospace','Utilitaire','Camion'];
+
+/* ---------- appel au renfort ----------------------------
+   Les listes du recensement des professionnels volontaires.
+   Elles servent des deux côtés : dans le cockpit pour la saisie
+   à la main, et dans le formulaire public appel-au-renfort.html.
+   Toute modification ici doit être reportée là-bas. */
+const PROFESSIONS = ['','Médecin généraliste','Médecin spécialiste','Infirmier ou infirmière (IDE)',
+  'Infirmier en pratique avancée (IPA)','Masseur-kinésithérapeute','Pharmacien','Préparateur en pharmacie',
+  'Chirurgien-dentiste','Sage-femme','Pédicure-podologue','Orthophoniste','Orthoptiste','Ergothérapeute',
+  'Psychomotricien','Psychologue','Diététicien','Manipulateur en électroradiologie',
+  'Technicien de laboratoire','Ambulancier','Aide-soignant','Auxiliaire de vie','Assistant médical',
+  'Secrétaire médical','Étudiant en santé, interne','Autre profession de santé',
+  'Non-soignant — appui logistique'];
+
+const EXERCICES = ['','Libéral','Salarié','Remplaçant','Mixte','Retraité','Étudiant ou interne',
+  'Sans activité actuelle'];
+
+/* Le type de renfort qu'on ne connaît pas encore précisément :
+   on ratisse large et on affinera quand la demande arrivera.
+   Une personne en coche plusieurs — rangées dans un seul champ
+   texte, comme les tâches de la collecte. */
+const RENFORTS_TYPES = ["Soins en zone touchée",
+  "Renfort en centre d'accueil ou hub santé",
+  "Poste de secours, prise en charge des blessés",
+  "Consultations au cabinet pour les personnes évacuées",
+  "Soutien psychologique",
+  "Régulation, appels, orientation à distance",
+  "Prévention, vaccination, éducation à la santé",
+  "Visites et suivi des personnes fragiles à domicile",
+  "Logistique, transport, intendance"];
+
+const ZONES = ['','Sur le territoire de la CPTS Pau Béarn','Dans les Pyrénées-Atlantiques',
+  'Dans les départements voisins',"Partout en Nouvelle-Aquitaine, zones touchées comprises",
+  'À préciser'];
+
+const DUREES = ['','Quelques heures',"Une demi-journée",'Une journée','Deux à trois jours',
+  'Plusieurs jours consécutifs','À préciser'];
+
+const VOL_STATUTS = ['Recensé','Vérifié','Transmis','Affecté','Indisponible','Sans suite'];
+
+/* Provenance d'une réponse reportée à la main : le formulaire
+   Google, un message, un appel. Mêmes canaux que la collecte. */
+const VOL_ORIGINES = ['Formulaire en ligne de la CPTS','Formulaire Google',
+  'Message reçu (SMS, courriel, WhatsApp)','Échange de vive voix','Autre'];
 
 const CHAMPS = {
   ars: {
@@ -1683,7 +1899,7 @@ const CHAMPS = {
   },
   renforts: {
     titre:"Volontaires pour la collecte",
-    chapo:"Qui donne de son temps pour organiser la collecte : tenir la permanence, trier, charger, transporter. Ce ne sont pas les volontaires soignants du renfort en zone, qui se recensent dans l'onglet Volontaires.",
+    chapo:"Qui donne de son temps pour organiser la collecte : tenir la permanence, trier, charger, transporter. Ce ne sont pas les volontaires soignants du renfort en zone, qui se recensent dans l'onglet « Appel au renfort ».",
     f:[
       {c:'nom', l:"Nom et prénom", t:'text', req:true, large:true},
       {c:'profession', l:"Profession ou structure", t:'text'},
@@ -1700,19 +1916,47 @@ const CHAMPS = {
     ],
     cols:['date','nom','profession','tel','mail','commune','taches','vehicule','volume','dispo','affectation','statut','auteur']
   },
+  /* Le registre du recensement des renforts. Deux façons de le
+     remplir, comme celui des donateurs : le professionnel s'inscrit
+     lui-même par le formulaire public, ou le copil reporte à la
+     main une réponse arrivée autrement — un appel, un message, un
+     autre formulaire. D'où les marques « appel » et « manuel ». */
   volontaires: {
-    titre:"Professionnels volontaires",
-    chapo:"La CPTS Pau Béarn recense, l'ARS affecte. Vérifier assurance, statut et continuité des soins avant toute transmission de nom.",
+    titre:"Appel au renfort — professionnels volontaires",
+    chapo:"Qui s'est déclaré prêt à venir en renfort, ce qu'il peut faire, quand, et jusqu'où il peut se déplacer. La CPTS Pau Béarn recense et vérifie ; l'affectation revient à l'ARS et aux structures qui accueillent. Aucun nom n'est transmis sans que l'assurance, le statut et la continuité des soins aient été regardés.",
     f:[
+      {c:'heure', l:"Heure du recensement", lm:"Heure de la réponse", t:'time', d:maintenant},
       {c:'nom', l:"Nom", t:'text', req:true},
-      {c:'profession', l:"Profession", t:'text', req:true},
-      {c:'dispo', l:"Disponibilités", t:'text'},
-      {c:'mobilite', l:"Mobilité / véhicule", t:'text'},
-      {c:'continuite', l:"Continuité de sa patientèle assurée ?", t:'select', o:['À vérifier','Oui','Non']},
-      {c:'transmis', l:"Transmis à (canal)", t:'text'},
-      {c:'statut', l:"Statut", t:'select', o:['Recensé','Transmis','Affecté','Sans suite']}
+      {c:'prenom', l:"Prénom", t:'text', req:true},
+      {c:'profession', l:"Profession", t:'select', o:PROFESSIONS, req:true},
+      {c:'exercice', l:"Mode d'exercice", t:'select', o:EXERCICES},
+      {c:'rpps', l:"N° RPPS ou ADELI", t:'text'},
+      {c:'tel', l:"Téléphone", t:'text', req:true},
+      {c:'mail', l:"Courriel", t:'text'},
+      {c:'commune', l:"Commune d'exercice", t:'text'},
+      {c:'structure', l:"Cabinet, structure ou employeur", t:'text', large:true},
+      {c:'renforts', l:"Renfort envisagé", t:'text', large:true},
+      {c:'zone', l:"Jusqu'où il ou elle peut se déplacer", t:'select', o:ZONES},
+      {c:'vehicule', l:"Véhicule", t:'select', o:VEHICULES},
+      {c:'dispo', l:"Disponibilités (jours, créneaux)", t:'textarea', large:true},
+      {c:'apartir', l:"Mobilisable à partir du", t:'date'},
+      {c:'duree', l:"Durée mobilisable d'affilée", t:'select', o:DUREES},
+      {c:'nuit', l:"Peut dormir sur place si besoin", t:'select', o:['À préciser','Oui','Non']},
+      {c:'experience', l:"Expérience utile (urgences, SSE, réserve sanitaire, CUMP, pompier volontaire…)", t:'textarea', large:true},
+      {c:'engage', l:"Déjà engagé dans un autre dispositif", t:'text', large:true},
+      {c:'continuite', l:"Continuité de sa patientèle assurée ?", t:'select', o:['À vérifier','Oui','Non','Sans objet']},
+      {c:'assurance', l:"Assurance professionnelle couvrant une activité hors cabinet ?", t:'select', o:['À vérifier','Oui','Non']},
+      {c:'accord', l:"Accepte que ses coordonnées soient transmises", t:'select', o:['À vérifier','Oui','Non']},
+      {c:'par', l:"Recensé par", t:'text', d:() => moi === 'Anonyme' ? '' : moi, appel:true},
+      {c:'origine', l:"Provenance de la réponse", t:'select', manuel:true, o:VOL_ORIGINES},
+      {c:'transmis', l:"Transmis à (destinataire, canal, date)", t:'text', large:true},
+      {c:'affectation', l:"Affectation (lieu, mission, créneau)", t:'text', large:true},
+      {c:'statut', l:"Statut", t:'select', o:VOL_STATUTS},
+      {c:'note', l:"Observation", t:'textarea', large:true}
     ],
-    cols:['date','nom','profession','dispo','mobilite','continuite','statut','auteur']
+    cols:['date','heure','nom','prenom','profession','exercice','rpps','tel','mail','commune','structure',
+          'renforts','zone','vehicule','dispo','apartir','duree','nuit','experience','engage','continuite',
+          'assurance','accord','par','origine','transmis','affectation','statut','auteur']
   },
   contacts: {
     titre:"Contacts clés",
@@ -2046,7 +2290,7 @@ function vueCockpit(){
     <div class="compteur"><div class="n">${etat.courante.length}</div><div class="l">entrées en main courante</div></div>
     <div class="compteur"><div class="n">${etat.appels.length}</div><div class="l">CPTS contactées</div></div>
     <div class="compteur"><div class="n">${etat.terrain.length}</div><div class="l">remontées de terrain</div></div>
-    <div class="compteur"><div class="n">${etat.volontaires.length}</div><div class="l">volontaires recensés</div></div>
+    <div class="compteur"><div class="n">${etat.volontaires.length}</div><div class="l">professionnels volontaires au renfort</div></div>
   </div>`;
 
   if(missionsSansPilote){
@@ -2515,13 +2759,38 @@ async function majMission(id, champ, val){
 /* =========================================================
    SITUATION RÉGIONALE — le poste de veille
 
-   La veille est tenue par une personne du copil, deux fois par
-   jour. Toute la page est construite autour de ce geste : le tour
-   de veille enchaîne les sources dues, et « rien de neuf » comme
-   « je retiens » datent la source au passage. Marquer un canal vu
-   et noter une information sont devenus le même geste.
+   La page tient sur trois objets, dans cet ordre :
+
+   1. Les points de situation — les feuillets qu'on maintient à
+      jour : avancée des feux, qualité de l'air, situation
+      sanitaire, consignes aux libéraux… C'est ce qui se lit au
+      copil, et c'est ce que la veille alimente.
+   2. Les canaux, rangés par famille — ARS, préfectures, URPS et
+      ordres, environnement, presse. On les passe au crible famille
+      par famille, ou tous d'un coup avec le tour.
+   3. Ce qu'on a retenu — chaque information est rangée dans un
+      point, porte son impact sur le 64 et la suite à donner.
+
+   Le geste complet est : ouvrir un canal → retenir → ranger dans
+   un point → réécrire ce point. Qui prend la veille sans connaître
+   le dossier suit les quatre gestes affichés en tête de page.
    ========================================================= */
 const SEUIL_VEILLE_H = 6;   // au-delà, un canal « chaque tour » est à repasser
+const SEUIL_POINT_H  = 12;  // au-delà, un point de situation est à rafraîchir
+const FAMILLES = ["ARS et autorités sanitaires",'Préfectures','URPS et ordres','Environnement et météo','Suivi des incendies','Établissements de santé','Collectivités','Presse','Autres canaux'];
+/* Ce qu'on va chercher dans chaque famille, pour qui prend la
+   veille sans savoir à quoi sert le canal. */
+const FAMILLE_QUOI = {
+  "ARS et autorités sanitaires": "La consigne officielle : ce que l'autorité sanitaire demande, et à qui.",
+  'Préfectures':                 "L'ordre public : évacuations, arrêtés, FR-Alert, routes coupées.",
+  'URPS et ordres':              "Ce qui s'adresse directement aux libéraux : appels, recensements, cadre d'exercice.",
+  'Environnement et météo':      "Ce qui fera bouger le feu et l'air respirable dans les 24 h.",
+  'Suivi des incendies':         "L'état du feu lui-même, commune par commune.",
+  'Établissements de santé':     "L'aval hospitalier : plans blancs, transferts, saturation.",
+  'Collectivités':               "Le terrain logistique : centres d'accueil, dons, hébergement.",
+  'Presse':                      "Ce qui sort avant les canaux officiels, et ce que voient nos adhérents.",
+  'Autres canaux':               "Les canaux ajoutés en cours de crise."
+};
 const IMPACTS = {
   direct:    {l:"Impact direct sur le 64", c:'imp-direct',     d:"Change quelque chose pour nos adhérents ou leurs patients dès maintenant."},
   surveiller:{l:"À surveiller",            c:'imp-surveiller', d:"Pas d'effet immédiat chez nous, mais ça peut basculer."},
@@ -2534,8 +2803,17 @@ const SUITES = {
   adherents: {l:"À relayer aux adhérents"}
 };
 let tourVeille = null;      // {liste:[ids], i, retenues, passees}
-let sourcesDepliees = false;
 let brouillonVeille = null;
+let brouillonPoint = null;
+let famillesRepliees = {};  // famille -> true quand on la replie à la main
+/* Le mode d'emploi reste ouvert tant qu'on ne l'a pas replié soi-même :
+   c'est la première chose que voit qui prend la veille. */
+let guideVeille = (() => { try{ return localStorage.getItem('cpts64_guide_veille') !== 'ferme'; }catch(e){ return true; } })();
+function basculerGuide(){
+  guideVeille = !guideVeille;
+  try{ localStorage.setItem('cpts64_guide_veille', guideVeille ? 'ouvert' : 'ferme'); }catch(e){}
+  rendre();
+}
 
 const horodate = () => aujourdhui() + ' ' + maintenant();
 function heuresDepuis(q){
@@ -2560,6 +2838,14 @@ function sourceDue(o){
   return heuresDepuis(o.verifieLe) >= SEUIL_VEILLE_H;
 }
 const sourcesTriees = () => [...(etat.sources||[])].sort((a,b) => (a.verifieLe||'').localeCompare(b.verifieLe||''));
+const rubriques = () => etat.rubriques || [];
+const rubriqueDe = id => rubriques().find(r => r.id === id);
+const nomPoint = id => { const r = rubriqueDe(id); return r ? r.nom : ''; };
+/* Un point non réécrit depuis un demi-tour d'horloge est à
+   rafraîchir : c'est ce qui donne sa liste de travail à qui prend
+   la veille. Un point jamais écrit l'est toujours. */
+const pointARafraichir = r => !r.maj || heuresDepuis(r.maj) >= SEUIL_POINT_H;
+const infosDuPoint = id => (etat.veille||[]).filter(i => (i.rubrique||'') === id);
 /* Qui tient la veille : le pilote de la mission rattachée à cet
    espace. Une seule source de vérité, dans Missions & organigramme. */
 const missionVeille = () => (etat.missions||[]).find(m => espaceDe(m) === 'veille');
@@ -2573,8 +2859,10 @@ function vueVeille(){
   const duJour = (etat.veille||[]).filter(i => i.date === aujourdhui());
   const dernier = sourcesTriees().filter(o => o.verifieLe).map(o => o.verifieLe).sort().pop();
 
+  const arafraichir = rubriques().filter(pointARafraichir);
+
   let h = `<h1>Situation régionale</h1>
-  <p class="chapo">Le poste de veille de la CPTS Pau Béarn. On passe les canaux officiels en revue deux fois par jour, on retient ce qui a un impact sur le territoire, et on décide de la suite à donner à chaque information retenue.</p>`;
+  <p class="chapo">Le poste de veille de la CPTS Pau Béarn. ${rubriques().length} points de situation à tenir à jour, ${(etat.sources||[]).length} canaux officiels rangés par famille pour les alimenter. On passe les canaux en revue deux fois par jour, on retient ce qui a un impact sur le territoire, on range chaque information dans son point, et on décide de la suite à donner.</p>`;
 
   /* --- qui tient la veille, et où en est le tour --- */
   h += `<div class="poste ${pilote ? '' : 'vacant'}">
@@ -2598,55 +2886,138 @@ function vueVeille(){
       <div class="tour-t ${dues.length ? 'du' : 'fait'}">
         <div class="q">Tour en cours</div>
         <div class="v">${dues.length
-          ? `<b>${dues.length} source${dues.length > 1 ? 's' : ''} à repasser</b><br>dont ${jamais.length} jamais ouverte${jamais.length > 1 ? 's' : ''}`
+          ? `<b>${dues.length} ${dues.length > 1 ? 'canaux' : 'canal'} à repasser</b><br>${jamais.length ? 'dont ' + jamais.length + ' jamais ouvert' + (jamais.length > 1 ? 's' : '') : 'tous déjà ouverts au moins une fois'}`
           : `<b>À jour</b><br>Rien à repasser pour l'instant`}</div>
       </div>
     </div>
   </div>`;
 
+  /* --- les quatre gestes, pour qui prend la veille --- */
+  h += `<div class="repli guide">
+    <button class="tete" onclick="basculerGuide()">
+      <div>
+        <div class="t">Tenir cette veille : les quatre gestes</div>
+        <div class="s">${guideVeille ? "À replier une fois la main prise" : "Déplier si vous prenez la veille pour la première fois"}</div>
+      </div>
+      <span class="chev">${guideVeille ? '▾' : '▸'}</span>
+    </button>
+    ${guideVeille ? `<div class="dedans"><ol class="gestes-g">
+      <li><b>Passer les canaux au crible</b>, famille par famille — ARS, préfectures, URPS et ordres, environnement, presse. Deux fois par jour : le matin, et en fin d'après-midi. Le tour vous les présente un par un, les moins récemment ouverts d'abord.</li>
+      <li><b>Retenir ce qui compte pour le Béarn.</b> Une phrase, le lien vers la source, et l'impact sur le 64. Sur un canal où rien n'a bougé, « rien de neuf » suffit : le canal est daté et on passe au suivant.</li>
+      <li><b>Ranger l'information dans un point de situation.</b> Avancée des feux, situation sanitaire, consignes aux libéraux… C'est ce classement qui rend la veille lisible pour le reste de l'équipe.</li>
+      <li><b>Réécrire le point dans la foulée.</b> Quelques lignes sur ce qu'on sait maintenant, au présent. Un point qui n'a pas bougé depuis ${SEUIL_POINT_H} h passe en orange et redemande à être repris.</li>
+    </ol>
+    <p class="apres">Ce qui n'est pas de votre ressort : rien ne part aux adhérents depuis cette page. Une information à relayer se marque « À relayer aux adhérents » — la diffusion se décide au copil.</p>
+    </div>` : ''}
+  </div>`;
+
   /* --- ce qui appelle une décision --- */
   h += `<div class="compteurs" style="margin-bottom:18px">
+    <div class="compteur"><div class="n">${arafraichir.length}</div><div class="l">point${arafraichir.length > 1 ? 's' : ''} de situation à rafraîchir</div></div>
     <div class="compteur"><div class="n">${attente.length}</div><div class="l">information${attente.length > 1 ? 's' : ''} en attente d'une suite</div></div>
-    <div class="compteur"><div class="n">${duJour.length}</div><div class="l">retenue${duJour.length > 1 ? 's' : ''} aujourd'hui</div></div>
-    <div class="compteur"><div class="n">${dues.length}</div><div class="l">source${dues.length > 1 ? 's' : ''} à repasser</div></div>
-    <div class="compteur"><div class="n">${jamais.length}</div><div class="l">jamais ouverte${jamais.length > 1 ? 's' : ''} depuis le début de la crise</div></div>
+    <div class="compteur"><div class="n">${dues.length}</div><div class="l">${dues.length > 1 ? 'canaux' : 'canal'} à repasser${jamais.length ? ', dont ' + jamais.length + ' jamais ouvert' + (jamais.length > 1 ? 's' : '') : ''}</div></div>
+    <div class="compteur"><div class="n">${duJour.length}</div><div class="l">information${duJour.length > 1 ? 's' : ''} retenue${duJour.length > 1 ? 's' : ''} aujourd'hui</div></div>
   </div>`;
 
   /* --- le tour --- */
   h += tourVeille ? vueTourVeille() : (dues.length
     ? `<button class="lancer" onclick="lancerTour()">
         <div>
-          <div class="t">Lancer le tour de veille</div>
-          <div class="s">${dues.length} source${dues.length > 1 ? 's' : ''} à repasser, les moins récemment ouvertes d'abord</div>
+          <div class="t">Lancer le tour des canaux</div>
+          <div class="s">${dues.length} ${dues.length > 1 ? 'canaux' : 'canal'} à repasser, les moins récemment ouverts d'abord — on peut interrompre et reprendre</div>
         </div>
         <span class="go">Commencer →</span>
       </button>`
     : `<div class="carte" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
         <div style="flex:1;min-width:220px"><strong>Tous les canaux sont à jour.</strong>
-        <div style="color:var(--texte-2);font-size:13.5px;margin-top:3px">Le prochain tour s'ouvrira de lui-même quand les sources arriveront à échéance.</div></div>
+        <div style="color:var(--texte-2);font-size:13.5px;margin-top:3px">Le prochain tour s'ouvrira de lui-même quand les canaux arriveront à échéance.</div></div>
         <button class="btn sec" onclick="lancerTour(true)">Tout repasser quand même</button>
       </div>`);
 
-  /* --- ce qu'on a retenu --- */
-  const compte = f => f === 'decision' ? (etat.veille||[]).filter(i => i.suiteEtat === 'ouvert').length
-                    : f === 'tout' ? (etat.veille||[]).length
-                    : (etat.veille||[]).filter(i => (i.impact || 'contexte') === f).length;
-  const filtres = [['decision',"Ce qui attend une décision"],['direct',"Impact direct 64"],['surveiller',"À surveiller"],['tout',"Tout"]];
+  /* --- les points de situation --- */
+  h += vuePoints(arafraichir.length);
 
-  h += `<h2 style="margin-top:26px">Ce qu'on a retenu</h2>
-  <div class="filtres">${filtres.map(([k,l]) =>
-    `<button class="${filtreVeille === k ? 'on' : ''}" onclick="filtrer('${k}')">${l} · ${compte(k)}</button>`).join('')}
+  /* --- les canaux, rangés par famille --- */
+  h += vueClasseur(dues.length);
+
+  /* --- ce qu'on a retenu --- */
+  h += vueRetenu();
+
+  h += `<div class="note" style="margin-top:20px"><strong>Ce que cette mission ne fait pas.</strong> On alimente les points de situation, on ne diffuse rien aux adhérents depuis ici : le relais se décide au copil et se consigne en <a href="#" onclick="aller('courante');return false;">Main courante</a>. Les échanges avec l'ARS, eux, ont leur propre onglet, <a href="#" onclick="aller('ars');return false;">Échanges avec l'ARS</a> : ici on ne garde que ce qui ressort de ses points de situation.</div>`;
+
+  return h;
+}
+
+/* Les feuillets de la situation régionale. Chacun porte ce qu'on
+   sait à l'instant, ce qu'on y suit, et où on va le chercher :
+   prendre la veille, c'est reprendre ceux qui ont vieilli. */
+function vuePoints(nbRafraichir){
+  const l = rubriques();
+  let h = `<h2 style="margin-top:26px">Les points de situation
+    <span class="cpt-h">${l.length} feuillet${l.length > 1 ? 's' : ''}${nbRafraichir ? ' · ' + nbRafraichir + ' à rafraîchir' : ' · tous à jour'}</span></h2>
+  <p class="sous-h">C'est ce qui se lit au copil. Chaque point se réécrit à partir de ce que la veille a retenu — au présent, en quelques lignes.</p>
+  <div class="points">`;
+
+  h += l.map(r => {
+    const infos = infosDuPoint(r.id);
+    const ouvertes = infos.filter(i => i.suiteEtat === 'ouvert').length;
+    const vieux = pointARafraichir(r);
+    return `<div class="pt ${r.etat ? '' : 'vierge'} ${vieux && r.etat ? 'vieux' : ''}">
+      <div class="n">${esc(r.nom)}</div>
+      <div class="e ${r.etat ? '' : 'rien'}">${r.etat
+        ? esc(r.etat).replace(/\n/g,'<br>')
+        : "Point encore vierge — rien n'y a été écrit depuis le début de la crise."}</div>
+      <div class="q"><span class="k">Ce qu'on y suit</span>${esc(r.quoi)}</div>
+      ${r.ou ? `<div class="q"><span class="k">Où on le trouve</span>${esc(r.ou)}</div>` : ''}
+      <div class="meta">${r.maj
+        ? `Mis à jour ${frdate(r.maj.slice(0,10))} à ${esc(r.maj.slice(11,16))}${r.par ? ' par ' + esc(r.par) : ''}${vieux ? ' · à rafraîchir' : ''}`
+        : 'Jamais renseigné'}</div>
+      <div class="b">
+        <button class="maj" onclick="ouvrirPoint('${r.id}')">${r.etat ? 'Mettre à jour' : 'Écrire le point'}</button>
+        <button class="lire" onclick="filtrer('pt:${r.id}')">${infos.length
+          ? infos.length + ' information' + (infos.length > 1 ? 's' : '') + (ouvertes ? ' · ' + ouvertes + ' en attente' : '')
+          : 'Aucune information rangée ici'}</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  return h + `</div>`;
+}
+
+/* Ce qu'on a retenu, filtrable par point de situation : c'est le
+   même classement que les feuillets ci-dessus, vu par le détail. */
+function vueRetenu(){
+  const tous = etat.veille || [];
+  const compte = f => f === 'decision' ? tous.filter(i => i.suiteEtat === 'ouvert').length
+                    : f === 'tout' ? tous.length
+                    : f === 'direct' ? tous.filter(i => (i.impact || 'contexte') === 'direct').length
+                    : f === 'pt:' ? tous.filter(i => !i.rubrique).length
+                    : tous.filter(i => 'pt:' + (i.rubrique||'') === f).length;
+
+  let h = `<h2 id="retenu" style="margin-top:26px">Ce qu'on a retenu
+    <span class="cpt-h">${tous.length} information${tous.length > 1 ? 's' : ''}</span></h2>
+  <div class="filtres">
+    <button class="${filtreVeille === 'decision' ? 'on' : ''}" onclick="filtrer('decision')">Ce qui attend une décision · ${compte('decision')}</button>
+    <button class="${filtreVeille === 'direct' ? 'on' : ''}" onclick="filtrer('direct')">Impact direct 64 · ${compte('direct')}</button>
+    <button class="${filtreVeille === 'tout' ? 'on' : ''}" onclick="filtrer('tout')">Tout · ${compte('tout')}</button>
+  </div>
+  <div class="filtres pts">${rubriques().map(r =>
+    `<button class="${filtreVeille === 'pt:' + r.id ? 'on' : ''}" onclick="filtrer('pt:${r.id}')">${esc(r.nom)} · ${compte('pt:' + r.id)}</button>`).join('')}
+    <button class="${filtreVeille === 'pt:' ? 'on' : ''}" onclick="filtrer('pt:')">Hors point · ${compte('pt:')}</button>
     <button onclick="ouvrirVeille()" style="border-style:dashed">+ Ajouter à la main</button>
   </div>`;
 
-  let items = [...(etat.veille||[])].sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  let items = [...tous].sort((a,b) => (b.date||'').localeCompare(a.date||''));
   if(filtreVeille === 'decision') items = items.filter(i => i.suiteEtat === 'ouvert');
-  else if(filtreVeille !== 'tout') items = items.filter(i => (i.impact || 'contexte') === filtreVeille);
+  else if(filtreVeille === 'direct') items = items.filter(i => (i.impact || 'contexte') === 'direct');
+  else if(filtreVeille.indexOf('pt:') === 0) items = items.filter(i => (i.rubrique||'') === filtreVeille.slice(3));
 
   if(!items.length){
     h += `<div class="carte" style="color:var(--texte-2)">${filtreVeille === 'decision'
       ? "Rien n'attend de décision : tout ce qui a été retenu a reçu sa suite."
-      : "Aucune information pour ce filtre."}</div>`;
+      : filtreVeille.indexOf('pt:') === 0 && filtreVeille.length > 3
+        ? `Rien n'a encore été rangé dans « ${esc(nomPoint(filtreVeille.slice(3)))} ». Le prochain tour des canaux devrait l'alimenter.`
+        : "Aucune information pour ce filtre."}</div>`;
   } else {
     let jour = '';
     items.forEach(i => {
@@ -2657,12 +3028,6 @@ function vueVeille(){
       h += vueInfoVeille(i);
     });
   }
-
-  /* --- le carnet de sources, replié --- */
-  h += vueSourcesVeille(dues.length);
-
-  h += `<div class="note" style="margin-top:20px"><strong>Ce que cette mission ne fait pas.</strong> On alimente le fil, on ne diffuse rien aux adhérents depuis ici : le relais se décide au copil et se consigne en <a href="#" onclick="aller('courante');return false;">Main courante</a>. Les communications de l'ARS ont leur propre onglet, <a href="#" onclick="aller('ars');return false;">Échanges avec l'ARS</a>.</div>`;
-
   return h;
 }
 
@@ -2673,6 +3038,9 @@ function vueInfoVeille(i){
   return `<div class="info i-${esc(i.impact || 'contexte')}">
     <div class="haut">
       <span class="src">${esc(i.source)} · ${frdate(i.date)}</span>
+      ${i.rubrique && rubriqueDe(i.rubrique)
+        ? `<button class="pt-b" onclick="filtrer('pt:${i.rubrique}')" title="Voir tout ce point de situation">${esc(nomPoint(i.rubrique))}</button>`
+        : `<button class="pt-b hors" onclick="ouvrirVeille('${i.id}')" title="Ranger dans un point de situation">À ranger dans un point</button>`}
       <span class="imp ${imp.c}">${imp.l}</span>
       <span class="outils">
         <button onclick="ouvrirVeille('${i.id}')" title="Modifier">✎</button>
@@ -2698,43 +3066,68 @@ function vueInfoVeille(i){
   </div>`;
 }
 
-function vueSourcesVeille(nbDues){
-  const l = sourcesTriees();
-  let h = `<div class="repli" style="margin-top:20px">
-    <button class="tete" onclick="sourcesDepliees=!sourcesDepliees;rendre()">
-      <div>
-        <div class="t">Les ${l.length} sources surveillées</div>
-        <div class="s">${nbDues} à repasser · à ouvrir pour ajouter, retirer ou corriger un canal</div>
-      </div>
-      <span class="chev">${sourcesDepliees ? '▾' : '▸'}</span>
-    </button>`;
-  if(sourcesDepliees){
-    h += `<div class="dedans"><div class="srcs" style="margin-top:15px">` + l.map(o => `
-      <div class="src-c ${o.verifieLe ? '' : 'jamais'}">
-        <div>
-          <div class="cat">${esc(o.cat || 'Autre')} · ${esc(o.rythme || 'Chaque tour')}</div>
-          <div class="n">${esc(o.nom)}</div>
-        </div>
-        ${o.quoi ? `<div class="q">${esc(o.quoi)}</div>` : ''}
-        <div class="q">${depuisTexte(o.verifieLe)}${o.verifiePar ? ' par ' + esc(o.verifiePar) : ''}</div>
-        <div class="b">
-          <a href="${esc(o.url)}" target="_blank" rel="noopener">Ouvrir</a>
-          <button onclick="marquerSource('${o.id}')">Marquer vu</button>
-          <button onclick="ouvrirSource('${o.id}')" title="Modifier" style="flex:0 0 46px;min-width:46px">✎</button>
-          <button onclick="supprimerSource('${o.id}')" title="Retirer" style="flex:0 0 46px;min-width:46px">×</button>
-        </div>
-      </div>`).join('') + `</div>
-      <div class="actions"><button class="btn sec" onclick="ouvrirSource()">Ajouter une source</button></div>
+/* Le classeur : les canaux rangés par famille, chaque famille
+   passable en revue d'un bloc. C'est ici qu'on cherche « ce que dit
+   l'ARS » ou « ce que disent les URPS » sans lire toute la liste. */
+function vueClasseur(nbDues){
+  const l = etat.sources || [];
+  const familles = FAMILLES.filter(f => l.some(o => (o.famille || 'Autres canaux') === f));
+  /* Une famille ajoutée à la main peut ne pas figurer dans la liste
+     de référence : on la range à la suite plutôt que de la perdre. */
+  l.forEach(o => { const f = o.famille || 'Autres canaux'; if(!familles.includes(f)) familles.push(f); });
+
+  let h = `<h2 style="margin-top:26px">Les canaux, par famille
+    <span class="cpt-h">${l.length} ${l.length > 1 ? 'canaux' : 'canal'} · ${familles.length} famille${familles.length > 1 ? 's' : ''}${nbDues ? ' · ' + nbDues + ' à repasser' : ' · tous à jour'}</span></h2>
+  <p class="sous-h">Chaque famille se passe en revue d'un bloc. Sur un canal, « rien de neuf » le date et referme le sujet ; « je retiens » ouvre la fiche de saisie avec le bon point de situation déjà choisi.</p>
+  <div class="familles">`;
+
+  h += familles.map(f => {
+    const canaux = l.filter(o => (o.famille || 'Autres canaux') === f)
+                    .sort((a,b) => (a.verifieLe||'').localeCompare(b.verifieLe||''));
+    const d = canaux.filter(sourceDue).length;
+    const replie = !!famillesRepliees[f];
+    return `<div class="fam ${d ? 'du' : ''}">
+      <button class="tete" onclick="basculerFamille(${JSON.stringify(f).replace(/"/g,'&quot;')})">
+        <div class="t">${esc(f)}</div>
+        <span class="cpt ${d ? 'du' : ''}">${d ? d + ' à repasser' : 'à jour'}</span>
+        <span class="chev">${replie ? '▸' : '▾'}</span>
+      </button>
+      ${FAMILLE_QUOI[f] ? `<div class="q">${esc(FAMILLE_QUOI[f])}</div>` : ''}
+      ${replie ? '' : `<div class="cans">` + canaux.map(o => {
+        const du = sourceDue(o);
+        return `<div class="can ${du ? 'du' : ''} ${o.verifieLe ? '' : 'jamais'}">
+          <div class="haut">
+            <a class="n" href="${esc(o.url)}" target="_blank" rel="noopener" title="${esc(o.quoi || '')}">${esc(o.nom)} ↗</a>
+            <span class="d">${depuisTexte(o.verifieLe)}${o.verifiePar ? ' · ' + esc(o.verifiePar) : ''}</span>
+          </div>
+          ${o.point && rubriqueDe(o.point) ? `<div class="al">Alimente « ${esc(nomPoint(o.point))} »</div>` : ''}
+          <div class="b">
+            <button class="rien" onclick="marquerSource('${o.id}')" title="Daté comme ouvert, sans rien en retenir">Rien de neuf</button>
+            <button class="retiens" onclick="ouvrirVeille('', '${o.id}')">Je retiens</button>
+            <button class="ico" onclick="ouvrirSource('${o.id}')" title="Modifier ce canal">✎</button>
+          </div>
+        </div>`;
+      }).join('') + `</div>
+      <div class="pied">
+        <button onclick="lancerTour(true, ${JSON.stringify(f).replace(/"/g,'&quot;')})">Passer cette famille en revue</button>
+        <button onclick="ouvrirSource('', ${JSON.stringify(f).replace(/"/g,'&quot;')})">+ Canal</button>
+      </div>`}
     </div>`;
-  }
+  }).join('');
+
   return h + `</div>`;
 }
+function basculerFamille(f){ famillesRepliees[f] = !famillesRepliees[f]; rendre(); }
 
 /* ---------- le tour de veille ---------- */
-function lancerTour(tout){
-  const l = sourcesTriees().filter(o => tout || sourceDue(o));
-  if(!l.length){ toast("Aucune source à repasser"); return; }
-  tourVeille = {liste: l.map(o => o.id), i:0, retenues:0, passees:0};
+/* Un tour porte sur tous les canaux dus, ou sur une seule famille
+   quand on veut n'éplucher que l'ARS ou que les URPS. */
+function lancerTour(tout, famille){
+  const l = sourcesTriees()
+    .filter(o => !famille || (o.famille || 'Autres canaux') === famille)
+    .filter(o => tout || sourceDue(o));
+  if(!l.length){ toast(famille ? "Aucun canal dans cette famille" : "Aucun canal à repasser"); return; }
+  tourVeille = {liste: l.map(o => o.id), i:0, retenues:0, passees:0, famille: famille || ''};
   rendre();
   document.querySelector('.tourc')?.scrollIntoView({behavior:'smooth', block:'center'});
 }
@@ -2744,8 +3137,9 @@ function vueTourVeille(){
     const r = tourVeille.retenues, p = tourVeille.passees;
     return `<div class="tourc"><div class="jauge"><i style="width:100%"></i></div>
       <div class="fini">
-        <div class="t">Tour terminé</div>
-        <div class="s">${total} source${total > 1 ? 's' : ''} passée${total > 1 ? 's' : ''} · ${r} information${r > 1 ? 's' : ''} retenue${r > 1 ? 's' : ''}${p ? ' · ' + p + ' laissée' + (p > 1 ? 's' : '') + ' de côté' : ''}</div>
+        <div class="t">Tour terminé${tourVeille.famille ? ' — ' + esc(tourVeille.famille) : ''}</div>
+        <div class="s">${total} ${total > 1 ? 'canaux passés' : 'canal passé'} · ${r} information${r > 1 ? 's' : ''} retenue${r > 1 ? 's' : ''}${p ? ' · ' + p + ' laissé' + (p > 1 ? 's' : '') + ' de côté' : ''}</div>
+        ${r ? `<div class="s" style="margin-top:9px">Dernier geste : reprendre les points de situation que ces informations concernent, pour qu'ils disent ce qu'on sait maintenant.</div>` : ''}
         <div class="actions" style="justify-content:center">
           <button class="btn" onclick="cloreTour()">Revenir au poste de veille</button>
         </div>
@@ -2757,10 +3151,11 @@ function vueTourVeille(){
   return `<div class="tourc">
     <div class="jauge"><i style="width:${Math.round(tourVeille.i / total * 100)}%"></i></div>
     <div class="corps">
-      <div class="pos"><span>Source ${tourVeille.i + 1} sur ${total}</span><span class="cat">${esc(o.cat || 'Autre')}</span><span>${esc(o.rythme || 'Chaque tour')}</span></div>
+      <div class="pos"><span>Canal ${tourVeille.i + 1} sur ${total}</span><span class="cat">${esc(o.famille || 'Autres canaux')}</span><span>${esc(o.rythme || 'Chaque tour')}</span></div>
       <div class="n">${esc(o.nom)}</div>
       <div class="q ${o.verifieLe ? '' : 'vieux'}">${depuisTexte(o.verifieLe)}${o.verifiePar ? ' par ' + esc(o.verifiePar) : ''}</div>
       ${o.quoi ? `<div class="cherche"><span class="k">Ce qu'on y cherche</span><p>${esc(o.quoi)}</p></div>` : ''}
+      ${o.point && rubriqueDe(o.point) ? `<div class="cherche"><span class="k">Ce que ça alimente</span><p>Point de situation « ${esc(nomPoint(o.point))} »${rubriqueDe(o.point).etat ? " — aujourd'hui : " + esc(rubriqueDe(o.point).etat.split('\n')[0]) : " — encore vierge"}</p></div>` : ''}
       <div class="gestes">
         <a class="ouvrir" href="${esc(o.url)}" target="_blank" rel="noopener">Ouvrir la source ↗</a>
         <button class="rien" onclick="rienDeNeuf()">Rien de neuf</button>
@@ -2787,7 +3182,13 @@ async function rienDeNeuf(){
 function passerSource(){ tourVeille.passees++; avancerTour(); }
 function cloreTour(){ tourVeille = null; rendre(); }
 
-function filtrer(s){ filtreVeille = s; rendre(); }
+/* Les feuillets sont en haut de page, le détail en bas : filtrer
+   depuis un point de situation amène à l'endroit où il se lit. */
+function filtrer(s){
+  filtreVeille = s;
+  rendre();
+  document.getElementById('retenu')?.scrollIntoView({behavior:'smooth', block:'start'});
+}
 async function marquerSource(id, silencieux){
   const o = (etat.sources||[]).find(x => x.id === id);
   if(!o) return;
@@ -2796,23 +3197,30 @@ async function marquerSource(id, silencieux){
   await sauver();
   if(!silencieux){ rendre(); toast("Source datée"); }
 }
-function ouvrirSource(id){
+function ouvrirSource(id, famille){
   const o = id ? (etat.sources||[]).find(x=>x.id===id) : null;
   const rythmes = ['Chaque tour','Une fois par jour'];
-  document.getElementById('modale').innerHTML = `<h3>${o?'Modifier la source':'Ajouter une source'}</h3><div class="form">
+  const fam = o ? (o.famille || 'Autres canaux') : (famille || 'Autres canaux');
+  const familles = FAMILLES.includes(fam) ? FAMILLES : [fam].concat(FAMILLES);
+  document.getElementById('modale').innerHTML = `<h3>${o?'Modifier le canal':'Ajouter un canal'}</h3><div class="form">
     <label class="large"><span class="k">Nom du canal *</span><input id="s-nom" value="${esc(o?o.nom:'')}" placeholder="Ex. URPS Infirmiers Nouvelle-Aquitaine"></label>
-    <label><span class="k">Catégorie</span><input id="s-cat" value="${esc(o?o.cat:'')}" placeholder="Institutionnel, Presse, URPS…"></label>
+    <label><span class="k">Famille</span><select id="s-famille">${familles.map(x=>`<option ${fam===x?'selected':''}>${esc(x)}</option>`).join('')}</select></label>
     <label><span class="k">Rythme</span><select id="s-rythme">${rythmes.map(x=>`<option ${o&&(o.rythme||'Chaque tour')===x?'selected':''}>${x}</option>`).join('')}</select></label>
+    <label class="large"><span class="k">Point de situation alimenté</span><select id="s-point">
+      <option value="">Aucun en particulier</option>
+      ${rubriques().map(r=>`<option value="${esc(r.id)}" ${o&&o.point===r.id?'selected':''}>${esc(r.nom)}</option>`).join('')}
+    </select><span class="aide">Proposé d'avance quand on retient une information depuis ce canal.</span></label>
     <label class="large"><span class="k">Adresse *</span><input id="s-url" value="${esc(o?o.url:'')}" placeholder="https://"></label>
     <label class="large"><span class="k">Ce qu'on y cherche</span><textarea id="s-quoi" placeholder="Ce qu'il faut regarder sur ce canal, pour que quelqu'un d'autre puisse prendre la main.">${esc(o?o.quoi:'')}</textarea></label>
-  </div><div class="actions"><button class="btn" onclick="validerSource(${o?`'${o.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  </div><div class="actions"><button class="btn" onclick="validerSource(${o?`'${o.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button>${
+    o ? `<button class="btn sec" style="margin-left:auto;color:var(--braise)" onclick="supprimerSource('${o.id}')">Retirer ce canal</button>` : ''}</div>`;
   document.getElementById('rideau').classList.add('on');
 }
 async function validerSource(id){
   const g = k => document.getElementById('s-'+k).value.trim();
   const n = g('nom'), u = g('url');
   if(!n || !u){ toast("Nom et adresse obligatoires"); return; }
-  const champs = {nom:n, url:u, cat: g('cat') || 'Autre', rythme: g('rythme'), quoi: g('quoi')};
+  const champs = {nom:n, url:u, famille: g('famille') || 'Autres canaux', point: g('point'), rythme: g('rythme'), quoi: g('quoi')};
   etat.sources = etat.sources || [];
   const o = id ? etat.sources.find(x=>x.id===id) : null;
   if(o) Object.assign(o, champs);
@@ -2822,7 +3230,7 @@ async function validerSource(id){
 async function supprimerSource(id){
   noterRetrait(id);
   etat.sources = (etat.sources||[]).filter(x=>x.id!==id);
-  await sauver(); rendre(); toast("Source retirée");
+  await sauver(); fermer(); rendre(); toast("Canal retiré");
 }
 
 /* ---------- ce qu'on retient ---------- */
@@ -2833,35 +3241,36 @@ function ouvrirVeille(id, srcId){
     id: id || '',
     src,
     date: o ? o.date : aujourdhui(),
-    source: o ? o.source : (src ? categorieSource(src) : 'Autre'),
+    source: o ? o.source : (src ? (src.famille || 'Autres canaux') : 'Autre'),
+    rubrique: o ? (o.rubrique || '') : (src ? (src.point || '') : ''),
     titre: o ? o.titre : '',
     resume: o ? o.resume : '',
     lien: o ? o.lien : (src ? src.url : ''),
     impact: o ? (o.impact || 'contexte') : 'surveiller',
     suite: o ? (o.suite || 'rien') : 'rien',
+    majPoint: '',
     mc: o ? !!o.mc : true
   };
   dessinerVeille();
   document.getElementById('rideau').classList.add('on');
   setTimeout(()=>{ const i = document.getElementById('v-titre'); if(i) i.focus(); }, 60);
 }
-/* Les sources du carnet portent une catégorie libre ; le fil, lui,
-   se lit avec un vocabulaire court. On rapproche les deux. */
-function categorieSource(s){
-  const c = (s.cat || '').toLowerCase();
-  if(c.indexOf('préfecture') === 0) return 'Préfecture';
-  if(c.indexOf('presse') === 0) return 'Presse';
-  if(c.indexOf('urps') === 0) return 'URPS';
-  return 'Autre';
-}
 function dessinerVeille(){
   const b = brouillonVeille;
-  const src = ['Préfecture','URPS','CPTS','Presse','ARS','Autre'];
+  const src = FAMILLES.includes(b.source) || !b.source ? FAMILLES : [b.source].concat(FAMILLES);
+  const pt = b.rubrique ? rubriqueDe(b.rubrique) : null;
   document.getElementById('modale').innerHTML = `<h3>${b.id ? 'Modifier' : "Ce qu'on retient"}</h3>
     ${b.src ? `<p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">Depuis <strong>${esc(b.src.nom)}</strong> · ${frdateL(aujourdhui())} · ${esc(moi)}</p>` : ''}
+    <div style="margin-bottom:16px">
+      <span class="k" style="font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:6px">Point de situation concerné</span>
+      <div class="choix">${rubriques().map(r =>
+        `<button class="${b.rubrique===r.id?'on':''}" onclick="choisirVeille('rubrique','${r.id}')">${esc(r.nom)}</button>`).join('')}
+        <button class="${b.rubrique?'':'on'}" onclick="choisirVeille('rubrique','')">Aucun</button></div>
+      <p style="font-size:12.5px;color:var(--texte-2);margin:7px 0 0">${pt ? esc(pt.quoi) : "L'information sera rangée hors point de situation — à ne garder que si elle n'entre dans aucun des sept."}</p>
+    </div>
     <div class="form">
       <label><span class="k">Date</span><input type="date" id="v-date" value="${esc(b.date)}"></label>
-      <label><span class="k">Source</span><select id="v-source">${src.map(x=>`<option ${b.source===x?'selected':''}>${x}</option>`).join('')}</select></label>
+      <label><span class="k">Famille du canal</span><select id="v-source">${src.map(x=>`<option ${b.source===x?'selected':''}>${esc(x)}</option>`).join('')}</select></label>
       <label class="large"><span class="k">En une phrase *</span><input id="v-titre" value="${esc(b.titre)}" placeholder="Ex. Levée de l'évacuation sur trois communes girondines"></label>
       <label class="large"><span class="k">Ce qu'il faut en retenir</span><textarea id="v-resume" placeholder="Ce que ça change concrètement, en deux lignes.">${esc(b.resume)}</textarea></label>
       <label class="large"><span class="k">Lien</span><input id="v-lien" value="${esc(b.lien)}" placeholder="https://"></label>
@@ -2877,6 +3286,13 @@ function dessinerVeille(){
       <div class="choix">${Object.keys(SUITES).map(k =>
         `<button class="${b.suite===k?'on':''}" onclick="choisirVeille('suite','${k}')">${SUITES[k].l}</button>`).join('')}</div>
     </div>
+    ${pt ? `<div class="maj-pt">
+      <div class="t">Reprendre le point « ${esc(pt.nom)} » dans la foulée</div>
+      <div class="avant">${pt.etat
+        ? `<span class="k">Ce qu'il dit aujourd'hui${pt.maj ? ' — ' + frdate(pt.maj.slice(0,10)) + ' à ' + esc(pt.maj.slice(11,16)) : ''}</span>${esc(pt.etat).replace(/\n/g,'<br>')}`
+        : `<span class="k">Ce qu'il dit aujourd'hui</span>Rien : ce point n'a jamais été écrit.`}</div>
+      <textarea id="v-majpoint" placeholder="Réécrire le point avec cette information — au présent, en quelques lignes. Laisser vide pour ne pas y toucher.">${esc(b.majPoint)}</textarea>
+    </div>` : ''}
     ${b.id ? '' : `<div style="margin-top:16px"><label class="coche">
       <input type="checkbox" id="v-mc" ${b.mc ? 'checked' : ''}>
       <span>Consigner aussi en main courante
@@ -2901,6 +3317,8 @@ function relireBrouillonVeille(){
     const el = document.getElementById('v-' + k);
     if(el) b[k] = el.value.trim();
   });
+  const mp = document.getElementById('v-majpoint');
+  b.majPoint = mp ? mp.value.trim() : '';
   const mc = document.getElementById('v-mc');
   if(mc) b.mc = mc.checked;
 }
@@ -2909,7 +3327,17 @@ async function validerVeille(){
   const b = brouillonVeille;
   if(!b.titre){ toast("Il faut au moins une phrase"); document.getElementById('v-titre')?.focus(); return; }
   const o = b.id ? etat.veille.find(x => x.id === b.id) : null;
-  const champs = {date:b.date, source:b.source, titre:b.titre, resume:b.resume, lien:b.lien, impact:b.impact, suite:b.suite};
+  const champs = {date:b.date, source:b.source, rubrique:b.rubrique, titre:b.titre, resume:b.resume, lien:b.lien, impact:b.impact, suite:b.suite};
+
+  /* Le geste va jusqu'au bout : si on a réécrit le point de
+     situation dans la même fenêtre, il est repris ici, daté et
+     signé, sans avoir à rouvrir le feuillet. */
+  const pt = b.majPoint ? rubriqueDe(b.rubrique) : null;
+  if(pt){
+    pt.etat = b.majPoint;
+    pt.maj = horodate();
+    pt.par = moi;
+  }
 
   if(o){
     /* Changer la suite d'une information déjà traitée la remet en
@@ -2923,7 +3351,9 @@ async function validerVeille(){
       mc: b.mc,
       auteur: moi
     }));
-    if(b.mc) consignerVeilleEnCourante(b);
+    /* Un seul geste, une seule ligne de main courante : la reprise
+       du point y figure au même endroit que l'information. */
+    if(b.mc) consignerVeilleEnCourante(b, pt);
   }
 
   const enTour = !!b.src;
@@ -2934,27 +3364,92 @@ async function validerVeille(){
     if(tourVeille) tourVeille.retenues++;
   }
   await sauver(); fermer();
-  toast(o ? "Modifié" : (b.mc ? "Retenu, et consigné en main courante" : "Retenu"));
+  toast(pt ? "Retenu, et point « " + pt.nom + " » repris"
+           : (o ? "Modifié" : (b.mc ? "Retenu, et consigné en main courante" : "Retenu")));
   if(enTour && tourVeille) avancerTour(); else rendre();
 }
 /* Règle du cockpit : toute information recueillie au fil de l'eau
    se consigne aussi en main courante, en plus de sa rubrique. */
-function consignerVeilleEnCourante(b){
+function consignerVeilleEnCourante(b, pt){
   etat.courante = etat.courante || [];
   const su = SUITES[b.suite] || SUITES.rien;
+  const range = b.rubrique ? nomPoint(b.rubrique) : '';
   etat.courante.unshift({
     id: uid(),
     date: aujourdhui(),
     heure: maintenant(),
     source: 'Veille',
-    evenement: "Veille — " + b.titre + (b.src ? " (source : " + b.src.nom + ")" : '') + (b.resume ? "\n" + b.resume : ''),
+    evenement: "Veille — " + b.titre + (b.src ? " (source : " + b.src.nom + ")" : '') + (b.resume ? "\n" + b.resume : '')
+      + (pt ? "\nPoint de situation « " + pt.nom + " », réécrit dans la foulée :\n" + pt.etat : ''),
     suite: (b.suite === 'rien' ? "Retenu pour la situation régionale, sans suite attendue" : su.l)
-      + " — " + (IMPACTS[b.impact] || IMPACTS.contexte).l + ".",
+      + " — " + (IMPACTS[b.impact] || IMPACTS.contexte).l + "."
+      + (range ? " Rangé dans le point « " + range + " »." : ''),
     statut: b.suite === 'rien' ? 'Clos' : 'À suivre',
     auteur: moi,
     quand: ''
   });
 }
+/* ---------- les points de situation ---------- */
+function ouvrirPoint(id){
+  const r = rubriqueDe(id);
+  if(!r) return;
+  brouillonPoint = id;
+  const infos = infosDuPoint(id).sort((a,b) => (b.date||'').localeCompare(a.date||'')).slice(0,5);
+  document.getElementById('modale').innerHTML = `<h3>${esc(r.nom)}</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">${esc(r.quoi)}${r.ou ? ' <em>Où on le trouve : ' + esc(r.ou) + '</em>' : ''}</p>
+    ${infos.length ? `<div class="rappel">
+      <span class="k">Ce que la veille a retenu récemment</span>
+      <ul>${infos.map(i => `<li>${esc(i.titre)} <span class="d">${frdate(i.date)} · ${esc(i.source)}</span></li>`).join('')}</ul>
+    </div>` : `<div class="rappel vide">Rien n'a encore été rangé dans ce point. Il se remplira au fil des tours de veille.</div>`}
+    <div class="form">
+      <label class="large"><span class="k">Ce qu'on sait à cet instant</span>
+        <textarea id="p-etat" rows="7" placeholder="Écrire au présent, en quelques lignes : ce qui est établi, ce qui a changé depuis hier, ce qui reste incertain. Dater ce qui est daté.">${esc(r.etat)}</textarea>
+        <span class="aide">Ce texte remplace le précédent — la version d'avant reste tracée en main courante.</span></label>
+    </div>
+    <div style="margin-top:14px"><label class="coche">
+      <input type="checkbox" id="p-mc" checked>
+      <span>Consigner la mise à jour en main courante
+        <span class="d">Coché par défaut : toute information recueillie se retrouve dans la main courante, en plus de sa rubrique.</span></span>
+    </label></div>
+    <div class="actions">
+      <button class="btn" onclick="validerPoint()">Enregistrer le point</button>
+      <button class="btn sec" onclick="fermer()">Annuler</button>
+    </div>`;
+  document.getElementById('rideau').classList.add('on');
+  setTimeout(()=>{ const i = document.getElementById('p-etat'); if(i) i.focus(); }, 60);
+}
+async function validerPoint(){
+  const r = rubriqueDe(brouillonPoint);
+  if(!r) return;
+  const v = document.getElementById('p-etat').value.trim();
+  if(!v){ toast("Le point est vide"); document.getElementById('p-etat')?.focus(); return; }
+  const mc = document.getElementById('p-mc').checked;
+  if(v === r.etat){ fermer(); toast("Le point n'a pas changé"); return; }
+  r.etat = v;
+  r.maj = horodate();
+  r.par = moi;
+  if(mc) consignerPointEnCourante(r, '');
+  await sauver(); fermer(); rendre();
+  toast(mc ? "Point mis à jour, et consigné en main courante" : "Point mis à jour");
+}
+/* Même règle que pour le reste du cockpit : ce qui est écrit ici se
+   retrouve dans la main courante, qui garde la trace de l'état
+   précédent du point. */
+function consignerPointEnCourante(r, motif){
+  etat.courante = etat.courante || [];
+  etat.courante.unshift({
+    id: uid(),
+    date: aujourdhui(),
+    heure: maintenant(),
+    source: 'Veille',
+    evenement: "Point de situation — " + r.nom + (motif ? " (" + motif + ")" : '') + "\n" + r.etat,
+    suite: "Situation régionale : le point « " + r.nom + " » a été repris. Il fait foi jusqu'à la prochaine mise à jour.",
+    statut: 'Clos',
+    auteur: moi,
+    quand: ''
+  });
+}
+
 async function suiteFaite(id){
   const i = (etat.veille||[]).find(x => x.id === id);
   if(!i) return;
@@ -3025,13 +3520,17 @@ function evenements(){
   });
   (etat.renforts||[]).forEach(o => push(o,'Collecte', o.nom + ' — volontaire pour la collecte',
     [o.taches, aVehicule(o) ? o.vehicule : '', o.dispo, o.statut].filter(Boolean).join(' · '), o.auteur));
-  (etat.volontaires||[]).forEach(o => push(o,'Volontaire',o.nom,
-    [o.profession,o.dispo,o.statut].filter(Boolean).join(' · '), o.auteur));
+  (etat.volontaires||[]).forEach(o => {
+    push(o,'Renfort', nomVol(o) + ' — volontaire au renfort',
+      [o.profession, o.commune, o.renforts, o.dispo, o.zone, o.statut].filter(Boolean).join(' · '),
+      o.par || o.auteur);
+    (o.suivi||[]).forEach(s => push(s,'Renfort', nomVol(o) + ' — appel', s.texte, s.par));
+  });
   (etat.veille||[]).forEach(o => push(o,'Veille',o.titre, [o.source,o.resume].filter(Boolean).join(' · '), o.auteur));
   return e.sort((a,b) => ((b.date+' '+(b.heure||'00:00')).localeCompare(a.date+' '+(a.heure||'00:00'))));
 }
 
-const COUL = {'ARS':'e-attente','Consigné':'e-lancer','Terrain':'e-bloque','Appel CPTS':'e-lancer','Matériel':'e-attente','Collecte':'e-cours','Volontaire':'e-cours','Veille':'e-fini'};
+const COUL = {'ARS':'e-attente','Consigné':'e-lancer','Terrain':'e-bloque','Appel CPTS':'e-lancer','Matériel':'e-attente','Collecte':'e-cours','Renfort':'e-cours','Veille':'e-fini'};
 
 function vueFil(){
   let ev = evenements();
@@ -3830,7 +4329,7 @@ function feuilletRenforts(){
     <div class="compteur"><div class="n">${roulants}</div><div class="l">disposent d'un véhicule</div></div>
     ${muets ? `<div class="compteur"><div class="n" style="color:var(--braise)">${muets}</div><div class="l">sans téléphone renseigné</div></div>` : ''}
   </div>
-  <div class="note">Un volontaire n'est mobilisable que si l'on sait <strong>quand il est disponible</strong> et <strong>par quel numéro le joindre</strong>. La CPTS coordonne : elle ne réquisitionne personne et n'engage aucun volontaire au-delà de ce qu'il a accepté. Les soignants volontaires pour partir en renfort ne se recensent pas ici mais dans l'onglet <a href="#" onclick="aller('volontaires');return false;">Volontaires</a>, où le cadre — assurance, statut, continuité des soins — n'est pas le même.</div>
+  <div class="note">Un volontaire n'est mobilisable que si l'on sait <strong>quand il est disponible</strong> et <strong>par quel numéro le joindre</strong>. La CPTS coordonne : elle ne réquisitionne personne et n'engage aucun volontaire au-delà de ce qu'il a accepté. Les soignants volontaires pour partir en renfort ne se recensent pas ici mais dans l'onglet <a href="#" onclick="aller('volontaires');return false;">Appel au renfort</a>, où le cadre — assurance, statut, continuité des soins — n'est pas le même.</div>
   <div class="barre-h">
     <span class="cpt-h">${v.length} volontaire${v.length>1?'s':''}</span>
     <button class="btn sec" onclick="exporterCSV('renforts')">Excel</button>
@@ -3906,6 +4405,380 @@ function feuilletBesoins(){
       <button class="btn" onclick="ouvrirAjout('materiel')">Ajouter un besoin</button></div>
     ${barreOrdre('materiel')}
     ${tableau('materiel')}`;
+}
+
+/* =========================================================
+   APPEL AU RENFORT
+   Le recensement des professionnels de santé du territoire prêts
+   à se déplacer — sur les zones touchées, dans les hubs de santé,
+   ou auprès de la population accueillie ici.
+
+   Même mécanique que la collecte de matériel : un formulaire
+   public que le copil ouvre et ferme d'ici, un registre qui se
+   remplit tout seul par ce formulaire, et la saisie à la main
+   pour les réponses arrivées autrement.
+
+   Ce qui change par rapport à la collecte : un volontaire n'est
+   pas un carton. Tant que le type de renfort attendu n'est pas
+   connu, on recense sans promettre, et on ne transmet aucun nom
+   sans avoir regardé l'assurance, le statut et ce que devient sa
+   patientèle pendant son absence.
+   ========================================================= */
+let volOuvert = null;
+let filtreVol = 'Tout';
+
+const VOL_CL  = {'Recensé':'att', 'Vérifié':'oui', 'Transmis':'oui', 'Affecté':'oui',
+                 'Indisponible':'non', 'Sans suite':'non'};
+const VOL_ET  = {'Recensé':'e-attente', 'Vérifié':'e-cours', 'Transmis':'e-cours',
+                 'Affecté':'e-cours', 'Indisponible':'e-bloque', 'Sans suite':'e-fini'};
+const VOL_MOB = ['Recensé','Vérifié','Transmis','Affecté'];
+
+const FORMULAIRE_RENFORT = 'appel-au-renfort.html';
+function lienRenfort(){
+  try{ return new URL(FORMULAIRE_RENFORT, location.href).href; }
+  catch(e){ return FORMULAIRE_RENFORT; }
+}
+
+const nomVol = o => [o.prenom, o.nom].filter(Boolean).join(' ').trim() || o.nom || '—';
+const listeRenforts = o => String(o.renforts || '').split(',').map(x => x.trim()).filter(Boolean);
+const loinVol = o => o.zone && o.zone.indexOf('Nouvelle-Aquitaine') >= 0;
+
+function allerVol(id){ volOuvert = (volOuvert === id) ? null : id; rendre(); }
+function filtrerVol(r){ filtreVol = r; rendre(); }
+
+/* --- Ouverture et fermeture de l'appel -------------------
+   Un appel au renfort qui part touche 210 professionnels d'un
+   coup : il se consigne en main courante au moment où on
+   l'ouvre, sans attendre qu'on y repense. */
+async function basculerRenfort(){
+  etat.renfort = etat.renfort || {ouverte:false, message:'', cadre:''};
+  const ouvre = !etat.renfort.ouverte;
+  if(ouvre && !confirm("Ouvrir l'appel au renfort rend le formulaire de recensement accessible à toute personne qui en a le lien.\n\nS'inscrire ne vaut ni affectation ni réquisition, et le formulaire le dit. Mais la CPTS s'engage à rappeler ceux qui répondent.\n\nConfirmer l'ouverture ?")) return;
+  etat.renfort.ouverte = ouvre;
+  consignerRenfortEnCourante(ouvre);
+  await sauver(); rendre();
+  toast(ouvre ? "Appel au renfort ouvert — le formulaire accepte les inscriptions"
+              : "Appel au renfort fermé — le formulaire n'accepte plus d'inscription");
+}
+
+/* Règle du cockpit : ce qui part de la CPTS se consigne en main
+   courante, en plus de sa rubrique métier. */
+function consignerRenfortEnCourante(ouvre){
+  etat.courante = etat.courante || [];
+  etat.courante.unshift({
+    id: uid(), date: aujourdhui(), heure: maintenant(), source: 'Coordination',
+    evenement: ouvre
+      ? "Ouverture de l'appel au renfort : le formulaire de recensement des professionnels volontaires est accessible aux professionnels de santé du territoire."
+        + ((etat.renfort && etat.renfort.cadre) ? "\nCadre annoncé : " + etat.renfort.cadre : '')
+      : "Fermeture de l'appel au renfort : le formulaire de recensement n'accepte plus d'inscription.",
+    suite: ouvre
+      ? "Diffuser le lien du formulaire aux professionnels de santé du territoire, canal par canal, et consigner chaque diffusion ici. Rappeler chaque inscrit pour vérifier assurance, statut et continuité des soins avant toute transmission de nom."
+      : "Prévenir les professionnels déjà inscrits de la suite donnée à leur inscription.",
+    statut: ouvre ? 'En cours' : 'Clos', auteur: moi, quand: ''
+  });
+}
+
+function editerRenfort(){
+  const c = etat.renfort || {};
+  document.getElementById('modale').innerHTML = `<h3>Textes du formulaire de recensement</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">Ces deux textes s'affichent sur ${esc(FORMULAIRE_RENFORT)}. Le premier quand l'appel est fermé, le second en tête du formulaire quand il est ouvert.</p>
+    <label style="margin-bottom:12px"><span class="k">Message affiché appel fermé</span>
+      <textarea id="re-message" placeholder="Ex. Un appel au renfort sera peut-être lancé en fin de semaine.">${esc(c.message||'')}</textarea></label>
+    <label style="margin-bottom:12px"><span class="k">Cadre annoncé appel ouvert</span>
+      <textarea id="re-cadre" placeholder="Ce qu'on sait du renfort attendu — et ce qu'on ne sait pas encore.">${esc(c.cadre||'')}</textarea></label>
+    <div class="actions"><button class="btn" onclick="validerRenfort()">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerRenfort(){
+  etat.renfort = etat.renfort || {ouverte:false};
+  etat.renfort.message = document.getElementById('re-message').value.trim();
+  etat.renfort.cadre = document.getElementById('re-cadre').value.trim();
+  await sauver(); fermer(); rendre(); toast("Textes du formulaire mis à jour");
+}
+
+function copierLienRenfort(){
+  const l = lienRenfort();
+  const fini = () => toast("Lien copié — collez-le dans le message aux professionnels");
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(l).then(fini, () => toast("Copie impossible — sélectionnez le lien à la main"));
+  }else{
+    const i = document.getElementById('lien-renfort');
+    if(i){ i.select(); try{ document.execCommand('copy'); fini(); }catch(e){ toast("Sélectionnez le lien à la main"); } }
+  }
+}
+
+function carteFormulaireRenfort(){
+  const c = etat.renfort || {};
+  const aVerifier = (etat.volontaires||[]).filter(x => x.source === 'formulaire' && x.aVerifier).length;
+  return `<div class="carte formulaire ${c.ouverte?'ouverte':''}">
+    <div class="ligne-f">
+      <div>
+        <h2 style="margin-bottom:2px">Formulaire de recensement en ligne</h2>
+        <p class="sous-f">Le professionnel se recense depuis son téléphone : qui il est, ce qu'il peut faire, quand et jusqu'où il peut se déplacer. La ligne arrive ici, il repart avec son récapitulatif. Rien à imprimer, rien à renvoyer.</p>
+      </div>
+      <span class="etiq ${c.ouverte?'e-cours':'e-bloque'}">${c.ouverte?'Ouvert aux inscriptions':'Fermé'}</span>
+    </div>
+    ${c.ouverte
+      ? `<div class="lien-f">
+           <input id="lien-renfort" readonly value="${esc(lienRenfort())}" onclick="this.select()">
+           <button class="btn sec" onclick="copierLienRenfort()">Copier le lien</button>
+         </div>
+         <p class="sous-f" style="margin:9px 0 0">Ce lien est à diffuser aux professionnels de santé du territoire. Toute personne qui l'a peut se recenser ; le cockpit, lui, reste protégé par son code d'accès.</p>`
+      : `<div class="note" style="margin:0">Tant que l'appel est fermé, le formulaire affiche aux professionnels que la CPTS ne recense personne pour le moment. Un recensement ouvert crée une attente : on ne l'ouvre qu'au moment de diffuser l'appel.</div>`}
+    <div class="actions">
+      <button class="btn${c.ouverte?' sec':''}" onclick="basculerRenfort()">${c.ouverte?"Fermer l'appel au renfort":"Ouvrir l'appel au renfort"}</button>
+      <button class="btn sec" onclick="editerRenfort()">Textes affichés</button>
+      ${c.ouverte ? `<a class="btn sec" href="${esc(lienRenfort())}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Voir le formulaire</a>` : ''}
+      ${aVerifier ? `<button class="btn sec" onclick="filtrerVol('Formulaire')" style="margin-left:auto;color:var(--braise);border-color:#E8C3B8">${aVerifier} inscription${aVerifier>1?'s':''} à vérifier</button>` : ''}
+    </div>
+  </div>`;
+}
+
+function vueRenfort(){
+  const v = etat.volontaires || [];
+  const mobilisables = v.filter(x => VOL_MOB.indexOf(x.statut || 'Recensé') >= 0);
+  const prets = v.filter(x => x.statut === 'Transmis' || x.statut === 'Affecté').length;
+  const loin = mobilisables.filter(loinVol).length;
+  /* Ce qui reste à vérifier ne se compte que sur les personnes
+     encore dans la course : un « sans suite » n'a plus rien à
+     faire vérifier. */
+  const aVerifier = x => (x.continuite || 'À vérifier') === 'À vérifier'
+    || (x.assurance || 'À vérifier') === 'À vérifier';
+  const aVoir = mobilisables.filter(aVerifier).length;
+  const professions = new Set(mobilisables.map(x => x.profession).filter(Boolean));
+
+  let h = `<h1>Appel au renfort</h1>
+  <p class="chapo">Le recensement des professionnels de santé du territoire prêts à venir en renfort : sur les zones touchées, dans les hubs de santé, ou auprès de la population accueillie ici. La CPTS Pau Béarn recense et vérifie ; l'affectation revient à l'ARS et aux structures qui accueillent.</p>`;
+
+  h += carteFormulaireRenfort();
+
+  const parFormulaire = v.filter(x => x.source === 'formulaire').length;
+  const parSaisie = v.filter(x => x.source === 'saisie').length;
+
+  h += `<div class="compteurs" style="margin-bottom:16px">
+    <div class="compteur"><div class="n">${v.length}</div><div class="l">professionnels recensés</div></div>
+    <div class="compteur"><div class="n" style="color:var(--stable)">${mobilisables.length}</div><div class="l">mobilisables à ce jour</div></div>
+    <div class="compteur"><div class="n">${professions.size}</div><div class="l">professions représentées</div></div>
+    <div class="compteur"><div class="n">${loin}</div><div class="l">peuvent partir sur les zones touchées</div></div>
+    <div class="compteur"><div class="n" style="color:var(--stable)">${prets}</div><div class="l">transmis ou déjà affectés</div></div>
+    ${aVoir ? `<div class="compteur"><div class="n" style="color:var(--ambre)">${aVoir}</div><div class="l">assurance ou continuité des soins à vérifier</div></div>` : ''}
+    ${parFormulaire ? `<div class="compteur"><div class="n" style="color:var(--encre-2)">${parFormulaire}</div><div class="l">inscrits par le formulaire</div></div>` : ''}
+    ${parSaisie ? `<div class="compteur"><div class="n" style="color:var(--encre-2)">${parSaisie}</div><div class="l">réponses reportées à la main</div></div>` : ''}
+  </div>`;
+
+  h += `<div class="note">Un volontaire n'est mobilisable que si l'on sait <strong>par quel numéro le joindre</strong>, <strong>quand il est disponible</strong> et <strong>jusqu'où il peut aller</strong>. Avant de transmettre un nom, trois choses se vérifient au téléphone : sa <strong>couverture d'assurance</strong> hors de son cabinet, ce que devient sa <strong>patientèle</strong> pendant son absence, et son <strong>accord</strong> pour que ses coordonnées circulent. La CPTS coordonne : elle ne réquisitionne personne et n'engage aucun professionnel au-delà de ce qu'il a accepté. Les volontaires pour la logistique de la collecte se recensent ailleurs, dans <a href="#" onclick="aller('materiel');allerFeuilletMat('renforts');return false;">Collecte de matériel</a>.</div>
+  <div class="barre-h">
+    <span class="cpt-h">${v.length} inscription${v.length>1?'s':''} au registre</span>
+    <button class="btn sec" onclick="exporterCSV('volontaires')">Excel</button>
+    <button class="btn sec" onclick="imprimer()">PDF</button>
+    <button class="btn sec" onclick="ouvrirAjout('volontaires','manuel')">Reporter une réponse</button>
+    <button class="btn" onclick="ouvrirAjout('volontaires')">Recenser un professionnel</button>
+  </div>`;
+
+  if(!v.length){
+    return h + `<div class="carte"><p class="vide">Aucun professionnel recensé. Le registre se remplit de trois façons : par le formulaire en ligne une fois l'appel ouvert, en recensant quelqu'un ici un par un, ou en reportant une réponse arrivée autrement.</p></div>`;
+  }
+
+  const LIB_VOL = {Formulaire:'Inscrits par formulaire', Saisie:'Reportés à la main',
+                   Loin:'Peuvent partir en zone', Verif:'À vérifier'};
+  const compte = r => r === 'Formulaire' ? parFormulaire
+    : r === 'Saisie' ? parSaisie
+    : r === 'Loin' ? loin
+    : r === 'Verif' ? aVoir
+    : v.filter(x => (x.statut || 'Recensé') === r).length;
+  const filtres = ['Tout'].concat(VOL_STATUTS.filter(s => compte(s)))
+    .concat(loin ? ['Loin'] : []).concat(aVoir ? ['Verif'] : [])
+    .concat(parFormulaire ? ['Formulaire'] : []).concat(parSaisie ? ['Saisie'] : []);
+  h += `<div class="filtres">${filtres.map(r =>
+    `<button class="${filtreVol===r?'on':''}" onclick="filtrerVol('${r}')">${LIB_VOL[r] || esc(r)}${r!=='Tout'?` <span style="opacity:.6">${compte(r)}</span>`:''}</button>`).join('')}</div>`;
+
+  let vus = filtreVol === 'Tout' ? [...v]
+    : filtreVol === 'Formulaire' ? v.filter(x => x.source === 'formulaire')
+    : filtreVol === 'Saisie' ? v.filter(x => x.source === 'saisie')
+    : filtreVol === 'Loin' ? v.filter(x => loinVol(x) && VOL_MOB.indexOf(x.statut||'Recensé') >= 0)
+    : filtreVol === 'Verif' ? mobilisables.filter(aVerifier)
+    : v.filter(x => (x.statut || 'Recensé') === filtreVol);
+  vus.sort((a,b) => ((b.date||'')+' '+(b.heure||'')).localeCompare((a.date||'')+' '+(a.heure||'')));
+
+  if(!vus.length) return h + `<div class="carte"><p class="vide">Aucun professionnel dans ce filtre.</p></div>`;
+
+  h += `<div class="dons">`;
+  vus.forEach(o => {
+    const st = o.statut || 'Recensé';
+    const ouvertx = volOuvert === o.id;
+    const types = listeRenforts(o);
+    h += `<div class="don ${VOL_CL[st] || 'att'}">
+      <button class="tete" onclick="allerVol('${o.id}')" aria-expanded="${ouvertx}">
+        <span class="qd">${frdate(o.date)}<br>${esc(o.heure||'—')}</span>
+        <span class="ident">
+          <span class="n">${esc(nomVol(o))}${o.source === 'formulaire'
+            ? `<span class="src-f">Formulaire</span>${o.aVerifier ? `<span class="src-f neuf">À vérifier</span>` : ''}`
+            : o.source === 'saisie' ? `<span class="src-f saisie">Saisie à la main</span>` : ''}</span>
+          <span class="s">${[o.profession, o.exercice, o.commune].filter(Boolean).map(esc).join(' · ') || '—'}</span>
+        </span>
+        <span class="par">${o.dispo ? 'Disponible' : 'Disponibilités'}<br><b>${esc(o.dispo || 'à préciser')}</b></span>
+        <span class="etiq ${VOL_ET[st] || 'e-attente'}">${esc(st)}</span>
+        ${types.length
+          ? `<span class="mat">${esc(types.slice(0,2).join(', '))}${types.length>2?' +'+(types.length-2):''}</span>`
+          : `<span class="manque">Type de renfort à préciser</span>`}
+        <span class="chev">${ouvertx?'▲':'▼'}</span>
+      </button>`;
+    if(ouvertx) h += detailVol(o);
+    h += `</div>`;
+  });
+  return h + `</div>`;
+}
+
+/* Panneau dépliant. Ce que le professionnel a déclaré lui-même
+   s'affiche tel quel : c'est la pièce qui fait foi. Ce que le
+   copil constate au téléphone — assurance, continuité des soins,
+   accord de transmission — se coche ici. */
+function detailVol(o){
+  const sel = (v, arr) => arr.map(x => `<option ${x===v?'selected':''}>${esc(x)}</option>`).join('');
+  const t = listeRenforts(o);
+  let h = `<div class="detail">`;
+
+  if(o.source === 'formulaire'){
+    const e = o.engagement || {};
+    h += `<div class="declaration">
+      <div class="dt">Inscription reçue par le formulaire en ligne</div>
+      <div class="dc">
+        ${[['Profession', o.profession], ["Mode d'exercice", o.exercice], ['N° RPPS ou ADELI', o.rpps],
+           ['Cabinet ou structure', o.structure], ["Commune d'exercice", o.commune], ['Courriel', o.mail],
+           ['Mobilisable à partir du', o.apartir ? frdateL(o.apartir) : ''],
+           ["Durée mobilisable d'affilée", o.duree], ['Peut dormir sur place', o.nuit],
+           ['Zone de déplacement', o.zone], ['Véhicule', o.vehicule]]
+          .filter(x => x[1]).map(x => `<div><span class="k">${x[0]}</span>${esc(x[1])}</div>`).join('')
+          || `<div><span class="k">Aucun élément complémentaire déclaré</span></div>`}
+      </div>
+      ${t.length ? `<div class="dn"><span class="k">Renfort envisagé</span>${esc(t.join(', '))}</div>` : ''}
+      ${o.experience ? `<div class="dn"><span class="k">Expérience utile déclarée</span>${esc(o.experience)}</div>` : ''}
+      ${o.engage ? `<div class="dn"><span class="k">Déjà engagé ailleurs</span>${esc(o.engage)}</div>` : ''}
+      ${o.note ? `<div class="dn"><span class="k">Précisions</span>${esc(o.note)}</div>` : ''}
+      ${e.le ? `<div class="de">Inscription déclarée le ${frdateL(String(e.le).slice(0,10))} à ${esc(String(e.le).slice(11,16))} par ${esc(nomVol(o))}. Le professionnel a reconnu que son inscription ne vaut ni affectation ni engagement${e.transmission ? ", et accepté que ses coordonnées soient transmises aux autorités sanitaires et aux structures d'accueil" : ''}.</div>` : ''}
+    </div>`;
+  }
+
+  if(o.source === 'saisie'){
+    h += `<div class="declaration">
+      <div class="dt">Réponse reportée à la main au registre</div>
+      <div class="dc">
+        ${[['Provenance', o.origine], ['Profession', o.profession], ["Mode d'exercice", o.exercice],
+           ['Commune', o.commune], ['Courriel', o.mail]]
+          .filter(x => x[1]).map(x => `<div><span class="k">${x[0]}</span>${esc(x[1])}</div>`).join('')
+          || `<div><span class="k">Provenance non précisée</span></div>`}
+      </div>
+      <div class="de">Reportée par ${esc(o.auteur || '—')}${o.quand ? ' le ' + frdateL(String(o.quand).slice(0,10)) : ''}. Cette ligne n'a pas fait l'objet d'un recensement direct par la CPTS.</div>
+    </div>`;
+  }
+
+  h += `<div class="form">
+    <label><span class="k">Statut</span>
+      <select onchange="majVol('${o.id}','statut',this.value)">${sel(o.statut||'Recensé', VOL_STATUTS)}</select></label>
+    <label><span class="k">Téléphone</span>
+      ${o.tel ? `<a class="btn sec" style="display:flex;justify-content:center;text-decoration:none" href="tel:${esc(String(o.tel).replace(/[^0-9+]/g,''))}">Appeler ${esc(o.tel)}</a>`
+              : `<input value="" placeholder="06 12 34 56 78" onchange="majVol('${o.id}','tel',this.value)">`}</label>
+    <div class="large"><span class="k">Renfort envisagé — à cocher avec lui</span>
+      <div class="taches">${RENFORTS_TYPES.map((x,i) =>
+        `<button class="${t.indexOf(x)>=0?'on':''}" onclick="basculerRenfortType('${o.id}',${i})">${esc(x)}</button>`).join('')}</div>
+      ${t.filter(x => RENFORTS_TYPES.indexOf(x) === -1).length
+        ? `<div style="font-size:13px;margin-top:6px">${esc(t.filter(x => RENFORTS_TYPES.indexOf(x) === -1).join(', '))}</div>` : ''}</div>
+    <label><span class="k">Jusqu'où il ou elle peut se déplacer</span>
+      <select onchange="majVol('${o.id}','zone',this.value)">${sel(o.zone||'', ZONES)}</select></label>
+    <label><span class="k">Durée mobilisable d'affilée</span>
+      <select onchange="majVol('${o.id}','duree',this.value)">${sel(o.duree||'', DUREES)}</select></label>
+    <label class="large"><span class="k">Disponibilités (jours, créneaux)</span>
+      <textarea placeholder="Ex. les mardis et jeudis toute la journée, week-ends à partir du 1er août" onchange="majVol('${o.id}','dispo',this.value)">${esc(o.dispo||'')}</textarea></label>
+
+    <label><span class="k">Continuité de sa patientèle assurée ?</span>
+      <select onchange="majVol('${o.id}','continuite',this.value)">${sel(o.continuite||'À vérifier', ['À vérifier','Oui','Non','Sans objet'])}</select></label>
+    <label><span class="k">Assurance hors cabinet vérifiée ?</span>
+      <select onchange="majVol('${o.id}','assurance',this.value)">${sel(o.assurance||'À vérifier', ['À vérifier','Oui','Non'])}</select></label>
+    <label><span class="k">Accepte la transmission de ses coordonnées</span>
+      <select onchange="majVol('${o.id}','accord',this.value)">${sel(o.accord||'À vérifier', ['À vérifier','Oui','Non'])}</select></label>
+    <label><span class="k">Déjà engagé dans un autre dispositif</span>
+      <input value="${esc(o.engage||'')}" placeholder="Ex. réserve sanitaire, appel URPS MK, SDIS" onchange="majVol('${o.id}','engage',this.value)"></label>
+
+    <label class="large"><span class="k">Transmis à (destinataire, canal, date)</span>
+      <input value="${esc(o.transmis||'')}" placeholder="Ex. DD ARS 64, par mail, le 28/07" onchange="majVol('${o.id}','transmis',this.value)"></label>
+    <label class="large"><span class="k">Affectation (lieu, mission, créneau)</span>
+      <input value="${esc(o.affectation||'')}" placeholder="Ex. hub santé de Bordeaux, 30/07 après-midi" onchange="majVol('${o.id}','affectation',this.value)"></label>
+    <label class="large"><span class="k">Observation</span>
+      <textarea onchange="majVol('${o.id}','note',this.value)">${esc(o.note||'')}</textarea></label>
+  </div>`;
+
+  const su = antechrono(o.suivi);
+  h += `<div class="suivi">
+    <span class="k" style="font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:7px">Appels et suites</span>
+    ${su.length ? su.map(x => `<div class="e">
+        <div class="q">${frdate(x.date)} ${esc(x.heure||'')} · ${esc(x.par||'—')}
+          <button title="Supprimer" onclick="supprimerSuiviVol('${o.id}','${x.id}')">×</button></div>
+        <div class="d">${esc(x.texte)}</div>
+      </div>`).join('') : `<p class="vide" style="padding:0;font-size:13px">Aucun appel consigné.</p>`}
+  </div>
+  <div class="bas">
+    ${o.aVerifier ? `<button class="btn" onclick="verifierVol('${o.id}')">Marquer comme vérifié</button>` : ''}
+    <button class="btn sec" onclick="ouvrirSuiviVol('${o.id}')">Consigner un appel</button>
+    <button class="retirer" onclick="ouvrirEdition('volontaires','${o.id}')">Modifier la fiche</button>
+    <button class="retirer sup" onclick="supprimer('volontaires','${o.id}')">Retirer</button>
+  </div></div>`;
+  return h;
+}
+
+async function majVol(id, champ, val){
+  const o = (etat.volontaires||[]).find(x => x.id === id); if(!o) return;
+  o[champ] = val.trim ? val.trim() : val;
+  o.modifiePar = moi;
+  await sauver(); rendre();
+}
+
+async function basculerRenfortType(id, i){
+  const o = (etat.volontaires||[]).find(x => x.id === id); if(!o) return;
+  const t = RENFORTS_TYPES[i], l = listeRenforts(o), j = l.indexOf(t);
+  if(j >= 0) l.splice(j, 1); else l.push(t);
+  o.renforts = RENFORTS_TYPES.filter(x => l.indexOf(x) >= 0)
+    .concat(l.filter(x => RENFORTS_TYPES.indexOf(x) === -1)).join(', ');
+  o.modifiePar = moi;
+  await sauver(); rendre();
+}
+
+/* Une inscription arrivée par le formulaire attend qu'un membre du
+   copil ait rappelé la personne : c'est ce qui distingue « reçue »
+   de « vérifiée ». */
+async function verifierVol(id){
+  const o = (etat.volontaires||[]).find(x => x.id === id); if(!o) return;
+  delete o.aVerifier;
+  if(!o.statut || o.statut === 'Recensé') o.statut = 'Vérifié';
+  o.suivi = o.suivi || [];
+  o.suivi.unshift({id:uid(), date:aujourdhui(), heure:maintenant(),
+    texte:"Inscription en ligne vérifiée par la coordination.", par:moi});
+  o.modifiePar = moi;
+  await sauver(); rendre(); toast("Inscription vérifiée");
+}
+
+function ouvrirSuiviVol(id){
+  const o = (etat.volontaires||[]).find(x => x.id === id); if(!o) return;
+  document.getElementById('modale').innerHTML = `<h3>${esc(nomVol(o))} — appel</h3><div class="form">
+    <label><span class="k">Date</span><input type="date" id="sv-date" value="${aujourdhui()}"></label>
+    <label><span class="k">Heure</span><input type="time" id="sv-heure" value="${maintenant()}"></label>
+    <label class="large"><span class="k">Ce qui a été dit ou fait *</span><textarea id="sv-texte" placeholder="Assurance vérifiée, disponibilités précisées, nom transmis à l'ARS, affectation proposée…"></textarea></label>
+  </div><div class="actions"><button class="btn" onclick="validerSuiviVol('${o.id}')">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerSuiviVol(id){
+  const o = (etat.volontaires||[]).find(x => x.id === id); if(!o) return;
+  const g = k => document.getElementById('sv-'+k).value.trim();
+  if(!g('texte')){ toast("Indiquez ce qui a été dit"); return; }
+  o.suivi = o.suivi || [];
+  o.suivi.unshift({id:uid(), date:g('date'), heure:g('heure'), texte:g('texte'), par:moi});
+  o.modifiePar = moi;
+  volOuvert = o.id;
+  await sauver(); fermer(); rendre(); toast("Appel consigné");
+}
+async function supprimerSuiviVol(id, sid){
+  const o = (etat.volontaires||[]).find(x => x.id === id); if(!o) return;
+  o.suivi = (o.suivi||[]).filter(x => x.id !== sid);
+  await sauver(); rendre(); toast("Appel supprimé");
 }
 
 /* =========================================================
@@ -4115,6 +4988,7 @@ function rendre(){
   else if(onglet === 'offre') v.innerHTML = vueOffre();
   else if(onglet === 'appels') v.innerHTML = vueAppels();
   else if(onglet === 'materiel') v.innerHTML = vueCollecte();
+  else if(onglet === 'volontaires') v.innerHTML = vueRenfort();
   else if(onglet === 'dossier') v.innerHTML = vueDossier();
   else v.innerHTML = vueCollection(onglet);
   v.insertAdjacentHTML('afterbegin', '<div class="entete-print" id="printhead"></div>');

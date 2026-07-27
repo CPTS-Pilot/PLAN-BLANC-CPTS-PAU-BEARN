@@ -106,13 +106,16 @@ if ($methode === 'OPTIONS') {
 }
 
 /* =========================================================
-   DÉPÔT PUBLIC — formulaire don.html
+   DÉPÔTS PUBLICS — formulaires don-de-materiel.html et
+   appel-au-renfort.html
 
-   Ouvert sans code d'accès : les donateurs ne peuvent pas
-   l'avoir. En contrepartie, cette porte ne sait faire qu'une
-   chose — ajouter une ligne à « dons » — et ne renvoie rien
-   de l'état existant. Elle reste fermée tant que le copil n'a
-   pas ouvert la collecte depuis le cockpit.
+   Ouverts sans code d'accès : ni les donateurs ni les
+   professionnels qui se recensent ne peuvent l'avoir. En
+   contrepartie, chacune de ces portes ne sait faire qu'une
+   chose — ajouter une ligne à sa rubrique — et ne renvoie rien
+   de l'état existant. Elles restent fermées tant que le copil
+   n'a pas ouvert la collecte, ou l'appel au renfort, depuis le
+   cockpit.
    ========================================================= */
 
 const DEPOT_PAR_IP    = 5;      /* dépôts par heure et par adresse   */
@@ -133,10 +136,16 @@ function txt($v, $max) {
     return function_exists('mb_substr') ? mb_substr($v, 0, $max, 'UTF-8') : substr($v, 0, $max);
 }
 
-function collecteOuverte($etat) {
+/* Chaque porte publique a son interrupteur dans l'état partagé :
+   « collecte » pour les dons, « renfort » pour le recensement. */
+function porteOuverte($etat, $rubrique) {
     $d = isset($etat['donnees']) && is_array($etat['donnees']) ? $etat['donnees'] : [];
-    $c = isset($d['collecte']) && is_array($d['collecte']) ? $d['collecte'] : [];
+    $c = isset($d[$rubrique]) && is_array($d[$rubrique]) ? $d[$rubrique] : [];
     return !empty($c['ouverte']);
+}
+
+function collecteOuverte($etat) {
+    return porteOuverte($etat, 'collecte');
 }
 
 /* Empreinte de l'appelant : on ne conserve pas l'adresse IP en
@@ -147,9 +156,11 @@ function empreinteAppelant() {
 }
 
 /* Fenêtre glissante d'une heure, deux plafonds : par adresse
-   pour la saisie répétée, global pour le reste. */
-function quotaDepot($empreinte) {
-    $f = DOSSIER . '/depots.php';
+   pour la saisie répétée, global pour le reste. Un compteur par
+   porte : une journée de collecte chargée ne doit pas fermer le
+   recensement des renforts, et réciproquement. */
+function quotaDepot($empreinte, $porte = 'depots') {
+    $f = DOSSIER . '/' . $porte . '.php';
     $liste = [];
     if (file_exists($f)) {
         $b = file_get_contents($f);
@@ -325,6 +336,178 @@ if (isset($_GET['depot'])) {
             'id'  => $id,
             'ref' => 'BD-2026-' . strtoupper(substr($id, -4)),
             'le'  => $dons[count($dons) - 1]['engagement']['le'],
+        ]);
+    } finally {
+        flock($fp, LOCK_UN);
+        fclose($fp);
+    }
+}
+
+/* =========================================================
+   RECENSEMENT PUBLIC — formulaire appel-au-renfort.html
+
+   Même porte que le dépôt de dons, pour la rubrique
+   « volontaires ». Elle n'ajoute qu'une ligne au registre des
+   professionnels volontaires et ne renvoie jamais l'état.
+
+   Ce qui entre ici, ce sont des noms, des numéros de téléphone
+   et des numéros d'inscription à l'ordre : la porte reste fermée
+   tant que le copil n'a pas ouvert l'appel au renfort, et rien
+   n'en ressort jamais.
+   ========================================================= */
+
+const RENFORT_PLAFOND = 2000;   /* garde-fou sur la taille du registre */
+const RENFORT_TYPES   = 12;     /* types de renfort cochés par personne */
+
+if (isset($_GET['renfort'])) {
+
+    /* Le formulaire interroge cette adresse avant de s'afficher :
+       inutile de faire remplir un recensement si l'appel est
+       fermé. Rien d'autre ne sort d'ici. */
+    if ($methode === 'GET') {
+        $etat = lireEtat();
+        $d = isset($etat['donnees']) && is_array($etat['donnees']) ? $etat['donnees'] : [];
+        $c = isset($d['renfort']) && is_array($d['renfort']) ? $d['renfort'] : [];
+        repondre(200, [
+            'ouverte' => porteOuverte($etat, 'renfort'),
+            'message' => txt($c['message'] ?? '', 600),
+            'cadre'   => txt($c['cadre'] ?? '', 1200),
+        ]);
+    }
+
+    if ($methode !== 'POST') {
+        repondre(405, ['erreur' => 'Méthode non autorisée']);
+    }
+
+    $brut = file_get_contents('php://input');
+    if ($brut === false || strlen($brut) > DEPOT_CORPS_MAX) {
+        repondre(413, ['erreur' => 'Formulaire trop volumineux']);
+    }
+    $in = json_decode($brut ?: '', true);
+    if (!is_array($in)) {
+        repondre(400, ['erreur' => 'Formulaire mal formé']);
+    }
+
+    /* Champ leurre : invisible à l'écran, seuls les robots le
+       remplissent. On répond comme si tout allait bien. */
+    if (txt($in['site'] ?? '', 40) !== '') {
+        repondre(200, ['ok' => true, 'ref' => 'AR-2026-0000']);
+    }
+
+    $nom        = txt($in['nom'] ?? '', 80);
+    $prenom     = txt($in['prenom'] ?? '', 80);
+    $profession = txt($in['profession'] ?? '', 80);
+    $tel        = txt($in['tel'] ?? '', 40);
+    $mail       = txt($in['mail'] ?? '', 120);
+    if ($mail !== '' && !filter_var($mail, FILTER_VALIDATE_EMAIL)) $mail = '';
+
+    /* Les types de renfort cochés arrivent en liste et se rangent
+       dans un seul champ texte, lisible tel quel à l'export. */
+    $types = [];
+    $brutTypes = isset($in['renforts']) && is_array($in['renforts']) ? $in['renforts'] : [];
+    foreach ($brutTypes as $t) {
+        if (count($types) >= RENFORT_TYPES) break;
+        $t = txt($t, 100);
+        if ($t !== '') $types[] = $t;
+    }
+
+    if ($nom === '' || $prenom === '' || $profession === '' || $tel === '') {
+        repondre(400, ['erreur' => 'Nom, prénom, profession et téléphone sont nécessaires']);
+    }
+    if (empty($in['conditions'])) {
+        repondre(400, ['erreur' => 'Les conditions du recensement doivent être acceptées']);
+    }
+
+    if (!quotaDepot(empreinteAppelant(), 'renforts')) {
+        repondre(429, ['erreur' => 'Trop d\'inscriptions en peu de temps. Réessayez dans une heure ou appelez la coordination.']);
+    }
+
+    $fp = @fopen(FICHIER . '.lock', 'c');
+    if ($fp === false || !flock($fp, LOCK_EX)) {
+        repondre(503, ['erreur' => 'Enregistrement momentanément indisponible']);
+    }
+
+    try {
+        $etat = lireEtat();
+        if (!porteOuverte($etat, 'renfort')) {
+            repondre(403, ['erreur' => 'L\'appel au renfort n\'est pas ouvert']);
+        }
+
+        $donnees = (array) ($etat['donnees'] ?? []);
+        $vol = isset($donnees['volontaires']) && is_array($donnees['volontaires']) ? $donnees['volontaires'] : [];
+        if (count($vol) >= RENFORT_PLAFOND) {
+            repondre(507, ['erreur' => 'Registre saturé — contactez la coordination']);
+        }
+
+        $id = 'vf' . substr(md5(uniqid('', true)), 0, 10);
+        $le = date('c');
+
+        $vol[] = [
+            'id'          => $id,
+            'date'        => date('Y-m-d'),
+            'heure'       => date('H:i'),
+            'nom'         => $nom,
+            'prenom'      => $prenom,
+            'profession'  => $profession,
+            'exercice'    => txt($in['exercice'] ?? '', 60),
+            'rpps'        => txt($in['rpps'] ?? '', 40),
+            'tel'         => $tel,
+            'mail'        => $mail,
+            'commune'     => txt($in['commune'] ?? '', 80),
+            'structure'   => txt($in['structure'] ?? '', 160),
+            'renforts'    => implode(', ', $types),
+            'zone'        => txt($in['zone'] ?? '', 100),
+            'vehicule'    => txt($in['vehicule'] ?? '', 60),
+            'dispo'       => txt($in['dispo'] ?? '', 400),
+            'apartir'     => preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) ($in['apartir'] ?? '')) ? $in['apartir'] : '',
+            'duree'       => txt($in['duree'] ?? '', 60),
+            'nuit'        => txt($in['nuit'] ?? '', 20),
+            'experience'  => txt($in['experience'] ?? '', 600),
+            'engage'      => txt($in['engage'] ?? '', 200),
+            /* Ce que le professionnel déclare de lui-même ne vaut pas
+               vérification : le copil le confirme au téléphone avant
+               que le moindre nom sorte du cockpit. */
+            'continuite'  => 'À vérifier',
+            'assurance'   => 'À vérifier',
+            'accord'      => !empty($in['transmission']) ? 'Oui' : 'Non',
+            'par'         => '',
+            'transmis'    => '',
+            'affectation' => '',
+            'statut'      => 'Recensé',
+            'note'        => txt($in['note'] ?? '', 800),
+            'source'      => 'formulaire',
+            'aVerifier'   => true,
+            'engagement'  => [
+                'le'           => $le,
+                'nom'          => trim($prenom . ' ' . $nom),
+                'conditions'   => true,
+                'transmission' => !empty($in['transmission']),
+                'empreinte'    => empreinteAppelant(),
+            ],
+            'auteur'      => 'Formulaire en ligne',
+            'quand'       => $le,
+            'suivi'       => [],
+        ];
+
+        $donnees['volontaires'] = $vol;
+        $nouveau = [
+            'version' => (isset($etat['version']) ? (int) $etat['version'] : 0) + 1,
+            'maj'     => date('c'),
+            'par'     => trim($prenom . ' ' . $nom) . ' (recensement)',
+            'donnees' => $donnees,
+        ];
+
+        if (!ecrireEtat($nouveau)) {
+            repondre(500, ['erreur' => 'Enregistrement impossible']);
+        }
+        tracer(sprintf('v%d recensement renfort — %s, %s',
+            $nouveau['version'], trim($prenom . ' ' . $nom), $profession));
+
+        repondre(200, [
+            'ok'  => true,
+            'id'  => $id,
+            'ref' => 'AR-2026-' . strtoupper(substr($id, -4)),
+            'le'  => $le,
         ]);
     } finally {
         flock($fp, LOCK_UN);

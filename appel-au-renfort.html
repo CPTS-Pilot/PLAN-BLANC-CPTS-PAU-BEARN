@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Appel au renfort — CPTS Pau Béarn</title>
+<meta name="description" content="Se recenser comme professionnel de santé volontaire au renfort auprès de la CPTS Pau Béarn, dans le cadre du plan blanc régional.">
+<meta name="theme-color" content="#062B63">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --encre:#062B63;
+  --encre-2:#0B4FA8;
+  --cobalt-clair:#E8F0FB;
+  --surface:#F3F6FB;
+  --carte:#FFFFFF;
+  --trait:#D8E1EF;
+  --texte:#122238;
+  --texte-2:#5A6B84;
+  --ambre:#E8A33D;
+  --braise:#C2482F;
+  --stable:#2F7D62;
+  --display:'Archivo',system-ui,sans-serif;
+  --corps:'Source Sans 3',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--corps);background:var(--surface);color:var(--texte);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+
+.bandeau{background:var(--encre);color:#fff;padding:20px 22px}
+.bandeau .in{max-width:880px;margin:0 auto}
+.bandeau .nom{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.02em}
+.bandeau .sous{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#7FA3D4;margin-top:6px}
+
+.page{max-width:880px;margin:0 auto;padding:26px 22px 60px}
+h1{font-family:var(--display);font-weight:700;font-size:27px;letter-spacing:-.01em;margin:0 0 6px}
+.chapo{color:var(--texte-2);margin:0 0 22px;max-width:66ch}
+.carte{background:var(--carte);border:1px solid var(--trait);border-radius:10px;padding:20px;margin-bottom:16px}
+h2{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.02em;margin:0 0 4px;display:flex;align-items:center;gap:9px}
+h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-radius:2px;display:block;flex:0 0 3px}
+.sous-h{font-size:13px;color:var(--texte-2);margin:0 0 15px}
+
+.form{display:grid;gap:13px}
+@media(min-width:720px){.form{grid-template-columns:1fr 1fr}.form .large{grid-column:1/-1}}
+label{display:block}
+label .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:4px}
+label .k i{font-style:normal;color:var(--braise)}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--trait);border-radius:6px;background:#fff}
+textarea{min-height:74px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-offset:1px;border-color:var(--ambre)}
+input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4F2}
+.aide{font-size:12.5px;color:var(--texte-2);margin-top:4px}
+.leurre{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+/* Les types de renfort : des cases à cocher rangées en colonnes,
+   assez grandes pour être cochées d'un doigt. */
+.choix{display:grid;gap:9px;grid-template-columns:1fr}
+@media(min-width:720px){.choix{grid-template-columns:1fr 1fr}}
+.choix .c{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--trait);border-radius:8px;cursor:pointer;background:#fff}
+.choix .c:hover{border-color:var(--encre-2)}
+.choix .c input{width:19px;height:19px;flex:0 0 19px;margin:1px 0 0;accent-color:var(--encre-2)}
+.choix .c span{font-size:14px;line-height:1.4}
+
+.cond{background:var(--cobalt-clair);border-radius:8px;padding:14px 16px;margin-bottom:14px}
+.cond ol{margin:0;padding-left:19px;font-size:13.5px}
+.cond li{margin-bottom:6px;text-align:justify}
+.coche{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--trait);border-radius:8px;margin-bottom:9px;cursor:pointer;background:#fff}
+.coche:hover{border-color:var(--encre-2)}
+.coche.faux{border-color:var(--braise);background:#FDF4F2}
+.coche input{width:19px;height:19px;flex:0 0 19px;margin:1px 0 0;accent-color:var(--encre-2)}
+.coche span{font-size:14px;line-height:1.45}
+
+.btn{background:var(--encre);color:#fff;border:0;border-radius:7px;padding:12px 22px;font-family:var(--display);font-weight:600;font-size:15px;cursor:pointer;min-height:48px}
+.btn:hover{background:var(--encre-2)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.sec{background:#fff;color:var(--encre);border:1px solid var(--trait)}
+.btn.sec:hover{border-color:var(--encre)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+
+/* ---------- téléphone ----------
+   C'est le cas d'usage principal : le professionnel se recense
+   depuis son cabinet, entre deux patients, sur son téléphone.
+   Champs à 16 px — en dessous, iOS zoome sur le champ actif et
+   la page part de travers — et cibles tactiles confortables. */
+@media(max-width:640px){
+  .page{padding:20px 15px 48px}
+  h1{font-size:23px}
+  .carte{padding:16px 15px;border-radius:9px}
+  input,select,textarea{font-size:16px;padding:12px 13px;border-radius:7px}
+  textarea{min-height:88px}
+  select{min-height:48px}
+  .coche,.choix .c{padding:13px 14px;gap:13px}
+  .coche input,.choix .c input{width:24px;height:24px;flex:0 0 24px}
+  .coche span,.choix .c span{font-size:14.5px}
+  .btn{width:100%;padding:14px 20px;min-height:52px}
+  .actions{flex-direction:column;align-items:stretch;gap:12px}
+  .actions .aide{text-align:center}
+  .cond ol{padding-left:17px}
+  .cond li{text-align:left}
+  .acte ol li,.acte .ctx,.acte .cachet,.note{text-align:left}
+}
+
+.alerte{border-radius:8px;padding:12px 14px;font-size:14px;margin-bottom:16px}
+.alerte.rouge{background:#FDF0EC;border:1px solid #E8C3B8;color:#8C2F1B}
+.alerte.ambre{background:#FCF3E4;border:1px solid #E9D3A6;color:#8A5D12}
+.alerte.bleue{background:var(--cobalt-clair);border:1px solid #C3D6F0;color:var(--encre)}
+.note{font-size:12.5px;color:var(--texte-2);margin-top:26px;padding-top:14px;border-top:1px solid var(--trait);text-align:justify}
+
+/* ---------- récapitulatif remis au professionnel ---------- */
+.acte{background:#fff;border:1px solid var(--trait);border-radius:10px;padding:26px;color:#101820;font-size:13.5px;line-height:1.5}
+.acte .ent{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:2px solid var(--encre);padding-bottom:9px;margin-bottom:16px}
+.acte .ent .org{font-family:var(--display);font-weight:700;font-size:15px;color:var(--encre)}
+.acte .ent .sub{font-size:11px;color:var(--texte-2);margin-top:2px}
+.acte .ent .d{text-align:right}
+.acte .ent .ref{font-family:var(--mono);font-size:11.5px;color:var(--encre)}
+.acte .ttl{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;margin:0;color:var(--encre);text-transform:uppercase}
+.acte .ss{font-size:12.5px;color:var(--texte-2);margin:3px 0 14px}
+.acte .ctx{font-size:12.5px;background:var(--cobalt-clair);border-left:3px solid var(--encre-2);border-radius:0 6px 6px 0;padding:11px 13px;margin-bottom:16px;text-align:justify}
+.acte h3{font-family:var(--display);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--encre-2);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--trait)}
+.acte .l{display:flex;gap:10px;align-items:baseline;padding:3px 0}
+.acte .l .e{flex:0 0 185px;font-size:12px;color:var(--texte-2)}
+.acte .l .v{flex:1;border-bottom:1px dotted #B9C4D4;min-height:19px;padding:0 3px}
+.acte ul{margin:4px 0 0;padding-left:20px;font-size:12.5px}
+.acte ol{margin:0;padding-left:20px;font-size:12.5px}
+.acte ol li,.acte ul li{margin-bottom:5px;text-align:justify}
+.acte .cachet{border:1px solid var(--stable);background:#F1F8F5;border-radius:7px;padding:11px 13px;font-size:12.5px;margin-top:10px}
+.acte .cachet b{color:#1E5C46}
+.acte .pied{font-size:11px;color:var(--texte-2);border-top:1px solid var(--trait);margin-top:16px;padding-top:8px;text-align:justify}
+@media(max-width:640px){.acte{padding:17px 15px}.acte .l{flex-direction:column;gap:2px}.acte .l .e{flex:none}}
+
+.recu{background:#F1F8F5;border:1px solid #BEDCCE;border-radius:10px;padding:20px 22px;margin-bottom:18px}
+.recu .t{font-family:var(--display);font-weight:700;font-size:20px;color:#1E5C46;margin-bottom:6px}
+.recu .r{font-family:var(--mono);font-size:13px;color:var(--encre);margin-top:10px}
+
+@media print{
+  @page{margin:14mm}
+  body{background:#fff;font-size:10.5pt}
+  .bandeau,.actions,.recu,.no-print{display:none!important}
+  .page{padding:0;max-width:none}
+  .acte{border:0;padding:0;font-size:10pt;line-height:1.42}
+  .acte .ttl{font-size:16pt}
+  .acte .ctx,.acte .cachet{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .acte ol,.acte ul,.acte .cachet{break-inside:avoid}
+  .acte h3{break-after:avoid}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="bandeau"><div class="in">
+  <div class="nom">CPTS Pau Béarn</div>
+  <div class="sous">Communauté professionnelle territoriale de santé — Pau et Béarn</div>
+</div></div>
+
+<main class="page" id="page">
+  <p class="chapo">Chargement…</p>
+</main>
+
+<script>
+/* =========================================================
+   FORMULAIRE DE RECENSEMENT DES RENFORTS — CPTS Pau Béarn
+
+   Le pendant du formulaire de don, pour les bras plutôt que
+   pour le matériel. Le professionnel déclare ici qui il est, ce
+   qu'il peut faire, quand et jusqu'où il peut se déplacer ; la
+   déclaration arrive directement dans le cockpit de crise, et
+   il repart avec un récapitulatif à conserver.
+
+   Ce que cette page dit et redit, parce que c'est la question
+   que tout le monde se pose avant de remplir : s'inscrire ne
+   vaut ni affectation, ni réquisition, ni engagement. On sera
+   rappelé avant quoi que ce soit.
+
+   Cette page n'a pas le code d'accès du cockpit : elle ne parle
+   qu'à la porte de recensement d'api.php, qui n'accepte qu'un
+   ajout et ne renvoie rien de l'état partagé.
+   ========================================================= */
+const API = 'api.php?renfort=1';
+
+/* Ces listes doublent celles du cockpit (index.html) : toute
+   modification là-bas doit être reportée ici. */
+const PROFESSIONS = ['','Médecin généraliste','Médecin spécialiste','Infirmier ou infirmière (IDE)',
+  'Infirmier en pratique avancée (IPA)','Masseur-kinésithérapeute','Pharmacien','Préparateur en pharmacie',
+  'Chirurgien-dentiste','Sage-femme','Pédicure-podologue','Orthophoniste','Orthoptiste','Ergothérapeute',
+  'Psychomotricien','Psychologue','Diététicien','Manipulateur en électroradiologie',
+  'Technicien de laboratoire','Ambulancier','Aide-soignant','Auxiliaire de vie','Assistant médical',
+  'Secrétaire médical','Étudiant en santé, interne','Autre profession de santé',
+  'Non-soignant — appui logistique'];
+
+const EXERCICES = ['','Libéral','Salarié','Remplaçant','Mixte','Retraité','Étudiant ou interne',
+  'Sans activité actuelle'];
+
+const RENFORTS_TYPES = ["Soins en zone touchée",
+  "Renfort en centre d'accueil ou hub santé",
+  "Poste de secours, prise en charge des blessés",
+  "Consultations au cabinet pour les personnes évacuées",
+  "Soutien psychologique",
+  "Régulation, appels, orientation à distance",
+  "Prévention, vaccination, éducation à la santé",
+  "Visites et suivi des personnes fragiles à domicile",
+  "Logistique, transport, intendance"];
+
+const ZONES = ['','Sur le territoire de la CPTS Pau Béarn','Dans les Pyrénées-Atlantiques',
+  'Dans les départements voisins',"Partout en Nouvelle-Aquitaine, zones touchées comprises",
+  'À préciser'];
+
+const DUREES = ['','Quelques heures',"Une demi-journée",'Une journée','Deux à trois jours',
+  'Plusieurs jours consécutifs','À préciser'];
+
+const VEHICULES = ['','Aucun','Voiture','Break ou monospace','Utilitaire','Camion'];
+
+let envoiEnCours = false;
+let contexte = { ouverte: false, message: '', cadre: '' };
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const val = id => (document.getElementById(id)?.value || '').trim();
+const frdate = d => d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '';
+const frheure = d => d ? new Date(d).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '';
+const frjour = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '';
+
+/* --- Ouverture de l'appel -------------------------------
+   Le copil ouvre et ferme l'appel depuis le cockpit. Tant qu'il
+   est fermé, on ne fait pas remplir un recensement pour rien :
+   le serveur refuserait l'inscription de toute façon. */
+async function demarrer(){
+  try{
+    const r = await fetch('api.php?renfort=etat', {headers:{'Accept':'application/json'}});
+    if(r.ok) contexte = await r.json();
+  }catch(e){
+    return afficher(`<div class="alerte rouge">Le service est momentanément injoignable. Réessayez dans quelques minutes, ou appelez la coordination de la CPTS Pau Béarn.</div>`);
+  }
+  contexte.ouverte ? formulaire() : ferme();
+}
+
+function afficher(html){
+  document.getElementById('page').innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+function ferme(){
+  afficher(`<h1>Appel au renfort</h1>
+  <p class="chapo">La CPTS Pau Béarn ne recense pas de professionnels volontaires à ce jour.</p>
+  <div class="carte">
+    <div class="alerte ambre">Aucun renfort n'est sollicité pour le moment.</div>
+    <p>La CPTS ne lance de recensement qu'au moment où elle est en mesure d'en faire quelque chose.
+    Constituer une liste de volontaires sans savoir ce qui sera demandé crée une attente qu'on ne
+    tient pas, et ce n'est pas rendre service.</p>
+    ${contexte.message ? `<p><strong>${esc(contexte.message)}</strong></p>` : ''}
+    <p style="margin-bottom:0">Dès qu'un appel au renfort sera ouvert, l'information passera par les
+    canaux habituels de la CPTS. Merci de votre disponibilité.</p>
+  </div>`);
+}
+
+/* --- Le formulaire -------------------------------------- */
+function formulaire(){
+  const opts = (liste, id) => `<select id="${id}">${liste.map(t => `<option>${esc(t)}</option>`).join('')}</select>`;
+  afficher(`<h1>Se déclarer volontaire au renfort</h1>
+  <p class="chapo">La CPTS Pau Béarn recense les professionnels de santé du territoire prêts à venir en
+  renfort — sur les zones touchées, dans les hubs de santé, ou auprès de la population accueillie ici.
+  Vous remplissez ce formulaire une fois, vous recevez votre récapitulatif, et la coordination vous
+  rappelle avant toute mission.</p>
+
+  <div class="alerte bleue"><strong>S'inscrire ici n'engage à rien.</strong> Ce n'est ni une affectation,
+  ni une réquisition, ni une promesse de mission. Vous serez rappelé avant qu'on vous propose quoi que
+  ce soit, et vous restez libre de refuser à tout moment.</div>
+
+  ${contexte.cadre ? `<div class="alerte ambre"><strong>Ce que l'on sait à ce jour :</strong> ${esc(contexte.cadre)}</div>` : ''}
+
+  <div class="carte">
+    <h2>1 · Qui vous êtes</h2>
+    <p class="sous-h">Le minimum pour pouvoir vous rappeler et savoir ce que vous pouvez faire.</p>
+    <div class="form">
+      <label><span class="k">Nom <i>*</i></span>
+        <input id="f-nom" autocomplete="family-name" placeholder="Ex. Dupont"></label>
+      <label><span class="k">Prénom <i>*</i></span>
+        <input id="f-prenom" autocomplete="given-name" placeholder="Ex. Marie"></label>
+      <label><span class="k">Profession <i>*</i></span>
+        ${opts(PROFESSIONS, 'f-profession')}</label>
+      <label><span class="k">Mode d'exercice</span>
+        ${opts(EXERCICES, 'f-exercice')}</label>
+      <label><span class="k">Téléphone <i>*</i></span>
+        <input id="f-tel" type="tel" autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78">
+        <span class="aide">Indispensable : c'est par téléphone que la coordination vous rappellera.</span></label>
+      <label><span class="k">Courriel</span>
+        <input id="f-mail" type="email" autocomplete="email" placeholder="nom@exemple.fr"></label>
+      <label><span class="k">N° RPPS ou ADELI</span>
+        <input id="f-rpps" inputmode="numeric" placeholder="Ex. 10001234567">
+        <span class="aide">Utile si votre nom doit être transmis aux autorités sanitaires. Non obligatoire.</span></label>
+      <label><span class="k">Commune d'exercice</span>
+        <input id="f-commune" autocomplete="address-level2" placeholder="Ex. Pau"></label>
+      <label class="large"><span class="k">Cabinet, structure ou employeur</span>
+        <input id="f-structure" autocomplete="organization" placeholder="Ex. Cabinet infirmier des Halles, CH de Pau"></label>
+    </div>
+  </div>
+
+  <div class="carte">
+    <h2>2 · Le renfort que vous envisagez</h2>
+    <p class="sous-h">Le type exact de renfort qui sera demandé n'est pas encore arrêté. Cochez tout ce
+    qui vous paraît envisageable : cocher n'engage pas, cela permet seulement de savoir vers qui se
+    tourner le moment venu.</p>
+    <div class="choix">
+      ${RENFORTS_TYPES.map((t,i) => `<label class="c"><input type="checkbox" id="r-${i}"><span>${esc(t)}</span></label>`).join('')}
+    </div>
+    <div class="form" style="margin-top:14px">
+      <label class="large"><span class="k">Expérience utile</span>
+        <textarea id="f-experience" placeholder="Ex. dix ans aux urgences, réserve sanitaire, sapeur-pompier volontaire, CUMP, AFGSU à jour, médecine de catastrophe…"></textarea>
+        <span class="aide">Ce qui vous rendrait immédiatement opérationnel dans un contexte inhabituel.</span></label>
+      <label class="large"><span class="k">Êtes-vous déjà engagé dans un autre dispositif ?</span>
+        <input id="f-engage" placeholder="Ex. réserve sanitaire, appel de mon URPS, SDIS, association agréée">
+        <span class="aide">Pour ne pas vous solliciter deux fois pour la même journée.</span></label>
+    </div>
+  </div>
+
+  <div class="carte">
+    <h2>3 · Quand et jusqu'où</h2>
+    <p class="sous-h">C'est ce qui décide de tout : un volontaire dont on ignore les créneaux n'est pas mobilisable.</p>
+    <div class="form">
+      <label class="large"><span class="k">Vos disponibilités</span>
+        <textarea id="f-dispo" placeholder="Ex. les mardis et jeudis toute la journée, les week-ends, tous les soirs après 18 h…"></textarea></label>
+      <label><span class="k">Mobilisable à partir du</span>
+        <input id="f-apartir" type="date"></label>
+      <label><span class="k">Durée mobilisable d'affilée</span>
+        ${opts(DUREES, 'f-duree')}</label>
+      <label><span class="k">Jusqu'où pouvez-vous vous déplacer ?</span>
+        ${opts(ZONES, 'f-zone')}</label>
+      <label><span class="k">Véhicule</span>
+        ${opts(VEHICULES, 'f-vehicule')}</label>
+      <label><span class="k">Pourriez-vous dormir sur place si besoin ?</span>
+        <select id="f-nuit"><option>À préciser</option><option>Oui</option><option>Non</option></select></label>
+      <label class="large"><span class="k">Précisions utiles</span>
+        <textarea id="f-note" placeholder="Contraintes de garde d'enfants, jours à éviter, langues parlées, matériel dont vous disposez, tout ce qui aide à vous solliciter au bon moment…"></textarea></label>
+    </div>
+  </div>
+
+  <div class="carte">
+    <h2>4 · Ce que votre inscription veut dire</h2>
+    <p class="sous-h">À lire avant de valider : c'est le cadre dans lequel la CPTS Pau Béarn recense.</p>
+    <div class="cond"><ol>
+      <li>Votre inscription vaut déclaration de disponibilité. Elle ne vaut ni affectation, ni réquisition,
+      ni engagement contractuel d'aucune sorte, et ne crée aucune obligation à votre charge.</li>
+      <li>La coordination de la CPTS Pau Béarn vous rappellera avant toute proposition de mission. Vous
+      restez libre de refuser toute mission, à tout moment, sans avoir à vous justifier.</li>
+      <li>La CPTS Pau Béarn recense et coordonne. Elle n'affecte pas : l'affectation relève de l'ARS
+      Nouvelle-Aquitaine et des structures qui accueillent les renforts.</li>
+      <li>Il vous appartient de vérifier auprès de votre assureur que votre responsabilité civile
+      professionnelle couvre une activité exercée hors de votre lieu habituel d'exercice, et d'organiser
+      la continuité des soins de votre patientèle pendant votre absence. La CPTS Pau Béarn ne s'y substitue pas.</li>
+      <li>Vos coordonnées ne sont utilisées que pour organiser le renfort dans le cadre du plan blanc
+      régional. Vous pouvez demander à tout moment leur rectification ou leur suppression.</li>
+    </ol></div>
+    <label class="coche" id="c-conditions-l">
+      <input type="checkbox" id="c-conditions">
+      <span>J'ai lu ce cadre, je le comprends, et je me déclare volontaire au renfort dans ces conditions.</span></label>
+    <label class="coche" id="c-transmission-l">
+      <input type="checkbox" id="c-transmission">
+      <span>J'accepte que mes coordonnées soient transmises par la CPTS Pau Béarn à l'ARS Nouvelle-Aquitaine
+      et aux structures d'accueil, aux seules fins d'organiser le renfort.</span></label>
+
+    <div class="leurre" aria-hidden="true">
+      <label>Ne pas remplir<input id="f-site" tabindex="-1" autocomplete="off"></label>
+    </div>
+
+    <div id="erreur"></div>
+    <div class="actions">
+      <button type="button" class="btn" id="valider" onclick="valider()">Valider mon inscription</button>
+      <span class="aide" style="margin:0">Vous obtiendrez ensuite votre récapitulatif à enregistrer en PDF.</span>
+    </div>
+  </div>
+
+  <p class="note">Les informations recueillies par ce formulaire sont utilisées par la seule CPTS Pau Béarn,
+  aux fins d'organiser le renfort des professionnels de santé dans le cadre du plan blanc régional /
+  ORSAN AMAVI. Elles ne sont ni cédées, ni utilisées à d'autres fins, et sont conservées le temps de la
+  mobilisation et de son retour d'expérience. Vous pouvez demander leur rectification ou leur suppression
+  auprès de la coordination de la CPTS Pau Béarn.</p>`);
+}
+
+function marquer(id, faux){
+  const e = document.getElementById(id);
+  if(e) e.classList.toggle('faux', faux);
+}
+
+function typesCoches(){
+  return RENFORTS_TYPES.filter((t,i) => document.getElementById('r-'+i)?.checked);
+}
+
+async function valider(){
+  if(envoiEnCours) return;
+
+  const donnees = {
+    nom:        val('f-nom'),
+    prenom:     val('f-prenom'),
+    profession: val('f-profession'),
+    exercice:   val('f-exercice'),
+    rpps:       val('f-rpps'),
+    tel:        val('f-tel'),
+    mail:       val('f-mail'),
+    commune:    val('f-commune'),
+    structure:  val('f-structure'),
+    renforts:   typesCoches(),
+    experience: val('f-experience'),
+    engage:     val('f-engage'),
+    dispo:      val('f-dispo'),
+    apartir:    val('f-apartir'),
+    duree:      val('f-duree'),
+    zone:       val('f-zone'),
+    vehicule:   val('f-vehicule'),
+    nuit:       val('f-nuit'),
+    note:       val('f-note'),
+    site:       val('f-site'),
+    conditions: document.getElementById('c-conditions').checked,
+    transmission: document.getElementById('c-transmission').checked
+  };
+
+  const manques = [];
+  let premier = null;
+  const exiger = (id, rempli, quoi) => {
+    marquer(id, !rempli);
+    if(!rempli){ manques.push(quoi); premier = premier || id; }
+  };
+  exiger('f-nom',        donnees.nom,        'votre nom');
+  exiger('f-prenom',     donnees.prenom,     'votre prénom');
+  exiger('f-profession', donnees.profession, 'votre profession');
+  exiger('f-tel',        donnees.tel,        'un téléphone');
+
+  document.getElementById('c-conditions-l').classList.toggle('faux', !donnees.conditions);
+  if(!donnees.conditions){
+    manques.push('votre acceptation du cadre du recensement');
+    premier = premier || 'c-conditions-l';
+  }
+
+  const z = document.getElementById('erreur');
+  if(manques.length){
+    z.innerHTML = `<div class="alerte rouge" style="margin:14px 0 0">Il manque ${manques.join(', ')
+      .replace(/,([^,]*)$/, ' et$1')}.</div>`;
+    /* Sur téléphone, le champ fautif est souvent plusieurs écrans
+       plus haut : on l'amène sous les yeux au lieu de le teinter
+       en rouge dans le vide. */
+    const e = premier && document.getElementById(premier);
+    if(e && e.scrollIntoView) e.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+  z.innerHTML = '';
+
+  const b = document.getElementById('valider');
+  envoiEnCours = true; b.disabled = true; b.textContent = 'Transmission…';
+
+  let r, c;
+  try{
+    r = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(donnees)
+    });
+    c = await r.json();
+  }catch(e){
+    envoiEnCours = false; b.disabled = false; b.textContent = 'Valider mon inscription';
+    z.innerHTML = `<div class="alerte rouge" style="margin:14px 0 0">La transmission a échoué. Votre saisie
+      est toujours à l'écran : réessayez dans un instant.</div>`;
+    return;
+  }
+
+  if(!r.ok || !c || !c.ok){
+    envoiEnCours = false; b.disabled = false; b.textContent = 'Valider mon inscription';
+    z.innerHTML = `<div class="alerte rouge" style="margin:14px 0 0">${esc((c && c.erreur) ||
+      "La transmission a échoué.")} Votre saisie est conservée à l'écran.</div>`;
+    return;
+  }
+
+  /* L'heure qui fait foi est celle du registre, pas celle de
+     l'appareil : le récapitulatif du professionnel et la ligne
+     du cockpit portent le même horodatage. */
+  recapitulatif(donnees, c.ref, c.le || new Date().toISOString());
+}
+
+/* --- Le récapitulatif remis au professionnel -------------
+   Il n'a rien à renvoyer : c'est une trace de ce qu'il a
+   déclaré, et un rappel écrit de ce à quoi il ne s'engage pas. */
+function recapitulatif(d, ref, quand){
+  const l = (e, v) => `<div class="l"><span class="e">${e}</span><span class="v">${esc(v||'—')}</span></div>`;
+  const nom = [d.prenom, d.nom].filter(Boolean).join(' ');
+  afficher(`<div class="recu no-print">
+    <div class="t">Votre inscription est enregistrée.</div>
+    <p style="margin:0">La coordination de la CPTS Pau Béarn en a reçu le détail et vous rappellera au
+    ${esc(d.tel)} avant toute proposition de mission. Vous n'avez rien d'autre à faire.</p>
+    <div class="r">Référence de votre inscription : <strong>${esc(ref)}</strong></div>
+  </div>
+
+  <div class="actions no-print" style="margin:0 0 18px">
+    <button type="button" class="btn" onclick="window.print()">Enregistrer mon récapitulatif en PDF</button>
+    <span class="aide" style="margin:0">Choisissez ensuite « Enregistrer au format PDF ».
+      Sur iPhone, l'aperçu s'ouvre : appuyez sur le bouton de partage pour l'enregistrer ou l'envoyer.</span>
+  </div>
+
+  <div class="acte">
+    <div class="ent">
+      <div class="g">
+        <div class="org">CPTS Pau Béarn</div>
+        <div class="sub">Communauté professionnelle territoriale de santé — Pau et Béarn</div>
+      </div>
+      <div class="d">
+        <div class="ref">Réf. ${esc(ref)}</div>
+        <div class="sub">Établi le ${frdate(quand)}</div>
+      </div>
+    </div>
+
+    <h1 class="ttl">Déclaration de volontariat au renfort</h1>
+    <div class="ss">Récapitulatif de l'inscription au recensement — exemplaire du professionnel</div>
+
+    <div class="ctx"><b>Cadre du recensement.</b> Le présent récapitulatif est établi dans le cadre du plan
+    blanc régional et du dispositif ORSAN AMAVI activés par l'ARS Nouvelle-Aquitaine à la suite des feux de
+    forêt de Gironde et des Landes de juillet 2026. La CPTS Pau Béarn intervient au seul titre du
+    recensement et de la coordination des professionnels volontaires de son territoire. Ce document
+    constate une déclaration de disponibilité. Il ne vaut ni affectation, ni réquisition, ni engagement
+    contractuel, et ne crée aucune obligation à la charge du professionnel déclarant.</div>
+
+    <h3>1 · Professionnel déclarant</h3>
+    ${l('Nom et prénom', nom)}
+    ${l('Profession', d.profession)}
+    ${l("Mode d'exercice", d.exercice)}
+    ${l('N° RPPS ou ADELI', d.rpps)}
+    ${l('Cabinet, structure ou employeur', d.structure)}
+    ${l("Commune d'exercice", d.commune)}
+    ${l('Téléphone', d.tel)}
+    ${l('Courriel', d.mail)}
+
+    <h3>2 · Renfort envisagé</h3>
+    ${d.renforts.length
+      ? `<ul>${d.renforts.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`
+      : `<div style="font-size:12.5px;color:#5A6B84">Aucun type de renfort coché — à préciser lors du rappel de la coordination.</div>`}
+    ${d.experience ? l('Expérience utile déclarée', d.experience) : ''}
+    ${d.engage ? l('Déjà engagé dans un autre dispositif', d.engage) : ''}
+
+    <h3>3 · Disponibilité déclarée</h3>
+    ${l('Disponibilités', d.dispo)}
+    ${l('Mobilisable à partir du', d.apartir ? frjour(d.apartir) : '')}
+    ${l("Durée mobilisable d'affilée", d.duree)}
+    ${l('Zone de déplacement acceptée', d.zone)}
+    ${l('Véhicule', d.vehicule)}
+    ${l('Peut dormir sur place', d.nuit)}
+    ${d.note ? l('Précisions', d.note) : ''}
+
+    <h3>4 · Ce à quoi cette déclaration engage — et n'engage pas</h3>
+    <ol>
+      <li>La déclaration vaut disponibilité annoncée. Elle ne vaut ni affectation, ni réquisition, ni
+      engagement contractuel, et ne crée aucune obligation à la charge du professionnel déclarant.</li>
+      <li>La coordination de la CPTS Pau Béarn rappelle le professionnel avant toute proposition de
+      mission. Celui-ci reste libre de refuser toute mission, à tout moment et sans justification.</li>
+      <li>La CPTS Pau Béarn recense et coordonne. L'affectation relève de l'ARS Nouvelle-Aquitaine et des
+      structures qui accueillent les renforts.</li>
+      <li>Il appartient au professionnel de vérifier que sa responsabilité civile professionnelle couvre
+      une activité exercée hors de son lieu habituel d'exercice, et d'organiser la continuité des soins de
+      sa patientèle pendant son absence.</li>
+      <li>Les coordonnées recueillies ne sont utilisées qu'aux fins d'organiser le renfort dans le cadre du
+      plan blanc régional. Leur rectification ou leur suppression peut être demandée à tout moment auprès
+      de la coordination de la CPTS Pau Béarn.</li>
+    </ol>
+
+    <h3>5 · Déclaration</h3>
+    <div class="cachet"><b>Déclaration recueillie par voie électronique</b> le ${frdate(quand)} à
+      ${frheure(quand)}, par ${esc(nom)}${d.profession ? ', ' + esc(d.profession) : ''}, qui a déclaré
+      avoir pris connaissance du cadre ci-dessus et se porter volontaire au renfort dans ces conditions.
+      ${d.transmission
+        ? "Le professionnel a accepté que ses coordonnées soient transmises à l'ARS Nouvelle-Aquitaine et aux structures d'accueil, aux seules fins d'organiser le renfort."
+        : "Le professionnel n'a pas accepté la transmission de ses coordonnées à des tiers : aucun nom ne sera communiqué hors de la CPTS Pau Béarn sans son accord préalable."}
+      Aucune signature manuscrite n'est requise.</div>
+
+    <div class="pied">Document remis au professionnel pour ses archives. Un exemplaire identique est
+    conservé par la CPTS Pau Béarn au titre de la traçabilité de sa mobilisation. Coordination du
+    recensement : CPTS Pau Béarn.</div>
+  </div>
+
+  <div class="actions no-print">
+    <button type="button" class="btn sec" onclick="location.reload()">Recenser un autre professionnel</button>
+  </div>`);
+}
+
+demarrer();
+</script>
+</body>
+</html>
