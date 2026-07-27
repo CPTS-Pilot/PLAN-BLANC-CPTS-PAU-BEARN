@@ -279,6 +279,42 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .veille a{color:var(--encre-2);font-size:13.5px;display:inline-block;margin-top:7px;text-decoration:none;border-bottom:1px solid var(--trait)}
 .veille a:hover{border-color:var(--encre-2)}
 
+/* ---------- registres de traçabilité ---------- */
+.reg-jour{display:flex;align-items:center;gap:11px;margin:24px 0 11px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-2)}
+.reg-jour:first-child{margin-top:2px}
+.reg-jour::after{content:"";flex:1;height:1px;background:var(--trait)}
+.reg-jour .n{color:var(--encre);font-weight:500}
+.reg-jour .auj{background:var(--cobalt-clair);color:var(--encre-2);padding:2px 7px;border-radius:3px}
+
+.ent-r{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--trait);
+  border-radius:8px;padding:14px 17px;margin-bottom:10px}
+.ent-r.t-cours{border-left-color:var(--stable)}
+.ent-r.t-attente{border-left-color:var(--ambre)}
+.ent-r.t-bloque{border-left-color:var(--braise)}
+.ent-r.t-fini{border-left-color:#A7B6CA}
+.ent-r .haut{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.ent-r .hr{font-family:var(--mono);font-size:11.5px;color:var(--texte-2)}
+.ent-r .outils{margin-left:auto;display:flex;gap:1px}
+.ent-r .outils button{background:none;border:0;cursor:pointer;color:var(--texte-2);opacity:.35;
+  font-size:15px;line-height:1;padding:3px 6px;border-radius:4px}
+.ent-r .outils button:hover{opacity:1;color:var(--braise);background:var(--surface)}
+.ent-r .ti{font-family:var(--display);font-weight:600;font-size:15.5px;line-height:1.4;
+  color:var(--encre);white-space:pre-line}
+.ent-r .bloc{margin-top:10px;padding-left:12px;border-left:2px solid var(--cobalt-clair)}
+.ent-r .bloc .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--texte-2);display:block;margin-bottom:2px}
+.ent-r .bloc .v{font-size:14px;white-space:pre-line}
+.ent-r .chips{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:10px;font-size:13.5px}
+.ent-r .chips .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--texte-2);margin-right:6px}
+.ent-r .lien{display:inline-block;margin-top:10px;font-size:13.5px;color:var(--encre-2);
+  text-decoration:none;border-bottom:1px solid var(--trait)}
+.ent-r .lien:hover{border-color:var(--encre-2)}
+.ent-r .pied{margin-top:11px;padding-top:8px;border-top:1px dashed var(--trait);
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--texte-2);
+  display:flex;gap:6px 16px;flex-wrap:wrap}
+
 /* ---------- collecte de matériel ---------- */
 .jauge{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--trait);margin:0 0 8px}
 .jauge i{display:block;height:100%;transition:width .3s}
@@ -482,10 +518,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 @media print{
   @page{margin:14mm}
   body{background:#fff;font-size:10.5pt}
-  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.src-c .b,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx{display:none!important}
+  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.src-c .b,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils{display:none!important}
   td.act,th:last-child{display:none!important}
   .contenu{padding:0;max-width:none}
-  .carte,.tw,.mission,.pers,.ligne,.src-c{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
+  .carte,.tw,.mission,.pers,.ligne,.src-c,.ent-r{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
+  .reg-jour{break-after:avoid}
   .entete-print{display:block!important;border-bottom:2px solid #062B63;padding-bottom:8px;margin-bottom:16px}
   .entete-print .t{font-family:var(--display);font-weight:700;font-size:15pt;color:#062B63}
   .entete-print .d{font-family:var(--mono);font-size:9pt;color:#555;margin-top:3px}
@@ -1562,6 +1599,114 @@ function tableau(k){
     }).join('') + `<td class="act"><button title="Modifier" onclick="ouvrirEdition('${k}','${l.id}')">✎</button><button title="Supprimer" onclick="supprimer('${k}','${l.id}')">×</button></td></tr>`;
   });
   return h + '</tbody></table></div>';
+}
+
+/* ---------------------------------------------------------
+   Les registres de traçabilité se lisent comme un journal :
+   une carte par entrée, regroupée par jour, plutôt qu'un
+   tableau à dix colonnes qu'il faut faire défiler pour lire
+   une phrase. Le tableau reste dans le dossier de traçabilité,
+   où il sert à l'impression et à l'export.
+   --------------------------------------------------------- */
+const JOURNAL = {
+  courante: {
+    titre:'evenement', etiq:['statut'],
+    chips:[{c:'source', l:"Source"}],
+    blocs:[{c:'suite', l:"Suite donnée"}]
+  },
+  terrain: {
+    titre:'sujet', etiq:['criticite','statut'],
+    chips:[{c:'professionnel', l:"Professionnel"},{c:'profession', l:"Profession"},
+           {c:'commune', l:"Commune"},{c:'transmis', l:"Transmis à"}],
+    blocs:[{c:'action', l:"Action menée"}]
+  },
+  diffusions: {
+    titre:'objet', etiq:['canal'],
+    chips:[{c:'cible', l:"Destinataires"},{c:'portee', l:"Nombre"},
+           {c:'emetteur', l:"Émetteur"},{c:'valide', l:"Validé par"},
+           {c:'retourCanal', l:"Canal de retour"}],
+    blocs:[{c:'demande', l:"Demande formulée"},{c:'retours', l:"Retours reçus"},
+           {c:'observation', l:"Observation, correction à apporter"}]
+  },
+  ars: {
+    titre:'objet', etiq:['sens','statut'],
+    chips:[{c:'canal', l:"Canal"},{c:'interlocuteur', l:"Interlocuteur"}],
+    blocs:[{c:'demande', l:"Ce qui est demandé ou annoncé"},{c:'reponse', l:"Notre réponse ou action"},
+           {c:'attendu', l:"Ce que ça implique pour la CPTS"}],
+    lien:'lien', lienL:"Ouvrir le document"
+  }
+};
+
+const ETIQ_REG = {
+  'En cours':'e-cours', 'Clos':'e-fini', 'Terminé':'e-fini',
+  'À suivre':'e-attente', 'À faire':'e-attente', 'En attente':'e-attente',
+  "Reçu de l'ARS":'e-lancer', "Envoyé à l'ARS":'e-cours', 'À envoyer':'e-attente',
+  'Faible':'e-fini', 'Moyenne':'e-attente', 'Élevée':'e-bloque'
+};
+
+/* Le liseré de gauche donne l'état d'un coup d'œil, sans lire :
+   rouge si la remontée est critique, ambre si ça attend, vert si
+   c'est en cours, gris si c'est clos. */
+function classeReg(o){
+  if(o.criticite === 'Élevée') return 't-bloque';
+  if(o.statut === 'En cours') return 't-cours';
+  if(['À faire','En attente','À suivre'].includes(o.statut)) return 't-attente';
+  if(['Clos','Terminé'].includes(o.statut)) return 't-fini';
+  return '';
+}
+
+function frdateJour(d){
+  if(!d) return "Date non précisée";
+  const t = new Date(d + 'T12:00:00');
+  if(isNaN(t.getTime())) return d;
+  const s = t.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function journal(k){
+  const cfg = JOURNAL[k], lignes = chrono(k, etat[k]);
+  if(!lignes.length)
+    return `<div class="carte"><p class="vide">Rien à afficher pour le moment. La première saisie ouvre le suivi.</p></div>`;
+
+  let h = '', jour = null;
+  lignes.forEach(o => {
+    if(o.date !== jour){
+      jour = o.date;
+      h += `<div class="reg-jour"><span class="n">${esc(frdateJour(jour))}</span>` +
+           (jour === aujourdhui() ? `<span class="auj">aujourd'hui</span>` : '') + `</div>`;
+    }
+
+    const etiqs = (cfg.etiq || []).map(c => o[c]).filter(Boolean)
+      .map(v => `<span class="etiq ${ETIQ_REG[v] || 'e-lancer'}">${esc(v)}</span>`).join('');
+
+    const chips = (cfg.chips || []).filter(x => o[x.c])
+      .map(x => `<span><span class="k">${esc(x.l)}</span>${esc(o[x.c])}</span>`).join('');
+
+    const blocs = (cfg.blocs || []).filter(x => o[x.c])
+      .map(x => `<div class="bloc"><span class="k">${esc(x.l)}</span><div class="v">${esc(o[x.c])}</div></div>`).join('');
+
+    const lien = cfg.lien && o[cfg.lien]
+      ? `<a class="lien" href="${esc(o[cfg.lien])}" target="_blank" rel="noopener">${esc(cfg.lienL || 'Ouvrir')} ↗</a>` : '';
+
+    const pied = [o.auteur ? 'Saisi par ' + o.auteur : '', o.modifiePar ? 'Modifié par ' + o.modifiePar : '',
+                  o.echeance ? 'Échéance ' + frdateL(o.echeance) : '']
+      .filter(Boolean).map(x => `<span>${esc(x)}</span>`).join('');
+
+    h += `<article class="ent-r ${classeReg(o)}">
+      <div class="haut">
+        ${o.heure ? `<span class="hr">${esc(o.heure)}</span>` : ''}${etiqs}
+        <span class="outils">
+          <button title="Modifier" onclick="ouvrirEdition('${k}','${o.id}')">✎</button>
+          <button title="Supprimer" onclick="supprimer('${k}','${o.id}')">×</button>
+        </span>
+      </div>
+      <div class="ti">${esc(o[cfg.titre]) || '—'}</div>
+      ${chips ? `<div class="chips">${chips}</div>` : ''}
+      ${blocs}${lien}
+      ${pied ? `<div class="pied">${pied}</div>` : ''}
+    </article>`;
+  });
+  return h;
 }
 
 /* =========================================================
@@ -3100,12 +3245,13 @@ function vueDossier(){
 function vueCollection(k){
   const cfg = CHAMPS[k];
   const n = (etat[k] || []).length;
+  const j = !!JOURNAL[k];
   return `<h1>${cfg.titre}</h1><p class="chapo">${cfg.chapo}</p>
-    <div class="barre-h"><span class="cpt-h">${n} ligne${n>1?'s':''}</span>
+    <div class="barre-h"><span class="cpt-h">${n} ${j ? 'entrée' : 'ligne'}${n>1?'s':''}${j ? ' · de la plus récente à la plus ancienne' : ''}</span>
       <button class="btn sec" onclick="exporterCSV('${k}')">Excel</button>
       <button class="btn sec" onclick="imprimer()">PDF</button>
       <button class="btn" onclick="ouvrirAjout('${k}')">Ajouter</button></div>
-    ${tableau(k)}`;
+    ${j ? journal(k) : tableau(k)}`;
 }
 
 function majPrintHead(){
