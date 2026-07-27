@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Cockpit de crise — CPTS Pau Béarn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --encre:#062B63;
+  --encre-2:#0B4FA8;
+  --cobalt-clair:#E8F0FB;
+  --surface:#F3F6FB;
+  --carte:#FFFFFF;
+  --trait:#D8E1EF;
+  --texte:#122238;
+  --texte-2:#5A6B84;
+  --ambre:#E8A33D;
+  --braise:#C2482F;
+  --stable:#2F7D62;
+  --rail:250px;
+  --display:'Archivo',system-ui,sans-serif;
+  --corps:'Source Sans 3',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--corps);
+  background:var(--surface);
+  color:var(--texte);
+  font-size:15px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+
+/* ---------- structure ---------- */
+.shell{display:flex;min-height:100vh}
+.rail{
+  width:var(--rail);flex:0 0 var(--rail);
+  background:var(--encre);color:#C3D6F0;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  display:flex;flex-direction:column;
+}
+.marque{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.09)}
+.marque .nom{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.02em;color:#fff;line-height:1.2}
+.marque .sous{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#7FA3D4;margin-top:6px}
+.nav{padding:10px 8px;flex:1}
+.nav button{
+  display:flex;align-items:center;gap:10px;width:100%;
+  background:none;border:0;text-align:left;cursor:pointer;
+  padding:9px 10px;border-radius:6px;color:#B5CBE9;font-size:14px;
+}
+.nav button:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav button.actif{background:var(--encre-2);color:#fff;font-weight:600}
+.nav button .cpt{margin-left:auto;font-family:var(--mono);font-size:11px;color:#7FA3D4}
+.nav button.actif .cpt{color:#DCE9FA}
+.nav .groupe{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:#6C8FC4;padding:16px 10px 6px}
+.pied{padding:12px 14px;border-top:1px solid rgba(255,255,255,.09);font-size:12px;color:#7FA3D4}
+.pied button{background:none;border:1px solid rgba(255,255,255,.18);color:#C3D6F0;border-radius:5px;padding:5px 9px;font-size:11.5px;cursor:pointer;margin:3px 3px 0 0}
+.pied button:hover{border-color:#fff;color:#fff}
+
+.zone{flex:1;min-width:0;display:flex;flex-direction:column}
+.bandeau{
+  background:var(--encre-2);color:#fff;padding:14px 26px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+}
+.bandeau .pastille{
+  font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--braise);padding:4px 9px;border-radius:3px;white-space:nowrap;
+}
+.bandeau .phrase{font-size:14.5px;flex:1;min-width:200px}
+.bandeau .crayon{background:none;border:1px solid rgba(255,255,255,.3);color:#C3D6F0;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:13px;min-height:34px}
+.bandeau .crayon:hover{border-color:#fff;color:#fff}
+.bandeau .maj{font-family:var(--mono);font-size:11.5px;color:#A9C4E8}
+.contenu{padding:26px;max-width:1180px;width:100%}
+
+h1{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.01em;margin:0 0 4px}
+.chapo{color:var(--texte-2);margin:0 0 22px;max-width:70ch}
+h2{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.02em;margin:0 0 12px;display:flex;align-items:center;gap:9px}
+h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-radius:2px;display:block}
+
+/* ---------- cartes ---------- */
+.carte{background:var(--carte);border:1px solid var(--trait);border-radius:9px;padding:18px;margin-bottom:18px}
+.grille{display:grid;gap:14px}
+@media(min-width:900px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}}
+
+/* ---------- consignes ---------- */
+.consignes{display:grid;gap:14px}
+@media(min-width:820px){.consignes{grid-template-columns:1fr 1fr}}
+.bloc-consigne{border-radius:9px;padding:16px 18px;border:1px solid var(--trait);background:var(--carte)}
+.bloc-consigne.faire{border-left:4px solid var(--stable)}
+.bloc-consigne.eviter{border-left:4px solid var(--braise)}
+.bloc-consigne h3{font-family:var(--display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 10px;color:var(--texte-2)}
+.bloc-consigne ul{margin:0;padding-left:18px}
+.bloc-consigne li{margin-bottom:7px}
+.bloc-consigne li button{background:none;border:0;color:var(--texte-2);cursor:pointer;font-size:12px;padding:0 4px;opacity:.5}
+.bloc-consigne li button:hover{opacity:1;color:var(--braise)}
+
+/* ---------- compteurs ---------- */
+.compteurs{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px}
+.compteur{background:var(--carte);border:1px solid var(--trait);border-radius:8px;padding:13px 14px}
+.compteur .n{font-family:var(--display);font-size:26px;font-weight:700;line-height:1;color:var(--encre)}
+.compteur .l{font-size:12px;color:var(--texte-2);margin-top:5px;line-height:1.3}
+
+/* ---------- missions ---------- */
+.mission{background:var(--carte);border:1px solid var(--trait);border-radius:9px;padding:16px 18px;margin-bottom:12px}
+.mission .haut{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.mission .titre{font-family:var(--display);font-weight:600;font-size:15.5px;flex:1;min-width:220px}
+.mission .meta{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:12px;font-size:13.5px}
+.mission .meta div{min-width:130px}
+.mission .meta .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:2px}
+.mission .suite{margin-top:12px;padding-top:12px;border-top:1px dashed var(--trait);font-size:14px}
+.mission .suite .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:3px}
+
+.etiq{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:3px;white-space:nowrap}
+.e-attente{background:#FCF0DA;color:#8A5D12}
+.e-cours{background:#DFF0E9;color:#1E5C46}
+.e-lancer{background:#E2EAF5;color:#3D5578}
+.e-fini{background:#E4E9F1;color:#6A7C93}
+.e-bloque{background:#F8E0DB;color:#8E2F1D}
+
+/* ---------- organigramme ---------- */
+.orga{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));margin-bottom:26px}
+.pers{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--encre-2);border-radius:11px;padding:17px 18px}
+.pers.vacant{border-top-color:var(--braise);background:#FDF7F5}
+.pers .qui{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--texte-2)}
+.pers .nom{font-family:var(--display);font-weight:700;font-size:23px;line-height:1.12;letter-spacing:-.015em;margin:7px 0 3px;color:var(--encre)}
+.pers.vacant .nom{color:var(--braise)}
+.pers .compte{font-size:12.5px;color:var(--texte-2);margin-bottom:13px}
+.pers .chip{display:block;background:var(--cobalt-clair);border-radius:7px;padding:8px 11px;font-size:13.5px;margin-bottom:6px;line-height:1.35}
+.pers .chip.appui{background:#F4F6FA;color:var(--texte-2)}
+.pers .chip .r{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:2px;opacity:.75}
+.pers .coord{margin:10px 0 12px;display:flex;flex-direction:column;gap:5px}
+.pers .coord a{display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--encre-2);font-size:14px;padding:7px 10px;background:var(--cobalt-clair);border-radius:7px;min-height:40px}
+.pers .coord a:active{background:#D6E5F9}
+.pers .coord .abs{font-size:13px;color:var(--texte-2);font-style:italic}
+.pers .modif{background:none;border:1px solid var(--trait);border-radius:6px;color:var(--texte-2);font-size:12px;padding:6px 10px;cursor:pointer;margin-top:4px;min-height:36px}
+.pers .modif:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.pers .chip{cursor:pointer;border:0;width:100%;text-align:left;font-family:inherit}
+.pers .chip:hover{background:#D8E7FA}
+.pers .chip.appui:hover{background:#EAEEF5}
+.fiche h4{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--texte-2);margin:16px 0 5px}
+.fiche p{margin:0}
+.fiche ul{margin:0;padding-left:19px}
+.fiche li{margin-bottom:5px}
+.fiche .stop{background:#FBEDE9;border-left:3px solid var(--braise);border-radius:0 7px 7px 0;padding:10px 13px;margin-top:5px}
+.mission .barre{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px dashed var(--trait);align-items:center}
+.mission .sup-m{margin-left:auto;background:none;border:0;color:var(--texte-2);opacity:.45;cursor:pointer;font-size:18px;padding:4px 8px}
+.mission .sup-m:hover{opacity:1;color:var(--braise)}
+.espace{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--trait);flex-wrap:wrap}
+.espace .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2)}
+.mesmissions{padding:12px 14px;border-top:1px solid rgba(255,255,255,.09)}
+.mesmissions .t{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:#6C8FC4;margin-bottom:8px}
+.mesmissions button{display:block;width:100%;text-align:left;background:rgba(255,255,255,.07);border:0;border-radius:6px;color:#DCE9FA;padding:9px 10px;font-size:13px;margin-bottom:5px;cursor:pointer;line-height:1.3}
+.mesmissions button:hover{background:rgba(255,255,255,.15)}
+.mesmissions .r{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:#7FA3D4;margin-top:3px}
+.choixnom{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.choixnom button{text-align:left;background:var(--cobalt-clair);border:1px solid var(--trait);border-radius:8px;padding:12px 14px;font-size:16px;font-family:var(--display);font-weight:600;cursor:pointer;min-height:48px}
+.choixnom button:hover{border-color:var(--encre-2)}
+.legende{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--texte-2);margin:-12px 0 18px}
+.legende span{display:flex;align-items:center;gap:6px}
+.legende i{width:12px;height:12px;border-radius:3px;display:block;font-style:normal}
+
+/* ---------- fil ---------- */
+.fil{list-style:none;margin:0;padding:0}
+.fil li{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--trait)}
+.fil li:last-child{border-bottom:0}
+.fil .h{font-family:var(--mono);font-size:11.5px;color:var(--texte-2);flex:0 0 92px;padding-top:2px}
+.fil .c{flex:1;min-width:0}
+.fil .c .t{font-weight:600}
+.fil .c .d{color:var(--texte-2);font-size:13.5px;margin-top:2px}
+.fil .c .s{font-family:var(--mono);font-size:11px;color:var(--texte-2);margin-top:4px}
+.fil .sup{background:none;border:0;color:var(--texte-2);cursor:pointer;opacity:.4;font-size:14px;padding:0 2px;align-self:flex-start}
+.fil .sup:hover{opacity:1;color:var(--braise)}
+
+/* ---------- veille ---------- */
+.filtres{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.filtres button{border:1px solid var(--trait);background:var(--carte);border-radius:20px;padding:5px 13px;font-size:13px;cursor:pointer;color:var(--texte-2)}
+.filtres button.on{background:var(--encre);border-color:var(--encre);color:#fff}
+.cptsl{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));margin-bottom:20px}
+.cptsc{background:var(--carte);border:1px solid var(--trait);border-left:5px solid var(--trait);border-radius:10px;padding:15px 16px;display:flex;flex-direction:column;gap:9px}
+.cptsc.feu{border-left-color:var(--braise)}
+.cptsc.proche{border-left-color:var(--ambre)}
+.cptsc.fait{background:#F6FBF8}
+.cptsc .nom{font-family:var(--display);font-weight:700;font-size:16.5px;line-height:1.2;color:var(--encre)}
+.cptsc .terr{font-size:12.5px;color:var(--texte-2);line-height:1.4}
+.cptsc .obs{font-size:12.5px;background:#FCF3E4;color:#8A5D12;border-radius:6px;padding:7px 9px}
+.cptsc .rangee{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.cptsc select{width:auto;flex:1;min-width:140px;min-height:40px}
+.cptsc a.tel{display:inline-flex;align-items:center;justify-content:center;background:var(--encre-2);color:#fff;font-family:var(--display);font-weight:600;border-radius:8px;padding:10px 14px;text-decoration:none;min-height:44px;flex:1;min-width:150px}
+.cptsc .journal{border-top:1px dashed var(--trait);padding-top:9px;margin-top:2px}
+.cptsc .journal .vide{font-size:12.5px;font-style:italic;color:var(--texte-2);padding:0}
+.cptsc .app{border-left:2px solid var(--cobalt-clair);padding:2px 0 2px 10px;margin-bottom:9px}
+.cptsc .app .q{font-family:var(--mono);font-size:10.5px;color:var(--texte-2)}
+.cptsc .app .d{font-size:13px;line-height:1.4;margin-top:2px}
+.cptsc .app .s{font-size:12.5px;color:var(--texte-2);margin-top:2px}
+.cptsc .app button{background:none;border:0;color:var(--texte-2);opacity:.45;cursor:pointer;font-size:13px;padding:0 3px}
+.cptsc .app button:hover{opacity:1;color:var(--braise)}
+.etabs{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));margin-bottom:22px}
+.etab{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--encre-2);border-radius:10px;padding:16px 17px;display:flex;flex-direction:column;gap:8px}
+.etab.prive{border-top-color:var(--stable)}
+.etab.lib{border-top-color:var(--ambre)}
+.etab .tete{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.etab .nom{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.2;color:var(--encre)}
+.etab .type{font-size:12.5px;color:var(--texte-2);margin-top:2px}
+.etab .lits{font-family:var(--display);font-weight:700;font-size:26px;color:var(--encre-2);line-height:1;text-align:right;white-space:nowrap}
+.etab .lits small{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--texte-2);font-weight:400;margin-top:3px}
+.etab .cap{font-size:13px;color:var(--texte-2);line-height:1.45}
+.etab .obs{font-size:12.5px;background:#FCF3E4;color:#8A5D12;border-radius:6px;padding:8px 10px}
+.etab .liens{display:flex;flex-direction:column;gap:6px;margin-top:auto}
+.etab .liens a{display:inline-flex;align-items:center;min-height:44px;padding:9px 13px;border-radius:8px;text-decoration:none;font-size:14px}
+.etab .liens a.tel{background:var(--encre-2);color:#fff;font-weight:600;font-family:var(--display)}
+.etab .liens a.adr,.etab .liens a.web{background:var(--cobalt-clair);color:var(--encre-2);font-size:13px}
+.etab .badges{display:flex;gap:6px;flex-wrap:wrap}
+.lignes{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));margin-bottom:22px}
+.ligne{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--encre-2);border-radius:10px;padding:16px 17px;display:flex;flex-direction:column;gap:9px}
+.ligne.urg{border-left-color:var(--braise)}
+.ligne .org{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-2)}
+.ligne .nom{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.2;color:var(--encre)}
+.ligne .quoi{font-size:13.5px;color:var(--texte-2);line-height:1.45}
+.ligne .dispo{font-family:var(--mono);font-size:11px;color:var(--stable)}
+.ligne .actes{display:flex;flex-direction:column;gap:7px}
+.ligne .actes a{display:inline-flex;align-items:center;gap:9px;min-height:46px;padding:10px 14px;border-radius:8px;text-decoration:none;font-size:15px;font-weight:600}
+.ligne .actes a.tel{background:var(--encre-2);color:#fff;font-family:var(--display)}
+.ligne .actes a.tel:active{background:var(--encre)}
+.ligne .actes a.ml{background:var(--cobalt-clair);color:var(--encre-2);font-size:13.5px;word-break:break-all}
+.ligne .actes a.web{background:#fff;border:1px solid var(--trait);color:var(--texte);font-size:13.5px;font-weight:400}
+.ligne .aver{background:#FCF3E4;border-radius:6px;padding:8px 10px;font-size:12.5px;color:#8A5D12}
+.ligne .retirer{background:none;border:1px solid var(--trait);border-radius:6px;color:var(--texte-2);font-size:12px;padding:6px 10px;cursor:pointer;align-self:flex-start}
+.ligne .retirer:hover{border-color:var(--braise);color:var(--braise)}
+.srcs{display:grid;gap:9px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));margin-bottom:8px}
+.src-c{background:var(--carte);border:1px solid var(--trait);border-radius:9px;padding:13px 14px;display:flex;flex-direction:column;gap:8px}
+.src-c.jamais{border-left:4px solid var(--ambre)}
+.src-c .n{font-weight:600;line-height:1.25}
+.src-c .cat{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-2)}
+.src-c .q{font-size:12.5px;color:var(--texte-2)}
+.src-c .b{display:flex;gap:7px;flex-wrap:wrap;margin-top:auto}
+.src-c .b a,.src-c .b button{flex:1;min-width:110px;min-height:38px;display:inline-flex;align-items:center;justify-content:center;border-radius:7px;font-size:13px;cursor:pointer;text-decoration:none;border:1px solid var(--trait);background:#fff;color:var(--texte)}
+.src-c .b a{background:var(--cobalt-clair);border-color:var(--cobalt-clair);color:var(--encre-2);font-weight:600}
+.src-c .b button:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.veille{list-style:none;margin:0;padding:0}
+.veille li{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--trait);border-radius:8px;padding:14px 16px;margin-bottom:10px}
+.veille li[data-s="ARS"]{border-left-color:var(--encre-2)}
+.veille li[data-s="URPS"]{border-left-color:var(--stable)}
+.veille li[data-s="Préfecture"]{border-left-color:var(--braise)}
+.veille li[data-s="CPTS"]{border-left-color:var(--ambre)}
+.veille li[data-s="CPAM"]{border-left-color:#6C8FC4}
+.veille .en{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:5px}
+.veille .src{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2)}
+.veille .dt{font-family:var(--mono);font-size:11.5px;color:var(--texte-2)}
+.veille .ti{font-family:var(--display);font-weight:600;font-size:15.5px;width:100%}
+.veille .re{color:var(--texte-2);font-size:14px}
+.veille a{color:var(--encre-2);font-size:13.5px;display:inline-block;margin-top:7px;text-decoration:none;border-bottom:1px solid var(--trait)}
+.veille a:hover{border-color:var(--encre-2)}
+
+/* ---------- tableaux ---------- */
+.tw{overflow-x:auto;background:var(--carte);border:1px solid var(--trait);border-radius:9px}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{background:var(--cobalt-clair);text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);padding:10px 12px;border-bottom:1px solid var(--trait);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--trait);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.act{width:62px;white-space:nowrap}
+td.act button{background:none;border:0;cursor:pointer;color:var(--texte-2);opacity:.4;font-size:14px}
+td.act button:hover{opacity:1;color:var(--braise)}
+
+/* ---------- formulaires ---------- */
+.form{display:grid;gap:12px}
+@media(min-width:760px){.form{grid-template-columns:repeat(2,1fr)}.form .large{grid-column:1/-1}}
+label{display:block}
+label .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:4px}
+input,select,textarea{
+  width:100%;padding:8px 10px;border:1px solid var(--trait);border-radius:6px;background:#fff;
+}
+textarea{min-height:74px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-offset:1px;border-color:var(--ambre)}
+.btn{
+  background:var(--encre);color:#fff;border:0;border-radius:6px;padding:9px 18px;
+  font-family:var(--display);font-weight:600;font-size:14px;cursor:pointer;
+}
+.btn:hover{background:var(--encre-2)}
+.btn.sec{background:#fff;color:var(--encre);border:1px solid var(--trait)}
+.btn.sec:hover{border-color:var(--encre)}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+
+.barre-h{display:flex;align-items:center;gap:14px;margin-bottom:14px;flex-wrap:wrap}
+.barre-h .cpt-h{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2)}
+.barre-h .btn:nth-of-type(1){margin-left:auto}
+.modale .form{grid-template-columns:1fr}
+.modale h3{margin-bottom:16px}
+@media(max-width:600px){.barre-h .btn{margin-left:0;width:100%}}
+.vide{color:var(--texte-2);font-style:italic;padding:18px 0}
+.note{font-size:13px;color:var(--texte-2);background:var(--cobalt-clair);border:1px solid var(--trait);border-radius:7px;padding:11px 13px;margin-bottom:16px}
+.note strong{color:var(--texte)}
+
+.toast{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:var(--encre);color:#fff;padding:10px 18px;border-radius:7px;font-size:14px;
+  opacity:0;transition:.25s;z-index:60;box-shadow:0 6px 24px rgba(0,0,0,.22)
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.rideau{position:fixed;inset:0;background:rgba(16,32,46,.55);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+.rideau.on{display:flex}
+.modale{background:#fff;border-radius:11px;padding:22px;max-width:520px;width:100%;max-height:88vh;overflow-y:auto}
+.modale h3{font-family:var(--display);margin:0 0 6px;font-size:19px}
+
+@media(max-width:860px){
+  .shell{flex-direction:column}
+  .rail{width:100%;height:auto;position:static;flex:none}
+  .nav{display:flex;overflow-x:auto;padding:8px;gap:4px}
+  .nav .groupe{display:none}
+  .nav button{width:auto;white-space:nowrap;padding:8px 12px}
+  .nav button .cpt{margin-left:6px}
+  .contenu{padding:18px 15px}
+  .bandeau{padding:12px 15px}
+}
+@media(max-width:600px){
+  input,select,textarea{font-size:16px;padding:11px 12px}
+  .btn{padding:12px 18px;min-height:46px;width:100%}
+  .actions{flex-direction:column}
+  .actions .btn{width:100%}
+  .orga{grid-template-columns:1fr}
+  .mission .meta div{min-width:100%;flex:1 1 100%}
+  .compteurs{grid-template-columns:1fr 1fr}
+  h1{font-size:22px}
+  .pers .nom{font-size:21px}
+  td,th{padding:9px 10px}
+  .fil .h{flex:0 0 74px}
+  .nav button{min-height:42px}
+}
+.entete-print{display:none}
+@media print{
+  @page{margin:14mm}
+  body{background:#fff;font-size:10.5pt}
+  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.src-c .b,.pers .modif,.mission .barre,.toast{display:none!important}
+  td.act,th:last-child{display:none!important}
+  .contenu{padding:0;max-width:none}
+  .carte,.tw,.mission,.pers,.ligne,.src-c{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
+  .entete-print{display:block!important;border-bottom:2px solid #062B63;padding-bottom:8px;margin-bottom:16px}
+  .entete-print .t{font-family:var(--display);font-weight:700;font-size:15pt;color:#062B63}
+  .entete-print .d{font-family:var(--mono);font-size:9pt;color:#555;margin-top:3px}
+  table{font-size:9pt;width:100%}
+  th{background:#EEF3FA!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  tr,li,h2{break-inside:avoid}
+  h2{break-after:avoid}
+  a{color:#062B63;text-decoration:none}
+  .tw{overflow:visible}
+  body.print-modale .zone,body.print-modale .rail{display:none!important}
+  body.print-modale .rideau{position:static;display:block!important;background:none;padding:0}
+  body.print-modale .modale{max-width:none;max-height:none;overflow:visible;padding:0;border-radius:0}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="marque">
+      <div class="nom">CPTS Pau Béarn</div>
+      <div class="sous">Cockpit de crise</div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="mesmissions" id="mesmissions"></div>
+    <div class="pied">
+      <div id="identite">—</div>
+      <button onclick="demanderIdentite()">Changer de nom</button>
+      <button onclick="aller('dossier')">Dossier PDF</button>
+      <button onclick="exporter()">Exporter</button>
+      <button onclick="document.getElementById('fimport').click()">Importer</button>
+      <input type="file" id="fimport" accept=".json" style="display:none" onchange="importer(event)">
+    </div>
+  </aside>
+
+  <div class="zone">
+    <div class="bandeau">
+      <span class="pastille" id="niveau">Plan blanc régional actif</span>
+      <span class="phrase" id="phrase">—</span>
+      <span class="maj" id="maj"></span>
+      <button class="crayon" onclick="editerEntete()" title="Modifier l'état affiché">✎</button>
+    </div>
+    <main class="contenu" id="vue"><div class="entete-print" id="printhead"></div></main>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="rideau" id="rideau"><div class="modale" id="modale"></div></div>
+
+<script>
+/* =========================================================
+   ÉTAT
+   ========================================================= */
+const CLE = 'cpts_pau_bearn_crise_2026';
+let moi = 'Anonyme';
+let filtreVeille = 'Tout';
+let filtreFil = 'Tout';
+let feuillet = null;
+let onglet = 'cockpit';
+
+const etatInitial = {
+  entete: {
+    niveau: 'Plan blanc régional actif',
+    phrase: "La CPTS Pau Béarn est mobilisée dans le cadre du plan blanc régional / ORSAN AMAVI — feux de forêt Gironde et Landes.",
+    maj: ''
+  },
+  consignes: {
+    faire: [
+      "Maintenir la prise en charge en ambulatoire : c'est la seule consigne que l'ARS adresse aux libéraux.",
+      "Relayer aux patients vulnérables les recommandations ARS sur les fumées et vérifier leurs traitements de secours.",
+      "Signaler ici toute situation liée aux incendies rencontrée sur le territoire, même mineure.",
+      "Orienter vers le SAS plutôt que vers les urgences quand la situation le permet."
+    ],
+    eviter: [
+      "Ne rien acheminer au Parc des Expositions de Bordeaux : les besoins y sont couverts et la consigne publique est de ne rien y déposer.",
+      "Ne pas ouvrir de collecte de matériel tant qu'un besoin écrit et un lieu de réception nommé ne sont pas validés.",
+      "Ne pas partir en renfort de sa propre initiative : l'affectation relève de l'ARS.",
+      "Ne rien diffuser aux adhérents qui n'ait été validé par la gouvernance."
+    ]
+  },
+  missions: [
+    {id:'m1', titre:"Maintien des soins en ambulatoire sur le territoire", detail:"Limiter le recours aux urgences du CH de Pau et des cliniques.", pilote:'', suppleant:'', mandat:"Oui — mail ARS du 24/07", statut:'À lancer', prochaine:"Prendre contact avec la cellule de crise du CH de Pau : attentes, déprogrammation, volumes.", echeance:'', fiche:{but:`Éviter qu'un patient du territoire arrive aux urgences faute de solution en ville.`, faire:`Prendre contact avec la cellule de crise du CH de Pau.
+Recenser les cabinets ouverts et les créneaux non programmés d'ici fin août.
+Diffuser aux adhérents les recommandations ARS sur les fumées.`, avec:`CH de Pau, SAS, pharmacies, délégation départementale de l'ARS.`, pour:`Les patients du territoire et les professionnels qui les reçoivent.`, limite:`On ne monte ni garde ni permanence : on recense et on oriente.`}},
+    {id:'m2', titre:"Effets indirects sur le territoire béarnais", detail:"Ponction des transports sanitaires du 64, déprogrammations, patients évacués hébergés en Béarn.", pilote:'', suppleant:'', mandat:'Non', statut:'À lancer', prochaine:"Recenser les capacités de soins non programmés ouvertes en août.", echeance:'', fiche:{but:`Repérer tôt ce que la crise girondine casse dans les parcours béarnais.`, faire:`Vérifier l'impact sur les transports sanitaires programmés : dialyses, chimiothérapies, sorties d'hospitalisation.
+Suivre les déprogrammations du CH et des cliniques.
+Recueillir les situations de patients évacués hébergés en Béarn.`, avec:`Transporteurs sanitaires du 64, CH de Pau, adhérents.`, pour:`Les patients chroniques dont le parcours peut rompre sans que personne ne le voie.`, limite:`On documente et on alerte. On ne réorganise pas les transports.`}},
+    {id:'m3', titre:"Collecte de matériel médical", detail:"Conditionnée à un besoin validé et à un point de livraison identifié.", pilote:'', suppleant:'', mandat:'En attente', statut:'En attente', prochaine:"Obtenir de l'ARS la liste des besoins et les lieux de livraison. Aucune collecte ouverte d'ici là.", echeance:'', fiche:{but:`Répondre à un besoin réel, pas à une envie d'aider.`, faire:`Obtenir de l'ARS une liste de besoins écrite et un lieu de livraison nommé.
+Tant qu'on ne l'a pas : aucune collecte, et le dire clairement aux adhérents.
+Une fois obtenue : un point de collecte unique, un contact sur place, un bordereau signé.`, avec:`ARS Nouvelle-Aquitaine, CPTS des zones touchées.`, pour:`Les structures de Gironde et des Landes qui ont formulé un besoin.`, limite:`On ne collecte rien de non sollicité. On n'achemine rien au Parc des Expositions de Bordeaux.`}},
+    {id:'m4', titre:"Contact des CPTS des zones touchées", detail:"Identifier leurs besoins réels, sans placer d'offre.", pilote:'', suppleant:'', mandat:"Non — initiative CPTS", statut:'En cours', prochaine:"Appeler Claire (Agora Lib) pour fiabiliser la liste, puis dérouler les appels.", echeance:'', fiche:{but:`Savoir comment vont les CPTS touchées et ce dont elles ont réellement besoin.`, faire:`Appeler Claire (Agora Lib) pour fiabiliser la liste des CPTS à contacter.
+Dérouler les appels avec la même trame.
+Noter chaque appel, y compris quand la réponse est « rien ».`, avec:`Agora Lib, CPTS Nord Bassin Océan, Terre de Médoc, Sud Bassin Val de l'Eyre, Ouest Gironde, CPTS landaises.`, pour:`Les équipes de coordination sur place.`, limite:`On n'annonce pas de matériel disponible. Aucun engagement sans lieu de livraison nommé.`}},
+    {id:'m5', titre:"Relais de diffusion des appels à renfort", detail:"Uniquement les appels officiels (URPS, ARS, ordres). La CPTS Pau Béarn n'est opératrice d'aucun dispositif.", pilote:'', suppleant:'', mandat:"Non — relais uniquement", statut:'En cours', prochaine:"Préparer une réponse d'attente pour les professionnels hors kinésithérapie.", echeance:'', fiche:{but:`Faire circuler les appels officiels sans que la CPTS Pau Béarn soit prise pour l'opérateur.`, faire:`Relayer les appels URPS, ARS et ordres en nommant qui porte le dispositif.
+Préparer une réponse d'attente pour les professions sans canal ouvert.
+Consigner chaque diffusion, sa portée et son canal de retour.`, avec:`URPS, ordres professionnels, délégation départementale de l'ARS.`, pour:`Les 210 professionnels de santé des groupes de la CPTS Pau Béarn.`, limite:`On ne lance pas d'appel à volontaires en propre.`}},
+    {id:'m6', titre:"Traçabilité et retour d'expérience", detail:"Alimenter ce cockpit en continu : c'est la matière du futur plan SSE.", pilote:'', suppleant:'', mandat:'Non', statut:'En cours', prochaine:"Rappeler la règle d'alimentation à chaque point quotidien.", echeance:'', fiche:{but:`Que cette semaine laisse une trace exploitable pour écrire le plan SSE.`, faire:`Consigner décisions et informations au fil de l'eau.
+Vérifier chaque soir que rien d'important n'est resté hors du cockpit.
+Rappeler la règle d'alimentation au point quotidien.`, avec:`Toute l'équipe de gestion de crise.`, pour:`La CPTS en septembre, et l'ARS au retour d'expérience.`, limite:`On ne rédige pas de fiches réflexe pendant la crise.`}}
+,
+    {id:'m7', titre:"Veille des sources et actualités", detail:"Passer en revue les canaux officiels et tenir à jour la situation régionale.", pilote:'', suppleant:'', mandat:'Non', statut:'À lancer', prochaine:'', echeance:'', espace:'veille', fiche:{but:`Savoir avant les adhérents ce qui sort sur les incendies et ce qui concerne la ville.`, faire:`Passer les sources en revue deux fois par jour, le matin et en fin d'après-midi.
+Marquer chaque canal comme vérifié après consultation.
+Retenir ce qui a un impact pour le territoire, avec le lien vers la source.`, avec:`ARS, préfectures, ATMO, URPS, presse régionale.`, pour:`L'équipe de gestion de crise, et indirectement les adhérents.`, limite:`On ne diffuse rien aux adhérents depuis cette mission : on alimente le fil, la diffusion se décide ailleurs.`}}
+  ],
+  veille: [
+    {id:'v4', date:'2026-07-25', source:'Préfecture', titre:"FR-Alert : évacuation de nouvelles communes girondines", resume:"Saint-Aubin-de-Médoc, Saint-Médard-en-Jalles, Martignas-sur-Jalle, Saint-Jean-d'Illac.", lien:'https://www.gironde.gouv.fr/Actualites/Communiques-de-presse/Communiques-de-presse-2026/Juillet-2026/Incendie-en-Gironde-declenchement-de-FR-Alert-pour-l-evacuation-des-nouvelles-communes'},
+    {id:'v5', date:'2026-07-24', source:'Autre', titre:"CHU de Bordeaux : plan blanc territorial et accueil des patients évacués", resume:"Accueil coordonné des patients de l'hôpital privé Wallerstein d'Arès, répartis à l'échelle départementale par l'ARS.", lien:'https://www.chu-bordeaux.fr/Espace-m%C3%A9dia/Actualit%C3%A9s/Incendies-en-Gironde-:-mobilisation-g%C3%A9n%C3%A9rale-du-CHU-de-Bordeaux-au-service-de-la-solidarit%C3%A9-territoriale-/'},
+    {id:'v6', date:'2026-07-26', source:'Autre', titre:"Parc des Expositions de Bordeaux : ne rien y déposer", resume:"Centre d'accueil tenu par la Croix-Rouge, la réserve citoyenne métropolitaine et les communes, avec des renforts nationaux déjà sur place. Les besoins matériels y sont couverts.", lien:''},
+    {id:'v7', date:'2026-07-26', source:'URPS', titre:"Appel à volontaires kinésithérapeutes auprès des sapeurs-pompiers", resume:"Recensement porté par l'URPS Masseurs-Kinésithérapeutes Nouvelle-Aquitaine. Soins de récupération en caserne, en cabinet ou à proximité des zones d'intervention à la demande du SDIS. La CPTS Pau Béarn relaie, elle n'est pas opératrice.", lien:'https://forms.gle/b5UKjn4sTYqnJjSQ8'},
+    {id:'v8', date:'2026-07-25', source:'CPTS', titre:"Message n°1 diffusé aux membres de la CPTS", resume:"Information sur le déclenchement du plan blanc régional et rappel de la consigne de maintien en ambulatoire.", lien:''}
+
+  ],
+  cpts: [
+    {id:'g1', nom:"CPTS Nord Bassin Océan", territoire:"Marcheprime, Lacanau, Le Porge, Lège-Cap-Ferret, Arès, Andernos", tel:"05 57 18 29 89", contact:'', url:'https://cptsnordbassinocean.fr', priorite:"Zone de feu", statut:"À appeler", note:"Plein cœur de zone. Travaille avec la CPTS Terre de Médoc sur Lacanau.", appels:[]},
+    {id:'g2', nom:"CPTS Sud Bassin Val de l'Eyre", territoire:"Arcachon, La Teste-de-Buch, Gujan-Mestras, Le Teich, Le Barp, Salles, Belin-Béliet, Lugos, Mios", tel:"06 03 00 40 06", contact:'', url:'', priorite:"Zone de feu", statut:"À appeler", note:"Second numéro relevé dans l'annuaire national des CPTS : 06 62 86 36 59. Adresse : 80 boulevard Deganne, 33120 Arcachon.", appels:[]},
+    {id:'g3', nom:"CPTS Ouest Gironde", territoire:"Mérignac, Pessac, Martignas-sur-Jalle, Saint-Jean-d'Illac", tel:"06 51 36 73 45", contact:'', url:'https://www.cpts-ouest-gironde.fr', priorite:"Zone de feu", statut:"À appeler", note:"Martignas-sur-Jalle et Saint-Jean-d'Illac font partie des communes évacuées par FR-Alert le 25/07.", appels:[]},
+    {id:'g4', nom:"CPTS Terre de Médoc", territoire:"Médoc, secteur de Lacanau", tel:'', contact:'', url:'', priorite:"Zone de feu", statut:"À appeler", note:"Numéro à obtenir — passer par Claire (Agora Lib) ou par la CPTS Nord Bassin Océan.", appels:[]},
+    {id:'g5', nom:"CPTS des Landes — secteur Biscarrosse", territoire:"Biscarrosse, Parentis, Mimizan", tel:'', contact:'', url:'', priorite:"Zone de feu", statut:"À appeler", note:"Périmètre exact et coordonnées à faire confirmer par Claire (Agora Lib) avant appel.", appels:[]},
+    {id:'g6', nom:"CPTS Sud Médoc", territoire:"Arsac et communes du Sud Médoc", tel:'', contact:'', url:'', priorite:"Proche", statut:"À appeler", note:'', appels:[]},
+    {id:'g7', nom:"CPTS Bordeaux Nord Ouest Métropole", territoire:"Nord-ouest de la métropole bordelaise", tel:'', contact:'', url:'', priorite:"Proche", statut:"À appeler", note:"Concernée par l'accueil des personnes évacuées.", appels:[]},
+    {id:'g8', nom:"CPTS de Bordeaux", territoire:"Bordeaux", tel:'', contact:'', url:'', priorite:"Proche", statut:"À appeler", note:"Concernée par l'accueil des personnes évacuées.", appels:[]},
+    {id:'g9', nom:"CPTS Entre Deux Mers", territoire:"Targon et Entre-deux-Mers", tel:'', contact:'', url:'', priorite:"Hors zone", statut:"À appeler", note:'', appels:[]},
+    {id:'g10', nom:"CPTS Haute Gironde", territoire:"Blaye et Haute Gironde", tel:'', contact:'', url:'', priorite:"Hors zone", statut:"À appeler", note:"Adresse : 1 rue Nicole Girard-Mangin, 33390 Blaye.", appels:[]}
+  ],
+  offre: [
+    {id:'o1', cat:"Hôpitaux publics", nom:"Centre Hospitalier de Pau", statut:'Public', type:"Centre hospitalier — établissement support du GHT Béarn et Soule", commune:'Pau', adresse:"4 boulevard Hauterive, 64046 Pau", tel:"05 59 92 48 48", lits:'846', capacites:"Recours de type 3 : réanimation adulte et pédiatrique, néonatalogie, maternité de niveau III, unité neuro-vasculaire, cardiologie interventionnelle. 12 salles de bloc, 3 scanners, 2 IRM. Environ 66 700 passages aux urgences par an.", urgences:'Oui', url:'https://www.ch-pau.fr', note:"Pivot du territoire en cas d'afflux massif de victimes.", verif:false},
+    {id:'o2', cat:"Cliniques et privé", nom:"Polyclinique Pau Pyrénées — site Navarre", statut:'Privé', type:"Clinique pluridisciplinaire (groupe GBNA Santé)", commune:'Pau', adresse:"8 boulevard Hauterive, 64000 Pau", tel:'', lits:'370', capacites:"370 lits et places sur les deux sites (Navarre et Marzet). Chirurgie de toutes spécialités, urgences, maternité, unité de soins intensifs en neurochirurgie, surveillance continue. Le plus important établissement de soins privé du sud de la Nouvelle-Aquitaine.", urgences:'Oui', url:'https://polycliniquepaupyrenees.fr', note:"Capacité déclarée pour les deux sites réunis : ne pas la compter deux fois.", verif:true},
+    {id:'o3', cat:"Cliniques et privé", nom:"Polyclinique Pau Pyrénées — site Marzet", statut:'Privé', type:"Pôle médical et de rééducation", commune:'Pau', adresse:"40 boulevard d'Alsace-Lorraine, 64000 Pau", tel:'', lits:'', capacites:"Médecine oncologique, médecine polyvalente, soins palliatifs, centre du sommeil, consultations (pneumologie, dermatologie, rhumatologie, pédiatrie, orthopédie).", urgences:'Non', url:'https://polycliniquepaupyrenees.fr', note:"Même entité juridique que le site Navarre.", verif:true},
+    {id:'o4', cat:"Hôpitaux publics", nom:"Centre Hospitalier des Pyrénées", statut:'Public', type:"Établissement public de santé mentale", commune:'Pau', adresse:"29 avenue du Général-Leclerc, 64039 Pau", tel:"05 59 80 90 90", lits:'355', capacites:"355 lits et 261 places, implantation sur 13 communes du Béarn et de la Soule. Établissement de référence pour la santé mentale du territoire.", urgences:'Non', url:'https://www.ch-pyrenees.fr', note:"À solliciter pour la prise en charge psychotraumatique après un afflux de victimes.", verif:true},
+    {id:'o5', cat:"Cliniques et privé", nom:"Clinique Princess", statut:'Privé', type:"Soins médicaux et de réadaptation (groupe emeis)", commune:'Pau', adresse:"6 boulevard Hauterive, 64011 Pau", tel:"05 59 02 55 32", lits:'14', capacites:"14 places d'hospitalisation de jour en médecine (nutrition, diabète, addictologie).", urgences:'Non', url:'', note:'', verif:false},
+    {id:'o6', cat:"Hôpitaux publics", nom:"Centre Hospitalier d'Orthez", statut:'Public', type:"Centre hospitalier de proximité — GHT Béarn et Soule", commune:'Orthez', adresse:'', tel:'', lits:'300', capacites:"Premier recours en médecine, chirurgie, soins de suite et réadaptation, USLD.", urgences:'À confirmer', url:'https://www.ch-orthez.fr', note:'', verif:true},
+    {id:'o7', cat:"Hôpitaux publics", nom:"Centre Hospitalier d'Oloron-Sainte-Marie", statut:'Public', type:"Centre hospitalier de proximité — GHT Béarn et Soule", commune:'Oloron-Sainte-Marie', adresse:'', tel:'', lits:'', capacites:"Médecine, gynécologie-obstétrique, maternité, gériatrie.", urgences:'À confirmer', url:'https://ch-oloron.fr', note:'', verif:true},
+    {id:'o8', cat:"Hôpitaux publics", nom:"Hôpital de proximité de Mauléon", statut:'Public', type:"Hôpital de proximité — GHT Béarn et Soule", commune:'Mauléon-Licharre', adresse:'', tel:'', lits:'30', capacites:"Activités sanitaires : 5 lits de médecine, 25 lits de soins de suite et réadaptation. Le reste de la capacité est médico-social.", urgences:'Non', url:'', note:"Seule la capacité sanitaire est comptée ici.", verif:true},
+    {id:'o9', cat:"Cliniques et privé", nom:"Clinique Labat", statut:'Privé', type:"Clinique chirurgicale", commune:'Orthez', adresse:'', tel:'', lits:'', capacites:"Chirurgie ambulatoire, cardio-vasculaire, gynécologie, oncologie.", urgences:'Non', url:'', note:"Capacité à confirmer auprès de l'établissement.", verif:true},
+    {id:'o10', cat:"Cliniques et privé", nom:"Clinique médicale cardiologique d'Aressy", statut:'Privé', type:"Clinique de soins médicaux et de réadaptation cardiologique", commune:'Aressy', adresse:'', tel:'', lits:'', capacites:"Réadaptation cardiovasculaire.", urgences:'Non', url:'', note:"Capacité à confirmer auprès de l'établissement.", verif:true},
+    {id:'o12', cat:"Soins non programmés", nom:"SOS Médecins", statut:'Libéral', type:"Association de permanence des soins — visites et consultations", commune:'Billère', adresse:"45 avenue Lalanne, 64140 Billère", tel:"3624", lits:'', capacites:"Consultations et visites à domicile non programmées, y compris en soirée, la nuit, le week-end et les jours fériés. Premier relais mobilisable en cas de saturation des urgences.", urgences:'Non', url:'', note:"Le 3624 est le numéro national d'accès à SOS Médecins.", verif:false},
+    {id:'o13', cat:"Soins non programmés", nom:"CMSI Pau — Centre médical de soins immédiats", statut:'Privé', type:"Centre de soins immédiats sans rendez-vous", commune:'Billère', adresse:"18 route de Bayonne, 64140 Billère", tel:'', lits:'', capacites:"Ouvert depuis novembre 2025, sans rendez-vous et sans dépassement d'honoraires, du lundi au vendredi, adultes et enfants. Petites urgences : plaies et sutures, pansements, perfusions, traumatismes du sport, entorses, brûlures légères, fièvres persistantes. Dispose d'un appareil de radiologie et d'examens téléradiologiques. Porté par deux urgentistes et deux infirmières.", urgences:'Non', url:'', note:"Premier centre de ce type dans les Pyrénées-Atlantiques. Se positionne explicitement en soutien de l'hôpital : interlocuteur naturel en cas d'afflux. Numéro à renseigner.", verif:true},
+    {id:'o14', cat:"Soins non programmés", nom:"Service d'accès aux soins et permanence des soins ambulatoires", statut:'Libéral', type:"Régulation et orientation", commune:"Pyrénées-Atlantiques", adresse:'', tel:"116 117", lits:'', capacites:"Orientation vers un médecin disponible en dehors des heures d'ouverture des cabinets. À privilégier avant tout passage aux urgences quand la situation le permet.", urgences:'Non', url:'', note:'', verif:false},
+    {id:'o15', cat:"Soins non programmés", nom:"Maisons médicales de garde du Béarn", statut:'Libéral', type:"Permanence des soins", commune:'Béarn', adresse:'', tel:'', lits:'', capacites:"Points de consultation de garde du territoire.", urgences:'Non', url:'', note:"À compléter : localisation, jours et horaires d'ouverture, contact. Information à obtenir auprès de la délégation départementale de l'ARS ou de l'ordre des médecins.", verif:true},
+    {id:'o11', cat:"Exercice coordonné", nom:"Maisons de santé pluriprofessionnelles du territoire", statut:'Libéral', type:"MSP", commune:"Territoire de la CPTS Pau Béarn", adresse:'', tel:'', lits:'', capacites:"Les MSP disposent de leur propre organisation de crise et constituent des points d'appui en cas d'afflux : capacité de soins non programmés, locaux, équipes constituées. Les recenser nommément est un travail à mener avec les référents — les annuaires publics divergent (de 30 à 75 structures selon les sources pour l'ensemble du département).", urgences:'Non', url:'https://www.maisons-et-poles-de-sante.com/maison-de-sante/nouvelle-aquitaine/pyrenees-atlantiques/', note:"À compléter : créer une fiche par MSP du territoire avec son contact et sa capacité de soins non programmés.", verif:true}
+  ],
+  lignes: [
+    {id:'l1', cat:"Alerte et signalement", nom:"Point focal régional (PFR)", org:"ARS Nouvelle-Aquitaine — Cellule de veille, d'alerte et de gestion sanitaires", quoi:"Entrée unique pour tout signalement sanitaire : événement indésirable grave, tension sur l'offre de soins, menace pour la santé de la population. C'est le numéro à composer avant tout autre en cas de remontée à faire à l'ARS.", tel:"0 809 400 004", mail:'ars33-alerte@ars.sante.fr', dispo:"24h/24, 7j/7", url:'https://www.nouvelle-aquitaine.ars.sante.fr/la-cellule-de-veille-dalerte-et-gestion-sanitaire-cvags', verif:false},
+    {id:'l2', cat:"Alerte et signalement", nom:"Portail de signalement des événements sanitaires indésirables", org:"ARS Nouvelle-Aquitaine", quoi:"Voie écrite pour déclarer un événement indésirable. Certains signalements exigent une fiche spécifique (maladie à déclaration obligatoire, ESMS).", tel:'', mail:'', dispo:"En ligne", url:'https://www.nouvelle-aquitaine.ars.sante.fr/signaler-un-evenement-pouvant-avoir-un-impact-sur-la-sante-de-la-population', verif:false},
+    {id:'l3', cat:"Appui régional", nom:"Standard de l'ARS Nouvelle-Aquitaine", org:"ARS Nouvelle-Aquitaine", quoi:"Toute question non urgente. Au prix d'un appel local.", tel:"09 69 37 00 33", mail:'', dispo:"Heures ouvrées", url:'https://www.nouvelle-aquitaine.ars.sante.fr/contacts-lars-nouvelle-aquitaine', verif:false},
+    {id:'l4', cat:"Appui régional", nom:"Délégation départementale des Pyrénées-Atlantiques", org:"ARS Nouvelle-Aquitaine — DD64", quoi:"Interlocuteur de proximité de la CPTS Pau Béarn. L'adresse suit le modèle des autres délégations : à confirmer auprès de la DD avant usage.", tel:"09 69 37 00 33", mail:'ars-dd64-direction@ars.sante.fr', dispo:"Heures ouvrées", url:'', verif:true},
+    {id:'l5', cat:"Urgences", nom:"SAMU", org:"Aide médicale urgente", quoi:"Urgence vitale, régulation médicale, orientation d'un patient.", tel:"15", mail:'', dispo:"24h/24", url:'', verif:false},
+    {id:'l6', cat:"Urgences", nom:"Sapeurs-pompiers", org:"Secours", quoi:"Incendie, secours à personne, risque immédiat.", tel:"18", mail:'', dispo:"24h/24", url:'', verif:false},
+    {id:'l7', cat:"Urgences", nom:"Numéro d'urgence européen", org:"Toutes urgences", quoi:"À utiliser depuis un mobile ou quand on ignore quel service appeler.", tel:"112", mail:'', dispo:"24h/24", url:'', verif:false},
+    {id:'l8', cat:"Urgences", nom:"Urgences par SMS", org:"Personnes sourdes et malentendantes", quoi:"Accès aux secours par SMS pour les personnes sourdes, malentendantes, aphasiques ou dysphasiques.", tel:"114", mail:'', dispo:"24h/24", url:'', verif:false},
+    {id:'l9', cat:"Urgences", nom:"Permanence des soins ambulatoires", org:"Médecin de garde", quoi:"Orientation vers un médecin de garde en dehors des heures d'ouverture des cabinets.", tel:"116 117", mail:'', dispo:"Soirs, week-ends et jours fériés", url:'', verif:false},
+    {id:'l10', cat:"Appui spécialisé", nom:"Centre antipoison de Bordeaux", org:"CHU de Bordeaux", quoi:"Intoxication, exposition à des fumées ou à des produits toxiques.", tel:"05 56 96 40 80", mail:'', dispo:"24h/24", url:'', verif:false}
+  ],
+  retires: [],
+  personnes: {},
+  sources: [
+    {id:'s1', nom:"ARS Nouvelle-Aquitaine — communiqués", url:'https://www.nouvelle-aquitaine.ars.sante.fr', cat:'Institutionnel', verifieLe:'', verifiePar:''},
+    {id:'s2', nom:"Préfecture de la Gironde", url:'https://www.gironde.gouv.fr', cat:'Préfecture', verifieLe:'', verifiePar:''},
+    {id:'s3', nom:"Préfecture des Landes", url:'https://www.landes.gouv.fr', cat:'Préfecture', verifieLe:'', verifiePar:''},
+    {id:'s4', nom:"Préfecture des Pyrénées-Atlantiques", url:'https://www.pyrenees-atlantiques.gouv.fr', cat:'Préfecture', verifieLe:'', verifiePar:''},
+    {id:'s5', nom:"Vigilance Météo-France", url:'https://vigilance.meteofrance.fr', cat:'Environnement', verifieLe:'', verifiePar:''},
+    {id:'s6', nom:"ATMO Nouvelle-Aquitaine — qualité de l'air", url:'https://www.atmo-nouvelleaquitaine.org', cat:'Environnement', verifieLe:'', verifiePar:''},
+    {id:'s7', nom:"Santé publique France — réserve sanitaire", url:'https://www.santepubliquefrance.fr', cat:'Institutionnel', verifieLe:'', verifiePar:''},
+    {id:'s8', nom:"CHU de Bordeaux — actualités", url:'https://www.chu-bordeaux.fr', cat:'Établissements', verifieLe:'', verifiePar:''},
+    {id:'s9', nom:"Bordeaux Métropole", url:'https://www.bordeaux-metropole.fr', cat:'Collectivités', verifieLe:'', verifiePar:''},
+    {id:'s10', nom:"Feux de forêt — suivi Gironde", url:'https://feuxdeforet.fr/nouvelle-aquitaine/gironde/', cat:'Suivi incendies', verifieLe:'', verifiePar:''},
+    {id:'s11', nom:"Alertes feux — besoins en bénévoles", url:'https://alertesfeux.fr/benevoles', cat:'Suivi incendies', verifieLe:'', verifiePar:''},
+    {id:'s12', nom:"France 3 Nouvelle-Aquitaine", url:'https://france3-regions.franceinfo.fr/nouvelle-aquitaine/', cat:'Presse', verifieLe:'', verifiePar:''}
+  ],
+  diffusions: [
+    {id:'d1', date:'2026-07-25', heure:'', objet:"Information — plan blanc régional / ORSAN AMAVI", canal:'WhatsApp', cible:"Tous les membres de la CPTS Pau Béarn — groupes WhatsApp", portee:'210', emetteur:'Anne Latisnère, vice-présidente', valide:'Vice-présidence', demande:"Aucune demande précise — message d'information", retourCanal:"Aucun canal de retour indiqué", retours:'', observation:"Annonce de besoins en renforts humains et matériels sans demande précise : attente créée auprès des adhérents, à recadrer dans le message suivant.", auteur:'Anne Latisnère', quand:''},
+    {id:'d2', date:'2026-07-26', heure:'', objet:"Relais de l'appel à volontaires kinésithérapeutes (URPS MK Nouvelle-Aquitaine)", canal:'WhatsApp', cible:"Tous les membres de la CPTS Pau Béarn — groupes WhatsApp", portee:'210', emetteur:'Anne Latisnère, vice-présidente', valide:'Vice-présidence', demande:"Compléter le formulaire de l'URPS", retourCanal:"Formulaire URPS", retours:'', observation:"Le message ne précise pas que la CPTS Pau Béarn n'est pas opératrice du dispositif : prévoir une réponse d'attente pour les autres professions.", auteur:'Anne Latisnère', quand:''},
+    {id:'d3', date:'2026-07-27', heure:'09:27', objet:"Cadrage de la gestion de crise et missions de la CPTS Pau Béarn", canal:'WhatsApp', cible:"Équipe de gestion de crise sanitaire — CPTS Pau Béarn", portee:'', emetteur:'Eva', valide:'Vice-présidence', demande:"Prise de connaissance, disponibilités, alimentation du tableau de bord", retourCanal:"Groupe de gestion de crise", retours:'', observation:"Mention du Parc des Expositions de Bordeaux comme destination de la collecte : à corriger, le site est pourvu.", auteur:'', quand:''},
+    {id:'d4', date:'2026-07-27', heure:'', objet:"Relais de l'information aux groupes de travail", canal:'WhatsApp', cible:"Référents des groupes de travail", portee:'', emetteur:'Camélia', valide:'Vice-présidence', demande:"Relayer l'information aux membres de chaque groupe", retourCanal:"Groupes de travail", retours:'', observation:'', auteur:'', quand:''},
+    {id:'d5', date:'2026-07-27', heure:'', objet:"Relais aux groupes sans référent actif", canal:'WhatsApp', cible:"Vaccination grippale, Maladie rénale, Cancer du sein", portee:'', emetteur:'Eva', valide:'Vice-présidence', demande:"Relayer l'information", retourCanal:'', retours:'', observation:'', auteur:'', quand:''}
+  ],
+  ars: [
+    {id:'a1', date:'2026-07-24', heure:'22:42', sens:"Reçu de l'ARS", canal:'Mail', interlocuteur:"ARS — Délégation départementale 64", objet:"Déclenchement du plan blanc régional / ORSAN AMAVI", demande:"Pour les professionnels de santé libéraux : maintenir la prise en charge des patients en ambulatoire pour éviter le recours non justifié aux urgences. Activation de la CRAPS. Les délégations départementales restent à disposition.", reponse:"Diffusion aux membres le 25/07 par Anne Latisnère, vice-présidente (message n°1) — environ 210 professionnels de santé destinataires via les groupes WhatsApp.", attendu:"Organiser le maintien des soins en ville et limiter le recours aux urgences du CH.", echeance:'', statut:'En cours', auteur:'', quand:''},
+    {id:'a2', date:'2026-07-26', heure:'', sens:"Envoyé à l'ARS", canal:'Mail', interlocuteur:"ARS Nouvelle-Aquitaine", objet:"Demande des besoins en matériel et des lieux de livraison", demande:'', reponse:"Sollicitation portée par Anne Latisnère, vice-présidente.", attendu:"Sans retour écrit, aucune collecte n'est ouverte aux adhérents.", echeance:'', statut:'En attente', auteur:'Anne Latisnère', quand:''},
+    {id:'a4', date:'2026-07-24', heure:'', sens:"Reçu de l'ARS", canal:'Communiqué', interlocuteur:"ARS Nouvelle-Aquitaine", objet:"Évacuations sanitaires et plans blancs départementaux en Gironde et dans les Landes", demande:"Cellule de crise activée dans la nuit du 23 juillet avec les préfectures. Évacuation d'établissements sanitaires et médico-sociaux.", reponse:'', attendu:"Information — pas d'action directe attendue de la CPTS.", lien:'https://www.nouvelle-aquitaine.ars.sante.fr/communique-de-presse-2026-incendies-en-gironde-et-dans-les-landes-information-sur-les-evacuations', echeance:'', statut:'Clos', auteur:'', quand:''},
+    {id:'a5', date:'2026-07-25', heure:'', sens:"Reçu de l'ARS", canal:'Communiqué', interlocuteur:"ARS Nouvelle-Aquitaine", objet:"Recommandations sanitaires aux populations et masques FFP2", demande:"Épisode de dégradation de la qualité de l'air au-delà du seuil d'alerte. Masques acheminés sur les plateformes régionales, prioritairement pour les patients cardio-respiratoires chroniques, les personnes vulnérables et les professionnels exposés.", reponse:'', attendu:"À relayer aux adhérents et à leurs patients vulnérables. Circuit de retrait des FFP2 dans le 64 à obtenir.", lien:'https://www.nouvelle-aquitaine.ars.sante.fr/communique-de-presse-2026-incendies-en-gironde-et-dans-les-landes-recommandations-sanitaires-aux', echeance:'', statut:'En cours', auteur:'', quand:''},
+    {id:'a3', date:'2026-07-27', heure:'', sens:'À envoyer', canal:'Mail', interlocuteur:"ARS — Délégation départementale 64", objet:"Six questions de cadrage pour la CPTS", demande:"1. Interlocuteur nommé à la DD64 pour la CPTS pendant le plan blanc. 2. Circuit de mise à disposition des FFP2 pour les libéraux du 64 et leurs patients vulnérables. 3. Consigne régionale sur l'accueil ambulatoire des personnes évacuées hébergées dans le 64. 4. Impact attendu sur les transports sanitaires du 64 et arbitrage sur les transports programmés. 5. Souhaitez-vous que la CPTS constitue une liste de volontaires, sous quel statut et via quel canal ? 6. Existe-t-il une liste de besoins matériels validée, ou la consigne est-elle de ne pas collecter ?", reponse:'', attendu:"Les réponses 5 et 6 conditionnent l'ouverture ou non des missions renfort et collecte.", echeance:'', statut:'À faire', auteur:'', quand:''}
+  ],
+  courante: [], terrain: [], appels: [], materiel: [], volontaires: [], contacts: [
+    {id:'c1', structure:"ARS — Délégation départementale 64", nom:'', fonction:'', tel:'', mail:'', role:"Interlocuteur unique de la CPTS pendant le plan blanc", auteur:'', quand:''},
+    {id:'c0', structure:"CPTS Pau Béarn", nom:'Anne Latisnère', fonction:'Vice-présidente, infirmière', tel:'', mail:'', role:"Relation ARS, pilotage de la collecte de matériel, diffusion aux groupes WhatsApp (environ 210 professionnels de santé)", auteur:'', quand:''},
+    {id:'c2', structure:"Agora Lib", nom:'Claire', fonction:'', tel:'', mail:'', role:"Appui aux CPTS ayant déclenché leur SSE — point d'entrée vers les CPTS de Gironde et des Landes", auteur:'', quand:''},
+    {id:'c3', structure:"CH de Pau", nom:'', fonction:'', tel:'', mail:'', role:"Cellule de crise / urgences — attentes vis-à-vis de la ville", auteur:'', quand:''}
+  ]
+};
+
+let etat = JSON.parse(JSON.stringify(etatInitial));
+let stockageActif = false;
+
+/* =========================================================
+   PERSISTANCE
+   ========================================================= */
+async function charger(){
+  if(typeof window.storage === 'undefined'){ majBandeau(); rendre(); avertirHorsLigne(); return; }
+  try{
+    const r = await window.storage.get(CLE, true);
+    if(r && r.value){
+      const d = JSON.parse(r.value);
+      for(const k in etatInitial){ if(d[k] !== undefined) etat[k] = d[k]; }
+    }
+    fusionnerNouveautes();
+    stockageActif = true;
+  }catch(e){
+    stockageActif = true; // clé absente au premier lancement : normal
+  }
+  try{
+    const p = await window.storage.get('cpts_identite', false);
+    if(p && p.value) moi = p.value;
+  }catch(e){}
+  majBandeau(); rendre();
+  if(moi === 'Anonyme') demanderIdentite();
+}
+
+const SEEDS = ['missions','veille','diffusions','ars','sources','lignes','offre','cpts'];
+function fusionnerNouveautes(){
+  etat.retires = etat.retires || [];
+  SEEDS.forEach(k => {
+    if(!Array.isArray(etat[k]) || !Array.isArray(etatInitial[k])) return;
+    const vus = new Set(etat[k].map(x => x.id));
+    etatInitial[k].forEach(o => {
+      if(!vus.has(o.id) && !etat.retires.includes(o.id)) etat[k].push(JSON.parse(JSON.stringify(o)));
+    });
+  });
+}
+
+async function sauver(){
+  etat.entete.maj = new Date().toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  majBandeau();
+  if(!stockageActif){ toast("Modification enregistrée dans cette session seulement"); return; }
+  try{
+    await window.storage.set(CLE, JSON.stringify(etat), true);
+  }catch(e){
+    toast("Enregistrement impossible — pensez à exporter");
+  }
+}
+
+function avertirHorsLigne(){
+  const n = document.createElement('div');
+  n.className = 'note';
+  n.style.margin = '0 26px 0';
+  n.innerHTML = "<strong>Mode hors ligne.</strong> Ce fichier est ouvert en dehors de Claude : les saisies ne seront pas partagées ni conservées à la fermeture. Utilisez « Exporter » pour sauvegarder, et « Importer » pour reprendre un état existant.";
+  document.querySelector('.zone').insertBefore(n, document.getElementById('vue'));
+}
+
+function editerEntete(){
+  document.getElementById('modale').innerHTML = `<h3>État affiché en haut du cockpit</h3>
+    <label style="margin-bottom:12px"><span class="k">Pastille — court</span><input id="en-niveau" value="${esc(etat.entete.niveau)}"></label>
+    <label style="margin-bottom:12px"><span class="k">Phrase de situation</span><textarea id="en-phrase">${esc(etat.entete.phrase)}</textarea></label>
+    <div class="actions"><button class="btn" onclick="validerEntete()">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerEntete(){
+  etat.entete.niveau = document.getElementById('en-niveau').value.trim() || etat.entete.niveau;
+  etat.entete.phrase = document.getElementById('en-phrase').value.trim();
+  await sauver(); fermer(); majBandeau(); toast("État mis à jour");
+}
+
+function majBandeau(){
+  document.getElementById('niveau').textContent = etat.entete.niveau;
+  document.getElementById('phrase').textContent = etat.entete.phrase;
+  document.getElementById('maj').textContent = etat.entete.maj ? 'Dernière saisie ' + etat.entete.maj : '';
+  document.getElementById('identite').textContent = 'Connecté·e comme ' + moi;
+}
+
+/* =========================================================
+   OUTILS
+   ========================================================= */
+const ESPACES = {m1:'terrain', m2:'terrain', m3:'materiel', m4:'appels', m5:'diffusions', m6:'courante'};
+const espaceDe = m => m.espace || ESPACES[m.id] || 'courante';
+const nomEspace = id => (ONGLETS.find(o => o.id === id) || {}).nom || 'Main courante';
+const cleP = n => (n||'').trim().toLowerCase();
+
+function noterRetrait(id){
+  etat.retires = etat.retires || [];
+  if(!etat.retires.includes(id)) etat.retires.push(id);
+}
+
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const aujourdhui = () => new Date().toISOString().slice(0,10);
+const maintenant = () => new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+function frdate(d){ if(!d) return '—'; const p = d.split('-'); return p.length===3 ? p[2]+'/'+p[1] : d; }
+
+function toast(m){
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('on');
+  clearTimeout(t._id); t._id = setTimeout(()=>t.classList.remove('on'), 2600);
+}
+function fermer(){ document.getElementById('rideau').classList.remove('on'); }
+document.getElementById('rideau').addEventListener('click', e => { if(e.target.id === 'rideau') fermer(); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') fermer(); });
+
+function coord(nom){
+  return (etat.personnes || {})[cleP(nom)] || {};
+}
+function editerContact(nom){
+  const c = coord(nom);
+  document.getElementById('modale').innerHTML = `<h3>Contact de ${esc(nom)}</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px">Renseigné une fois, utilisable par tout le monde en un clic depuis l'organigramme.</p>
+    <label><span class="k">Téléphone</span><input id="ct-tel" type="tel" value="${esc(c.tel||'')}" placeholder="06 12 34 56 78"></label>
+    <label style="margin-top:12px"><span class="k">Mail</span><input id="ct-mail" type="email" value="${esc(c.mail||'')}" placeholder="prenom.nom@exemple.fr"></label>
+    <div class="actions"><button class="btn" onclick="validerContact('${esc(nom).replace(/'/g,"\\'")}')">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerContact(nom){
+  etat.personnes = etat.personnes || {};
+  etat.personnes[cleP(nom)] = {
+    nom: nom,
+    tel: document.getElementById('ct-tel').value.trim(),
+    mail: document.getElementById('ct-mail').value.trim()
+  };
+  await sauver(); fermer(); rendre(); toast("Contact enregistré");
+}
+
+function nomsMissionnes(){
+  const v = new Map();
+  etat.missions.forEach(m => {
+    [m.pilote, m.suppleant].forEach(n => { if((n||'').trim()) v.set(cleP(n), n.trim()); });
+  });
+  return [...v.values()].sort((a,b)=>a.localeCompare(b,'fr'));
+}
+
+function demanderIdentite(){
+  const m = document.getElementById('modale');
+  const noms = nomsMissionnes();
+  let h = `<h3>Qui êtes-vous&nbsp;?</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px">Votre nom est associé à chaque saisie. Il n'est demandé qu'une fois sur cet appareil.</p>`;
+  if(noms.length){
+    h += `<div class="choixnom">` + noms.map(n =>
+      `<button onclick="choisirNom('${esc(n).replace(/'/g,"\\'")}')">${esc(n)}</button>`).join('') + `</div>
+      <p style="color:var(--texte-2);font-size:13px;margin:0 0 8px">Vous n'êtes pas dans cette liste&nbsp;?</p>`;
+  }
+  h += `<label><span class="k">Saisir un autre nom</span><input id="in-moi" value="${esc(moi === 'Anonyme' ? '' : moi)}" placeholder="Prénom et nom"></label>
+    <div class="actions"><button class="btn" onclick="validerIdentite()">Enregistrer</button></div>`;
+  m.innerHTML = h;
+  document.getElementById('rideau').classList.add('on');
+  if(!noms.length) setTimeout(()=>document.getElementById('in-moi').focus(), 60);
+}
+async function choisirNom(n){
+  moi = n;
+  try{ await window.storage.set('cpts_identite', n, false); }catch(e){}
+  fermer(); majBandeau(); rendre();
+}
+async function validerIdentite(){
+  const v = document.getElementById('in-moi').value.trim();
+  if(v){ moi = v; try{ await window.storage.set('cpts_identite', v, false); }catch(e){} }
+  fermer(); majBandeau(); rendre();
+}
+
+function csvVal(v){ return '"' + String(v ?? '').replace(/"/g,'""') + '"'; }
+function telechargerCSV(nom, rows){
+  const txt = '\uFEFF' + rows.map(r => r.join(';')).join('\r\n');
+  const b = new Blob([txt], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = nom.toLowerCase().replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'') + '-' + aujourdhui() + '.csv';
+  a.click();
+  toast("Fichier téléchargé");
+}
+function exporterCSV(k){
+  const cfg = CHAMPS[k];
+  const cols = ['date', ...cfg.f.map(f => f.c), 'auteur', 'modifiePar'];
+  const ent  = ['Date', ...cfg.f.map(f => f.l), 'Saisi par', 'Modifié par'];
+  const lig  = (etat[k]||[]).map(o => cols.map(c => csvVal(o[c])));
+  telechargerCSV(cfg.titre, [ent.map(csvVal), ...lig]);
+}
+function exporterTout(){
+  const rows = [['Onglet','Date','Heure','Nature','Contenu','Détail','Par'].map(csvVal)];
+  evenements().forEach(e => rows.push([e.type, e.date, e.heure, e.type, e.titre, e.detail, e.qui].map(csvVal)));
+  telechargerCSV('Traçabilité complète', rows);
+}
+function imprimer(){ window.print(); }
+function imprimerModale(){
+  document.body.classList.add('print-modale');
+  window.print();
+  setTimeout(() => document.body.classList.remove('print-modale'), 800);
+}
+
+async function exporter(){
+  const b = new Blob([JSON.stringify(etat,null,2)],{type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = 'cockpit-crise-cpts-' + aujourdhui() + '.json';
+  a.click();
+  toast("Export téléchargé");
+}
+function importer(ev){
+  const f = ev.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = async () => {
+    try{
+      const d = JSON.parse(r.result);
+      for(const k in etatInitial){ if(d[k] !== undefined) etat[k] = d[k]; }
+      fusionnerNouveautes();
+      await sauver(); rendre(); toast("Données importées");
+    }catch(e){ toast("Fichier illisible"); }
+  };
+  r.readAsText(f); ev.target.value = '';
+}
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+const ONGLETS = [
+  {id:'cockpit',   nom:'Cockpit',            groupe:'Pilotage', cpt:null},
+  {id:'missions',  nom:'Missions & organigramme', groupe:'Pilotage', cpt:'missions'},
+  {id:'ars',       nom:'Échanges avec l\'ARS', groupe:'Pilotage', cpt:'ars'},
+  {id:'fil',       nom:'Fil d\'actualité',    groupe:'Suivi', cpt:null},
+  {id:'veille',    nom:'Situation régionale', groupe:'Suivi', cpt:'sources'},
+  {id:'diffusions',nom:'Ce qu\'on a diffusé', groupe:'Traçabilité', cpt:'diffusions'},
+  {id:'courante',  nom:'Main courante',      groupe:'Traçabilité', cpt:'courante'},
+  {id:'terrain',   nom:'Remontées terrain',  groupe:'Traçabilité', cpt:'terrain'},
+  {id:'appels',    nom:'Appels CPTS',        groupe:'Actions', cpt:'cpts'},
+  {id:'materiel',  nom:'Matériel',           groupe:'Actions', cpt:'materiel'},
+  {id:'volontaires',nom:'Volontaires',       groupe:'Actions', cpt:'volontaires'},
+  {id:'offre',     nom:'Offre de soins du territoire', groupe:'Ressources', cpt:'offre'},
+  {id:'lignes',    nom:'Qui appeler',         groupe:'Ressources', cpt:'lignes'},
+  {id:'contacts',  nom:'Contacts de la crise', groupe:'Ressources', cpt:'contacts'}
+];
+
+function rendreMesMissions(){
+  const el = document.getElementById('mesmissions');
+  if(moi === 'Anonyme'){ el.innerHTML = ''; return; }
+  const miennes = etat.missions.filter(m => cleP(m.pilote) === cleP(moi) || cleP(m.suppleant) === cleP(moi));
+  if(!miennes.length){ el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="t">Vos missions</div>` + miennes.map(m => {
+    const role = cleP(m.pilote) === cleP(moi) ? 'Pilote' : 'Appui';
+    return `<button onclick="voirFiche('${m.id}')">${esc(m.titre)}<span class="r">${role} · fiche et espace</span></button>`;
+  }).join('');
+}
+
+function rendreNav(){
+  let h = '', g = '';
+  ONGLETS.forEach(o => {
+    if(o.groupe !== g){ g = o.groupe; h += `<div class="groupe">${g}</div>`; }
+    const n = o.cpt ? (etat[o.cpt] || []).length : '';
+    h += `<button class="${onglet===o.id?'actif':''}" onclick="aller('${o.id}')">${o.nom}${n!==''?`<span class="cpt">${n}</span>`:''}</button>`;
+  });
+  document.getElementById('nav').innerHTML = h;
+}
+function aller(id){ onglet = id; rendre(); window.scrollTo(0,0); }
+
+/* =========================================================
+   COLLECTIONS
+   ========================================================= */
+const CHAMPS = {
+  diffusions: {
+    titre:"Ce qu'on a diffusé",
+    chapo:"Tout ce qui est parti de la CPTS Pau Béarn vers sa communauté de soignants : quoi, quand, par quel canal, vers qui, et ce que ça a produit. Un message sans demande précise et sans canal de retour ne fait pas remonter d'information — la colonne « retours » le rend visible.",
+    f:[
+      {c:'heure', l:"Heure", t:'time', d:maintenant},
+      {c:'objet', l:"Objet du message", t:'text', req:true, large:true},
+      {c:'canal', l:"Canal", t:'select', o:['WhatsApp','Mail','SMS','Réunion','Site web','Autre']},
+      {c:'cible', l:"Destinataires", t:'text'},
+      {c:'portee', l:"Nombre de destinataires", t:'text'},
+      {c:'emetteur', l:"Émetteur", t:'text'},
+      {c:'valide', l:"Validé par", t:'text'},
+      {c:'demande', l:"Demande précise formulée", t:'textarea', large:true},
+      {c:'retourCanal', l:"Canal de retour indiqué", t:'text'},
+      {c:'retours', l:"Retours reçus", t:'textarea', large:true},
+      {c:'observation', l:"Observation, correction à apporter", t:'textarea', large:true}
+    ],
+    cols:['date','heure','objet','canal','cible','portee','emetteur','valide','retours','auteur']
+  },
+  ars: {
+    titre:"Échanges avec l'ARS",
+    chapo:"Tout ce que l'ARS fait descendre : consignes, communiqués, demandes. Et en regard, ce que la CPTS Pau Béarn répond et ce que ça implique pour elle. C'est la pièce qui distingue ce qui est mandaté de ce que la CPTS Pau Béarn entreprend de sa propre initiative.",
+    f:[
+      {c:'heure', l:"Heure", t:'time'},
+      {c:'sens', l:"Sens", t:'select', o:["Reçu de l'ARS","Envoyé à l'ARS","À envoyer"]},
+      {c:'canal', l:"Canal", t:'select', o:['Mail','Téléphone','Visio','Réunion','Autre']},
+      {c:'interlocuteur', l:"Interlocuteur", t:'text'},
+      {c:'objet', l:"Objet", t:'text', req:true, large:true},
+      {c:'demande', l:"Ce qui est demandé ou annoncé", t:'textarea', large:true},
+      {c:'reponse', l:"Notre réponse ou action", t:'textarea', large:true},
+      {c:'attendu', l:"Ce que ça implique pour la CPTS", t:'textarea', large:true},
+      {c:'lien', l:"Lien vers le document", t:'text', large:true},
+      {c:'echeance', l:"Échéance", t:'date'},
+      {c:'statut', l:"Statut", t:'select', o:['À faire','En attente','En cours','Clos']}
+    ],
+    cols:['date','sens','interlocuteur','objet','demande','reponse','lien','statut','auteur']
+  },
+  courante: {
+    titre:"Main courante",
+    chapo:"Tout ce qui est reçu, décidé ou fait, horodaté au moment du fait. C'est cette page qui documentera le retour d'expérience et le futur plan SSE.",
+    f:[
+      {c:'heure', l:"Heure", t:'time', d:maintenant},
+      {c:'source', l:"Source", t:'text', ph:"ARS, vice-présidence, adhérent…"},
+      {c:'evenement', l:"Événement, information ou décision", t:'textarea', large:true, req:true},
+      {c:'suite', l:"Suite donnée", t:'textarea', large:true},
+      {c:'statut', l:"Statut", t:'select', o:['En cours','Clos','À suivre']}
+    ],
+    cols:['date','heure','source','evenement','suite','statut','auteur']
+  },
+  terrain: {
+    titre:"Remontées de terrain",
+    chapo:"La seule page qui documente l'impact réel des incendies sur le territoire béarnais. C'est elle qui alimentera le bilan ACI et le dialogue de gestion de la CPTS Pau Béarn.",
+    f:[
+      {c:'professionnel', l:"Professionnel", t:'text', req:true},
+      {c:'profession', l:"Profession", t:'text'},
+      {c:'commune', l:"Commune", t:'text'},
+      {c:'sujet', l:"Situation rencontrée", t:'textarea', large:true, req:true},
+      {c:'criticite', l:"Criticité", t:'select', o:['Faible','Moyenne','Élevée']},
+      {c:'action', l:"Action menée", t:'textarea', large:true},
+      {c:'transmis', l:"Transmis à", t:'text'},
+      {c:'statut', l:"Statut", t:'select', o:['En cours','Clos','À suivre']}
+    ],
+    cols:['date','professionnel','profession','commune','sujet','criticite','action','statut','auteur']
+  },
+  appels: {
+    titre:"Appels aux CPTS des zones touchées",
+    chapo:"La CPTS Pau Béarn appelle les CPTS touchées pour prendre des nouvelles et identifier des besoins réels, pas pour placer du matériel. Aucun engagement sans point de livraison nommé.",
+    f:[
+      {c:'cpts', l:"CPTS", t:'text', req:true},
+      {c:'interlocuteur', l:"Interlocuteur", t:'text'},
+      {c:'contact', l:"Contact direct", t:'text'},
+      {c:'sse', l:"Cellule de crise / SSE activé ?", t:'select', o:['À confirmer','Oui','Non']},
+      {c:'situation', l:"Situation sur le terrain", t:'textarea', large:true},
+      {c:'besoinH', l:"Besoin humain", t:'text'},
+      {c:'besoinM', l:"Besoin matériel (nature + quantité)", t:'text'},
+      {c:'livraison', l:"Point de livraison (lieu, contact, horaires)", t:'textarea', large:true},
+      {c:'engagement', l:"Engagement pris de notre côté", t:'text'},
+      {c:'rappel', l:"À rappeler le", t:'date'}
+    ],
+    cols:['date','cpts','interlocuteur','sse','situation','besoinH','besoinM','engagement','rappel','auteur']
+  },
+  materiel: {
+    titre:"Besoins en matériel",
+    chapo:"Une ligne n'est complète que si le lieu, le contact et la validation sont renseignés. Tant qu'ils ne le sont pas, la CPTS Pau Béarn n'ouvre aucune collecte aux adhérents.",
+    f:[
+      {c:'demandeur', l:"Demandeur (structure)", t:'text', req:true},
+      {c:'nature', l:"Nature exacte du matériel", t:'text', req:true},
+      {c:'quantite', l:"Quantité", t:'text'},
+      {c:'delai', l:"Délai souhaité", t:'text'},
+      {c:'lieu', l:"Lieu de livraison", t:'text'},
+      {c:'contactPlace', l:"Contact sur place (nom + tél)", t:'text'},
+      {c:'horaires', l:"Horaires de réception", t:'text'},
+      {c:'valide', l:"Validé par l'ARS ?", t:'select', o:['Non','En attente','Oui','Sans objet']},
+      {c:'statut', l:"Statut", t:'select', o:['Identifié','Validé','En cours','Livré','Abandonné']}
+    ],
+    cols:['date','demandeur','nature','quantite','lieu','contactPlace','valide','statut','auteur']
+  },
+  volontaires: {
+    titre:"Professionnels volontaires",
+    chapo:"La CPTS Pau Béarn recense, l'ARS affecte. Vérifier assurance, statut et continuité des soins avant toute transmission de nom.",
+    f:[
+      {c:'nom', l:"Nom", t:'text', req:true},
+      {c:'profession', l:"Profession", t:'text', req:true},
+      {c:'dispo', l:"Disponibilités", t:'text'},
+      {c:'mobilite', l:"Mobilité / véhicule", t:'text'},
+      {c:'continuite', l:"Continuité de sa patientèle assurée ?", t:'select', o:['À vérifier','Oui','Non']},
+      {c:'transmis', l:"Transmis à (canal)", t:'text'},
+      {c:'statut', l:"Statut", t:'select', o:['Recensé','Transmis','Affecté','Sans suite']}
+    ],
+    cols:['date','nom','profession','dispo','mobilite','continuite','statut','auteur']
+  },
+  contacts: {
+    titre:"Contacts clés",
+    chapo:"Un interlocuteur nommé par structure. En crise, un service générique ne répond pas ; une personne, oui.",
+    f:[
+      {c:'structure', l:"Structure", t:'text', req:true},
+      {c:'nom', l:"Nom", t:'text'},
+      {c:'fonction', l:"Fonction", t:'text'},
+      {c:'tel', l:"Téléphone", t:'text'},
+      {c:'mail', l:"Mail", t:'text'},
+      {c:'role', l:"Rôle dans la crise", t:'textarea', large:true}
+    ],
+    cols:['structure','nom','fonction','tel','mail','role']
+  }
+};
+
+function ouvrirAjout(k){
+  document.getElementById('modale').innerHTML = formulaire(k);
+  document.getElementById('rideau').classList.add('on');
+}
+
+function formulaire(k, o){
+  const cfg = CHAMPS[k];
+  const ed = !!o;
+  let h = `<h3>${esc(cfg.titre)} — ${ed ? 'modifier' : 'nouvelle entrée'}</h3><div class="form">`;
+  h += `<label><span class="k">Date</span><input type="date" id="f-${k}-date" value="${esc(ed ? (o.date||'') : aujourdhui())}"></label>`;
+  cfg.f.forEach(f => {
+    const val = ed ? (o[f.c] ?? '') : (typeof f.d === 'function' ? f.d() : '');
+    const id = `f-${k}-${f.c}`;
+    h += `<label class="${f.large?'large':''}"><span class="k">${f.l}${f.req?' *':''}</span>`;
+    if(f.t === 'textarea') h += `<textarea id="${id}">${esc(val)}</textarea>`;
+    else if(f.t === 'select') h += `<select id="${id}">${f.o.map(x=>`<option ${x===val?'selected':''}>${x}</option>`).join('')}</select>`;
+    else h += `<input type="${f.t}" id="${id}" value="${esc(val)}">`;
+    h += `</label>`;
+  });
+  h += `</div><div class="actions"><button class="btn" onclick="enregistrer('${k}'${ed?`,'${o.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  return h;
+}
+
+function ouvrirEdition(k, id){
+  const o = (etat[k]||[]).find(x => x.id === id); if(!o) return;
+  document.getElementById('modale').innerHTML = formulaire(k, o);
+  document.getElementById('rideau').classList.add('on');
+}
+
+async function enregistrer(k, id){
+  const cfg = CHAMPS[k];
+  const existant = id ? (etat[k]||[]).find(x => x.id === id) : null;
+  const o = existant || {id:uid(), auteur:moi, quand:new Date().toISOString()};
+  let manque = null;
+  const dEl = document.getElementById(`f-${k}-date`);
+  o.date = dEl ? dEl.value : aujourdhui();
+  cfg.f.forEach(f => {
+    const el = document.getElementById(`f-${k}-${f.c}`);
+    const v = el ? el.value.trim() : '';
+    if(f.req && !v && !manque) manque = f.l;
+    o[f.c] = v;
+  });
+  if(manque){ toast(`Champ obligatoire : ${manque}`); return; }
+  if(existant){ o.modifiePar = moi; } else { etat[k].unshift(o); }
+  await sauver(); fermer(); rendre(); toast(existant ? "Modifié" : "Enregistré");
+}
+
+async function supprimer(k, id){
+  noterRetrait(id);
+  etat[k] = etat[k].filter(x => x.id !== id);
+  await sauver(); rendre(); toast("Ligne supprimée");
+}
+
+function tableau(k){
+  const cfg = CHAMPS[k], lignes = etat[k] || [];
+  if(!lignes.length) return `<div class="carte"><p class="vide">Rien à afficher pour le moment. La première saisie ouvre le suivi.</p></div>`;
+  const ent = cfg.cols.map(c => {
+    if(c === 'date') return 'Date';
+    if(c === 'auteur') return 'Saisi par';
+    const f = cfg.f.find(x => x.c === c);
+    return f ? f.l : c;
+  });
+  let h = `<div class="tw"><table><thead><tr>${ent.map(e=>`<th>${esc(e)}</th>`).join('')}<th></th></tr></thead><tbody>`;
+  lignes.forEach(l => {
+    h += '<tr>' + cfg.cols.map(c => {
+      let v = l[c] ?? '';
+      if(c === 'date' || c === 'rappel') v = frdate(v);
+      if(typeof v === 'string' && /^https?:\/\//.test(v))
+        return `<td><a href="${esc(v)}" target="_blank" rel="noopener">Ouvrir</a></td>`;
+      return `<td>${esc(v) || '—'}</td>`;
+    }).join('') + `<td class="act"><button title="Modifier" onclick="ouvrirEdition('${k}','${l.id}')">✎</button><button title="Supprimer" onclick="supprimer('${k}','${l.id}')">×</button></td></tr>`;
+  });
+  return h + '</tbody></table></div>';
+}
+
+/* =========================================================
+   VUES
+   ========================================================= */
+function vueCockpit(){
+  const c = etat.consignes;
+  const derniers = [...etat.courante].slice(0,6);
+  const missionsSansPilote = etat.missions.filter(m => !m.pilote).length;
+
+  let h = `<h1>Cockpit</h1>
+  <p class="chapo">Ce que la CPTS Pau Béarn fait, qui le porte, et ce qui remonte du terrain. Une page pour savoir quoi faire en arrivant.</p>
+
+  <h2>Consignes du moment</h2>
+  <div class="consignes">
+    <div class="bloc-consigne faire"><h3>Ce qu'on fait</h3><ul>${
+      c.faire.map((x,i)=>`<li>${esc(x)}<button title="Modifier" onclick="modifierConsigne('faire',${i})">✎</button><button title="Retirer" onclick="retirerConsigne('faire',${i})">×</button></li>`).join('') || '<li class="vide">Aucune consigne active.</li>'
+    }</ul><div class="actions"><button class="btn sec" onclick="ajouterConsigne('faire')">Ajouter</button></div></div>
+    <div class="bloc-consigne eviter"><h3>Ce qu'on ne fait pas</h3><ul>${
+      c.eviter.map((x,i)=>`<li>${esc(x)}<button title="Modifier" onclick="modifierConsigne('eviter',${i})">✎</button><button title="Retirer" onclick="retirerConsigne('eviter',${i})">×</button></li>`).join('') || '<li class="vide">Aucune consigne active.</li>'
+    }</ul><div class="actions"><button class="btn sec" onclick="ajouterConsigne('eviter')">Ajouter</button></div></div>
+  </div>
+
+  <h2 style="margin-top:26px">Où on en est</h2>
+  <div class="compteurs">
+    <div class="compteur"><div class="n">${etat.missions.filter(m=>m.statut==='En cours').length}</div><div class="l">missions en cours</div></div>
+    <div class="compteur"><div class="n">${missionsSansPilote}</div><div class="l">missions sans pilote désigné</div></div>
+    <div class="compteur"><div class="n">${etat.diffusions.length}</div><div class="l">messages diffusés à la communauté</div></div>
+    <div class="compteur"><div class="n">${Math.max(0,...etat.diffusions.map(d=>parseInt(d.portee,10)||0))}</div><div class="l">professionnels de santé touchés par diffusion</div></div>
+    <div class="compteur"><div class="n">${etat.ars.filter(a=>a.statut==='À faire'||a.statut==='En attente').length}</div><div class="l">échanges ARS en attente</div></div>
+    <div class="compteur"><div class="n">${etat.courante.length}</div><div class="l">entrées en main courante</div></div>
+    <div class="compteur"><div class="n">${etat.appels.length}</div><div class="l">CPTS contactées</div></div>
+    <div class="compteur"><div class="n">${etat.terrain.length}</div><div class="l">remontées de terrain</div></div>
+    <div class="compteur"><div class="n">${etat.volontaires.length}</div><div class="l">volontaires recensés</div></div>
+  </div>`;
+
+  if(missionsSansPilote){
+    h += `<div class="note" style="margin-top:18px"><strong>${missionsSansPilote} mission${missionsSansPilote>1?'s':''} sans pilote.</strong> Une mission sans nom en face ne se fait pas. <a href="#" onclick="aller('missions');return false;">Désigner les pilotes</a></div>`;
+  }
+
+  const arsOuvert = etat.ars.filter(a => a.statut === 'À faire' || a.statut === 'En attente');
+  if(arsOuvert.length){
+    h += `<h2 style="margin-top:26px">En suspens avec l'ARS</h2><div class="carte"><ul class="fil">` +
+      arsOuvert.map(a => `<li><div class="h">${frdate(a.date)}</div><div class="c">
+        <div class="t">${esc(a.objet)}</div>
+        ${a.attendu?`<div class="d">${esc(a.attendu)}</div>`:''}
+        <div class="s">${esc(a.sens)} · ${esc(a.interlocuteur||'—')} · ${esc(a.statut)}</div></div></li>`).join('') +
+      `</ul><div class="actions"><button class="btn sec" onclick="aller('ars')">Ouvrir le suivi ARS</button></div></div>`;
+  }
+
+  h += `<h2 style="margin-top:26px">Missions en un coup d'œil</h2>`;
+  etat.missions.forEach(m => {
+    h += `<div class="mission"><div class="haut">
+      <div class="titre">${esc(m.titre)}</div>
+      <span class="etiq ${classeStatut(m.statut)}">${esc(m.statut)}</span></div>
+      <div class="meta">
+        <div><span class="k">Pilote</span>${esc(m.pilote) || '<em style="color:var(--braise)">à désigner</em>'}</div>
+        <div><span class="k">Mandat ARS</span>${esc(m.mandat)}</div>
+        <div><span class="k">Suppléant</span>${esc(m.suppleant) || '—'}</div>
+      </div></div>`;
+  });
+
+  h += `<h2 style="margin-top:26px">Dernières entrées en main courante</h2><div class="carte">`;
+  if(!derniers.length){
+    h += `<p class="vide">Rien de consigné pour l'instant. <a href="#" onclick="aller('courante');return false;">Ouvrir la main courante</a></p>`;
+  }else{
+    h += `<ul class="fil">` + derniers.map(e =>
+      `<li><div class="h">${frdate(e.date)} ${esc(e.heure||'')}</div>
+       <div class="c"><div class="t">${esc(e.evenement)}</div>
+       ${e.suite?`<div class="d">${esc(e.suite)}</div>`:''}
+       <div class="s">${esc(e.source||'—')} · saisi par ${esc(e.auteur)}</div></div></li>`).join('') + `</ul>`;
+  }
+  return h + `</div>`;
+}
+
+function classeStatut(s){
+  return {'À lancer':'e-lancer','En cours':'e-cours','En attente':'e-attente','Terminé':'e-fini','Bloqué':'e-bloque'}[s] || 'e-lancer';
+}
+
+async function ajouterConsigne(type){
+  const m = document.getElementById('modale');
+  m.innerHTML = `<h3>Nouvelle consigne</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px">${type==='faire'?"Ce que les membres doivent faire maintenant.":"Ce qu'il ne faut surtout pas faire, et qui doit être dit explicitement."}</p>
+    <label><span class="k">Consigne</span><textarea id="in-cons"></textarea></label>
+    <div class="actions"><button class="btn" onclick="validerConsigne('${type}')">Ajouter</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+  setTimeout(()=>document.getElementById('in-cons').focus(), 60);
+}
+async function validerConsigne(type){
+  const v = document.getElementById('in-cons').value.trim();
+  if(v){ etat.consignes[type].push(v); await sauver(); }
+  fermer(); rendre();
+}
+function modifierConsigne(type, i){
+  document.getElementById('modale').innerHTML = `<h3>Modifier la consigne</h3>
+    <label><span class="k">Consigne</span><textarea id="in-cons">${esc(etat.consignes[type][i])}</textarea></label>
+    <div class="actions"><button class="btn" onclick="validerModifConsigne('${type}',${i})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerModifConsigne(type, i){
+  const v = document.getElementById('in-cons').value.trim();
+  if(v) etat.consignes[type][i] = v;
+  await sauver(); fermer(); rendre(); toast("Consigne modifiée");
+}
+async function retirerConsigne(type, i){
+  etat.consignes[type].splice(i,1); await sauver(); rendre();
+}
+
+function organigramme(){
+  const gens = new Map();
+  const ajoute = (nom, m, role) => {
+    const n = (nom || '').trim();
+    if(!n) return;
+    const cle = cleP(n);
+    if(!gens.has(cle)) gens.set(cle, {nom:n, pilote:[], appui:[]});
+    gens.get(cle)[role].push({t:m.titre, esp:espaceDe(m), mid:m.id});
+  };
+  etat.missions.forEach(m => { ajoute(m.pilote, m, 'pilote'); ajoute(m.suppleant, m, 'appui'); });
+
+  const liste = [...gens.values()].sort((a,b) =>
+    b.pilote.length - a.pilote.length || a.nom.localeCompare(b.nom, 'fr'));
+  const vacantes = etat.missions.filter(m => !(m.pilote || '').trim());
+
+  if(!liste.length && !vacantes.length) return '';
+
+  let h = `<div class="legende">
+    <span><i style="background:var(--cobalt-clair)"></i> Pilote de la mission</span>
+    <span><i style="background:#F4F6FA;border:1px solid var(--trait)"></i> En appui</span>
+    <span><i style="background:var(--braise)"></i> Mission sans pilote</span>
+  </div><div class="orga">`;
+
+  liste.forEach(p => {
+    const tot = p.pilote.length + p.appui.length;
+    const c = coord(p.nom);
+    const nEsc = esc(p.nom).replace(/'/g, "\\'");
+    let contact = '';
+    if(c.tel) contact += `<a href="tel:${esc(c.tel.replace(/\s/g,''))}">📞 ${esc(c.tel)}</a>`;
+    if(c.mail) contact += `<a href="mailto:${esc(c.mail)}">✉️ ${esc(c.mail)}</a>`;
+    if(!contact) contact = `<span class="abs">Aucun contact renseigné</span>`;
+    h += `<div class="pers">
+      <div class="qui">${p.pilote.length ? 'Pilote' : 'Appui'}</div>
+      <div class="nom">${esc(p.nom)}</div>
+      <div class="compte">${tot} mission${tot>1?'s':''}${p.pilote.length&&p.appui.length?` · ${p.pilote.length} pilotée${p.pilote.length>1?'s':''}, ${p.appui.length} en appui`:''}</div>
+      <div class="coord">${contact}
+        <button class="modif" onclick="editerContact('${nEsc}')">${c.tel||c.mail?'Modifier le contact':'Ajouter un contact'}</button>
+      </div>
+      ${p.pilote.map(o=>`<button class="chip" onclick="voirFiche('${o.mid}')"><span class="r">Pilote · fiche mission</span>${esc(o.t)}</button>`).join('')}
+      ${p.appui.map(o=>`<button class="chip appui" onclick="voirFiche('${o.mid}')"><span class="r">Appui · fiche mission</span>${esc(o.t)}</button>`).join('')}
+    </div>`;
+  });
+
+  if(vacantes.length){
+    h += `<div class="pers vacant">
+      <div class="qui">Personne n'est dessus</div>
+      <div class="nom">À pourvoir</div>
+      <div class="compte">${vacantes.length} mission${vacantes.length>1?'s':''} sans pilote désigné</div>
+      ${vacantes.map(m=>`<div class="chip" style="background:#F8E5E0">${esc(m.titre)}</div>`).join('')}
+    </div>`;
+  }
+  return h + `</div>`;
+}
+
+function vueMissions(){
+  let h = `<h1>Missions et organigramme</h1>
+  <p class="chapo">Qui porte quoi, et qui prend le relais. Le visuel se construit tout seul à partir des noms saisis plus bas.</p>
+  ${organigramme()}
+  <h2>Répartition détaillée</h2>
+  <div class="actions" style="margin:0 0 14px"><button class="btn" onclick="nouvelleMission()">Créer une mission</button></div>
+  <div class="note">Une mission dont le mandat n'est pas écrit engage la CPTS Pau Béarn sur sa seule initiative. Le préciser protège la structure et clarifie le discours auprès des adhérents.</div>`;
+  etat.missions.forEach(m => {
+    h += `<div class="mission">
+      <div class="haut"><div class="titre">${esc(m.titre)}</div>
+      <select onchange="majMission('${m.id}','statut',this.value)" style="width:auto">
+        ${['À lancer','En cours','En attente','Bloqué','Terminé'].map(s=>`<option ${s===m.statut?'selected':''}>${s}</option>`).join('')}
+      </select></div>
+      <div style="color:var(--texte-2);font-size:14px;margin-top:5px">${esc(m.detail)}</div>
+      <div class="meta">
+        <div style="flex:1;min-width:160px"><span class="k">Pilote</span>
+          <input value="${esc(m.pilote)}" placeholder="à désigner" onchange="majMission('${m.id}','pilote',this.value)"></div>
+        <div style="flex:1;min-width:160px"><span class="k">Suppléant</span>
+          <input value="${esc(m.suppleant)}" placeholder="indispensable en août" onchange="majMission('${m.id}','suppleant',this.value)"></div>
+        <div style="flex:1;min-width:160px"><span class="k">Mandat ARS</span>
+          <input value="${esc(m.mandat)}" onchange="majMission('${m.id}','mandat',this.value)"></div>
+      </div>
+      <div class="barre">
+        <button class="btn sec" onclick="voirFiche('${m.id}')">Fiche mission</button>
+        <button class="btn sec" onclick="aller('${espaceDe(m)}')">Ouvrir « ${esc(nomEspace(espaceDe(m)))} »</button>
+        <button class="sup-m" title="Supprimer la mission" onclick="supprimerMission('${m.id}')">×</button>
+      </div>
+    </div>`;
+  });
+  return h;
+}
+function lignes(t){ return String(t||'').split('\n').map(x=>x.trim()).filter(Boolean); }
+
+function voirFiche(id){
+  const m = etat.missions.find(x => x.id === id); if(!m) return;
+  const f = m.fiche || {};
+  const li = lignes(f.faire);
+  document.getElementById('modale').innerHTML = `
+    <h3>${esc(m.titre)}</h3>
+    <div class="fiche">
+      <h4>Pourquoi</h4><p>${esc(f.but) || 'À renseigner.'}</p>
+      <h4>Ce qu'il y a à faire</h4>
+      ${li.length ? `<ul>${li.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>` : '<p>À renseigner.</p>'}
+      <h4>Avec qui</h4><p>${esc(f.avec) || '—'}</p>
+      <h4>Pour qui</h4><p>${esc(f.pour) || '—'}</p>
+      <h4>Ce qu'on ne fait pas</h4><div class="stop">${esc(f.limite) || '—'}</div>
+      <h4>Où consigner</h4><p>${esc(nomEspace(espaceDe(m)))}</p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="aller('${espaceDe(m)}');fermer()">Ouvrir l'espace</button>
+      <button class="btn sec" onclick="editerFiche('${m.id}')">Modifier la fiche</button>
+      <button class="btn sec" onclick="imprimerModale()">Imprimer</button>
+      <button class="btn sec" onclick="fermer()">Fermer</button>
+    </div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+
+function editerFiche(id){
+  const m = etat.missions.find(x => x.id === id); if(!m) return;
+  const f = m.fiche || {};
+  const opts = ONGLETS.filter(o => !['cockpit','missions'].includes(o.id))
+    .map(o => `<option value="${o.id}" ${espaceDe(m)===o.id?'selected':''}>${o.nom}</option>`).join('');
+  document.getElementById('modale').innerHTML = `
+    <h3>Fiche mission</h3>
+    <label style="margin-bottom:10px"><span class="k">Intitulé</span><input id="fi-titre" value="${esc(m.titre)}"></label>
+    <label style="margin-bottom:10px"><span class="k">Pourquoi — une phrase</span><textarea id="fi-but" style="min-height:56px">${esc(f.but||'')}</textarea></label>
+    <label style="margin-bottom:10px"><span class="k">Ce qu'il y a à faire — une action par ligne</span><textarea id="fi-faire">${esc(f.faire||'')}</textarea></label>
+    <label style="margin-bottom:10px"><span class="k">Avec qui</span><input id="fi-avec" value="${esc(f.avec||'')}"></label>
+    <label style="margin-bottom:10px"><span class="k">Pour qui</span><input id="fi-pour" value="${esc(f.pour||'')}"></label>
+    <label style="margin-bottom:10px"><span class="k">Ce qu'on ne fait pas</span><textarea id="fi-limite" style="min-height:56px">${esc(f.limite||'')}</textarea></label>
+    <label style="margin-bottom:10px"><span class="k">Où consigner</span><select id="fi-espace">${opts}</select></label>
+    <div class="actions"><button class="btn" onclick="validerFiche('${m.id}')">Enregistrer</button><button class="btn sec" onclick="voirFiche('${m.id}')">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+
+async function validerFiche(id){
+  const m = etat.missions.find(x => x.id === id); if(!m) return;
+  const g = k => document.getElementById('fi-'+k).value.trim();
+  m.titre = g('titre') || m.titre;
+  m.espace = g('espace');
+  m.fiche = {but:g('but'), faire:g('faire'), avec:g('avec'), pour:g('pour'), limite:g('limite')};
+  m.modifiePar = moi;
+  await sauver(); fermer(); rendre(); toast("Fiche enregistrée");
+}
+
+function nouvelleMission(){
+  const opts = ONGLETS.filter(o => !['cockpit','missions'].includes(o.id))
+    .map(o => `<option value="${o.id}">${o.nom}</option>`).join('');
+  document.getElementById('modale').innerHTML = `
+    <h3>Créer une mission</h3>
+    <label style="margin-bottom:10px"><span class="k">Intitulé *</span><input id="nm-titre" placeholder="Ex. Veille des sources"></label>
+    <label style="margin-bottom:10px"><span class="k">En une phrase</span><textarea id="nm-detail" style="min-height:56px"></textarea></label>
+    <label style="margin-bottom:10px"><span class="k">Pilote</span><input id="nm-pilote"></label>
+    <label style="margin-bottom:10px"><span class="k">Mandat ARS</span><input id="nm-mandat" value="Non"></label>
+    <label style="margin-bottom:10px"><span class="k">Où consigner</span><select id="nm-espace">${opts}</select></label>
+    <div class="actions"><button class="btn" onclick="validerMission()">Créer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+  setTimeout(()=>document.getElementById('nm-titre').focus(), 60);
+}
+async function validerMission(){
+  const t = document.getElementById('nm-titre').value.trim();
+  if(!t){ toast("L'intitulé est obligatoire"); return; }
+  etat.missions.push({
+    id:uid(), titre:t,
+    detail:document.getElementById('nm-detail').value.trim(),
+    pilote:document.getElementById('nm-pilote').value.trim(), suppleant:'',
+    mandat:document.getElementById('nm-mandat').value.trim() || 'Non',
+    statut:'À lancer', espace:document.getElementById('nm-espace').value,
+    fiche:{but:'', faire:'', avec:'', pour:'', limite:''}, creePar:moi
+  });
+  await sauver(); fermer(); rendre(); toast("Mission créée");
+}
+async function supprimerMission(id){
+  const m = etat.missions.find(x => x.id === id); if(!m) return;
+  document.getElementById('modale').innerHTML = `<h3>Supprimer cette mission&nbsp;?</h3>
+    <p style="color:var(--texte-2)">« ${esc(m.titre)} » disparaîtra de l'organigramme. Les saisies déjà enregistrées dans son espace sont conservées.</p>
+    <div class="actions"><button class="btn" onclick="confirmerSuppression('${id}')">Supprimer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function confirmerSuppression(id){
+  noterRetrait(id);
+  etat.missions = etat.missions.filter(x => x.id !== id);
+  await sauver(); fermer(); rendre(); toast("Mission supprimée");
+}
+
+async function majMission(id, champ, val){
+  const m = etat.missions.find(x => x.id === id);
+  if(!m) return;
+  m[champ] = val.trim();
+  m.modifiePar = moi;
+  await sauver();
+  if(champ === 'statut' || champ === 'pilote' || champ === 'suppleant') rendre();
+  else toast("Enregistré");
+}
+
+function vueVeille(){
+  const sources = ['Tout','Préfecture','URPS','CPTS','Presse','Autre'];
+  let items = [...etat.veille].sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  if(filtreVeille !== 'Tout') items = items.filter(i => i.source === filtreVeille);
+
+  let h = `<h1>Situation régionale</h1>
+  <p class="chapo">Les informations les plus récentes à l'échelle de la Nouvelle-Aquitaine : où en est le feu, ce que décident les autorités, ce qui change pour le territoire de la CPTS Pau Béarn. On surveille les canaux officiels et on retient ce qui a un impact.</p>
+  <div class="note"><strong>Cette page ne se remplit pas toute seule.</strong> Le cockpit est un fichier autonome : il n'interroge aucun flux. La veille reste humaine — d'où le suivi ci-dessous, qui indique quand chaque canal a été consulté et par qui.</div>
+  <div class="note">Les communications de l'ARS ne sont pas ici : elles sont regroupées dans <a href="#" onclick="aller('ars');return false;">Échanges avec l'ARS</a>, avec ce qu'elles impliquent pour la CPTS.</div>
+  <div class="filtres">${sources.map(s=>`<button class="${filtreVeille===s?'on':''}" onclick="filtrer('${s}')">${s}</button>`).join('')}</div>`;
+
+  const srcs = [...(etat.sources||[])].sort((a,b) => (a.verifieLe||'').localeCompare(b.verifieLe||''));
+  h += `<h2 style="margin-top:24px">Sources à surveiller</h2>
+  <p style="color:var(--texte-2);margin:-6px 0 14px;font-size:14px">Les canaux les moins récemment consultés remontent en tête. On ouvre, on regarde, on marque « vérifié » — et on ajoute ci-dessous ce qui mérite d'être retenu.</p>
+  <div class="srcs">` + srcs.map(o => `
+    <div class="src-c ${o.verifieLe?'':'jamais'}">
+      <div><div class="cat">${esc(o.cat||'Autre')}</div><div class="n">${esc(o.nom)}</div></div>
+      <div class="q">${o.verifieLe ? 'Vérifié le ' + frdate(o.verifieLe.slice(0,10)) + ' à ' + esc(o.verifieLe.slice(11,16)) + (o.verifiePar?' par '+esc(o.verifiePar):'') : 'Jamais vérifié'}</div>
+      <div class="b">
+        <a href="${esc(o.url)}" target="_blank" rel="noopener">Ouvrir</a>
+        <button onclick="marquerSource('${o.id}')">Marquer vérifié</button>
+        <button onclick="ouvrirSource('${o.id}')" title="Modifier" style="flex:0 0 46px;min-width:46px">✎</button>
+        <button onclick="supprimerSource('${o.id}')" title="Retirer" style="flex:0 0 46px;min-width:46px">×</button>
+      </div>
+    </div>`).join('') + `</div>
+  <div class="actions" style="margin:0 0 6px"><button class="btn sec" onclick="ouvrirSource()">Ajouter une source</button></div>
+
+  <h2 style="margin-top:24px">Ce qu'on a retenu de la situation</h2>
+  <div class="actions" style="margin:0 0 12px"><button class="btn" onclick="ouvrirVeille()">Ajouter</button></div>
+  <ul class="veille">` + (items.length ? items.map(i =>
+    `<li data-s="${esc(i.source)}">
+      <div class="en"><span class="src">${esc(i.source)}</span><span class="dt">${frdate(i.date)}</span>
+      <span class="ti">${esc(i.titre)}</span></div>
+      <div class="re">${esc(i.resume)}</div>
+      ${i.lien?`<a href="${esc(i.lien)}" target="_blank" rel="noopener">Ouvrir la source</a>`:''}
+      <button class="sup" style="float:right" onclick="supprimerVeille('${i.id}')">×</button>
+      <button class="sup" style="float:right" onclick="ouvrirVeille('${i.id}')" title="Modifier">✎</button>
+    </li>`).join('') : `<li><p class="vide">Aucune publication pour ce filtre.</p></li>`) + `</ul>`;
+
+  return h;
+}
+function filtrer(s){ filtreVeille = s; rendre(); }
+async function marquerSource(id){
+  const o = (etat.sources||[]).find(x => x.id === id);
+  if(!o) return;
+  const d = new Date();
+  o.verifieLe = d.toISOString().slice(0,10) + ' ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  o.verifiePar = moi;
+  await sauver(); rendre(); toast("Source marquée comme vérifiée");
+}
+function ouvrirSource(id){
+  const o = id ? (etat.sources||[]).find(x=>x.id===id) : null;
+  document.getElementById('modale').innerHTML = `<h3>${o?'Modifier la source':'Ajouter une source'}</h3><div class="form">
+    <label class="large"><span class="k">Nom du canal *</span><input id="s-nom" value="${esc(o?o.nom:'')}" placeholder="Ex. URPS Infirmiers Nouvelle-Aquitaine"></label>
+    <label class="large"><span class="k">Catégorie</span><input id="s-cat" value="${esc(o?o.cat:'')}" placeholder="Institutionnel, Presse, URPS…"></label>
+    <label class="large"><span class="k">Adresse *</span><input id="s-url" value="${esc(o?o.url:'')}" placeholder="https://"></label>
+  </div><div class="actions"><button class="btn" onclick="validerSource(${o?`'${o.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerSource(id){
+  const n = document.getElementById('s-nom').value.trim();
+  const u = document.getElementById('s-url').value.trim();
+  if(!n || !u){ toast("Nom et adresse obligatoires"); return; }
+  const cat = document.getElementById('s-cat').value.trim() || 'Autre';
+  etat.sources = etat.sources || [];
+  const o = id ? etat.sources.find(x=>x.id===id) : null;
+  if(o){ o.nom=n; o.url=u; o.cat=cat; }
+  else etat.sources.push({id:uid(), nom:n, url:u, cat, verifieLe:'', verifiePar:''});
+  await sauver(); fermer(); rendre(); toast(o?"Source modifiée":"Source ajoutée");
+}
+async function supprimerSource(id){
+  noterRetrait(id);
+  etat.sources = (etat.sources||[]).filter(x=>x.id!==id);
+  await sauver(); rendre(); toast("Source retirée");
+}
+function ouvrirVeille(id){
+  const o = id ? (etat.veille||[]).find(x=>x.id===id) : null;
+  const src = ['Préfecture','URPS','CPTS','Presse','ARS','Autre'];
+  document.getElementById('modale').innerHTML = `<h3>${o?'Modifier':'Ce qu\'on retient'}</h3><div class="form">
+    <label><span class="k">Date</span><input type="date" id="v-date" value="${esc(o?o.date:aujourdhui())}"></label>
+    <label><span class="k">Source</span><select id="v-source">${src.map(x=>`<option ${o&&o.source===x?'selected':''}>${x}</option>`).join('')}</select></label>
+    <label class="large"><span class="k">Titre *</span><input id="v-titre" value="${esc(o?o.titre:'')}" placeholder="Ex. Évacuation de nouvelles communes"></label>
+    <label class="large"><span class="k">Ce qu'il faut en retenir</span><textarea id="v-resume">${esc(o?o.resume:'')}</textarea></label>
+    <label class="large"><span class="k">Lien</span><input id="v-lien" value="${esc(o?o.lien:'')}" placeholder="https://"></label>
+  </div><div class="actions"><button class="btn" onclick="validerVeille(${o?`'${o.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerVeille(id){
+  const t = document.getElementById('v-titre').value.trim();
+  if(!t){ toast("Le titre est obligatoire"); return; }
+  const g = k => document.getElementById('v-'+k).value.trim();
+  const o = id ? etat.veille.find(x=>x.id===id) : null;
+  if(o){ o.date=g('date'); o.source=g('source'); o.titre=t; o.resume=g('resume'); o.lien=g('lien'); o.modifiePar=moi; }
+  else etat.veille.unshift({id:uid(), date:g('date'), source:g('source'), titre:t, resume:g('resume'), lien:g('lien'), auteur:moi});
+  await sauver(); fermer(); rendre(); toast(o?"Modifié":"Enregistré");
+}
+async function supprimerVeille(id){
+  noterRetrait(id);
+  etat.veille = etat.veille.filter(v => v.id !== id);
+  await sauver(); rendre();
+}
+
+function evenements(){
+  const e = [];
+  const push = (o, type, titre, detail, qui) => {
+    if(!titre) return;
+    e.push({date:o.date||'', heure:o.heure||'', type, titre, detail:detail||'', qui:qui||o.auteur||''});
+  };
+  (etat.diffusions||[]).forEach(o => push(o,'Diffusé',o.objet,
+    [o.canal,o.cible,o.portee?o.portee+' destinataires':''].filter(Boolean).join(' · '), o.emetteur||o.auteur));
+  (etat.ars||[]).forEach(o => push(o,'ARS',o.objet,
+    [o.sens,o.interlocuteur,o.statut].filter(Boolean).join(' · '), o.auteur));
+  (etat.courante||[]).forEach(o => push(o,'Consigné',o.evenement, [o.source,o.suite].filter(Boolean).join(' · '), o.auteur));
+  (etat.terrain||[]).forEach(o => push(o,'Terrain',o.sujet,
+    [o.professionnel,o.profession,o.commune,o.criticite].filter(Boolean).join(' · '), o.auteur));
+  (etat.cpts||[]).forEach(c => (c.appels||[]).forEach(a =>
+    push(a,'Appel CPTS', c.nom, [a.qui, a.dit].filter(Boolean).join(' · '), a.par)));
+  (etat.materiel||[]).forEach(o => push(o,'Matériel',o.nature,
+    [o.demandeur,o.quantite,o.statut].filter(Boolean).join(' · '), o.auteur));
+  (etat.volontaires||[]).forEach(o => push(o,'Volontaire',o.nom,
+    [o.profession,o.dispo,o.statut].filter(Boolean).join(' · '), o.auteur));
+  (etat.veille||[]).forEach(o => push(o,'Veille',o.titre, [o.source,o.resume].filter(Boolean).join(' · '), o.auteur));
+  return e.sort((a,b) => ((b.date+' '+(b.heure||'00:00')).localeCompare(a.date+' '+(a.heure||'00:00'))));
+}
+
+const COUL = {'Diffusé':'e-cours','ARS':'e-attente','Consigné':'e-lancer','Terrain':'e-bloque','Appel CPTS':'e-lancer','Matériel':'e-attente','Volontaire':'e-cours','Veille':'e-fini'};
+
+function vueFil(){
+  let ev = evenements();
+  const types = ['Tout', ...new Set(ev.map(x => x.type))];
+  if(filtreFil !== 'Tout') ev = ev.filter(x => x.type === filtreFil);
+
+  let h = `<h1>Fil d'actualité</h1>
+  <p class="chapo">Tout ce que la CPTS Pau Béarn a mené, tracé, communiqué ou reçu depuis le début de sa mobilisation, du plus récent au plus ancien. C'est la page à ouvrir quand on reprend la main après une absence.</p>
+  <div class="filtres">${types.map(t=>`<button class="${filtreFil===t?'on':''}" onclick="filtrerFil('${t}')">${esc(t)}</button>`).join('')}</div>`;
+
+  if(!ev.length) return h + `<div class="carte"><p class="vide">Rien n'a encore été enregistré. Le fil se construit à partir de toutes les autres pages.</p></div>`;
+
+  let jour = '';
+  h += `<div class="carte"><ul class="fil">`;
+  ev.forEach(x => {
+    if(x.date !== jour){
+      jour = x.date;
+      h += `<li style="border-bottom:0;padding-bottom:2px"><div class="h"></div><div class="c"><div class="s" style="font-weight:600;color:var(--encre)">${frdate(x.date)}</div></div></li>`;
+    }
+    h += `<li><div class="h">${esc(x.heure||'—')}</div><div class="c">
+      <div><span class="etiq ${COUL[x.type]||'e-lancer'}">${esc(x.type)}</span></div>
+      <div class="t" style="margin-top:5px">${esc(x.titre)}</div>
+      ${x.detail?`<div class="d">${esc(x.detail)}</div>`:''}
+      ${x.qui?`<div class="s">${esc(x.qui)}</div>`:''}
+    </div></li>`;
+  });
+  return h + `</ul></div>`;
+}
+function filtrerFil(t){ filtreFil = t; rendre(); }
+
+function vueAppels(){
+  const l = etat.cpts || [];
+  const ordre = {"Zone de feu":0, "Proche":1, "Hors zone":2};
+  const tri = [...l].sort((a,b) => (ordre[a.priorite]??3) - (ordre[b.priorite]??3) || a.nom.localeCompare(b.nom,'fr'));
+  const faits = l.filter(x => x.appels && x.appels.length).length;
+  const nbApp = l.reduce((a,x) => a + ((x.appels||[]).length), 0);
+
+  let h = `<h1>Appels aux CPTS</h1>
+  <p class="chapo">Les CPTS des zones touchées, classées par proximité du feu. On appelle pour prendre des nouvelles et identifier des besoins réels, pas pour placer du matériel. Chaque échange se consigne, même quand la réponse est « rien ».</p>
+  <div class="compteurs" style="margin-bottom:16px">
+    <div class="compteur"><div class="n">${l.length}</div><div class="l">CPTS répertoriées</div></div>
+    <div class="compteur"><div class="n">${faits}</div><div class="l">déjà contactées</div></div>
+    <div class="compteur"><div class="n">${nbApp}</div><div class="l">appels consignés</div></div>
+  </div>
+  <div class="note">Les coordonnées proviennent d'annuaires publics et ne sont pas toutes à jour. Les noms des coordinatrices et des présidents ne sont pas publiés : le plus rapide est de les obtenir auprès de Claire (Agora Lib), puis de les renseigner ici.</div>
+  <div class="barre-h"><button class="btn sec" onclick="exporterAppels()">Excel</button><button class="btn sec" onclick="imprimer()">PDF</button><button class="btn" onclick="ouvrirCpts()">Ajouter une CPTS</button></div>
+  <div class="cptsl">`;
+
+  tri.forEach(c => {
+    const cl = c.priorite === 'Zone de feu' ? 'feu' : c.priorite === 'Proche' ? 'proche' : '';
+    const app = c.appels || [];
+    h += `<div class="cptsc ${cl} ${app.length?'fait':''}">
+      <div><div class="nom">${esc(c.nom)}</div><div class="terr">${esc(c.territoire)}</div></div>
+      <div class="rangee">
+        <span class="etiq ${c.priorite==='Zone de feu'?'e-bloque':c.priorite==='Proche'?'e-attente':'e-lancer'}">${esc(c.priorite)}</span>
+        ${c.contact?`<span class="terr">Contact : ${esc(c.contact)}</span>`:''}
+      </div>
+      ${c.note?`<div class="obs">${esc(c.note)}</div>`:''}
+      <div class="rangee">
+        ${c.tel?`<a class="tel" href="tel:${esc(c.tel.replace(/[^0-9+]/g,''))}">Appeler ${esc(c.tel)}</a>`:`<button class="btn sec" style="flex:1;min-width:150px;min-height:44px" onclick="ouvrirCpts('${c.id}')">Ajouter le numéro</button>`}
+        <select onchange="majCpts('${c.id}','statut',this.value)">
+          ${['À appeler','Appelée','Sans réponse','À rappeler','Sans objet'].map(x=>`<option ${x===c.statut?'selected':''}>${x}</option>`).join('')}
+        </select>
+      </div>
+      <div class="journal">
+        ${app.length ? app.map(a => `<div class="app">
+            <div class="q">${frdate(a.date)} ${esc(a.heure||'')} · ${esc(a.par||'—')}
+              <button onclick="supprimerAppel('${c.id}','${a.id}')" title="Supprimer">×</button></div>
+            ${a.qui?`<div class="s">Interlocuteur : ${esc(a.qui)}</div>`:''}
+            <div class="d">${esc(a.dit)}</div>
+            ${a.suite?`<div class="s">Suite : ${esc(a.suite)}</div>`:''}
+          </div>`).join('') : `<p class="vide">Aucun appel consigné.</p>`}
+      </div>
+      <div class="rangee">
+        <button class="btn" style="flex:1;min-width:150px" onclick="ouvrirAppel('${c.id}')">Consigner un appel</button>
+        <button class="retirer" onclick="ouvrirCpts('${c.id}')">Modifier</button>
+        <button class="retirer" onclick="supprimerCpts('${c.id}')">Retirer</button>
+      </div>
+    </div>`;
+  });
+  return h + `</div>`;
+}
+
+async function majCpts(id, champ, val){
+  const c = (etat.cpts||[]).find(x => x.id === id); if(!c) return;
+  c[champ] = val; c.modifiePar = moi;
+  await sauver(); rendre();
+}
+
+function ouvrirAppel(id){
+  const c = (etat.cpts||[]).find(x => x.id === id); if(!c) return;
+  document.getElementById('modale').innerHTML = `<h3>${esc(c.nom)} — consigner un appel</h3><div class="form">
+    <label><span class="k">Date</span><input type="date" id="ap-date" value="${aujourdhui()}"></label>
+    <label><span class="k">Heure</span><input type="time" id="ap-heure" value="${maintenant()}"></label>
+    <label class="large"><span class="k">Interlocuteur joint</span><input id="ap-qui" placeholder="Nom, fonction"></label>
+    <label class="large"><span class="k">Ce qui a été dit *</span><textarea id="ap-dit" placeholder="Situation sur place, besoins exprimés, réponse obtenue…"></textarea></label>
+    <label class="large"><span class="k">Suite à donner</span><textarea id="ap-suite" placeholder="Rappeler le…, transmettre à…, rien"></textarea></label>
+  </div><div class="actions"><button class="btn" onclick="validerAppel('${c.id}')">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerAppel(id){
+  const c = (etat.cpts||[]).find(x => x.id === id); if(!c) return;
+  const g = k => document.getElementById('ap-'+k).value.trim();
+  if(!g('dit')){ toast("Indiquez ce qui a été dit"); return; }
+  c.appels = c.appels || [];
+  c.appels.unshift({id:uid(), date:g('date'), heure:g('heure'), qui:g('qui'), dit:g('dit'), suite:g('suite'), par:moi});
+  if(c.statut === 'À appeler') c.statut = 'Appelée';
+  await sauver(); fermer(); rendre(); toast("Appel consigné");
+}
+async function supprimerAppel(cid, aid){
+  const c = (etat.cpts||[]).find(x => x.id === cid); if(!c) return;
+  c.appels = (c.appels||[]).filter(a => a.id !== aid);
+  await sauver(); rendre(); toast("Appel supprimé");
+}
+
+function ouvrirCpts(id){
+  const c = id ? (etat.cpts||[]).find(x=>x.id===id) : null;
+  const pr = ['Zone de feu','Proche','Hors zone'];
+  document.getElementById('modale').innerHTML = `<h3>${c?'Modifier':'Ajouter une CPTS'}</h3><div class="form">
+    <label class="large"><span class="k">Nom *</span><input id="cp-nom" value="${esc(c?c.nom:'')}"></label>
+    <label class="large"><span class="k">Territoire</span><textarea id="cp-territoire">${esc(c?c.territoire:'')}</textarea></label>
+    <label><span class="k">Téléphone</span><input id="cp-tel" type="tel" value="${esc(c?c.tel:'')}"></label>
+    <label><span class="k">Coordinatrice ou président</span><input id="cp-contact" value="${esc(c?c.contact:'')}" placeholder="Nom, fonction"></label>
+    <label><span class="k">Proximité du feu</span><select id="cp-priorite">${pr.map(x=>`<option ${c&&c.priorite===x?'selected':''}>${x}</option>`).join('')}</select></label>
+    <label><span class="k">Site</span><input id="cp-url" value="${esc(c?c.url:'')}" placeholder="https://"></label>
+    <label class="large"><span class="k">Observation</span><textarea id="cp-note">${esc(c?c.note:'')}</textarea></label>
+  </div><div class="actions"><button class="btn" onclick="validerCpts(${c?`'${c.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerCpts(id){
+  const g = k => document.getElementById('cp-'+k).value.trim();
+  if(!g('nom')){ toast("Le nom est obligatoire"); return; }
+  const d = {nom:g('nom'), territoire:g('territoire'), tel:g('tel'), contact:g('contact'), priorite:g('priorite'), url:g('url'), note:g('note')};
+  etat.cpts = etat.cpts || [];
+  const c = id ? etat.cpts.find(x=>x.id===id) : null;
+  if(c) Object.assign(c, d); else etat.cpts.push({id:uid(), statut:'À appeler', appels:[], ...d});
+  await sauver(); fermer(); rendre(); toast(c?"Modifié":"Ajouté");
+}
+async function supprimerCpts(id){
+  noterRetrait(id);
+  etat.cpts = (etat.cpts||[]).filter(x=>x.id!==id);
+  await sauver(); rendre(); toast("Retiré");
+}
+function exporterAppels(){
+  const rows = [['CPTS','Territoire','Téléphone','Contact','Proximité','Statut','Date','Heure','Interlocuteur',"Ce qui a été dit",'Suite','Appelé par'].map(csvVal)];
+  (etat.cpts||[]).forEach(c => {
+    if(!(c.appels||[]).length){
+      rows.push([c.nom,c.territoire,c.tel,c.contact,c.priorite,c.statut,'','','','','',''].map(csvVal));
+    } else {
+      c.appels.forEach(a => rows.push([c.nom,c.territoire,c.tel,c.contact,c.priorite,c.statut,a.date,a.heure,a.qui,a.dit,a.suite,a.par].map(csvVal)));
+    }
+  });
+  telechargerCSV('Appels CPTS', rows);
+}
+
+function vueOffre(){
+  const l = etat.offre || [];
+  const etabs = l.filter(x => x.cat === 'Hôpitaux publics' || x.cat === 'Cliniques et privé');
+  const snp = l.filter(x => x.cat === 'Soins non programmés');
+  const total = etabs.reduce((a,x) => a + (parseInt(x.lits,10) || 0), 0);
+  const urg = etabs.filter(x => x.urgences === 'Oui').length;
+
+  let h = `<h1>Offre de soins du territoire</h1>
+  <p class="chapo">Tout ce qui peut absorber ou orienter des patients en cas d'afflux massif de victimes, classé par feuillet : hôpitaux publics, cliniques et privé, soins non programmés, exercice coordonné. Les EHPAD et les structures médico-sociales n'y figurent pas.</p>
+  <div class="compteurs" style="margin-bottom:18px">
+    <div class="compteur"><div class="n">${etabs.length}</div><div class="l">établissements recensés</div></div>
+    <div class="compteur"><div class="n">${total}</div><div class="l">lits et places renseignés</div></div>
+    <div class="compteur"><div class="n">${urg}</div><div class="l">avec un service d'urgences</div></div>
+    <div class="compteur"><div class="n">${snp.length}</div><div class="l">relais de soins non programmés</div></div>
+  </div>
+  <div class="note">Les capacités proviennent de sources publiques et n'ont pas valeur de disponibilité : en situation réelle, seul le ROR renseigné par les établissements fait foi. Les fiches marquées d'un avertissement restent à confirmer.</div>
+  <div class="barre-h"><button class="btn sec" onclick="imprimer()">PDF</button><button class="btn" onclick="ouvrirEtab()">Ajouter</button></div>`;
+
+  const cats = [...new Set(l.map(x => x.cat))];
+  if(!feuillet || !cats.includes(feuillet)) feuillet = cats[0];
+  h += `<div class="filtres">${cats.map(c=>`<button class="${feuillet===c?'on':''}" onclick="allerFeuillet('${c.replace(/'/g,"\\'")}')">${esc(c)} <span style="opacity:.6">${l.filter(x=>x.cat===c).length}</span></button>`).join('')}</div>`;
+
+  [feuillet].forEach(c => {
+    h += `<div class="etabs">`;
+    l.filter(x => x.cat === c).forEach(e => {
+      const cl = e.statut === 'Privé' ? 'prive' : e.statut === 'Libéral' ? 'lib' : '';
+      h += `<div class="etab ${cl}">
+        <div class="tete"><div><div class="nom">${esc(e.nom)}</div><div class="type">${esc(e.type)}${e.commune?' · '+esc(e.commune):''}</div></div>
+        ${e.lits?`<div class="lits">${esc(e.lits)}<small>lits et places</small></div>`:''}</div>
+        <div class="badges"><span class="etiq ${e.statut==='Public'?'e-lancer':e.statut==='Privé'?'e-cours':'e-attente'}">${esc(e.statut)}</span>
+        ${e.urgences==='Oui'?'<span class="etiq e-bloque">Urgences</span>':''}
+        ${e.urgences==='À confirmer'?'<span class="etiq e-attente">Urgences à confirmer</span>':''}</div>
+        ${e.capacites?`<div class="cap">${esc(e.capacites)}</div>`:''}
+        ${e.note?`<div class="obs">${esc(e.note)}</div>`:''}
+        <div class="liens">
+          ${e.tel?`<a class="tel" href="tel:${esc(e.tel.replace(/[^0-9+]/g,''))}">Appeler ${esc(e.tel)}</a>`:''}
+          ${e.adresse?`<a class="adr" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.adresse)}" target="_blank" rel="noopener">${esc(e.adresse)}</a>`:''}
+          ${e.url?`<a class="web" href="${esc(e.url)}" target="_blank" rel="noopener">Site de l'établissement</a>`:''}
+        </div>
+        <div style="display:flex;gap:7px"><button class="retirer" onclick="ouvrirEtab('${e.id}')">Modifier</button><button class="retirer" onclick="supprimerEtab('${e.id}')">Retirer</button></div>
+      </div>`;
+    });
+    h += `</div>`;
+  });
+  return h;
+}
+
+function allerFeuillet(c){ feuillet = c; rendre(); window.scrollTo(0,0); }
+
+function ouvrirEtab(id){
+  const o = id ? (etat.offre||[]).find(x=>x.id===id) : null;
+  const sel = (v,arr) => arr.map(x=>`<option ${v===x?'selected':''}>${x}</option>`).join('');
+  document.getElementById('modale').innerHTML = `<h3>${o?'Modifier':'Ajouter un établissement'}</h3><div class="form">
+    <label class="large"><span class="k">Nom *</span><input id="et-nom" value="${esc(o?o.nom:'')}"></label>
+    <label><span class="k">Catégorie</span><select id="et-cat">${sel(o?o.cat:'', ['Hôpitaux publics','Cliniques et privé','Soins non programmés','Exercice coordonné'])}</select></label>
+    <label><span class="k">Statut</span><select id="et-statut">${sel(o?o.statut:'', ['Public','Privé','Libéral'])}</select></label>
+    <label class="large"><span class="k">Type</span><input id="et-type" value="${esc(o?o.type:'')}"></label>
+    <label><span class="k">Commune</span><input id="et-commune" value="${esc(o?o.commune:'')}"></label>
+    <label><span class="k">Lits et places</span><input id="et-lits" value="${esc(o?o.lits:'')}"></label>
+    <label class="large"><span class="k">Adresse</span><input id="et-adresse" value="${esc(o?o.adresse:'')}"></label>
+    <label><span class="k">Téléphone</span><input id="et-tel" type="tel" value="${esc(o?o.tel:'')}"></label>
+    <label><span class="k">Service d'urgences</span><select id="et-urgences">${sel(o?o.urgences:'', ['Non','Oui','À confirmer'])}</select></label>
+    <label class="large"><span class="k">Capacités et spécialités</span><textarea id="et-capacites">${esc(o?o.capacites:'')}</textarea></label>
+    <label class="large"><span class="k">Observation</span><textarea id="et-note">${esc(o?o.note:'')}</textarea></label>
+    <label class="large"><span class="k">Site</span><input id="et-url" value="${esc(o?o.url:'')}" placeholder="https://"></label>
+  </div><div class="actions"><button class="btn" onclick="validerEtab(${o?`'${o.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerEtab(id){
+  const g = k => document.getElementById('et-'+k).value.trim();
+  if(!g('nom')){ toast("Le nom est obligatoire"); return; }
+  const d = {nom:g('nom'), cat:g('cat'), statut:g('statut'), type:g('type'), commune:g('commune'),
+             lits:g('lits'), adresse:g('adresse'), tel:g('tel'), urgences:g('urgences'),
+             capacites:g('capacites'), note:g('note'), url:g('url'), verif:false};
+  etat.offre = etat.offre || [];
+  const o = id ? etat.offre.find(x=>x.id===id) : null;
+  if(o) Object.assign(o, d); else etat.offre.push({id:uid(), ...d});
+  await sauver(); fermer(); rendre(); toast(o?"Modifié":"Ajouté");
+}
+async function supprimerEtab(id){
+  noterRetrait(id);
+  etat.offre = (etat.offre||[]).filter(x=>x.id!==id);
+  await sauver(); rendre(); toast("Retiré");
+}
+
+function vueLignes(){
+  const parCat = {};
+  (etat.lignes||[]).forEach(l => { (parCat[l.cat||'Autre'] = parCat[l.cat||'Autre'] || []).push(l); });
+  const ordre = ["Alerte et signalement","Urgences","Appui régional","Appui spécialisé"];
+  const cats = [...new Set([...ordre.filter(c=>parCat[c]), ...Object.keys(parCat)])];
+
+  let h = `<h1>Qui appeler</h1>
+  <p class="chapo">Les lignes à solliciter en situation sanitaire exceptionnelle à l'échelle de la Nouvelle-Aquitaine. Un appui sur un numéro lance l'appel, un appui sur une adresse ouvre la messagerie.</p>
+  <div class="note">Pour toute remontée de la CPTS Pau Béarn vers l'ARS, le réflexe est le <strong>point focal régional</strong> : c'est l'entrée unique, ouverte jour et nuit, pour tout signalement sanitaire.</div>
+  <div class="barre-h"><span class="cpt-h">${(etat.lignes||[]).length} lignes</span>
+    <button class="btn" onclick="ouvrirLigne()">Ajouter une ligne</button></div>`;
+
+  cats.forEach(c => {
+    h += `<h2 style="margin-top:22px">${esc(c)}</h2><div class="lignes">`;
+    parCat[c].forEach(l => {
+      h += `<div class="ligne ${c==='Urgences'?'urg':''}">
+        <div><div class="org">${esc(l.org||'')}</div><div class="nom">${esc(l.nom)}</div></div>
+        ${l.quoi?`<div class="quoi">${esc(l.quoi)}</div>`:''}
+        ${l.dispo?`<div class="dispo">${esc(l.dispo)}</div>`:''}
+        ${l.verif?`<div class="aver">Coordonnée à confirmer avant usage.</div>`:''}
+        <div class="actes">
+          ${l.tel?`<a class="tel" href="tel:${esc(l.tel.replace(/[^0-9+]/g,''))}">Appeler ${esc(l.tel)}</a>`:''}
+          ${l.mail?`<a class="ml" href="mailto:${esc(l.mail)}">${esc(l.mail)}</a>`:''}
+          ${l.url?`<a class="web" href="${esc(l.url)}" target="_blank" rel="noopener">Voir la page officielle</a>`:''}
+        </div>
+        <div style="display:flex;gap:7px"><button class="retirer" onclick="ouvrirLigne('${l.id}')">Modifier</button><button class="retirer" onclick="supprimerLigne('${l.id}')">Retirer</button></div>
+      </div>`;
+    });
+    h += `</div>`;
+  });
+  return h;
+}
+
+function ouvrirLigne(id){
+  const o = id ? (etat.lignes||[]).find(x=>x.id===id) : null;
+  const cats = ['Alerte et signalement','Urgences','Appui régional','Appui spécialisé','Autre'];
+  document.getElementById('modale').innerHTML = `<h3>${o?'Modifier la ligne':'Ajouter une ligne'}</h3><div class="form">
+    <label class="large"><span class="k">Intitulé *</span><input id="lg-nom" value="${esc(o?o.nom:'')}" placeholder="Ex. Cellule d'urgence médico-psychologique"></label>
+    <label class="large"><span class="k">Structure</span><input id="lg-org" value="${esc(o?o.org:'')}"></label>
+    <label class="large"><span class="k">À quoi ça sert</span><textarea id="lg-quoi">${esc(o?o.quoi:'')}</textarea></label>
+    <label><span class="k">Téléphone</span><input id="lg-tel" type="tel" value="${esc(o?o.tel:'')}"></label>
+    <label><span class="k">Mail</span><input id="lg-mail" type="email" value="${esc(o?o.mail:'')}"></label>
+    <label><span class="k">Disponibilité</span><input id="lg-dispo" value="${esc(o?o.dispo:'')}" placeholder="24h/24, heures ouvrées…"></label>
+    <label><span class="k">Catégorie</span><select id="lg-cat">${cats.map(c=>`<option ${o&&o.cat===c?'selected':''}>${c}</option>`).join('')}</select></label>
+    <label class="large"><span class="k">Page officielle</span><input id="lg-url" value="${esc(o?o.url:'')}" placeholder="https://"></label>
+    <label class="large"><span class="k">Coordonnée à confirmer&nbsp;?</span><select id="lg-verif"><option ${o&&o.verif?'':'selected'}>Non, elle est vérifiée</option><option ${o&&o.verif?'selected':''}>Oui, à confirmer</option></select></label>
+  </div><div class="actions"><button class="btn" onclick="validerLigne(${o?`'${o.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerLigne(id){
+  const n = document.getElementById('lg-nom').value.trim();
+  if(!n){ toast("L'intitulé est obligatoire"); return; }
+  const g = k => document.getElementById('lg-'+k).value.trim();
+  const v = g('verif').startsWith('Oui');
+  etat.lignes = etat.lignes || [];
+  const o = id ? etat.lignes.find(x=>x.id===id) : null;
+  if(o){ Object.assign(o, {nom:n, org:g('org'), quoi:g('quoi'), tel:g('tel'), mail:g('mail'), dispo:g('dispo'), cat:g('cat'), url:g('url'), verif:v}); }
+  else etat.lignes.push({id:uid(), nom:n, org:g('org'), quoi:g('quoi'), tel:g('tel'), mail:g('mail'), dispo:g('dispo'), cat:g('cat'), url:g('url'), verif:v});
+  await sauver(); fermer(); rendre(); toast(o?"Ligne modifiée":"Ligne ajoutée");
+}
+async function supprimerLigne(id){
+  noterRetrait(id);
+  etat.lignes = (etat.lignes||[]).filter(x => x.id !== id);
+  await sauver(); rendre(); toast("Ligne retirée");
+}
+
+const DOSSIER = ['diffusions','ars','courante','terrain','materiel','volontaires'];
+
+function tableauFige(k){
+  const cfg = CHAMPS[k], lignes = etat[k] || [];
+  if(!lignes.length) return `<p class="vide">Aucune ligne.</p>`;
+  const ent = cfg.cols.map(c => c==='date' ? 'Date' : c==='auteur' ? 'Saisi par' : ((cfg.f.find(x=>x.c===c)||{}).l || c));
+  let h = `<div class="tw"><table><thead><tr>${ent.map(e=>`<th>${esc(e)}</th>`).join('')}</tr></thead><tbody>`;
+  lignes.forEach(l => {
+    h += '<tr>' + cfg.cols.map(c => {
+      let v = l[c] ?? '';
+      if(c === 'date' || c === 'rappel') v = frdate(v);
+      return `<td>${esc(v) || '—'}</td>`;
+    }).join('') + '</tr>';
+  });
+  return h + '</tbody></table></div>';
+}
+
+function vueDossier(){
+  let h = `<h1>Dossier de traçabilité</h1>
+  <div style="font-family:var(--display);font-weight:600;font-size:16px;color:var(--encre);margin:-2px 0 6px">CPTS Pau Béarn</div>
+  <p class="chapo">L'ensemble des éléments tracés par la CPTS Pau Béarn depuis le début de sa mobilisation dans le cadre du plan blanc régional / ORSAN AMAVI, mis bout à bout pour être imprimés ou enregistrés en PDF. C'est la pièce à joindre au retour d'expérience et au bilan.</p>
+  <div class="barre-h">
+    <button class="btn sec" onclick="exporterTout()">Tout en Excel</button>
+    <button class="btn" onclick="imprimer()">Imprimer ou enregistrer en PDF</button>
+  </div>
+  <div class="carte"><h2>Organisation</h2>${organigramme() || '<p class="vide">Aucun pilote désigné.</p>'}</div>
+  <div class="carte"><h2>Fiches mission</h2>` +
+  etat.missions.map(m => {
+    const f = m.fiche || {};
+    const li = lignes(f.faire);
+    return `<div style="margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--trait)">
+      <div style="font-family:var(--display);font-weight:700;font-size:15px">${esc(m.titre)}</div>
+      <div style="font-size:13px;color:var(--texte-2);margin:3px 0 7px">Pilote : ${esc(m.pilote)||'à désigner'} · Suppléant : ${esc(m.suppleant)||'—'} · Mandat ARS : ${esc(m.mandat)} · ${esc(m.statut)}</div>
+      ${f.but?`<div style="font-size:13.5px"><em>${esc(f.but)}</em></div>`:''}
+      ${li.length?`<ul style="margin:6px 0 0;padding-left:19px;font-size:13.5px">${li.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+      ${f.limite?`<div style="font-size:13px;color:var(--braise);margin-top:6px">Ce qu'on ne fait pas : ${esc(f.limite)}</div>`:''}
+    </div>`;
+  }).join('') + `</div>`;
+
+  DOSSIER.forEach(k => {
+    h += `<h2 style="margin-top:24px">${esc(CHAMPS[k].titre)}</h2>${tableauFige(k)}`;
+  });
+
+  h += `<h2 style="margin-top:24px">Appels aux CPTS</h2><div class="tw"><table>
+    <thead><tr><th>CPTS</th><th>Proximité</th><th>Statut</th><th>Date</th><th>Interlocuteur</th><th>Ce qui a été dit</th><th>Suite</th><th>Par</th></tr></thead><tbody>` +
+    (etat.cpts||[]).map(c => {
+      const a = c.appels || [];
+      if(!a.length) return `<tr><td>${esc(c.nom)}</td><td>${esc(c.priorite)}</td><td>${esc(c.statut)}</td><td colspan="5">—</td></tr>`;
+      return a.map(x => `<tr><td>${esc(c.nom)}</td><td>${esc(c.priorite)}</td><td>${esc(c.statut)}</td><td>${frdate(x.date)} ${esc(x.heure||'')}</td><td>${esc(x.qui)||'—'}</td><td>${esc(x.dit)}</td><td>${esc(x.suite)||'—'}</td><td>${esc(x.par)}</td></tr>`).join('');
+    }).join('') + `</tbody></table></div>`;
+  return h;
+}
+
+function vueCollection(k){
+  const cfg = CHAMPS[k];
+  const n = (etat[k] || []).length;
+  return `<h1>${cfg.titre}</h1><p class="chapo">${cfg.chapo}</p>
+    <div class="barre-h"><span class="cpt-h">${n} ligne${n>1?'s':''}</span>
+      <button class="btn sec" onclick="exporterCSV('${k}')">Excel</button>
+      <button class="btn sec" onclick="imprimer()">PDF</button>
+      <button class="btn" onclick="ouvrirAjout('${k}')">Ajouter</button></div>
+    ${tableau(k)}`;
+}
+
+function majPrintHead(){
+  const el = document.getElementById('printhead');
+  if(!el) return;
+  const o = ONGLETS.find(x => x.id === onglet);
+  el.innerHTML = `<div class="t">CPTS Pau Béarn — ${esc(o ? o.nom : 'Dossier de traçabilité')}</div>
+    <div class="d">${esc(etat.entete.niveau)} · édité le ${new Date().toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}${moi!=='Anonyme'?' par '+esc(moi):''}</div>`;
+}
+
+function rendre(){
+  etat.personnes = etat.personnes || {};
+  rendreNav();
+  rendreMesMissions();
+  const v = document.getElementById('vue');
+  if(onglet === 'cockpit') v.innerHTML = vueCockpit();
+  else if(onglet === 'missions') v.innerHTML = vueMissions();
+  else if(onglet === 'veille') v.innerHTML = vueVeille();
+  else if(onglet === 'fil') v.innerHTML = vueFil();
+  else if(onglet === 'lignes') v.innerHTML = vueLignes();
+  else if(onglet === 'offre') v.innerHTML = vueOffre();
+  else if(onglet === 'appels') v.innerHTML = vueAppels();
+  else if(onglet === 'dossier') v.innerHTML = vueDossier();
+  else v.innerHTML = vueCollection(onglet);
+  v.insertAdjacentHTML('afterbegin', '<div class="entete-print" id="printhead"></div>');
+  majPrintHead();
+}
+
+charger();
+</script>
+</body>
+</html>
