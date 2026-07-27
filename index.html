@@ -284,7 +284,7 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
   font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-2)}
 .reg-jour:first-child{margin-top:2px}
 .reg-jour::after{content:"";flex:1;height:1px;background:var(--trait)}
-.reg-jour .n{color:var(--encre);font-weight:500}
+.reg-jour .n{color:var(--encre);font-weight:500;font-size:11.5px}
 .reg-jour .auj{background:var(--cobalt-clair);color:var(--encre-2);padding:2px 7px;border-radius:3px}
 
 .ent-r{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--trait);
@@ -1572,11 +1572,20 @@ async function supprimer(k, id){
    l'affichage seulement — l'ordre de stockage n'est pas touché, et les
    lignes saisies sans heure se rangent en fin de journée. */
 const CHRONO = ['diffusions','ars','courante','terrain','materiel','appels'];
+
+/* L'heure est ramenée à HH:MM avant d'être comparée : une entrée saisie
+   « 9h05 » ou « 9:05 » doit se ranger avant 14:01, pas après. Une entrée
+   sans heure se range en fin de journée, faute de mieux. */
+function cleHeure(v){
+  const m = String(v || '').match(/^\s*(\d{1,2})\s*[:hH.]\s*(\d{1,2})/);
+  return m ? m[1].padStart(2,'0') + ':' + m[2].padStart(2,'0') : '';
+}
+function antechrono(lignes){
+  const cle = o => (o.date || '') + ' ' + cleHeure(o.heure);
+  return [...(lignes || [])].sort((a,b) => cle(b).localeCompare(cle(a)));
+}
 function chrono(k, lignes){
-  const l = [...(lignes || [])];
-  if(!CHRONO.includes(k)) return l;
-  const cle = o => (o.date || '') + ' ' + (o.heure || '');
-  return l.sort((a,b) => cle(b).localeCompare(cle(a)));
+  return CHRONO.includes(k) ? antechrono(lignes) : [...(lignes || [])];
 }
 
 function tableau(k){
@@ -2244,7 +2253,7 @@ function vueAppels(){
 
   tri.forEach(c => {
     const cl = c.priorite === 'Zone de feu' ? 'feu' : c.priorite === 'Proche' ? 'proche' : '';
-    const app = c.appels || [];
+    const app = antechrono(c.appels);
     h += `<div class="cptsc ${cl} ${app.length?'fait':''}">
       <div><div class="nom">${esc(c.nom)}</div><div class="terr">${esc(c.territoire)}</div></div>
       <div class="rangee">
@@ -2379,7 +2388,7 @@ function exporterAppels(){
     if(!(c.appels||[]).length){
       rows.push([...tete,'','','','','',''].map(csvVal));
     } else {
-      c.appels.forEach(a => rows.push([...tete,a.date,a.heure,a.qui,a.dit,a.suite,a.par].map(csvVal)));
+      antechrono(c.appels).forEach(a => rows.push([...tete,a.date,a.heure,a.qui,a.dit,a.suite,a.par].map(csvVal)));
     }
   });
   telechargerCSV('Appels CPTS', rows);
@@ -2825,7 +2834,7 @@ function detailDon(o){
       <textarea onchange="majDon('${o.id}','note',this.value)">${esc(o.note||'')}</textarea></label>
   </div>`;
 
-  const su = o.suivi || [];
+  const su = antechrono(o.suivi);
   h += `<div class="suivi">
     <span class="k" style="font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:7px">Relances et suites</span>
     ${su.length ? su.map(x => `<div class="e">
@@ -3235,7 +3244,7 @@ function vueDossier(){
   h += `<h2 style="margin-top:24px">Appels aux CPTS</h2><div class="tw"><table>
     <thead><tr><th>CPTS</th><th>Proximité</th><th>Statut</th><th>Date</th><th>Interlocuteur</th><th>Ce qui a été dit</th><th>Suite</th><th>Par</th></tr></thead><tbody>` +
     (etat.cpts||[]).map(c => {
-      const a = c.appels || [];
+      const a = antechrono(c.appels);
       if(!a.length) return `<tr><td>${esc(c.nom)}</td><td>${esc(c.priorite)}</td><td>${esc(c.statut)}</td><td colspan="5">—</td></tr>`;
       return a.map(x => `<tr><td>${esc(c.nom)}</td><td>${esc(c.priorite)}</td><td>${esc(c.statut)}</td><td>${frdate(x.date)} ${esc(x.heure||'')}</td><td>${esc(x.qui)||'—'}</td><td>${esc(x.dit)}</td><td>${esc(x.suite)||'—'}</td><td>${esc(x.par)}</td></tr>`).join('');
     }).join('') + `</tbody></table></div>`;
