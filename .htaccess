@@ -1,0 +1,25 @@
+# Cache du cockpit de crise — CPTS Pau Béarn
+#
+# Constaté le 27/07/2026 : l'hébergement OVH sert index.html sans
+# Last-Modified, sans ETag et sans Cache-Control. Le navigateur n'a
+# alors aucun moyen de savoir que la page a changé, et continue de
+# servir sa copie après un déploiement — d'où une version corrigée
+# en ligne mais invisible côté coordination, sans Ctrl+F5.
+#
+# On demande donc au navigateur de revérifier la page à chaque
+# ouverture. Elle reste mise en cache, mais n'est réutilisée qu'après
+# accord du serveur : une correction déployée arrive au rechargement
+# suivant, sans manipulation.
+#
+# La garde IfModule rend ce fichier sans effet si mod_headers manque,
+# plutôt que de renvoyer une erreur 500 sur tout le cockpit.
+#
+# Le dossier donnees/ n'a pas besoin d'être protégé ici : api.php y
+# dépose lui-même son propre .htaccess au premier enregistrement.
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|php)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+    Header set Pragma "no-cache"
+  </FilesMatch>
+</IfModule>
