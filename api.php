@@ -19,9 +19,9 @@
    ========================================================= */
 
 /* --- Code d'accès partagé -------------------------------
-   À remplacer avant mise en ligne, et à diffuser au copil
-   par un autre canal que le lien lui-même. */
-const CODE_ACCES = 'A_REMPLACER';
+   Mot de passe commun au copil, demandé une fois par appareil.
+   Le laisser vide ouvre le cockpit à quiconque connaît l'adresse. */
+const CODE_ACCES = 'bearn2026';
 
 /* Les fichiers de données portent l'extension .php et débutent
    par une instruction de sortie : même servis directement, ils
@@ -98,9 +98,11 @@ if ($methode === 'OPTIONS') {
 }
 
 /* --- Contrôle d'accès ----------------------------------- */
-$code = $_SERVER['HTTP_X_CODE_ACCES'] ?? ($_GET['code'] ?? '');
-if (!hash_equals(CODE_ACCES, (string) $code)) {
-    repondre(401, ['erreur' => 'Code d\'accès invalide']);
+if (CODE_ACCES !== '') {
+    $code = $_SERVER['HTTP_X_CODE_ACCES'] ?? ($_GET['code'] ?? '');
+    if (!hash_equals(CODE_ACCES, (string) $code)) {
+        repondre(401, ['erreur' => 'Code d\'accès invalide']);
+    }
 }
 
 /* --- Lecture -------------------------------------------- */

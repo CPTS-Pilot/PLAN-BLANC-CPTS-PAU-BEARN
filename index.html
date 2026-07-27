@@ -194,6 +194,11 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .cptsc .rangee{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 .cptsc select{width:auto;flex:1;min-width:140px;min-height:40px}
 .cptsc a.tel{display:inline-flex;align-items:center;justify-content:center;background:var(--encre-2);color:#fff;font-family:var(--display);font-weight:600;border-radius:8px;padding:10px 14px;text-decoration:none;min-height:44px;flex:1;min-width:150px}
+.cptsc a.tel.second{background:var(--carte);color:var(--encre-2);border:1px solid var(--encre-2)}
+.cptsc a.tel small{display:block;font-family:var(--corps);font-weight:400;font-size:11px;opacity:.85;line-height:1.2}
+.cptsc .corriger{background:var(--cobalt-clair);border:1px solid var(--trait);color:var(--encre-2);font-family:var(--display);font-weight:600;font-size:12.5px;border-radius:8px;padding:0 12px;min-height:44px;cursor:pointer;white-space:nowrap}
+.cptsc .corriger:hover{background:#DCE8F8}
+.cptsc .telmaj{font-family:var(--mono);font-size:10.5px;color:var(--texte-2)}
 .cptsc .journal{border-top:1px dashed var(--trait);padding-top:9px;margin-top:2px}
 .cptsc .journal .vide{font-size:12.5px;font-style:italic;color:var(--texte-2);padding:0}
 .cptsc .app{border-left:2px solid var(--cobalt-clair);padding:2px 0 2px 10px;margin-bottom:9px}
@@ -439,6 +444,15 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
   body.print-modale .zone,body.print-modale .rail{display:none!important}
   body.print-modale .rideau{position:static;display:block!important;background:none;padding:0}
   body.print-modale .modale{max-width:none;max-height:none;overflow:visible;padding:0;border-radius:0}
+  .acte{font-size:10pt;line-height:1.42}
+  .acte .ttl{font-size:16pt}
+  .acte .ctx{background:#EEF3FA!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:9pt}
+  .acte h2{font-size:9pt;margin:11pt 0 5pt}
+  .acte table,.acte ol,.acte .sig,.acte .sig .b{break-inside:avoid}
+  .acte .lg{padding:2pt 0}
+  .acte .lg .e{font-size:8.5pt}
+  .acte ol{font-size:9pt}
+  .acte .pied{font-size:8pt}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -929,7 +943,11 @@ function toast(m){
   clearTimeout(t._id); t._id = setTimeout(()=>t.classList.remove('on'), 2600);
 }
 let verrouModale = false;
-function fermer(){ if(verrouModale) return; document.getElementById('rideau').classList.remove('on'); }
+function fermer(){
+  if(verrouModale) return;
+  document.getElementById('rideau').classList.remove('on');
+  document.getElementById('modale').classList.remove('large');
+}
 document.getElementById('rideau').addEventListener('click', e => { if(e.target.id === 'rideau') fermer(); });
 document.addEventListener('keydown', e => { if(e.key === 'Escape') fermer(); });
 
@@ -1762,13 +1780,19 @@ function evenements(){
     push(a,'Appel CPTS', c.nom, [a.qui, a.dit].filter(Boolean).join(' · '), a.par)));
   (etat.materiel||[]).forEach(o => push(o,'Matériel',o.nature,
     [o.demandeur,o.quantite,o.statut].filter(Boolean).join(' · '), o.auteur));
+  (etat.dons||[]).forEach(o => {
+    push(o,'Collecte', o.structure,
+      [o.reponse ? 'Réponse : ' + o.reponse : '', o.commune, o.reponse==='Oui' ? o.materiel : '', o.interlocuteur]
+        .filter(Boolean).join(' · '), o.par || o.auteur);
+    (o.suivi||[]).forEach(s => push(s,'Collecte', o.structure + ' — relance', s.texte, s.par));
+  });
   (etat.volontaires||[]).forEach(o => push(o,'Volontaire',o.nom,
     [o.profession,o.dispo,o.statut].filter(Boolean).join(' · '), o.auteur));
   (etat.veille||[]).forEach(o => push(o,'Veille',o.titre, [o.source,o.resume].filter(Boolean).join(' · '), o.auteur));
   return e.sort((a,b) => ((b.date+' '+(b.heure||'00:00')).localeCompare(a.date+' '+(a.heure||'00:00'))));
 }
 
-const COUL = {'Diffusé':'e-cours','ARS':'e-attente','Consigné':'e-lancer','Terrain':'e-bloque','Appel CPTS':'e-lancer','Matériel':'e-attente','Volontaire':'e-cours','Veille':'e-fini'};
+const COUL = {'Diffusé':'e-cours','ARS':'e-attente','Consigné':'e-lancer','Terrain':'e-bloque','Appel CPTS':'e-lancer','Matériel':'e-attente','Collecte':'e-cours','Volontaire':'e-cours','Veille':'e-fini'};
 
 function vueFil(){
   let ev = evenements();
@@ -1828,7 +1852,12 @@ function vueAppels(){
       </div>
       ${c.note?`<div class="obs">${esc(c.note)}</div>`:''}
       <div class="rangee">
-        ${c.tel?`<a class="tel" href="tel:${esc(c.tel.replace(/[^0-9+]/g,''))}">Appeler ${esc(c.tel)}</a>`:`<button class="btn sec" style="flex:1;min-width:150px;min-height:44px" onclick="ouvrirCpts('${c.id}')">Ajouter le numéro</button>`}
+        ${c.tel?`<a class="tel" href="tel:${esc(c.tel.replace(/[^0-9+]/g,''))}">Appeler ${esc(c.tel)}${c.telLibelle?`<small>${esc(c.telLibelle)}</small>`:''}</a>`:`<button class="btn sec" style="flex:1;min-width:150px;min-height:44px" onclick="ouvrirTel('${c.id}')">Ajouter le numéro</button>`}
+        ${c.tel2?`<a class="tel second" href="tel:${esc(c.tel2.replace(/[^0-9+]/g,''))}">Appeler ${esc(c.tel2)}${c.tel2Libelle?`<small>${esc(c.tel2Libelle)}</small>`:''}</a>`:''}
+        <button class="corriger" onclick="ouvrirTel('${c.id}')">Corriger le numéro</button>
+      </div>
+      ${c.telMaj?`<div class="telmaj">Numéro corrigé le ${frdate(c.telMaj.date)} par ${esc(c.telMaj.par||'—')}${c.telMaj.source?` · ${esc(c.telMaj.source)}`:''}</div>`:''}
+      <div class="rangee">
         <select onchange="majCpts('${c.id}','statut',this.value)">
           ${['À appeler','Appelée','Sans réponse','À rappeler','Sans objet'].map(x=>`<option ${x===c.statut?'selected':''}>${x}</option>`).join('')}
         </select>
@@ -1884,6 +1913,35 @@ async function supprimerAppel(cid, aid){
   await sauver(); rendre(); toast("Appel supprimé");
 }
 
+/* Correction rapide des coordonnées : les annuaires publics sont souvent
+   faux, on doit pouvoir remplacer le numéro sans passer par la fiche entière. */
+function ouvrirTel(id){
+  const c = (etat.cpts||[]).find(x => x.id === id); if(!c) return;
+  document.getElementById('modale').innerHTML = `<h3>${esc(c.nom)} — numéros à appeler</h3><div class="form">
+    <label><span class="k">Numéro principal</span><input id="tl-tel" type="tel" value="${esc(c.tel||'')}" placeholder="06 00 00 00 00"></label>
+    <label><span class="k">À qui il correspond</span><input id="tl-telLibelle" value="${esc(c.telLibelle||'')}" placeholder="Secrétariat, pilote…"></label>
+    <label><span class="k">Second numéro</span><input id="tl-tel2" type="tel" value="${esc(c.tel2||'')}" placeholder="Facultatif"></label>
+    <label><span class="k">À qui il correspond</span><input id="tl-tel2Libelle" value="${esc(c.tel2Libelle||'')}" placeholder="Ligne directe, portable…"></label>
+    <label class="large"><span class="k">D'où vient le numéro</span><input id="tl-source" value="${esc(c.telMaj?c.telMaj.source:'')}" placeholder="Donné par le pilote au téléphone le 27/07"></label>
+  </div>
+  <div class="note">Le numéro publié dans les annuaires n'est pas toujours celui qui répond. Corrigez-le dès qu'un interlocuteur vous en donne un autre, et dites d'où il vient : les autres pilotes appelleront le bon.</div>
+  <div class="actions"><button class="btn" onclick="validerTel('${c.id}')">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerTel(id){
+  const c = (etat.cpts||[]).find(x => x.id === id); if(!c) return;
+  const g = k => document.getElementById('tl-'+k).value.trim();
+  const avant = [c.tel||'', c.tel2||''].join('|');
+  c.tel = g('tel'); c.telLibelle = g('telLibelle');
+  c.tel2 = g('tel2'); c.tel2Libelle = g('tel2Libelle');
+  const source = g('source');
+  if([c.tel, c.tel2].join('|') !== avant || (c.telMaj && c.telMaj.source !== source) || (!c.telMaj && source)){
+    c.telMaj = {date:aujourdhui(), par:moi, source};
+  }
+  c.modifiePar = moi;
+  await sauver(); fermer(); rendre(); toast("Numéros mis à jour");
+}
+
 function ouvrirCpts(id){
   const c = id ? (etat.cpts||[]).find(x=>x.id===id) : null;
   const pr = ['Zone de feu','Proche','Hors zone'];
@@ -1891,6 +1949,7 @@ function ouvrirCpts(id){
     <label class="large"><span class="k">Nom *</span><input id="cp-nom" value="${esc(c?c.nom:'')}"></label>
     <label class="large"><span class="k">Territoire</span><textarea id="cp-territoire">${esc(c?c.territoire:'')}</textarea></label>
     <label><span class="k">Téléphone</span><input id="cp-tel" type="tel" value="${esc(c?c.tel:'')}"></label>
+    <label><span class="k">Second numéro</span><input id="cp-tel2" type="tel" value="${esc(c?c.tel2:'')}" placeholder="Facultatif"></label>
     <label><span class="k">Coordinatrice ou président</span><input id="cp-contact" value="${esc(c?c.contact:'')}" placeholder="Nom, fonction"></label>
     <label><span class="k">Proximité du feu</span><select id="cp-priorite">${pr.map(x=>`<option ${c&&c.priorite===x?'selected':''}>${x}</option>`).join('')}</select></label>
     <label><span class="k">Site</span><input id="cp-url" value="${esc(c?c.url:'')}" placeholder="https://"></label>
@@ -1901,7 +1960,7 @@ function ouvrirCpts(id){
 async function validerCpts(id){
   const g = k => document.getElementById('cp-'+k).value.trim();
   if(!g('nom')){ toast("Le nom est obligatoire"); return; }
-  const d = {nom:g('nom'), territoire:g('territoire'), tel:g('tel'), contact:g('contact'), priorite:g('priorite'), url:g('url'), note:g('note')};
+  const d = {nom:g('nom'), territoire:g('territoire'), tel:g('tel'), tel2:g('tel2'), contact:g('contact'), priorite:g('priorite'), url:g('url'), note:g('note')};
   etat.cpts = etat.cpts || [];
   const c = id ? etat.cpts.find(x=>x.id===id) : null;
   if(c) Object.assign(c, d); else etat.cpts.push({id:uid(), statut:'À appeler', appels:[], ...d});
@@ -1913,12 +1972,13 @@ async function supprimerCpts(id){
   await sauver(); rendre(); toast("Retiré");
 }
 function exporterAppels(){
-  const rows = [['CPTS','Territoire','Téléphone','Contact','Proximité','Statut','Date','Heure','Interlocuteur',"Ce qui a été dit",'Suite','Appelé par'].map(csvVal)];
+  const rows = [['CPTS','Territoire','Téléphone','Second numéro','Contact','Proximité','Statut','Date','Heure','Interlocuteur',"Ce qui a été dit",'Suite','Appelé par'].map(csvVal)];
   (etat.cpts||[]).forEach(c => {
+    const tete = [c.nom,c.territoire,c.tel,c.tel2||'',c.contact,c.priorite,c.statut];
     if(!(c.appels||[]).length){
-      rows.push([c.nom,c.territoire,c.tel,c.contact,c.priorite,c.statut,'','','','','',''].map(csvVal));
+      rows.push([...tete,'','','','','',''].map(csvVal));
     } else {
-      c.appels.forEach(a => rows.push([c.nom,c.territoire,c.tel,c.contact,c.priorite,c.statut,a.date,a.heure,a.qui,a.dit,a.suite,a.par].map(csvVal)));
+      c.appels.forEach(a => rows.push([...tete,a.date,a.heure,a.qui,a.dit,a.suite,a.par].map(csvVal)));
     }
   });
   telechargerCSV('Appels CPTS', rows);
@@ -2075,7 +2135,369 @@ async function supprimerLigne(id){
   await sauver(); rendre(); toast("Ligne retirée");
 }
 
-const DOSSIER = ['diffusions','ars','courante','terrain','materiel','volontaires'];
+/* =========================================================
+   COLLECTE DE MATÉRIEL
+   Trois feuillets sous un même onglet : les appels passés aux
+   donateurs du territoire, les lieux où réunir la collecte, et
+   les besoins exprimés par les structures touchées.
+   ========================================================= */
+let feuilletMat = 'dons';
+let donOuvert = null;
+let filtreDon = 'Tout';
+
+const REPCL = {'Oui':'oui', 'Non':'non', 'À rappeler':'att', 'En attente':'att'};
+const REPET = {'Oui':'e-cours', 'Non':'e-bloque', 'À rappeler':'e-attente', 'En attente':'e-lancer'};
+
+/* Entité réceptrice par défaut du bordereau. Modifiable dans le
+   document avant impression : le point de livraison peut changer
+   au fil des consignes de l'ARS. */
+const RECEVEUR = {
+  nom: "Parc des Expositions de Bordeaux — centre d'accueil et de regroupement",
+  adresse: "Cours Charles Bricaud, 33300 Bordeaux",
+  qualite: "Centre d'accueil des personnes évacuées, tenu par la Croix-Rouge française, la réserve citoyenne de Bordeaux Métropole et les communes"
+};
+
+function allerFeuilletMat(f){ feuilletMat = f; donOuvert = null; rendre(); window.scrollTo(0,0); }
+function filtrerDon(r){ filtreDon = r; rendre(); }
+function ouvrirDon(id){ donOuvert = (donOuvert === id) ? null : id; rendre(); }
+
+function vueCollecte(){
+  const d = etat.dons || [], s = etat.stockage || [];
+  const oui = d.filter(x => x.reponse === 'Oui').length;
+  const non = d.filter(x => x.reponse === 'Non').length;
+  const att = d.length - oui - non;
+  const taux = (oui + non) ? Math.round(oui * 100 / (oui + non)) : 0;
+  const pc = n => d.length ? (n * 100 / d.length) : 0;
+
+  let h = `<h1>Collecte de matériel</h1>
+  <p class="chapo">Qui a été contacté sur le territoire pour donner du matériel, à quelle heure, par qui, et ce qui a été obtenu. Chaque don accepté se formalise par un bordereau signé et se range dans un lieu de stockage identifié.</p>
+  <div class="filtres">
+    <button class="${feuilletMat==='dons'?'on':''}" onclick="allerFeuilletMat('dons')">Appels aux donateurs <span style="opacity:.6">${d.length}</span></button>
+    <button class="${feuilletMat==='stockage'?'on':''}" onclick="allerFeuilletMat('stockage')">Lieux de stockage <span style="opacity:.6">${s.length}</span></button>
+    <button class="${feuilletMat==='besoins'?'on':''}" onclick="allerFeuilletMat('besoins')">Besoins exprimés <span style="opacity:.6">${(etat.materiel||[]).length}</span></button>
+  </div>`;
+
+  if(feuilletMat === 'stockage') return h + feuilletStockage();
+  if(feuilletMat === 'besoins')  return h + feuilletBesoins();
+
+  h += `<div class="compteurs" style="margin-bottom:16px">
+    <div class="compteur"><div class="n">${d.length}</div><div class="l">structures contactées</div></div>
+    <div class="compteur"><div class="n" style="color:var(--stable)">${oui}</div><div class="l">ont accepté de donner</div></div>
+    <div class="compteur"><div class="n" style="color:var(--braise)">${non}</div><div class="l">ont refusé ou n'ont rien</div></div>
+    <div class="compteur"><div class="n" style="color:var(--ambre)">${att}</div><div class="l">en attente ou à rappeler</div></div>
+    <div class="compteur"><div class="n">${taux}&thinsp;%</div><div class="l">d'accord parmi les réponses obtenues</div></div>
+    <div class="compteur"><div class="n">${d.filter(x=>x.reponse==='Oui'&&x.bordereau==='Signé').length}</div><div class="l">bordereaux de don signés</div></div>
+  </div>`;
+
+  if(d.length){
+    h += `<div class="jauge">
+      <i class="oui" style="width:${pc(oui)}%"></i>
+      <i class="non" style="width:${pc(non)}%"></i>
+      <i class="att" style="width:${pc(att)}%"></i>
+    </div>
+    <div class="jl">
+      <span><i class="oui"></i>${oui} accord${oui>1?'s':''}</span>
+      <span><i class="non"></i>${non} refus</span>
+      <span><i class="att"></i>${att} sans réponse ferme</span>
+    </div>`;
+  }
+
+  h += `<div class="note">Un don n'est acquis qu'une fois le <strong>bordereau signé</strong> et le <strong>lieu de stockage</strong> connu. Le bordereau s'édite depuis la ligne du donateur, ou vierge depuis le bouton en haut à droite.</div>
+  <div class="barre-h">
+    <span class="cpt-h">${d.length} appel${d.length>1?'s':''} consigné${d.length>1?'s':''}</span>
+    <button class="btn sec" onclick="exporterCSV('dons')">Excel</button>
+    <button class="btn sec" onclick="imprimer()">PDF</button>
+    <button class="btn sec" onclick="bordereau()">Bordereau de don officiel</button>
+    <button class="btn" onclick="ouvrirAjout('dons')">Consigner un appel</button>
+  </div>`;
+
+  const reps = ['Tout','Oui','Non','En attente','À rappeler'];
+  if(d.length) h += `<div class="filtres">${reps.map(r =>
+    `<button class="${filtreDon===r?'on':''}" onclick="filtrerDon('${r}')">${esc(r)}${r!=='Tout'?` <span style="opacity:.6">${d.filter(x=>x.reponse===r).length}</span>`:''}</button>`).join('')}</div>`;
+
+  let vus = filtreDon === 'Tout' ? [...d] : d.filter(x => x.reponse === filtreDon);
+  vus.sort((a,b) => ((b.date||'')+' '+(b.heure||'')).localeCompare((a.date||'')+' '+(a.heure||'')));
+
+  if(!vus.length){
+    return h + `<div class="carte"><p class="vide">${d.length
+      ? "Aucun appel dans ce filtre."
+      : "Aucun appel consigné. Le premier appel ouvre le tableau de bord : structure appelée, heure, personne qui a mené l'appel, réponse."}</p></div>`;
+  }
+
+  h += `<div class="dons">`;
+  vus.forEach(o => {
+    const cl = REPCL[o.reponse] || 'att';
+    const ouvertx = donOuvert === o.id;
+    h += `<div class="don ${cl}">
+      <button class="tete" onclick="ouvrirDon('${o.id}')" aria-expanded="${ouvertx}">
+        <span class="qd">${frdate(o.date)}<br>${esc(o.heure||'—')}</span>
+        <span class="ident">
+          <span class="n">${esc(o.structure)}</span>
+          <span class="s">${[o.type, o.commune, o.interlocuteur].filter(Boolean).map(esc).join(' · ') || '—'}</span>
+        </span>
+        <span class="par">Appel mené par<br><b>${esc(o.par || o.auteur || '—')}</b></span>
+        <span class="etiq ${REPET[o.reponse]||'e-lancer'}">${esc(o.reponse||'En attente')}</span>
+        ${o.reponse === 'Oui'
+          ? (o.materiel
+              ? `<span class="mat">${esc(o.materiel)}${o.quantite?' — '+esc(o.quantite):''}</span>`
+              : `<span class="manque">Nature du matériel à renseigner</span>`)
+          : ''}
+        <span class="chev">${ouvertx?'▲':'▼'}</span>
+      </button>`;
+
+    if(ouvertx) h += detailDon(o);
+    h += `</div>`;
+  });
+  return h + `</div>`;
+}
+
+/* Panneau dépliant : la case « nature du matériel » n'apparaît
+   que lorsque la structure a dit oui. */
+function detailDon(o){
+  const lieux = ['', ...(etat.stockage||[]).map(s => s.nom)];
+  if(o.lieu && lieux.indexOf(o.lieu) === -1) lieux.push(o.lieu);
+  const sel = (v, arr) => arr.map(x => `<option ${x===v?'selected':''}>${esc(x)}</option>`).join('');
+  let h = `<div class="detail"><div class="form">
+    <label><span class="k">Réponse à la collecte</span>
+      <select onchange="majDon('${o.id}','reponse',this.value)">${sel(o.reponse||'En attente', ['En attente','Oui','Non','À rappeler'])}</select></label>
+    <label><span class="k">Téléphone</span>
+      ${o.tel ? `<a class="btn sec" style="display:flex;justify-content:center;text-decoration:none" href="tel:${esc(String(o.tel).replace(/[^0-9+]/g,''))}">Appeler ${esc(o.tel)}</a>`
+              : `<input value="" placeholder="06 12 34 56 78" onchange="majDon('${o.id}','tel',this.value)">`}</label>`;
+
+  if(o.reponse === 'Oui'){
+    h += `<label class="large"><span class="k">Nature du matériel donné</span>
+      <textarea placeholder="Ex. 4 cartons de masques FFP2 (200 unités), 2 tensiomètres, 6 boîtes de compresses stériles" onchange="majDon('${o.id}','materiel',this.value)">${esc(o.materiel||'')}</textarea></label>
+    <label><span class="k">Quantité totale</span><input value="${esc(o.quantite||'')}" placeholder="Ex. 6 cartons" onchange="majDon('${o.id}','quantite',this.value)"></label>
+    <label><span class="k">Disponible à partir de</span><input value="${esc(o.dispo||'')}" placeholder="Ex. dès demain 9 h" onchange="majDon('${o.id}','dispo',this.value)"></label>
+    <label><span class="k">Lieu de stockage prévu</span>
+      <select onchange="majDon('${o.id}','lieu',this.value)">${sel(o.lieu||'', lieux)}</select>
+      ${lieux.length > 1 ? '' : `<span style="font-size:12px;color:var(--texte-2)">Aucun lieu enregistré — <a href="#" onclick="allerFeuilletMat('stockage');return false;">en ajouter un</a></span>`}</label>
+    <label><span class="k">Enlèvement</span>
+      <select onchange="majDon('${o.id}','retrait',this.value)">${sel(o.retrait||'À organiser', ['À organiser','Planifié','Collecté','Remis au receveur','Sans objet'])}</select></label>
+    <label><span class="k">Bordereau de don</span>
+      <select onchange="majDon('${o.id}','bordereau',this.value)">${sel(o.bordereau||'Non', ['Non','Édité','Signé'])}</select></label>`;
+  }
+
+  h += `<label class="large"><span class="k">Observation</span>
+      <textarea onchange="majDon('${o.id}','note',this.value)">${esc(o.note||'')}</textarea></label>
+  </div>`;
+
+  const su = o.suivi || [];
+  h += `<div class="suivi">
+    <span class="k" style="font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:7px">Relances et suites</span>
+    ${su.length ? su.map(x => `<div class="e">
+        <div class="q">${frdate(x.date)} ${esc(x.heure||'')} · ${esc(x.par||'—')}
+          <button title="Supprimer" onclick="supprimerSuiviDon('${o.id}','${x.id}')">×</button></div>
+        <div class="d">${esc(x.texte)}</div>
+      </div>`).join('') : `<p class="vide" style="padding:0;font-size:13px">Aucune relance consignée.</p>`}
+  </div>
+  <div class="bas">
+    <button class="btn sec" onclick="ouvrirSuiviDon('${o.id}')">Consigner une relance</button>
+    ${o.reponse === 'Oui' ? `<button class="btn" onclick="bordereau('${o.id}')">Éditer le bordereau de don</button>` : ''}
+    <button class="retirer" onclick="ouvrirEdition('dons','${o.id}')">Modifier la fiche</button>
+    <button class="retirer sup" onclick="supprimer('dons','${o.id}')">Retirer</button>
+  </div></div>`;
+  return h;
+}
+
+async function majDon(id, champ, val){
+  const o = (etat.dons||[]).find(x => x.id === id); if(!o) return;
+  o[champ] = val.trim ? val.trim() : val;
+  o.modifiePar = moi;
+  if(champ === 'reponse' && val === 'Oui' && !o.retrait) o.retrait = 'À organiser';
+  await sauver(); rendre();
+}
+
+function ouvrirSuiviDon(id){
+  const o = (etat.dons||[]).find(x => x.id === id); if(!o) return;
+  document.getElementById('modale').innerHTML = `<h3>${esc(o.structure)} — relance</h3><div class="form">
+    <label><span class="k">Date</span><input type="date" id="sd-date" value="${aujourdhui()}"></label>
+    <label><span class="k">Heure</span><input type="time" id="sd-heure" value="${maintenant()}"></label>
+    <label class="large"><span class="k">Ce qui a été dit ou fait *</span><textarea id="sd-texte" placeholder="Rappel effectué, matériel préparé, enlèvement convenu…"></textarea></label>
+  </div><div class="actions"><button class="btn" onclick="validerSuiviDon('${o.id}')">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerSuiviDon(id){
+  const o = (etat.dons||[]).find(x => x.id === id); if(!o) return;
+  const g = k => document.getElementById('sd-'+k).value.trim();
+  if(!g('texte')){ toast("Indiquez ce qui a été dit"); return; }
+  o.suivi = o.suivi || [];
+  o.suivi.unshift({id:uid(), date:g('date'), heure:g('heure'), texte:g('texte'), par:moi});
+  o.modifiePar = moi;
+  donOuvert = o.id;
+  await sauver(); fermer(); rendre(); toast("Relance consignée");
+}
+async function supprimerSuiviDon(id, sid){
+  const o = (etat.dons||[]).find(x => x.id === id); if(!o) return;
+  o.suivi = (o.suivi||[]).filter(x => x.id !== sid);
+  await sauver(); rendre(); toast("Relance supprimée");
+}
+
+/* ---------- lieux de stockage ---------- */
+function feuilletStockage(){
+  const s = etat.stockage || [];
+  const conf = s.filter(x => x.statut === 'Confirmé').length;
+  const ordre = {'Confirmé':0, 'Proposé':1, 'Écarté':2};
+  const tri = [...s].sort((a,b) => (ordre[a.statut]??1) - (ordre[b.statut]??1) || (a.nom||'').localeCompare(b.nom||'','fr'));
+
+  let h = `<div class="compteurs" style="margin-bottom:16px">
+    <div class="compteur"><div class="n">${s.length}</div><div class="l">lieux repérés sur le territoire</div></div>
+    <div class="compteur"><div class="n" style="color:var(--stable)">${conf}</div><div class="l">confirmés et utilisables</div></div>
+    <div class="compteur"><div class="n">${s.filter(x=>!x.referent).length}</div><div class="l">sans personne référente</div></div>
+  </div>
+  <div class="note">Un lieu n'est utilisable que si l'on connaît son <strong>adresse</strong>, ses <strong>horaires d'accès</strong> et la <strong>personne qui en détient les clés</strong>. Sans référent nommé, la collecte s'arrête devant une porte fermée.</div>
+  <div class="barre-h">
+    <span class="cpt-h">${s.length} lieu${s.length>1?'x':''}</span>
+    <button class="btn sec" onclick="exporterCSV('stockage')">Excel</button>
+    <button class="btn sec" onclick="imprimer()">PDF</button>
+    <button class="btn" onclick="ouvrirAjout('stockage')">Ajouter un lieu</button>
+  </div>`;
+
+  if(!s.length) return h + `<div class="carte"><p class="vide">Aucun lieu de stockage enregistré. Renseignez le premier lieu proposé : nom, adresse, téléphone, horaires d'accès et personne référente.</p></div>`;
+
+  h += `<div class="stocks">`;
+  tri.forEach(o => {
+    const cl = o.statut === 'Confirmé' ? 'confirme' : o.statut === 'Écarté' ? 'ecarte' : '';
+    const orientes = (etat.dons||[]).filter(x => x.lieu === o.nom).length;
+    h += `<div class="stock ${cl}">
+      <div>
+        <div class="nom">${esc(o.nom)}</div>
+        <div style="margin-top:6px"><span class="etiq ${o.statut==='Confirmé'?'e-cours':o.statut==='Écarté'?'e-fini':'e-attente'}">${esc(o.statut||'Proposé')}</span></div>
+      </div>
+      ${o.horaires ? `<div class="bl"><span class="k">Horaires d'accès</span><span class="horaires">${esc(o.horaires)}</span></div>` : `<div class="obs">Horaires d'accès à obtenir.</div>`}
+      ${o.referent ? `<div class="bl"><span class="k">Personne référente</span>${esc(o.referent)}${o.referentTel?` — <a href="tel:${esc(String(o.referentTel).replace(/[^0-9+]/g,''))}">${esc(o.referentTel)}</a>`:''}</div>` : `<div class="obs">Personne référente à identifier.</div>`}
+      ${o.capacite ? `<div class="bl"><span class="k">Capacité</span>${esc(o.capacite)}</div>` : ''}
+      ${o.acces ? `<div class="bl"><span class="k">Accès</span>${esc(o.acces)}</div>` : ''}
+      ${o.note ? `<div class="obs">${esc(o.note)}</div>` : ''}
+      ${orientes ? `<div class="oriente">${orientes} don${orientes>1?'s':''} orienté${orientes>1?'s':''} vers ce lieu</div>` : ''}
+      <div class="liens">
+        ${o.tel ? `<a class="tel" href="tel:${esc(String(o.tel).replace(/[^0-9+]/g,''))}">Appeler ${esc(o.tel)}</a>` : ''}
+        ${o.adresse ? `<a class="adr" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.adresse)}" target="_blank" rel="noopener">${esc(o.adresse)}</a>` : ''}
+      </div>
+      <div style="display:flex;gap:7px">
+        <button class="retirer" onclick="ouvrirEdition('stockage','${o.id}')">Modifier</button>
+        <button class="retirer" onclick="supprimer('stockage','${o.id}')">Retirer</button>
+      </div>
+    </div>`;
+  });
+  return h + `</div>`;
+}
+
+/* ---------- besoins exprimés (ancien onglet Matériel) ---------- */
+function feuilletBesoins(){
+  const n = (etat.materiel||[]).length;
+  return `<p class="chapo" style="margin-top:-6px">${CHAMPS.materiel.chapo}</p>
+    <div class="barre-h"><span class="cpt-h">${n} ligne${n>1?'s':''}</span>
+      <button class="btn sec" onclick="exporterCSV('materiel')">Excel</button>
+      <button class="btn sec" onclick="imprimer()">PDF</button>
+      <button class="btn" onclick="ouvrirAjout('materiel')">Ajouter un besoin</button></div>
+    ${tableau('materiel')}`;
+}
+
+/* =========================================================
+   BORDEREAU DE DON
+   Document d'une page qui formalise la remise du matériel de
+   l'entité donneuse vers l'entité réceptrice. Prérempli depuis
+   la fiche du donateur, complétable à l'écran, imprimable ou
+   enregistrable en PDF.
+   ========================================================= */
+function bordereau(id){
+  const o = id ? (etat.dons||[]).find(x => x.id === id) : null;
+  const st = o && o.lieu ? (etat.stockage||[]).find(x => x.nom === o.lieu) : null;
+  const ref = 'BD-2026-' + (o ? String(o.id).slice(-4).toUpperCase() : '……');
+  const ligne = (l, v, ph) => `<div class="lg"><span class="e">${l}</span><span class="v" contenteditable="true" data-ph="${esc(ph||'')}">${esc(v||'')}</span></div>`;
+  const cellules = (a, b, c) => `<tr><td contenteditable="true">${esc(a||'')}</td><td contenteditable="true">${esc(b||'')}</td><td contenteditable="true"></td><td contenteditable="true">${esc(c||'')}</td></tr>`;
+
+  const m = document.getElementById('modale');
+  m.classList.add('large');
+  m.innerHTML = `<div class="acte">
+    <div class="ent">
+      <div class="g">
+        <div class="org">CPTS Pau Béarn</div>
+        <div class="sub">Communauté professionnelle territoriale de santé — Pau et Béarn</div>
+      </div>
+      <div class="d">
+        <div class="ref">Réf. ${esc(ref)}</div>
+        <div class="sub">Établi le ${new Date().toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})}</div>
+      </div>
+    </div>
+
+    <h1 class="ttl">Bordereau de don de matériel</h1>
+    <div class="ss">Formalisation de la remise de matériel de l'entité donneuse à l'entité réceptrice</div>
+
+    <div class="ctx"><b>Cadre de la remise.</b> Le présent bordereau est établi dans le cadre du plan blanc régional et du dispositif ORSAN AMAVI activés par l'ARS Nouvelle-Aquitaine à la suite des feux de forêt de Gironde et des Landes de juillet 2026. La CPTS Pau Béarn intervient au seul titre de la coordination de la collecte sur son territoire. Ce document constate la remise, à titre gratuit et définitif, du matériel décrit à l'article 3 par l'entité donneuse à l'entité réceptrice. Il ne vaut ni commande, ni engagement financier, ni transfert de responsabilité médicale.</div>
+
+    <h2>1 · Entité donneuse</h2>
+    ${ligne("Dénomination", o ? o.structure : '')}
+    ${ligne("Nature de la structure", o ? o.type : '')}
+    ${ligne("Adresse", '')}
+    ${ligne("Commune", o ? o.commune : '')}
+    ${ligne("Représentant — nom et qualité", o ? o.interlocuteur : '')}
+    ${ligne("Téléphone", o ? o.tel : '')}
+    ${ligne("Courriel", '')}
+
+    <h2>2 · Entité réceptrice</h2>
+    ${ligne("Dénomination", RECEVEUR.nom)}
+    ${ligne("Adresse", RECEVEUR.adresse)}
+    ${ligne("Qualité", RECEVEUR.qualite)}
+    ${ligne("Réceptionnaire — nom et qualité", '')}
+    ${ligne("Téléphone", '')}
+
+    <h2>3 · Matériel remis</h2>
+    <table>
+      <thead><tr><th style="width:44%">Désignation</th><th style="width:16%">Quantité</th><th style="width:16%">État</th><th style="width:24%">Observations</th></tr></thead>
+      <tbody>
+        ${cellules(o ? o.materiel : '', o ? o.quantite : '', o && o.dispo ? 'Disponible : ' + o.dispo : '')}
+        ${cellules('','','')}${cellules('','','')}${cellules('','','')}${cellules('','','')}
+      </tbody>
+    </table>
+    ${ligne("Lieu de regroupement", st ? st.nom + (st.adresse ? ' — ' + st.adresse : '') : (o ? o.lieu : ''))}
+    ${ligne("Transport assuré par", '')}
+
+    <h2>4 · Conditions</h2>
+    <ol>
+      <li>Le don est consenti à titre gratuit et définitif. Il ne donne lieu à aucune facturation, aucune contrepartie ni aucune demande de remboursement, présente ou future.</li>
+      <li>L'entité donneuse déclare que le matériel remis est en état d'usage et non périmé, et que les dispositifs médicaux et consommables sont dans leur conditionnement d'origine intact.</li>
+      <li>La propriété et la garde du matériel sont transférées à l'entité réceptrice au moment de la réception, constatée par la signature du présent bordereau.</li>
+      <li>Le matériel est destiné exclusivement à la réponse à la situation sanitaire exceptionnelle en cours. L'entité réceptrice en dispose librement pour cet usage.</li>
+      <li>Le présent bordereau vaut décharge pour l'entité donneuse à compter de la réception, et pièce justificative pour l'entité réceptrice.</li>
+      <li>La CPTS Pau Béarn n'intervient qu'en qualité de coordonnateur de la collecte. Elle n'est ni propriétaire, ni transporteur, ni destinataire du matériel.</li>
+    </ol>
+
+    <h2>5 · Signatures</h2>
+    <div class="sig">
+      <div class="b">
+        <div class="q">Pour l'entité donneuse</div>
+        <div class="l">Fait à …………………………, le ……… / ……… / 2026</div>
+        <div class="l">Nom et qualité :</div>
+        <div class="l">Signature :</div>
+      </div>
+      <div class="b">
+        <div class="q">Pour l'entité réceptrice</div>
+        <div class="l">Fait à …………………………, le ……… / ……… / 2026</div>
+        <div class="l">Nom et qualité :</div>
+        <div class="l">Signature :</div>
+      </div>
+    </div>
+
+    <div class="pied">Document établi en deux exemplaires, un pour chaque partie. Un exemplaire est conservé par la CPTS Pau Béarn au titre de la traçabilité de sa mobilisation. Coordination de la collecte : CPTS Pau Béarn — ${esc(moi !== 'Anonyme' ? moi : 'coordination de crise')}.</div>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="imprimerModale()">Imprimer ou enregistrer en PDF</button>
+    ${o ? `<button class="btn sec" onclick="marquerBordereau('${o.id}')">Marquer comme édité</button>` : ''}
+    <button class="btn sec" onclick="fermer()">Fermer</button>
+  </div>`;
+  document.getElementById('rideau').classList.add('on');
+  toast("Les champs pointillés se complètent directement à l'écran");
+}
+async function marquerBordereau(id){
+  const o = (etat.dons||[]).find(x => x.id === id); if(!o) return;
+  if(o.bordereau !== 'Signé') o.bordereau = 'Édité';
+  o.modifiePar = moi;
+  await sauver(); fermer(); rendre(); toast("Bordereau noté comme édité");
+}
+
+const DOSSIER = ['diffusions','ars','courante','terrain','materiel','dons','stockage','volontaires'];
 
 function tableauFige(k){
   const cfg = CHAMPS[k], lignes = etat[k] || [];
@@ -2159,6 +2581,7 @@ function rendre(){
   else if(onglet === 'lignes') v.innerHTML = vueLignes();
   else if(onglet === 'offre') v.innerHTML = vueOffre();
   else if(onglet === 'appels') v.innerHTML = vueAppels();
+  else if(onglet === 'materiel') v.innerHTML = vueCollecte();
   else if(onglet === 'dossier') v.innerHTML = vueDossier();
   else v.innerHTML = vueCollection(onglet);
   v.insertAdjacentHTML('afterbegin', '<div class="entete-print" id="printhead"></div>');
