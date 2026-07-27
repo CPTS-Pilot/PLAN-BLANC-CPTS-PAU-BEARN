@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="referrer" content="no-referrer">
-<title>Proposer du matériel — CPTS Pau Béarn</title>
+<title>Don de matériel médical — CPTS Pau Béarn</title>
+<meta name="description" content="Déclarer un don de matériel médical à la CPTS Pau Béarn dans le cadre du plan blanc régional.">
+<meta name="theme-color" content="#062B63">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -79,7 +81,31 @@ input.faux,textarea.faux{border-color:var(--braise);background:#FDF4F2}
 .btn.sec{background:#fff;color:var(--encre);border:1px solid var(--trait)}
 .btn.sec:hover{border-color:var(--encre)}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
-@media(max-width:600px){.btn{width:100%}.actions{flex-direction:column;align-items:stretch}}
+
+/* ---------- téléphone ----------
+   C'est le cas d'usage principal : le professionnel remplit
+   depuis son cabinet, entre deux patients, sur son téléphone.
+   Champs à 16 px — en dessous, iOS zoome sur le champ actif et
+   la page part de travers — et cibles tactiles confortables. */
+@media(max-width:640px){
+  .page{padding:20px 15px 48px}
+  h1{font-size:23px}
+  .carte{padding:16px 15px;border-radius:9px}
+  input,select,textarea{font-size:16px;padding:12px 13px;border-radius:7px}
+  textarea{min-height:88px}
+  select{min-height:48px}
+  .coche{padding:13px 14px;gap:13px}
+  .coche input{width:24px;height:24px;flex:0 0 24px}
+  .coche span{font-size:14.5px}
+  .lg{padding:14px 13px}
+  .lg .champs{gap:13px}
+  .btn{width:100%;padding:14px 20px;min-height:52px}
+  .actions{flex-direction:column;align-items:stretch;gap:12px}
+  .actions .aide{text-align:center}
+  .cond ol{padding-left:17px}
+  .cond li{text-align:left}
+  .acte ol li,.acte .ctx,.acte .cachet,.note{text-align:left}
+}
 
 .alerte{border-radius:8px;padding:12px 14px;font-size:14px;margin-bottom:16px}
 .alerte.rouge{background:#FDF0EC;border:1px solid #E8C3B8;color:#8C2F1B}
@@ -100,6 +126,10 @@ input.faux,textarea.faux{border-color:var(--braise);background:#FDF4F2}
 .acte .l{display:flex;gap:10px;align-items:baseline;padding:3px 0}
 .acte .l .e{flex:0 0 185px;font-size:12px;color:var(--texte-2)}
 .acte .l .v{flex:1;border-bottom:1px dotted #B9C4D4;min-height:19px;padding:0 3px}
+/* Le tableau du matériel a quatre colonnes : sur un écran étroit
+   il défile latéralement plutôt que d'écraser la page entière. */
+.acte .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:4px}
+.acte .tw table{min-width:430px}
 .acte table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
 .acte th{background:var(--cobalt-clair);border:1px solid var(--trait);padding:6px 8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--texte-2);text-align:left}
 .acte td{border:1px solid var(--trait);padding:7px 8px;vertical-align:top}
@@ -112,7 +142,7 @@ input.faux,textarea.faux{border-color:var(--braise);background:#FDF4F2}
 .acte .sig .b .q{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--texte-2);margin-bottom:6px}
 .acte .sig .b .r{font-size:11.5px;color:var(--texte-2);margin-top:7px}
 .acte .pied{font-size:11px;color:var(--texte-2);border-top:1px solid var(--trait);margin-top:16px;padding-top:8px;text-align:justify}
-@media(max-width:600px){.acte{padding:18px}.acte .l{flex-direction:column;gap:2px}.acte .l .e{flex:none}.acte .sig{flex-direction:column}}
+@media(max-width:640px){.acte{padding:17px 15px}.acte .l{flex-direction:column;gap:2px}.acte .l .e{flex:none}.acte .sig{flex-direction:column}}
 
 .recu{background:#F1F8F5;border:1px solid #BEDCCE;border-radius:10px;padding:20px 22px;margin-bottom:18px}
 .recu .t{font-family:var(--display);font-weight:700;font-size:20px;color:#1E5C46;margin-bottom:6px}
@@ -124,6 +154,8 @@ input.faux,textarea.faux{border-color:var(--braise);background:#FDF4F2}
   .bandeau,.actions,.recu,.no-print{display:none!important}
   .page{padding:0;max-width:none}
   .acte{border:0;padding:0;font-size:10pt;line-height:1.42}
+  .acte .tw{overflow:visible}
+  .acte .tw table{min-width:0}
   .acte .ttl{font-size:16pt}
   .acte .ctx,.acte th,.acte .cachet{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .acte table,.acte ol,.acte .sig,.acte .sig .b,.acte .cachet{break-inside:avoid}
@@ -165,7 +197,10 @@ const ETATS = ['Neuf, conditionnement d\'origine','Bon état d\'usage','À véri
 
 const RECEVEUR = "Entité désignée par l'ARS Nouvelle-Aquitaine — précisée au moment de l'enlèvement";
 
-let lignes = [{}, {}, {}];
+/* Une seule ligne au départ : sur un téléphone, trois blocs vides
+   donnent l'impression d'un formulaire long. On en ajoute à la
+   demande, ce qui est le cas courant — un seul type de matériel. */
+let lignes = [{}];
 let envoiEnCours = false;
 let contexte = { ouverte: false, message: '', besoins: '' };
 
@@ -210,7 +245,7 @@ function ferme(){
 
 /* --- Le formulaire -------------------------------------- */
 function formulaire(){
-  afficher(`<h1>Proposer du matériel</h1>
+  afficher(`<h1>Proposer un don de matériel</h1>
   <p class="chapo">Ce formulaire remplace le bordereau de don papier. Vous décrivez ce que vous proposez,
   vous acceptez les conditions du don, et vous recevez immédiatement votre récapitulatif à conserver.
   Rien à imprimer, rien à renvoyer.</p>
@@ -314,7 +349,7 @@ function rendreLignes(){
     <div class="champs">
       <label class="large"><span class="k">Désignation du matériel</span>
         <input id="l-designation-${i}" value="${esc(l.designation||'')}"
-          placeholder="Ex. masques FFP2, compresses stériles, tensiomètre"
+          placeholder="Ex. saturomètre, tensiomètre, thermomètre, lecteur d'hémoglucotest, stéthoscope"
           onchange="majLigne(${i},'designation',this.value)"></label>
       <label><span class="k">Quantité</span>
         <input id="l-quantite-${i}" value="${esc(l.quantite||'')}" placeholder="Ex. 200 unités, 4 cartons"
@@ -331,7 +366,13 @@ function rendreLignes(){
 }
 
 function majLigne(i, champ, v){ lignes[i][champ] = v.trim(); }
-function ajouterLigne(){ lissage(); lignes.push({}); rendreLignes(); }
+function ajouterLigne(){
+  lissage(); lignes.push({}); rendreLignes();
+  /* Le clavier s'ouvre sur la ligne qu'on vient de demander,
+     plutôt que de laisser chercher où elle est apparue. */
+  const e = document.getElementById(`l-designation-${lignes.length - 1}`);
+  if(e){ e.scrollIntoView({block:'center'}); e.focus(); }
+}
 function retirerLigne(i){ lissage(); lignes.splice(i,1); if(!lignes.length) lignes.push({}); rendreLignes(); }
 
 /* Les champs texte ne se déclarent qu'au « change » : avant de
@@ -377,22 +418,36 @@ async function valider(){
   };
 
   const manques = [];
-  if(!donnees.structure)    { manques.push('la dénomination de votre structure'); marquer('f-structure', true); }
-  else marquer('f-structure', false);
-  if(!donnees.representant) { manques.push('votre nom'); marquer('f-representant', true); }
-  else marquer('f-representant', false);
-  if(!donnees.tel)          { manques.push('un téléphone'); marquer('f-tel', true); }
-  else marquer('f-tel', false);
-  if(!donnees.lignes.length){ manques.push('au moins une ligne de matériel'); }
-  const coches = document.getElementById('c-conditions').checked && document.getElementById('c-habilite').checked;
-  document.getElementById('c-conditions-l').classList.toggle('faux', !document.getElementById('c-conditions').checked);
-  document.getElementById('c-habilite-l').classList.toggle('faux', !document.getElementById('c-habilite').checked);
-  if(!coches) manques.push('votre acceptation des conditions');
+  let premier = null;
+  const exiger = (id, rempli, quoi) => {
+    marquer(id, !rempli);
+    if(!rempli){ manques.push(quoi); premier = premier || id; }
+  };
+  exiger('f-structure',    donnees.structure,    'la dénomination de votre structure');
+  exiger('f-representant', donnees.representant, 'votre nom');
+  exiger('f-tel',          donnees.tel,          'un téléphone');
+  if(!donnees.lignes.length){
+    manques.push('au moins une ligne de matériel');
+    premier = premier || 'l-designation-0';
+  }
+  const cond = document.getElementById('c-conditions').checked;
+  const habi = document.getElementById('c-habilite').checked;
+  document.getElementById('c-conditions-l').classList.toggle('faux', !cond);
+  document.getElementById('c-habilite-l').classList.toggle('faux', !habi);
+  if(!(cond && habi)){
+    manques.push('votre acceptation des conditions');
+    premier = premier || (cond ? 'c-habilite-l' : 'c-conditions-l');
+  }
 
   const z = document.getElementById('erreur');
   if(manques.length){
     z.innerHTML = `<div class="alerte rouge" style="margin:14px 0 0">Il manque ${manques.join(', ')
       .replace(/,([^,]*)$/, ' et$1')}.</div>`;
+    /* Sur téléphone, le champ fautif est souvent plusieurs écrans
+       plus haut : on l'amène sous les yeux au lieu de le teinter
+       en rouge dans le vide. */
+    const e = premier && document.getElementById(premier);
+    if(e && e.scrollIntoView) e.scrollIntoView({behavior:'smooth', block:'center'});
     return;
   }
   z.innerHTML = '';
@@ -443,7 +498,8 @@ function recapitulatif(d, ref, quand){
 
   <div class="actions no-print" style="margin:0 0 18px">
     <button type="button" class="btn" onclick="window.print()">Enregistrer mon récapitulatif en PDF</button>
-    <span class="aide" style="margin:0">Dans la fenêtre d'impression, choisissez « Enregistrer au format PDF ».</span>
+    <span class="aide" style="margin:0">Choisissez ensuite « Enregistrer au format PDF ».
+      Sur iPhone, l'aperçu s'ouvre : appuyez sur le bouton de partage pour l'enregistrer ou l'envoyer.</span>
   </div>
 
   <div class="acte">
@@ -484,12 +540,12 @@ function recapitulatif(d, ref, quand){
     ${l('Date de réception', '')}
 
     <h3>3 · Matériel remis</h3>
-    <table>
+    <div class="tw"><table>
       <thead><tr><th style="width:44%">Désignation</th><th style="width:16%">Quantité</th>
         <th style="width:18%">État</th><th style="width:22%">Observations</th></tr></thead>
       <tbody>${d.lignes.map(x => `<tr><td>${esc(x.designation)}</td><td>${esc(x.quantite||'')}</td>
         <td>${esc(x.etat||'')}</td><td>${esc(x.obs||'')}</td></tr>`).join('')}</tbody>
-    </table>
+    </table></div>
     ${d.quantite ? l('Volume total approximatif', d.quantite) : ''}
     ${d.dispo ? l('Disponible à partir de', d.dispo) : ''}
     ${d.note ? l('Précisions à l\'enlèvement', d.note) : ''}
