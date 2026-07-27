@@ -304,6 +304,34 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .don .bas{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .don .bas .sup{margin-left:auto}
 
+/* ---------- formulaire public de don ---------- */
+.carte.formulaire{border-left:4px solid var(--trait)}
+.carte.formulaire.ouverte{border-left-color:var(--stable)}
+.carte.formulaire .ligne-f{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.carte.formulaire .ligne-f > div{flex:1;min-width:240px}
+.carte.formulaire .sous-f{font-size:13px;color:var(--texte-2);margin:0;max-width:70ch}
+.carte.formulaire .lien-f{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.carte.formulaire .lien-f input{flex:1;min-width:220px;font-family:var(--mono);font-size:12.5px;background:var(--surface)}
+.carte.formulaire .lien-f .btn{flex:0 0 auto}
+@media(max-width:600px){.carte.formulaire .lien-f .btn{width:100%}}
+
+.don .ident .n .src-f{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--cobalt-clair);color:var(--encre-2);border-radius:4px;padding:2px 6px;
+  margin-left:7px;vertical-align:2px;font-weight:400;white-space:nowrap;
+}
+.don .ident .n .src-f.neuf{background:#FCF0DA;color:#8A5D12}
+
+.don .declaration{border:1px solid var(--trait);border-left:3px solid var(--encre-2);border-radius:0 8px 8px 0;padding:13px 15px;margin-bottom:14px;background:#FCFDFF}
+.don .declaration .dt{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--encre-2);margin-bottom:9px}
+.don .declaration .dc{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));font-size:13.5px;margin-bottom:11px}
+.don .declaration .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:2px}
+.don .declaration table.dl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:11px}
+.don .declaration table.dl th{padding:6px 8px;font-size:9.5px}
+.don .declaration table.dl td{padding:6px 8px;border-bottom:1px solid var(--trait)}
+.don .declaration .dn{font-size:13.5px;margin-bottom:11px;white-space:pre-line}
+.don .declaration .de{font-size:12.5px;background:#F1F8F5;border:1px solid #BEDCCE;color:#1E5C46;border-radius:6px;padding:9px 11px}
+
 .stocks{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));margin-bottom:20px}
 .stock{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--ambre);border-radius:10px;padding:16px 17px;display:flex;flex-direction:column;gap:9px}
 .stock.confirme{border-top-color:var(--stable)}
@@ -342,6 +370,8 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .acte td:focus{outline:none;background:#FFFBEF}
 .acte ol{margin:0;padding-left:20px;font-size:12.5px}
 .acte ol li{margin-bottom:5px;text-align:justify}
+.acte .cachet{border:1px solid var(--stable);background:#F1F8F5;border-radius:7px;padding:11px 13px;font-size:12.5px;margin-bottom:10px;text-align:justify}
+.acte .cachet b{color:#1E5C46}
 .acte .sig{display:flex;gap:14px;margin-top:10px}
 .acte .sig .b{flex:1;border:1px solid var(--trait);border-radius:7px;padding:10px 12px;min-height:118px}
 .acte .sig .b .q{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--texte-2);margin-bottom:6px}
@@ -428,7 +458,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 @media print{
   @page{margin:14mm}
   body{background:#fff;font-size:10.5pt}
-  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.src-c .b,.pers .modif,.mission .barre,.toast{display:none!important}
+  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.src-c .b,.pers .modif,.mission .barre,.toast,.carte.formulaire{display:none!important}
   td.act,th:last-child{display:none!important}
   .contenu{padding:0;max-width:none}
   .carte,.tw,.mission,.pers,.ligne,.src-c{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
@@ -448,7 +478,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
   .acte .ttl{font-size:16pt}
   .acte .ctx{background:#EEF3FA!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-size:9pt}
   .acte h2{font-size:9pt;margin:11pt 0 5pt}
-  .acte table,.acte ol,.acte .sig,.acte .sig .b{break-inside:avoid}
+  .acte table,.acte ol,.acte .sig,.acte .sig .b,.acte .cachet{break-inside:avoid}
+  .acte .cachet{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .acte .lg{padding:2pt 0}
   .acte .lg .e{font-size:8.5pt}
   .acte ol{font-size:9pt}
@@ -631,6 +662,11 @@ Retenir ce qui a un impact pour le territoire, avec le lien vers la source.`, av
     {id:'a5', date:'2026-07-25', heure:'', sens:"Reçu de l'ARS", canal:'Communiqué', interlocuteur:"ARS Nouvelle-Aquitaine", objet:"Recommandations sanitaires aux populations et masques FFP2", demande:"Épisode de dégradation de la qualité de l'air au-delà du seuil d'alerte. Masques acheminés sur les plateformes régionales, prioritairement pour les patients cardio-respiratoires chroniques, les personnes vulnérables et les professionnels exposés.", reponse:'', attendu:"À relayer aux adhérents et à leurs patients vulnérables. Circuit de retrait des FFP2 dans le 64 à obtenir.", lien:'https://www.nouvelle-aquitaine.ars.sante.fr/communique-de-presse-2026-incendies-en-gironde-et-dans-les-landes-recommandations-sanitaires-aux', echeance:'', statut:'En cours', auteur:'', quand:''},
     {id:'a3', date:'2026-07-27', heure:'', sens:'À envoyer', canal:'Mail', interlocuteur:"ARS — Délégation départementale 64", objet:"Six questions de cadrage pour la CPTS", demande:"1. Interlocuteur nommé à la DD64 pour la CPTS pendant le plan blanc. 2. Circuit de mise à disposition des FFP2 pour les libéraux du 64 et leurs patients vulnérables. 3. Consigne régionale sur l'accueil ambulatoire des personnes évacuées hébergées dans le 64. 4. Impact attendu sur les transports sanitaires du 64 et arbitrage sur les transports programmés. 5. Souhaitez-vous que la CPTS constitue une liste de volontaires, sous quel statut et via quel canal ? 6. Existe-t-il une liste de besoins matériels validée, ou la consigne est-elle de ne pas collecter ?", reponse:'', attendu:"Les réponses 5 et 6 conditionnent l'ouverture ou non des missions renfort et collecte.", echeance:'', statut:'À faire', auteur:'', quand:''}
   ],
+  /* Interrupteur du formulaire public de don (don.html). Fermé
+     par défaut : la doctrine de la CPTS est de ne rien collecter
+     tant qu'un besoin validé et un lieu de réception ne sont pas
+     connus. Le serveur refuse tout dépôt tant qu'il est fermé. */
+  collecte: { ouverte:false, message:'', besoins:'' },
   courante: [], terrain: [], appels: [], materiel: [], dons: [], stockage: [], volontaires: [], contacts: [
     {id:'c1', structure:"ARS — Délégation départementale 64", nom:'', fonction:'', tel:'', mail:'', role:"Interlocuteur unique de la CPTS pendant le plan blanc", auteur:'', quand:''},
     {id:'c0', structure:"CPTS Pau Béarn", nom:'Anne Latisnère', fonction:'Vice-présidente, infirmière', tel:'', mail:'', role:"Relation ARS, pilotage de la collecte de matériel, diffusion aux groupes WhatsApp (environ 210 professionnels de santé)", auteur:'', quand:''},
@@ -936,6 +972,9 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const aujourdhui = () => new Date().toISOString().slice(0,10);
 const maintenant = () => new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
 function frdate(d){ if(!d) return '—'; const p = d.split('-'); return p.length===3 ? p[2]+'/'+p[1] : d; }
+/* Les listes se lisent en « 27/07 » ; une mention qui fait foi
+   sur un bordereau porte l'année. */
+function frdateL(d){ if(!d) return '—'; const p = String(d).slice(0,10).split('-'); return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : d; }
 
 function toast(m){
   const t = document.getElementById('toast');
@@ -1120,6 +1159,14 @@ function aller(id){ onglet = id; rendre(); window.scrollTo(0,0); }
 /* =========================================================
    COLLECTIONS
    ========================================================= */
+
+/* « Engagement en ligne » : le donateur a accepté les conditions
+   du bordereau dans le formulaire public, ce qui tient lieu de
+   signature de son côté. Reste la signature du réceptionnaire,
+   apposée au moment de l'enlèvement. */
+const BORDEREAU_ETATS = ['Non','Édité','Engagement en ligne','Signé'];
+const BORDEREAU_ACQUIS = ['Engagement en ligne','Signé'];
+
 const CHAMPS = {
   diffusions: {
     titre:"Ce qu'on a diffusé",
@@ -1225,7 +1272,9 @@ const CHAMPS = {
       {c:'structure', l:"Structure ou personne contactée", t:'text', req:true, large:true},
       {c:'type', l:"Type", t:'select', o:['Pharmacie','Cabinet médical','Cabinet infirmier','Kinésithérapie','Laboratoire','Clinique ou hôpital','EHPAD ou ESMS','Fournisseur, distributeur','Association','Collectivité','Professionnel libéral','Particulier','Autre']},
       {c:'commune', l:"Commune", t:'text'},
+      {c:'adresse', l:"Adresse", t:'text', large:true},
       {c:'tel', l:"Téléphone", t:'text'},
+      {c:'mail', l:"Courriel", t:'text'},
       {c:'interlocuteur', l:"Interlocuteur joint", t:'text'},
       {c:'par', l:"Appel mené par", t:'text', d:() => moi === 'Anonyme' ? '' : moi},
       {c:'reponse', l:"Réponse à la collecte", t:'select', o:['En attente','Oui','Non','À rappeler']},
@@ -1234,10 +1283,10 @@ const CHAMPS = {
       {c:'dispo', l:"Disponible à partir de / conditions", t:'text'},
       {c:'lieu', l:"Lieu de stockage prévu", t:'select', o:() => ['', ...(etat.stockage||[]).map(s => s.nom)]},
       {c:'retrait', l:"Enlèvement", t:'select', o:['À organiser','Planifié','Collecté','Remis au receveur','Sans objet']},
-      {c:'bordereau', l:"Bordereau de don signé ?", t:'select', o:['Non','Édité','Signé']},
+      {c:'bordereau', l:"Bordereau de don signé ?", t:'select', o:BORDEREAU_ETATS},
       {c:'note', l:"Observation", t:'textarea', large:true}
     ],
-    cols:['date','heure','structure','type','commune','interlocuteur','par','reponse','materiel','quantite','lieu','retrait','bordereau','auteur']
+    cols:['date','heure','structure','type','commune','adresse','tel','mail','interlocuteur','par','reponse','materiel','quantite','lieu','retrait','bordereau','auteur']
   },
   stockage: {
     titre:"Lieux de stockage du territoire",
@@ -2161,6 +2210,80 @@ function allerFeuilletMat(f){ feuilletMat = f; donOuvert = null; rendre(); windo
 function filtrerDon(r){ filtreDon = r; rendre(); }
 function ouvrirDon(id){ donOuvert = (donOuvert === id) ? null : id; rendre(); }
 
+/* --- Formulaire public de don ---------------------------
+   don.html vit à côté du cockpit et écrit dans la même
+   rubrique « dons » par une porte de dépôt sans code d'accès.
+   Le copil ouvre et ferme cette porte d'ici. */
+function lienFormulaire(){
+  try{ return new URL('don.html', location.href).href; }
+  catch(e){ return 'don.html'; }
+}
+
+async function basculerCollecte(){
+  etat.collecte = etat.collecte || {ouverte:false, message:'', besoins:''};
+  const ouvre = !etat.collecte.ouverte;
+  if(ouvre && !confirm("Ouvrir la collecte rend le formulaire accessible à toute personne qui en a le lien.\n\nLa doctrine de la CPTS est de n'ouvrir aucune collecte tant qu'un besoin écrit et un lieu de réception nommé ne sont pas validés.\n\nConfirmer l'ouverture ?")) return;
+  etat.collecte.ouverte = ouvre;
+  await sauver(); rendre();
+  toast(ouvre ? "Collecte ouverte — le formulaire accepte les dépôts" : "Collecte fermée — le formulaire n'accepte plus rien");
+}
+
+function editerCollecte(){
+  const c = etat.collecte || {};
+  document.getElementById('modale').innerHTML = `<h3>Textes du formulaire public</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">Ces deux textes s'affichent sur don.html. Le premier quand la collecte est fermée, le second en tête du formulaire quand elle est ouverte.</p>
+    <label style="margin-bottom:12px"><span class="k">Message affiché collecte fermée</span>
+      <textarea id="co-message" placeholder="Ex. Une collecte sera peut-être ouverte en fin de semaine.">${esc(c.message||'')}</textarea></label>
+    <label style="margin-bottom:12px"><span class="k">Besoins annoncés collecte ouverte</span>
+      <textarea id="co-besoins" placeholder="Ex. masques FFP2, compresses stériles, sérum physiologique.">${esc(c.besoins||'')}</textarea></label>
+    <div class="actions"><button class="btn" onclick="validerCollecte()">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerCollecte(){
+  etat.collecte = etat.collecte || {ouverte:false};
+  etat.collecte.message = document.getElementById('co-message').value.trim();
+  etat.collecte.besoins = document.getElementById('co-besoins').value.trim();
+  await sauver(); fermer(); rendre(); toast("Textes du formulaire mis à jour");
+}
+
+function copierLien(){
+  const l = lienFormulaire();
+  const fini = () => toast("Lien copié — collez-le dans le message aux adhérents");
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(l).then(fini, () => toast("Copie impossible — sélectionnez le lien à la main"));
+  }else{
+    const i = document.getElementById('lien-don');
+    if(i){ i.select(); try{ document.execCommand('copy'); fini(); }catch(e){ toast("Sélectionnez le lien à la main"); } }
+  }
+}
+
+function carteFormulaire(){
+  const c = etat.collecte || {};
+  const aVerifier = (etat.dons||[]).filter(x => x.source === 'formulaire' && x.aVerifier).length;
+  return `<div class="carte formulaire ${c.ouverte?'ouverte':''}">
+    <div class="ligne-f">
+      <div>
+        <h2 style="margin-bottom:2px">Formulaire de don en ligne</h2>
+        <p class="sous-f">Le professionnel déclare son don et accepte les conditions du bordereau depuis son téléphone. La ligne arrive ici, il repart avec son récapitulatif en PDF. Plus rien à imprimer ni à renvoyer.</p>
+      </div>
+      <span class="etiq ${c.ouverte?'e-cours':'e-bloque'}">${c.ouverte?'Ouvert aux dépôts':'Fermé'}</span>
+    </div>
+    ${c.ouverte
+      ? `<div class="lien-f">
+           <input id="lien-don" readonly value="${esc(lienFormulaire())}" onclick="this.select()">
+           <button class="btn sec" onclick="copierLien()">Copier le lien</button>
+         </div>
+         <p class="sous-f" style="margin:9px 0 0">Ce lien est à diffuser aux adhérents. Toute personne qui l'a peut déposer une proposition ; le cockpit, lui, reste protégé par son code d'accès.</p>`
+      : `<div class="note" style="margin:0">Tant que la collecte est fermée, le formulaire affiche aux professionnels que la CPTS ne sollicite aucun don et refuse tout dépôt. C'est la position à tenir tant que l'ARS n'a pas transmis de besoin écrit et de lieu de réception.</div>`}
+    <div class="actions">
+      <button class="btn${c.ouverte?' sec':''}" onclick="basculerCollecte()">${c.ouverte?'Fermer la collecte':'Ouvrir la collecte'}</button>
+      <button class="btn sec" onclick="editerCollecte()">Textes affichés</button>
+      ${c.ouverte ? `<a class="btn sec" href="${esc(lienFormulaire())}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Voir le formulaire</a>` : ''}
+      ${aVerifier ? `<button class="btn sec" onclick="filtrerDon('Formulaire')" style="margin-left:auto;color:var(--braise);border-color:#E8C3B8">${aVerifier} dépôt${aVerifier>1?'s':''} à vérifier</button>` : ''}
+    </div>
+  </div>`;
+}
+
 function vueCollecte(){
   const d = etat.dons || [], s = etat.stockage || [];
   const oui = d.filter(x => x.reponse === 'Oui').length;
@@ -2180,13 +2303,18 @@ function vueCollecte(){
   if(feuilletMat === 'stockage') return h + feuilletStockage();
   if(feuilletMat === 'besoins')  return h + feuilletBesoins();
 
+  h += carteFormulaire();
+
+  const parFormulaire = d.filter(x => x.source === 'formulaire').length;
+
   h += `<div class="compteurs" style="margin-bottom:16px">
-    <div class="compteur"><div class="n">${d.length}</div><div class="l">structures contactées</div></div>
+    <div class="compteur"><div class="n">${d.length}</div><div class="l">structures contactées ou déclarées</div></div>
     <div class="compteur"><div class="n" style="color:var(--stable)">${oui}</div><div class="l">ont accepté de donner</div></div>
     <div class="compteur"><div class="n" style="color:var(--braise)">${non}</div><div class="l">ont refusé ou n'ont rien</div></div>
     <div class="compteur"><div class="n" style="color:var(--ambre)">${att}</div><div class="l">en attente ou à rappeler</div></div>
     <div class="compteur"><div class="n">${taux}&thinsp;%</div><div class="l">d'accord parmi les réponses obtenues</div></div>
-    <div class="compteur"><div class="n">${d.filter(x=>x.reponse==='Oui'&&x.bordereau==='Signé').length}</div><div class="l">bordereaux de don signés</div></div>
+    <div class="compteur"><div class="n">${d.filter(x=>x.reponse==='Oui'&&BORDEREAU_ACQUIS.indexOf(x.bordereau)>=0).length}</div><div class="l">bordereaux signés ou engagés en ligne</div></div>
+    ${parFormulaire ? `<div class="compteur"><div class="n" style="color:var(--encre-2)">${parFormulaire}</div><div class="l">reçus par le formulaire</div></div>` : ''}
   </div>`;
 
   if(d.length){
@@ -2202,20 +2330,25 @@ function vueCollecte(){
     </div>`;
   }
 
-  h += `<div class="note">Un don n'est acquis qu'une fois le <strong>bordereau signé</strong> et le <strong>lieu de stockage</strong> connu. Le bordereau s'édite depuis la ligne du donateur, ou vierge depuis le bouton en haut à droite.</div>
+  h += `<div class="note">Un don n'est acquis qu'une fois le <strong>bordereau signé ou engagé en ligne</strong> et le <strong>lieu de stockage</strong> connu. Le bordereau s'édite depuis la ligne du donateur, ou vierge depuis le bouton en haut à droite. Les lignes marquées <strong>Formulaire</strong> ont été déclarées par le donateur lui-même : leur bordereau est déjà rempli et son engagement recueilli, il reste à les vérifier et à organiser l'enlèvement.</div>
   <div class="barre-h">
-    <span class="cpt-h">${d.length} appel${d.length>1?'s':''} consigné${d.length>1?'s':''}</span>
+    <span class="cpt-h">${d.length} ligne${d.length>1?'s':''} au registre</span>
     <button class="btn sec" onclick="exporterCSV('dons')">Excel</button>
     <button class="btn sec" onclick="imprimer()">PDF</button>
     <button class="btn sec" onclick="bordereau()">Bordereau de don officiel</button>
     <button class="btn" onclick="ouvrirAjout('dons')">Consigner un appel</button>
   </div>`;
 
-  const reps = ['Tout','Oui','Non','En attente','À rappeler'];
+  const compte = r => r === 'Formulaire'
+    ? parFormulaire
+    : d.filter(x => x.reponse === r).length;
+  const reps = ['Tout','Oui','Non','En attente','À rappeler'].concat(parFormulaire ? ['Formulaire'] : []);
   if(d.length) h += `<div class="filtres">${reps.map(r =>
-    `<button class="${filtreDon===r?'on':''}" onclick="filtrerDon('${r}')">${esc(r)}${r!=='Tout'?` <span style="opacity:.6">${d.filter(x=>x.reponse===r).length}</span>`:''}</button>`).join('')}</div>`;
+    `<button class="${filtreDon===r?'on':''}" onclick="filtrerDon('${r}')">${r==='Formulaire'?'Reçus par formulaire':esc(r)}${r!=='Tout'?` <span style="opacity:.6">${compte(r)}</span>`:''}</button>`).join('')}</div>`;
 
-  let vus = filtreDon === 'Tout' ? [...d] : d.filter(x => x.reponse === filtreDon);
+  let vus = filtreDon === 'Tout' ? [...d]
+    : filtreDon === 'Formulaire' ? d.filter(x => x.source === 'formulaire')
+    : d.filter(x => x.reponse === filtreDon);
   vus.sort((a,b) => ((b.date||'')+' '+(b.heure||'')).localeCompare((a.date||'')+' '+(a.heure||'')));
 
   if(!vus.length){
@@ -2232,10 +2365,12 @@ function vueCollecte(){
       <button class="tete" onclick="ouvrirDon('${o.id}')" aria-expanded="${ouvertx}">
         <span class="qd">${frdate(o.date)}<br>${esc(o.heure||'—')}</span>
         <span class="ident">
-          <span class="n">${esc(o.structure)}</span>
+          <span class="n">${esc(o.structure)}${o.source === 'formulaire'
+            ? `<span class="src-f">Formulaire</span>${o.aVerifier ? `<span class="src-f neuf">À vérifier</span>` : ''}`
+            : ''}</span>
           <span class="s">${[o.type, o.commune, o.interlocuteur].filter(Boolean).map(esc).join(' · ') || '—'}</span>
         </span>
-        <span class="par">Appel mené par<br><b>${esc(o.par || o.auteur || '—')}</b></span>
+        <span class="par">${o.source === 'formulaire' ? 'Déclaré par' : 'Appel mené par'}<br><b>${esc(o.source === 'formulaire' ? (o.interlocuteur || 'le donateur') : (o.par || o.auteur || '—'))}</b></span>
         <span class="etiq ${REPET[o.reponse]||'e-lancer'}">${esc(o.reponse||'En attente')}</span>
         ${o.reponse === 'Oui'
           ? (o.materiel
@@ -2257,7 +2392,29 @@ function detailDon(o){
   const lieux = ['', ...(etat.stockage||[]).map(s => s.nom)];
   if(o.lieu && lieux.indexOf(o.lieu) === -1) lieux.push(o.lieu);
   const sel = (v, arr) => arr.map(x => `<option ${x===v?'selected':''}>${esc(x)}</option>`).join('');
-  let h = `<div class="detail"><div class="form">
+  let h = `<div class="detail">`;
+
+  /* Ce que le donateur a déclaré lui-même n'est pas modifiable
+     d'un clic : c'est la pièce qui fait foi. On l'affiche telle
+     quelle, et la correction passe par « Modifier la fiche ». */
+  if(o.source === 'formulaire'){
+    const e = o.engagement || {};
+    h += `<div class="declaration">
+      <div class="dt">Déclaration reçue par le formulaire en ligne</div>
+      <div class="dc">
+        ${[['Adresse', o.adresse], ['Courriel', o.mail], ['Qualité du représentant', e.qualite],
+           ['Disponible à partir de', o.dispo], ['Volume approximatif', o.quantite]]
+          .filter(x => x[1]).map(x => `<div><span class="k">${x[0]}</span>${esc(x[1])}</div>`).join('')
+          || `<div><span class="k">Aucun élément complémentaire déclaré</span></div>`}
+      </div>
+      ${(o.lignes||[]).length ? `<table class="dl"><thead><tr><th>Désignation</th><th>Quantité</th><th>État</th><th>Observations</th></tr></thead>
+        <tbody>${o.lignes.map(l => `<tr><td>${esc(l.designation||'')}</td><td>${esc(l.quantite||'')}</td><td>${esc(l.etat||'')}</td><td>${esc(l.obs||'')}</td></tr>`).join('')}</tbody></table>` : ''}
+      ${o.note ? `<div class="dn"><span class="k">Précisions à l'enlèvement</span>${esc(o.note)}</div>` : ''}
+      ${e.le ? `<div class="de">Conditions du bordereau acceptées le ${frdateL(e.le)} à ${esc(String(e.le).slice(11,16))} par ${esc(e.nom||'—')}${e.qualite?', '+esc(e.qualite):''}. Cette acceptation tient lieu de signature de l'entité donneuse.</div>` : ''}
+    </div>`;
+  }
+
+  h += `<div class="form">
     <label><span class="k">Réponse à la collecte</span>
       <select onchange="majDon('${o.id}','reponse',this.value)">${sel(o.reponse||'En attente', ['En attente','Oui','Non','À rappeler'])}</select></label>
     <label><span class="k">Téléphone</span>
@@ -2275,7 +2432,7 @@ function detailDon(o){
     <label><span class="k">Enlèvement</span>
       <select onchange="majDon('${o.id}','retrait',this.value)">${sel(o.retrait||'À organiser', ['À organiser','Planifié','Collecté','Remis au receveur','Sans objet'])}</select></label>
     <label><span class="k">Bordereau de don</span>
-      <select onchange="majDon('${o.id}','bordereau',this.value)">${sel(o.bordereau||'Non', ['Non','Édité','Signé'])}</select></label>`;
+      <select onchange="majDon('${o.id}','bordereau',this.value)">${sel(o.bordereau||'Non', BORDEREAU_ETATS)}</select></label>`;
   }
 
   h += `<label class="large"><span class="k">Observation</span>
@@ -2292,8 +2449,9 @@ function detailDon(o){
       </div>`).join('') : `<p class="vide" style="padding:0;font-size:13px">Aucune relance consignée.</p>`}
   </div>
   <div class="bas">
+    ${o.aVerifier ? `<button class="btn" onclick="verifierDon('${o.id}')">Marquer comme vérifié</button>` : ''}
     <button class="btn sec" onclick="ouvrirSuiviDon('${o.id}')">Consigner une relance</button>
-    ${o.reponse === 'Oui' ? `<button class="btn" onclick="bordereau('${o.id}')">Éditer le bordereau de don</button>` : ''}
+    ${o.reponse === 'Oui' ? `<button class="btn${o.aVerifier?' sec':''}" onclick="bordereau('${o.id}')">Éditer le bordereau${o.source==='formulaire'?' pré-rempli':' de don'}</button>` : ''}
     <button class="retirer" onclick="ouvrirEdition('dons','${o.id}')">Modifier la fiche</button>
     <button class="retirer sup" onclick="supprimer('dons','${o.id}')">Retirer</button>
   </div></div>`;
@@ -2306,6 +2464,17 @@ async function majDon(id, champ, val){
   o.modifiePar = moi;
   if(champ === 'reponse' && val === 'Oui' && !o.retrait) o.retrait = 'À organiser';
   await sauver(); rendre();
+}
+
+/* Un dépôt arrivé par le formulaire attend qu'un membre du copil
+   l'ait lu : c'est ce qui distingue « reçu » de « pris en charge ». */
+async function verifierDon(id){
+  const o = (etat.dons||[]).find(x => x.id === id); if(!o) return;
+  delete o.aVerifier;
+  o.suivi = o.suivi || [];
+  o.suivi.unshift({id:uid(), date:aujourdhui(), heure:maintenant(), texte:"Déclaration en ligne vérifiée par la coordination.", par:moi});
+  o.modifiePar = moi;
+  await sauver(); rendre(); toast("Dépôt vérifié");
 }
 
 function ouvrirSuiviDon(id){
@@ -2430,11 +2599,11 @@ function bordereau(id){
     <h2>1 · Entité donneuse</h2>
     ${ligne("Dénomination", o ? o.structure : '')}
     ${ligne("Nature de la structure", o ? o.type : '')}
-    ${ligne("Adresse", '')}
+    ${ligne("Adresse", o ? o.adresse : '')}
     ${ligne("Commune", o ? o.commune : '')}
-    ${ligne("Représentant — nom et qualité", o ? o.interlocuteur : '')}
+    ${ligne("Représentant — nom et qualité", o ? [o.interlocuteur, (o.engagement||{}).qualite].filter(Boolean).join(', ') : '')}
     ${ligne("Téléphone", o ? o.tel : '')}
-    ${ligne("Courriel", '')}
+    ${ligne("Courriel", o ? o.mail : '')}
 
     <h2>2 · Entité réceptrice</h2>
     ${ligne("Dénomination", RECEVEUR.nom)}
@@ -2447,8 +2616,15 @@ function bordereau(id){
     <table>
       <thead><tr><th style="width:44%">Désignation</th><th style="width:16%">Quantité</th><th style="width:16%">État</th><th style="width:24%">Observations</th></tr></thead>
       <tbody>
-        ${cellules(o ? o.materiel : '', o ? o.quantite : '', o && o.dispo ? 'Disponible : ' + o.dispo : '')}
-        ${cellules('','','')}${cellules('','','')}${cellules('','','')}${cellules('','','')}
+        ${o && (o.lignes||[]).length
+          /* Déclaration reçue par le formulaire : le détail ligne
+             à ligne est déjà là, l'état aussi. */
+          ? o.lignes.map(l => `<tr><td contenteditable="true">${esc(l.designation||'')}</td>
+              <td contenteditable="true">${esc(l.quantite||'')}</td>
+              <td contenteditable="true">${esc(l.etat||'')}</td>
+              <td contenteditable="true">${esc(l.obs||'')}</td></tr>`).join('')
+          : cellules(o ? o.materiel : '', o ? o.quantite : '', o && o.dispo ? 'Disponible : ' + o.dispo : '')}
+        ${cellules('','','')}${cellules('','','')}${cellules('','','')}
       </tbody>
     </table>
     ${ligne("Lieu de regroupement", st ? st.nom + (st.adresse ? ' — ' + st.adresse : '') : (o ? o.lieu : ''))}
@@ -2465,13 +2641,23 @@ function bordereau(id){
     </ol>
 
     <h2>5 · Signatures</h2>
+    ${o && o.engagement && o.engagement.le
+      /* Le donateur a accepté les conditions dans le formulaire :
+         sa signature manuscrite n'a plus lieu d'être, seule la
+         réception reste à constater. */
+      ? `<div class="cachet"><b>Engagement de l'entité donneuse recueilli par voie électronique</b> le
+          ${frdateL(o.engagement.le)} à ${esc(String(o.engagement.le).slice(11,16))},
+          par ${esc(o.engagement.nom || o.interlocuteur || '—')}${o.engagement.qualite ? ', ' + esc(o.engagement.qualite) : ''},
+          pour ${esc(o.structure)}, qui a déclaré accepter les conditions de l'article 4 et certifié être
+          habilité à engager la structure. Cette acceptation tient lieu de signature de l'entité donneuse.</div>`
+      : ''}
     <div class="sig">
-      <div class="b">
+      ${o && o.engagement && o.engagement.le ? '' : `<div class="b">
         <div class="q">Pour l'entité donneuse</div>
         <div class="l">Fait à …………………………, le ……… / ……… / 2026</div>
         <div class="l">Nom et qualité :</div>
         <div class="l">Signature :</div>
-      </div>
+      </div>`}
       <div class="b">
         <div class="q">Pour l'entité réceptrice</div>
         <div class="l">Fait à …………………………, le ……… / ……… / 2026</div>
@@ -2492,7 +2678,7 @@ function bordereau(id){
 }
 async function marquerBordereau(id){
   const o = (etat.dons||[]).find(x => x.id === id); if(!o) return;
-  if(o.bordereau !== 'Signé') o.bordereau = 'Édité';
+  if(BORDEREAU_ACQUIS.indexOf(o.bordereau) === -1) o.bordereau = 'Édité';
   o.modifiePar = moi;
   await sauver(); fermer(); rendre(); toast("Bordereau noté comme édité");
 }

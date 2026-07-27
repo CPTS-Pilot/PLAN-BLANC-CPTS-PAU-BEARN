@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Proposer du matériel — CPTS Pau Béarn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --encre:#062B63;
+  --encre-2:#0B4FA8;
+  --cobalt-clair:#E8F0FB;
+  --surface:#F3F6FB;
+  --carte:#FFFFFF;
+  --trait:#D8E1EF;
+  --texte:#122238;
+  --texte-2:#5A6B84;
+  --ambre:#E8A33D;
+  --braise:#C2482F;
+  --stable:#2F7D62;
+  --display:'Archivo',system-ui,sans-serif;
+  --corps:'Source Sans 3',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--corps);background:var(--surface);color:var(--texte);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+
+.bandeau{background:var(--encre);color:#fff;padding:20px 22px}
+.bandeau .in{max-width:880px;margin:0 auto}
+.bandeau .nom{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.02em}
+.bandeau .sous{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#7FA3D4;margin-top:6px}
+
+.page{max-width:880px;margin:0 auto;padding:26px 22px 60px}
+h1{font-family:var(--display);font-weight:700;font-size:27px;letter-spacing:-.01em;margin:0 0 6px}
+.chapo{color:var(--texte-2);margin:0 0 22px;max-width:66ch}
+.carte{background:var(--carte);border:1px solid var(--trait);border-radius:10px;padding:20px;margin-bottom:16px}
+h2{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.02em;margin:0 0 4px;display:flex;align-items:center;gap:9px}
+h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-radius:2px;display:block;flex:0 0 3px}
+.sous-h{font-size:13px;color:var(--texte-2);margin:0 0 15px}
+
+.form{display:grid;gap:13px}
+@media(min-width:720px){.form{grid-template-columns:1fr 1fr}.form .large{grid-column:1/-1}}
+label{display:block}
+label .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:4px}
+label .k i{font-style:normal;color:var(--braise)}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--trait);border-radius:6px;background:#fff}
+textarea{min-height:74px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-offset:1px;border-color:var(--ambre)}
+input.faux,textarea.faux{border-color:var(--braise);background:#FDF4F2}
+.aide{font-size:12.5px;color:var(--texte-2);margin-top:4px}
+.leurre{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+.lignes{display:flex;flex-direction:column;gap:12px}
+.lg{border:1px solid var(--trait);border-left:3px solid var(--cobalt-clair);border-radius:8px;padding:13px 14px;background:#FCFDFF}
+.lg .num{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--texte-2);display:flex;align-items:center;margin-bottom:9px}
+.lg .num button{margin-left:auto;background:none;border:0;color:var(--texte-2);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:5px}
+.lg .num button:hover{color:var(--braise);background:#FDF0EC}
+.lg .champs{display:grid;gap:11px}
+@media(min-width:640px){.lg .champs{grid-template-columns:2fr 1fr 1fr}.lg .champs .large{grid-column:1/-1}}
+
+.cond{background:var(--cobalt-clair);border-radius:8px;padding:14px 16px;margin-bottom:14px}
+.cond ol{margin:0;padding-left:19px;font-size:13.5px}
+.cond li{margin-bottom:6px;text-align:justify}
+.coche{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--trait);border-radius:8px;margin-bottom:9px;cursor:pointer;background:#fff}
+.coche:hover{border-color:var(--encre-2)}
+.coche.faux{border-color:var(--braise);background:#FDF4F2}
+.coche input{width:19px;height:19px;flex:0 0 19px;margin:1px 0 0;accent-color:var(--encre-2)}
+.coche span{font-size:14px;line-height:1.45}
+
+.btn{background:var(--encre);color:#fff;border:0;border-radius:7px;padding:12px 22px;font-family:var(--display);font-weight:600;font-size:15px;cursor:pointer;min-height:48px}
+.btn:hover{background:var(--encre-2)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.sec{background:#fff;color:var(--encre);border:1px solid var(--trait)}
+.btn.sec:hover{border-color:var(--encre)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+@media(max-width:600px){.btn{width:100%}.actions{flex-direction:column;align-items:stretch}}
+
+.alerte{border-radius:8px;padding:12px 14px;font-size:14px;margin-bottom:16px}
+.alerte.rouge{background:#FDF0EC;border:1px solid #E8C3B8;color:#8C2F1B}
+.alerte.ambre{background:#FCF3E4;border:1px solid #E9D3A6;color:#8A5D12}
+.note{font-size:12.5px;color:var(--texte-2);margin-top:26px;padding-top:14px;border-top:1px solid var(--trait);text-align:justify}
+
+/* ---------- récapitulatif remis au donateur ---------- */
+.acte{background:#fff;border:1px solid var(--trait);border-radius:10px;padding:26px;color:#101820;font-size:13.5px;line-height:1.5}
+.acte .ent{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:2px solid var(--encre);padding-bottom:9px;margin-bottom:16px}
+.acte .ent .org{font-family:var(--display);font-weight:700;font-size:15px;color:var(--encre)}
+.acte .ent .sub{font-size:11px;color:var(--texte-2);margin-top:2px}
+.acte .ent .d{text-align:right}
+.acte .ent .ref{font-family:var(--mono);font-size:11.5px;color:var(--encre)}
+.acte .ttl{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;margin:0;color:var(--encre);text-transform:uppercase}
+.acte .ss{font-size:12.5px;color:var(--texte-2);margin:3px 0 14px}
+.acte .ctx{font-size:12.5px;background:var(--cobalt-clair);border-left:3px solid var(--encre-2);border-radius:0 6px 6px 0;padding:11px 13px;margin-bottom:16px;text-align:justify}
+.acte h3{font-family:var(--display);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--encre-2);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--trait)}
+.acte .l{display:flex;gap:10px;align-items:baseline;padding:3px 0}
+.acte .l .e{flex:0 0 185px;font-size:12px;color:var(--texte-2)}
+.acte .l .v{flex:1;border-bottom:1px dotted #B9C4D4;min-height:19px;padding:0 3px}
+.acte table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
+.acte th{background:var(--cobalt-clair);border:1px solid var(--trait);padding:6px 8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--texte-2);text-align:left}
+.acte td{border:1px solid var(--trait);padding:7px 8px;vertical-align:top}
+.acte ol{margin:0;padding-left:20px;font-size:12.5px}
+.acte ol li{margin-bottom:5px;text-align:justify}
+.acte .cachet{border:1px solid var(--stable);background:#F1F8F5;border-radius:7px;padding:11px 13px;font-size:12.5px;margin-top:10px}
+.acte .cachet b{color:#1E5C46}
+.acte .sig{display:flex;gap:14px;margin-top:10px}
+.acte .sig .b{flex:1;border:1px solid var(--trait);border-radius:7px;padding:10px 12px;min-height:104px}
+.acte .sig .b .q{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--texte-2);margin-bottom:6px}
+.acte .sig .b .r{font-size:11.5px;color:var(--texte-2);margin-top:7px}
+.acte .pied{font-size:11px;color:var(--texte-2);border-top:1px solid var(--trait);margin-top:16px;padding-top:8px;text-align:justify}
+@media(max-width:600px){.acte{padding:18px}.acte .l{flex-direction:column;gap:2px}.acte .l .e{flex:none}.acte .sig{flex-direction:column}}
+
+.recu{background:#F1F8F5;border:1px solid #BEDCCE;border-radius:10px;padding:20px 22px;margin-bottom:18px}
+.recu .t{font-family:var(--display);font-weight:700;font-size:20px;color:#1E5C46;margin-bottom:6px}
+.recu .r{font-family:var(--mono);font-size:13px;color:var(--encre);margin-top:10px}
+
+@media print{
+  @page{margin:14mm}
+  body{background:#fff;font-size:10.5pt}
+  .bandeau,.actions,.recu,.no-print{display:none!important}
+  .page{padding:0;max-width:none}
+  .acte{border:0;padding:0;font-size:10pt;line-height:1.42}
+  .acte .ttl{font-size:16pt}
+  .acte .ctx,.acte th,.acte .cachet{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .acte table,.acte ol,.acte .sig,.acte .sig .b,.acte .cachet{break-inside:avoid}
+  .acte h3{break-after:avoid}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="bandeau"><div class="in">
+  <div class="nom">CPTS Pau Béarn</div>
+  <div class="sous">Communauté professionnelle territoriale de santé — Pau et Béarn</div>
+</div></div>
+
+<main class="page" id="page">
+  <p class="chapo">Chargement…</p>
+</main>
+
+<script>
+/* =========================================================
+   FORMULAIRE DE DON DE MATÉRIEL — CPTS Pau Béarn
+
+   Remplace le bordereau papier envoyé, signé, scanné et
+   renvoyé. Le professionnel déclare ici ce qu'il propose et
+   accepte les conditions du don ; la déclaration arrive
+   directement dans le cockpit de crise, et il repart avec un
+   récapitulatif à enregistrer en PDF.
+
+   Cette page n'a pas le code d'accès du cockpit : elle ne
+   parle qu'à la porte de dépôt d'api.php, qui n'accepte
+   qu'un ajout et ne renvoie rien de l'état partagé.
+   ========================================================= */
+const API = 'api.php?depot=1';
+
+const TYPES = ['','Pharmacie','Cabinet médical','Cabinet infirmier','Kinésithérapie','Laboratoire',
+  'Clinique ou hôpital','EHPAD ou ESMS','Fournisseur, distributeur','Association','Collectivité',
+  'Professionnel libéral','Particulier','Autre'];
+const ETATS = ['Neuf, conditionnement d\'origine','Bon état d\'usage','À vérifier'];
+
+const RECEVEUR = "Entité désignée par l'ARS Nouvelle-Aquitaine — précisée au moment de l'enlèvement";
+
+let lignes = [{}, {}, {}];
+let envoiEnCours = false;
+let contexte = { ouverte: false, message: '', besoins: '' };
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const val = id => (document.getElementById(id)?.value || '').trim();
+const frdate = d => d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '';
+const frheure = d => d ? new Date(d).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '';
+
+/* --- Ouverture de la collecte ---------------------------
+   Le copil ouvre et ferme la collecte depuis le cockpit. Tant
+   qu'elle est fermée, on ne fait pas remplir un bordereau pour
+   rien : le serveur refuserait le dépôt de toute façon. */
+async function demarrer(){
+  try{
+    const r = await fetch('api.php?depot=etat', {headers:{'Accept':'application/json'}});
+    if(r.ok) contexte = await r.json();
+  }catch(e){
+    return afficher(`<div class="alerte rouge">Le service est momentanément injoignable. Réessayez dans quelques minutes, ou appelez la coordination de la CPTS Pau Béarn.</div>`);
+  }
+  contexte.ouverte ? formulaire() : ferme();
+}
+
+function afficher(html){
+  document.getElementById('page').innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+function ferme(){
+  afficher(`<h1>Collecte de matériel</h1>
+  <p class="chapo">La CPTS Pau Béarn n'a pas ouvert de collecte de matériel à ce jour.</p>
+  <div class="carte">
+    <div class="alerte ambre">Aucun don n'est sollicité pour le moment.</div>
+    <p>La CPTS ne lance de collecte qu'une fois deux conditions réunies : un besoin écrit et validé par
+    l'ARS Nouvelle-Aquitaine, et un lieu de réception nommé. Collecter sans cela encombre les circuits
+    de secours plus qu'il ne les aide.</p>
+    ${contexte.message ? `<p><strong>${esc(contexte.message)}</strong></p>` : ''}
+    <p style="margin-bottom:0">Dès qu'une collecte sera ouverte, l'information passera par les canaux
+    habituels de la CPTS. Merci de votre proposition.</p>
+  </div>`);
+}
+
+/* --- Le formulaire -------------------------------------- */
+function formulaire(){
+  afficher(`<h1>Proposer du matériel</h1>
+  <p class="chapo">Ce formulaire remplace le bordereau de don papier. Vous décrivez ce que vous proposez,
+  vous acceptez les conditions du don, et vous recevez immédiatement votre récapitulatif à conserver.
+  Rien à imprimer, rien à renvoyer.</p>
+
+  ${contexte.besoins ? `<div class="alerte ambre"><strong>Besoins exprimés à ce jour :</strong> ${esc(contexte.besoins)}</div>` : ''}
+
+  <div class="carte">
+    <h2>1 · Votre structure</h2>
+    <p class="sous-h">Ces éléments figureront sur le bordereau comme entité donneuse.</p>
+    <div class="form">
+      <label class="large"><span class="k">Dénomination <i>*</i></span>
+        <input id="f-structure" autocomplete="organization" placeholder="Ex. Pharmacie du Hédas, Cabinet infirmier des Halles">
+        <span class="aide">Le nom sous lequel votre structure sera identifiée.</span></label>
+      <label><span class="k">Nature de la structure</span>
+        <select id="f-type">${TYPES.map(t => `<option>${esc(t)}</option>`).join('')}</select></label>
+      <label><span class="k">Commune</span>
+        <input id="f-commune" autocomplete="address-level2" placeholder="Ex. Pau"></label>
+      <label class="large"><span class="k">Adresse</span>
+        <input id="f-adresse" autocomplete="street-address" placeholder="Numéro, rue, code postal"></label>
+      <label><span class="k">Représentant — nom et prénom <i>*</i></span>
+        <input id="f-representant" autocomplete="name" placeholder="Ex. Marie Dupont"></label>
+      <label><span class="k">Qualité</span>
+        <input id="f-qualite" placeholder="Ex. pharmacien titulaire, infirmière libérale"></label>
+      <label><span class="k">Téléphone <i>*</i></span>
+        <input id="f-tel" type="tel" autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78">
+        <span class="aide">Indispensable : c'est par téléphone que l'enlèvement sera convenu.</span></label>
+      <label><span class="k">Courriel</span>
+        <input id="f-mail" type="email" autocomplete="email" placeholder="nom@exemple.fr"></label>
+    </div>
+  </div>
+
+  <div class="carte">
+    <h2>2 · Matériel proposé</h2>
+    <p class="sous-h">Une ligne par type de matériel. Seule la désignation est obligatoire, mais plus vous
+    êtes précis, moins il y aura d'appels de vérification.</p>
+    <div class="lignes" id="lignes"></div>
+    <div class="actions"><button type="button" class="btn sec" onclick="ajouterLigne()">+ Ajouter une ligne</button></div>
+  </div>
+
+  <div class="carte">
+    <h2>3 · Disponibilité</h2>
+    <p class="sous-h">Où et quand le matériel peut être récupéré.</p>
+    <div class="form">
+      <label><span class="k">Disponible à partir de</span>
+        <input id="f-dispo" placeholder="Ex. dès demain 9 h, à tout moment"></label>
+      <label><span class="k">Volume total approximatif</span>
+        <input id="f-quantite" placeholder="Ex. 6 cartons, un coffre de voiture"></label>
+      <label class="large"><span class="k">Précisions utiles à l'enlèvement</span>
+        <textarea id="f-note" placeholder="Adresse de retrait si différente, horaires d'ouverture, étage, accès véhicule, personne à demander sur place…"></textarea></label>
+    </div>
+  </div>
+
+  <div class="carte">
+    <h2>4 · Conditions du don</h2>
+    <p class="sous-h">Ce sont les clauses du bordereau de don de la CPTS Pau Béarn. Votre acceptation ici
+    vaut engagement, sans signature manuscrite.</p>
+    <div class="cond"><ol>
+      <li>Le don est consenti à titre gratuit et définitif. Il ne donne lieu à aucune facturation, aucune
+      contrepartie ni aucune demande de remboursement, présente ou future.</li>
+      <li>Le matériel remis est en état d'usage et non périmé ; les dispositifs médicaux et consommables
+      sont dans leur conditionnement d'origine intact.</li>
+      <li>La propriété et la garde du matériel sont transférées à l'entité réceptrice au moment de la
+      réception, constatée par la signature du bordereau par le réceptionnaire.</li>
+      <li>Le matériel est destiné exclusivement à la réponse à la situation sanitaire exceptionnelle en cours.</li>
+      <li>La CPTS Pau Béarn n'intervient qu'en qualité de coordonnateur de la collecte. Elle n'est ni
+      propriétaire, ni transporteur, ni destinataire du matériel.</li>
+    </ol></div>
+    <label class="coche" id="c-conditions-l">
+      <input type="checkbox" id="c-conditions">
+      <span>J'accepte les conditions ci-dessus et je consens le don du matériel décrit.</span></label>
+    <label class="coche" id="c-habilite-l">
+      <input type="checkbox" id="c-habilite">
+      <span>Je certifie être habilité à engager la structure désignée et exact l'ensemble des éléments déclarés.</span></label>
+
+    <div class="leurre" aria-hidden="true">
+      <label>Ne pas remplir<input id="f-site" tabindex="-1" autocomplete="off"></label>
+    </div>
+
+    <div id="erreur"></div>
+    <div class="actions">
+      <button type="button" class="btn" id="valider" onclick="valider()">Valider et transmettre à la CPTS</button>
+      <span class="aide" style="margin:0">Vous obtiendrez ensuite votre récapitulatif à enregistrer en PDF.</span>
+    </div>
+  </div>
+
+  <p class="note">Les informations recueillies par ce formulaire sont utilisées par la seule CPTS Pau Béarn,
+  aux fins d'organiser la collecte et l'acheminement du matériel dans le cadre du plan blanc régional /
+  ORSAN AMAVI. Elles ne sont ni cédées, ni utilisées à d'autres fins, et sont conservées le temps de la
+  mobilisation et de son retour d'expérience. Vous pouvez demander leur rectification ou leur suppression
+  auprès de la coordination de la CPTS Pau Béarn.</p>`);
+  rendreLignes();
+}
+
+function rendreLignes(){
+  const z = document.getElementById('lignes');
+  if(!z) return;
+  z.innerHTML = lignes.map((l, i) => `<div class="lg">
+    <div class="num">Ligne ${i+1}
+      ${lignes.length > 1 ? `<button type="button" onclick="retirerLigne(${i})" title="Retirer cette ligne">Retirer ×</button>` : ''}
+    </div>
+    <div class="champs">
+      <label class="large"><span class="k">Désignation du matériel</span>
+        <input id="l-designation-${i}" value="${esc(l.designation||'')}"
+          placeholder="Ex. masques FFP2, compresses stériles, tensiomètre"
+          onchange="majLigne(${i},'designation',this.value)"></label>
+      <label><span class="k">Quantité</span>
+        <input id="l-quantite-${i}" value="${esc(l.quantite||'')}" placeholder="Ex. 200 unités, 4 cartons"
+          onchange="majLigne(${i},'quantite',this.value)"></label>
+      <label><span class="k">État</span>
+        <select onchange="majLigne(${i},'etat',this.value)">
+          ${ETATS.map(e => `<option ${e===(l.etat||ETATS[0])?'selected':''}>${esc(e)}</option>`).join('')}
+        </select></label>
+      <label><span class="k">Observations</span>
+        <input value="${esc(l.obs||'')}" placeholder="Ex. péremption 03/2027"
+          onchange="majLigne(${i},'obs',this.value)"></label>
+    </div>
+  </div>`).join('');
+}
+
+function majLigne(i, champ, v){ lignes[i][champ] = v.trim(); }
+function ajouterLigne(){ lissage(); lignes.push({}); rendreLignes(); }
+function retirerLigne(i){ lissage(); lignes.splice(i,1); if(!lignes.length) lignes.push({}); rendreLignes(); }
+
+/* Les champs texte ne se déclarent qu'au « change » : avant de
+   redessiner la liste, on relit ce qui est à l'écran pour ne
+   pas perdre une saisie en cours. */
+function lissage(){
+  lignes.forEach((l, i) => {
+    ['designation','quantite'].forEach(c => {
+      const e = document.getElementById(`l-${c}-${i}`);
+      if(e) l[c] = e.value.trim();
+    });
+  });
+}
+
+function marquer(id, faux){
+  const e = document.getElementById(id);
+  if(e) e.classList.toggle('faux', faux);
+}
+
+async function valider(){
+  if(envoiEnCours) return;
+  lissage();
+
+  const donnees = {
+    structure:    val('f-structure'),
+    type:         val('f-type'),
+    commune:      val('f-commune'),
+    adresse:      val('f-adresse'),
+    representant: val('f-representant'),
+    qualite:      val('f-qualite'),
+    tel:          val('f-tel'),
+    mail:         val('f-mail'),
+    dispo:        val('f-dispo'),
+    quantite:     val('f-quantite'),
+    note:         val('f-note'),
+    site:         val('f-site'),
+    /* Le menu « état » affiche sa première valeur sans qu'on y
+       touche : on la transmet, plutôt que de la laisser vide. */
+    lignes:       lignes.filter(l => (l.designation||'').trim())
+                        .map(l => ({...l, etat: l.etat || ETATS[0]})),
+    conditions:   document.getElementById('c-conditions').checked
+                  && document.getElementById('c-habilite').checked
+  };
+
+  const manques = [];
+  if(!donnees.structure)    { manques.push('la dénomination de votre structure'); marquer('f-structure', true); }
+  else marquer('f-structure', false);
+  if(!donnees.representant) { manques.push('votre nom'); marquer('f-representant', true); }
+  else marquer('f-representant', false);
+  if(!donnees.tel)          { manques.push('un téléphone'); marquer('f-tel', true); }
+  else marquer('f-tel', false);
+  if(!donnees.lignes.length){ manques.push('au moins une ligne de matériel'); }
+  const coches = document.getElementById('c-conditions').checked && document.getElementById('c-habilite').checked;
+  document.getElementById('c-conditions-l').classList.toggle('faux', !document.getElementById('c-conditions').checked);
+  document.getElementById('c-habilite-l').classList.toggle('faux', !document.getElementById('c-habilite').checked);
+  if(!coches) manques.push('votre acceptation des conditions');
+
+  const z = document.getElementById('erreur');
+  if(manques.length){
+    z.innerHTML = `<div class="alerte rouge" style="margin:14px 0 0">Il manque ${manques.join(', ')
+      .replace(/,([^,]*)$/, ' et$1')}.</div>`;
+    return;
+  }
+  z.innerHTML = '';
+
+  const b = document.getElementById('valider');
+  envoiEnCours = true; b.disabled = true; b.textContent = 'Transmission…';
+
+  let r, c;
+  try{
+    r = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(donnees)
+    });
+    c = await r.json();
+  }catch(e){
+    envoiEnCours = false; b.disabled = false; b.textContent = 'Valider et transmettre à la CPTS';
+    z.innerHTML = `<div class="alerte rouge" style="margin:14px 0 0">La transmission a échoué. Votre saisie
+      est toujours à l'écran : réessayez dans un instant.</div>`;
+    return;
+  }
+
+  if(!r.ok || !c || !c.ok){
+    envoiEnCours = false; b.disabled = false; b.textContent = 'Valider et transmettre à la CPTS';
+    z.innerHTML = `<div class="alerte rouge" style="margin:14px 0 0">${esc((c && c.erreur) ||
+      "La transmission a échoué.")} Votre saisie est conservée à l'écran.</div>`;
+    return;
+  }
+
+  /* L'heure qui fait foi est celle du registre, pas celle de
+     l'appareil : les deux exemplaires du bordereau doivent
+     porter le même horodatage. */
+  recapitulatif(donnees, c.ref, c.le || new Date().toISOString());
+}
+
+/* --- Le récapitulatif remis au donateur ------------------
+   Même document que le bordereau du cockpit, mais rempli et
+   sans rien à renvoyer : l'engagement du donateur y est déjà
+   constaté, seule la réception reste à signer sur place. */
+function recapitulatif(d, ref, quand){
+  const l = (e, v) => `<div class="l"><span class="e">${e}</span><span class="v">${esc(v||'—')}</span></div>`;
+  afficher(`<div class="recu no-print">
+    <div class="t">Votre proposition est transmise.</div>
+    <p style="margin:0">La coordination de la CPTS Pau Béarn en a reçu le détail et vous rappellera au
+    ${esc(d.tel)} pour convenir de l'enlèvement. Vous n'avez rien d'autre à faire.</p>
+    <div class="r">Référence de votre bordereau : <strong>${esc(ref)}</strong></div>
+  </div>
+
+  <div class="actions no-print" style="margin:0 0 18px">
+    <button type="button" class="btn" onclick="window.print()">Enregistrer mon récapitulatif en PDF</button>
+    <span class="aide" style="margin:0">Dans la fenêtre d'impression, choisissez « Enregistrer au format PDF ».</span>
+  </div>
+
+  <div class="acte">
+    <div class="ent">
+      <div class="g">
+        <div class="org">CPTS Pau Béarn</div>
+        <div class="sub">Communauté professionnelle territoriale de santé — Pau et Béarn</div>
+      </div>
+      <div class="d">
+        <div class="ref">Réf. ${esc(ref)}</div>
+        <div class="sub">Établi le ${frdate(quand)}</div>
+      </div>
+    </div>
+
+    <h1 class="ttl">Bordereau de don de matériel</h1>
+    <div class="ss">Récapitulatif de la déclaration de don — exemplaire du donateur</div>
+
+    <div class="ctx"><b>Cadre de la remise.</b> Le présent bordereau est établi dans le cadre du plan blanc
+    régional et du dispositif ORSAN AMAVI activés par l'ARS Nouvelle-Aquitaine à la suite des feux de forêt
+    de Gironde et des Landes de juillet 2026. La CPTS Pau Béarn intervient au seul titre de la coordination
+    de la collecte sur son territoire. Ce document constate l'engagement de don, à titre gratuit et
+    définitif, du matériel décrit ci-dessous. Il ne vaut ni commande, ni engagement financier, ni transfert
+    de responsabilité médicale.</div>
+
+    <h3>1 · Entité donneuse</h3>
+    ${l('Dénomination', d.structure)}
+    ${l('Nature de la structure', d.type)}
+    ${l('Adresse', d.adresse)}
+    ${l('Commune', d.commune)}
+    ${l('Représentant — nom et qualité', [d.representant, d.qualite].filter(Boolean).join(', '))}
+    ${l('Téléphone', d.tel)}
+    ${l('Courriel', d.mail)}
+
+    <h3>2 · Entité réceptrice</h3>
+    ${l('Dénomination', RECEVEUR)}
+    ${l('Coordination de la collecte', 'CPTS Pau Béarn')}
+    ${l('Réceptionnaire — nom et qualité', '')}
+    ${l('Date de réception', '')}
+
+    <h3>3 · Matériel remis</h3>
+    <table>
+      <thead><tr><th style="width:44%">Désignation</th><th style="width:16%">Quantité</th>
+        <th style="width:18%">État</th><th style="width:22%">Observations</th></tr></thead>
+      <tbody>${d.lignes.map(x => `<tr><td>${esc(x.designation)}</td><td>${esc(x.quantite||'')}</td>
+        <td>${esc(x.etat||'')}</td><td>${esc(x.obs||'')}</td></tr>`).join('')}</tbody>
+    </table>
+    ${d.quantite ? l('Volume total approximatif', d.quantite) : ''}
+    ${d.dispo ? l('Disponible à partir de', d.dispo) : ''}
+    ${d.note ? l('Précisions à l\'enlèvement', d.note) : ''}
+
+    <h3>4 · Conditions</h3>
+    <ol>
+      <li>Le don est consenti à titre gratuit et définitif. Il ne donne lieu à aucune facturation, aucune
+      contrepartie ni aucune demande de remboursement, présente ou future.</li>
+      <li>L'entité donneuse déclare que le matériel remis est en état d'usage et non périmé, et que les
+      dispositifs médicaux et consommables sont dans leur conditionnement d'origine intact.</li>
+      <li>La propriété et la garde du matériel sont transférées à l'entité réceptrice au moment de la
+      réception, constatée par la signature du présent bordereau.</li>
+      <li>Le matériel est destiné exclusivement à la réponse à la situation sanitaire exceptionnelle en
+      cours. L'entité réceptrice en dispose librement pour cet usage.</li>
+      <li>Le présent bordereau vaut décharge pour l'entité donneuse à compter de la réception, et pièce
+      justificative pour l'entité réceptrice.</li>
+      <li>La CPTS Pau Béarn n'intervient qu'en qualité de coordonnateur de la collecte. Elle n'est ni
+      propriétaire, ni transporteur, ni destinataire du matériel.</li>
+    </ol>
+
+    <h3>5 · Engagement et réception</h3>
+    <div class="cachet"><b>Engagement du donateur recueilli par voie électronique</b> le
+      ${frdate(quand)} à ${frheure(quand)}, par ${esc(d.representant)}${d.qualite ? ', ' + esc(d.qualite) : ''},
+      pour ${esc(d.structure)}, qui a déclaré accepter les conditions ci-dessus et certifié être habilité à
+      engager la structure. Cette acceptation tient lieu de signature de l'entité donneuse ; aucune
+      signature manuscrite n'est requise de sa part.</div>
+    <div class="sig">
+      <div class="b">
+        <div class="q">Pour l'entité réceptrice — à la réception</div>
+        <div class="r">Fait à …………………………, le ……… / ……… / 2026</div>
+        <div class="r">Nom et qualité :</div>
+        <div class="r">Signature :</div>
+      </div>
+    </div>
+
+    <div class="pied">Document remis au donateur pour ses archives. Un exemplaire identique est conservé par
+    la CPTS Pau Béarn au titre de la traçabilité de sa mobilisation. La réception du matériel sera constatée
+    par la signature du réceptionnaire au moment de l'enlèvement. Coordination de la collecte :
+    CPTS Pau Béarn.</div>
+  </div>
+
+  <div class="actions no-print">
+    <button type="button" class="btn sec" onclick="location.reload()">Déclarer un autre don</button>
+  </div>`);
+}
+
+demarrer();
+</script>
+</body>
+</html>

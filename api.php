@@ -16,7 +16,15 @@
    - Un numéro de version est renvoyé à chaque lecture et
      vérifié à chaque écriture, ce qui permet au cockpit de
      détecter qu'il travaille sur une copie périmée.
+
+   S'y ajoute une porte de dépôt public (?depot), utilisée par
+   don.html : les professionnels de santé qui proposent du
+   matériel n'ont pas le code du copil. Cette porte n'ajoute
+   qu'une ligne à la rubrique « dons » et ne renvoie jamais
+   l'état du cockpit.
    ========================================================= */
+
+date_default_timezone_set('Europe/Paris');
 
 /* --- Code d'accès partagé -------------------------------
    Mot de passe commun au copil, demandé une fois par appareil.
@@ -95,6 +103,233 @@ $methode = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 if ($methode === 'OPTIONS') {
     repondre(204, []);
+}
+
+/* =========================================================
+   DÉPÔT PUBLIC — formulaire don.html
+
+   Ouvert sans code d'accès : les donateurs ne peuvent pas
+   l'avoir. En contrepartie, cette porte ne sait faire qu'une
+   chose — ajouter une ligne à « dons » — et ne renvoie rien
+   de l'état existant. Elle reste fermée tant que le copil n'a
+   pas ouvert la collecte depuis le cockpit.
+   ========================================================= */
+
+const DEPOT_PAR_IP    = 5;      /* dépôts par heure et par adresse   */
+const DEPOT_GLOBAL    = 60;     /* dépôts par heure, toutes adresses */
+const DEPOT_LIGNES    = 12;     /* lignes de matériel par bordereau  */
+const DEPOT_PLAFOND   = 3000;   /* garde-fou sur la taille du fichier */
+const DEPOT_CORPS_MAX = 60000;  /* octets acceptés en entrée         */
+
+/* Le formulaire est public : on nettoie tout ce qui entre,
+   longueur comprise, avant de l'écrire dans l'état partagé. */
+function txt($v, $max) {
+    if (is_bool($v) || is_null($v)) return '';
+    if (!is_scalar($v)) return '';
+    $v = (string) $v;
+    if (!preg_match('//u', $v)) $v = preg_replace('/[^\x20-\x7E]/', '', $v);
+    $v = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $v);
+    $v = trim(preg_replace('/[ \t]+/', ' ', $v));
+    return function_exists('mb_substr') ? mb_substr($v, 0, $max, 'UTF-8') : substr($v, 0, $max);
+}
+
+function collecteOuverte($etat) {
+    $d = isset($etat['donnees']) && is_array($etat['donnees']) ? $etat['donnees'] : [];
+    $c = isset($d['collecte']) && is_array($d['collecte']) ? $d['collecte'] : [];
+    return !empty($c['ouverte']);
+}
+
+/* Empreinte de l'appelant : on ne conserve pas l'adresse IP en
+   clair, seulement un condensé qui suffit à compter. */
+function empreinteAppelant() {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    return substr(hash('sha256', $ip . '|cpts64'), 0, 16);
+}
+
+/* Fenêtre glissante d'une heure, deux plafonds : par adresse
+   pour la saisie répétée, global pour le reste. */
+function quotaDepot($empreinte) {
+    $f = DOSSIER . '/depots.php';
+    $liste = [];
+    if (file_exists($f)) {
+        $b = file_get_contents($f);
+        if ($b !== false) {
+            if (strpos($b, GARDE) === 0) $b = substr($b, strlen(GARDE));
+            $d = json_decode($b, true);
+            if (is_array($d)) $liste = $d;
+        }
+    }
+    $depuis = time() - 3600;
+    $recents = [];
+    $mien = 0;
+    foreach ($liste as $x) {
+        if (!is_array($x) || !isset($x['t']) || $x['t'] <= $depuis) continue;
+        $recents[] = $x;
+        if (isset($x['e']) && $x['e'] === $empreinte) $mien++;
+    }
+    if ($mien >= DEPOT_PAR_IP || count($recents) >= DEPOT_GLOBAL) return false;
+    $recents[] = ['t' => time(), 'e' => $empreinte];
+    @file_put_contents($f, GARDE . json_encode($recents));
+    return true;
+}
+
+if (isset($_GET['depot'])) {
+
+    /* Le formulaire interroge cette adresse avant de s'afficher :
+       inutile de faire remplir un bordereau si la collecte est
+       fermée. Rien d'autre ne sort d'ici. */
+    if ($methode === 'GET') {
+        $etat = lireEtat();
+        $d = isset($etat['donnees']) && is_array($etat['donnees']) ? $etat['donnees'] : [];
+        $c = isset($d['collecte']) && is_array($d['collecte']) ? $d['collecte'] : [];
+        repondre(200, [
+            'ouverte' => collecteOuverte($etat),
+            'message' => txt($c['message'] ?? '', 600),
+            'besoins' => txt($c['besoins'] ?? '', 1200),
+        ]);
+    }
+
+    if ($methode !== 'POST') {
+        repondre(405, ['erreur' => 'Méthode non autorisée']);
+    }
+
+    $brut = file_get_contents('php://input');
+    if ($brut === false || strlen($brut) > DEPOT_CORPS_MAX) {
+        repondre(413, ['erreur' => 'Formulaire trop volumineux']);
+    }
+    $in = json_decode($brut ?: '', true);
+    if (!is_array($in)) {
+        repondre(400, ['erreur' => 'Formulaire mal formé']);
+    }
+
+    /* Champ leurre : invisible à l'écran, seuls les robots le
+       remplissent. On répond comme si tout allait bien. */
+    if (txt($in['site'] ?? '', 40) !== '') {
+        repondre(200, ['ok' => true, 'ref' => 'BD-2026-0000']);
+    }
+
+    $structure   = txt($in['structure'] ?? '', 160);
+    $representant= txt($in['representant'] ?? '', 120);
+    $tel         = txt($in['tel'] ?? '', 40);
+    $mail        = txt($in['mail'] ?? '', 120);
+    if ($mail !== '' && !filter_var($mail, FILTER_VALIDATE_EMAIL)) $mail = '';
+
+    $lignes = [];
+    $brutLignes = isset($in['lignes']) && is_array($in['lignes']) ? $in['lignes'] : [];
+    foreach ($brutLignes as $l) {
+        if (count($lignes) >= DEPOT_LIGNES) break;
+        if (!is_array($l)) continue;
+        $des = txt($l['designation'] ?? '', 200);
+        if ($des === '') continue;
+        $lignes[] = [
+            'designation' => $des,
+            'quantite'    => txt($l['quantite'] ?? '', 60),
+            'etat'        => txt($l['etat'] ?? '', 60),
+            'obs'         => txt($l['obs'] ?? '', 200),
+        ];
+    }
+
+    if ($structure === '' || $representant === '' || $tel === '' || !count($lignes)) {
+        repondre(400, ['erreur' => 'Dénomination, représentant, téléphone et au moins une ligne de matériel sont nécessaires']);
+    }
+    if (empty($in['conditions'])) {
+        repondre(400, ['erreur' => 'Les conditions du don doivent être acceptées']);
+    }
+
+    if (!quotaDepot(empreinteAppelant())) {
+        repondre(429, ['erreur' => 'Trop de dépôts en peu de temps. Réessayez dans une heure ou appelez la coordination.']);
+    }
+
+    $fp = @fopen(FICHIER . '.lock', 'c');
+    if ($fp === false || !flock($fp, LOCK_EX)) {
+        repondre(503, ['erreur' => 'Enregistrement momentanément indisponible']);
+    }
+
+    try {
+        $etat = lireEtat();
+        if (!collecteOuverte($etat)) {
+            repondre(403, ['erreur' => 'La collecte de matériel n\'est pas ouverte']);
+        }
+
+        $donnees = (array) ($etat['donnees'] ?? []);
+        $dons = isset($donnees['dons']) && is_array($donnees['dons']) ? $donnees['dons'] : [];
+        if (count($dons) >= DEPOT_PLAFOND) {
+            repondre(507, ['erreur' => 'Registre saturé — contactez la coordination']);
+        }
+
+        $id = 'df' . substr(md5(uniqid('', true)), 0, 10);
+
+        /* La colonne « matériel » du cockpit reste lisible d'un
+           coup d'œil : le détail ligne à ligne vit à côté, et
+           c'est lui qui remplit le bordereau. */
+        $resume = [];
+        foreach ($lignes as $l) {
+            $resume[] = $l['designation'] . ($l['quantite'] !== '' ? ' (' . $l['quantite'] . ')' : '');
+        }
+
+        $dons[] = [
+            'id'           => $id,
+            'date'         => date('Y-m-d'),
+            'heure'        => date('H:i'),
+            'structure'    => $structure,
+            'type'         => txt($in['type'] ?? '', 60),
+            'commune'      => txt($in['commune'] ?? '', 80),
+            'adresse'      => txt($in['adresse'] ?? '', 200),
+            'tel'          => $tel,
+            'mail'         => $mail,
+            'interlocuteur'=> $representant,
+            'par'          => '',
+            'reponse'      => 'Oui',
+            'materiel'     => implode(', ', $resume),
+            'quantite'     => txt($in['quantite'] ?? '', 80),
+            'dispo'        => txt($in['dispo'] ?? '', 200),
+            'lieu'         => '',
+            'retrait'      => 'À organiser',
+            'bordereau'    => 'Engagement en ligne',
+            'note'         => txt($in['note'] ?? '', 800),
+            'lignes'       => $lignes,
+            'source'       => 'formulaire',
+            'aVerifier'    => true,
+            'engagement'   => [
+                'le'         => date('c'),
+                'nom'        => $representant,
+                'qualite'    => txt($in['qualite'] ?? '', 120),
+                'conditions' => true,
+                'empreinte'  => empreinteAppelant(),
+            ],
+            'auteur'       => 'Formulaire en ligne',
+            'quand'        => date('c'),
+            'suivi'        => [],
+        ];
+
+        $donnees['dons'] = $dons;
+        $nouveau = [
+            'version' => (isset($etat['version']) ? (int) $etat['version'] : 0) + 1,
+            'maj'     => date('c'),
+            'par'     => $structure . ' (formulaire)',
+            'donnees' => $donnees,
+        ];
+
+        if (!ecrireEtat($nouveau)) {
+            repondre(500, ['erreur' => 'Enregistrement impossible']);
+        }
+        tracer(sprintf('v%d dépôt formulaire — %s (%d ligne%s)',
+            $nouveau['version'], $structure, count($lignes), count($lignes) > 1 ? 's' : ''));
+
+        /* L'horodatage renvoyé est celui écrit dans le registre :
+           l'exemplaire du donateur et celui de la CPTS portent
+           ainsi la même heure, quelle que soit la pendule de
+           l'appareil qui a rempli le formulaire. */
+        repondre(200, [
+            'ok'  => true,
+            'id'  => $id,
+            'ref' => 'BD-2026-' . strtoupper(substr($id, -4)),
+            'le'  => $dons[count($dons) - 1]['engagement']['le'],
+        ]);
+    } finally {
+        flock($fp, LOCK_UN);
+        fclose($fp);
+    }
 }
 
 /* --- Contrôle d'accès ----------------------------------- */

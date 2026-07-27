@@ -1,0 +1,40 @@
+# Dépôt automatique du cockpit sur l'hébergement OVH.
+#
+# Se déclenche à chaque modification poussée sur main. Plus aucune
+# manipulation FTP n'est nécessaire côté coordination.
+#
+# Un seul secret à renseigner dans GitHub : OVH_FTP_MOTDEPASSE.
+# Le serveur et l'identifiant ne sont pas des secrets, ils figurent
+# tels quels dans l'espace client OVH.
+
+name: Déploiement OVH
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:      # permet aussi de relancer à la main
+
+jobs:
+  deposer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer les fichiers
+        uses: actions/checkout@v4
+
+      - name: Déposer sur l'hébergement
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ftp.cluster129.hosting.ovh.net
+          username: cptspip
+          password: ${{ secrets.OVH_FTP_MOTDEPASSE }}
+          protocol: ftp
+          port: 21
+          server-dir: www/
+          # Le dossier « donnees » contient l'état saisi par le copil :
+          # il vit sur le serveur et ne doit jamais être écrasé.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/donnees/**
+            **/*.md
