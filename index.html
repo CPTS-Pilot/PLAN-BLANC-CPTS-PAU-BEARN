@@ -432,7 +432,7 @@ Recueillir les situations de patients évacués hébergés en Béarn.`, avec:`Tr
     {id:'m3', titre:"Collecte de matériel médical", detail:"Conditionnée à un besoin validé et à un point de livraison identifié.", pilote:'', suppleant:'', mandat:'En attente', statut:'En attente', prochaine:"Obtenir de l'ARS la liste des besoins et les lieux de livraison. Aucune collecte ouverte d'ici là.", echeance:'', fiche:{but:`Répondre à un besoin réel, pas à une envie d'aider.`, faire:`Obtenir de l'ARS une liste de besoins écrite et un lieu de livraison nommé.
 Tant qu'on ne l'a pas : aucune collecte, et le dire clairement aux adhérents.
 Une fois obtenue : un point de collecte unique, un contact sur place, un bordereau signé.`, avec:`ARS Nouvelle-Aquitaine, CPTS des zones touchées.`, pour:`Les structures de Gironde et des Landes qui ont formulé un besoin.`, limite:`On ne collecte rien de non sollicité. On n'achemine rien au Parc des Expositions de Bordeaux.`}},
-    {id:'m4', titre:"Contact des CPTS des zones touchées", detail:"Identifier leurs besoins réels, sans placer d'offre.", pilote:'', suppleant:'', mandat:"Non — initiative CPTS", statut:'En cours', prochaine:"Appeler Claire (Agora Lib) pour fiabiliser la liste, puis dérouler les appels.", echeance:'', fiche:{but:`Savoir comment vont les CPTS touchées et ce dont elles ont réellement besoin.`, faire:`Appeler Claire (Agora Lib) pour fiabiliser la liste des CPTS à contacter.
+    {id:'m4', titre:"Contact des CPTS des zones touchées", detail:"Identifier leurs besoins réels, sans placer d'offre.", pilote:'Eva Poulmarch', suppleant:'', mandat:"Non — initiative CPTS", statut:'En cours', prochaine:"Trois CPTS jointes le 27/07 : aucun besoin matériel exprimé à ce stade. Envoyer le mail de contact à Nord Bassin Océan, rappeler la ligne SB, attendre le rappel de Sud Bassin Val de l'Eyre. Reste à joindre Terre de Médoc et les CPTS landaises.", echeance:'', fiche:{but:`Savoir comment vont les CPTS touchées et ce dont elles ont réellement besoin.`, faire:`Appeler Claire (Agora Lib) pour fiabiliser la liste des CPTS à contacter.
 Dérouler les appels avec la même trame.
 Noter chaque appel, y compris quand la réponse est « rien ».`, avec:`Agora Lib, CPTS Nord Bassin Océan, Terre de Médoc, Sud Bassin Val de l'Eyre, Ouest Gironde, CPTS landaises.`, pour:`Les équipes de coordination sur place.`, limite:`On n'annonce pas de matériel disponible. Aucun engagement sans lieu de livraison nommé.`}},
     {id:'m5', titre:"Relais de diffusion des appels à renfort", detail:"Uniquement les appels officiels (URPS, ARS, ordres). La CPTS Pau Béarn n'est opératrice d'aucun dispositif.", pilote:'', suppleant:'', mandat:"Non — relais uniquement", statut:'En cours', prochaine:"Préparer une réponse d'attente pour les professionnels hors kinésithérapie.", echeance:'', fiche:{but:`Faire circuler les appels officiels sans que la CPTS Pau Béarn soit prise pour l'opérateur.`, faire:`Relayer les appels URPS, ARS et ordres en nommant qui porte le dispositif.
@@ -455,9 +455,16 @@ Retenir ce qui a un impact pour le territoire, avec le lien vers la source.`, av
 
   ],
   cpts: [
-    {id:'g1', nom:"CPTS Nord Bassin Océan", territoire:"Marcheprime, Lacanau, Le Porge, Lège-Cap-Ferret, Arès, Andernos", tel:"05 57 18 29 89", contact:'', url:'https://cptsnordbassinocean.fr', priorite:"Zone de feu", statut:"À appeler", note:"Plein cœur de zone. Travaille avec la CPTS Terre de Médoc sur Lacanau.", appels:[]},
-    {id:'g2', nom:"CPTS Sud Bassin Val de l'Eyre", territoire:"Arcachon, La Teste-de-Buch, Gujan-Mestras, Le Teich, Le Barp, Salles, Belin-Béliet, Lugos, Mios", tel:"06 03 00 40 06", contact:'', url:'', priorite:"Zone de feu", statut:"À appeler", note:"Second numéro relevé dans l'annuaire national des CPTS : 06 62 86 36 59. Adresse : 80 boulevard Deganne, 33120 Arcachon.", appels:[]},
-    {id:'g3', nom:"CPTS Ouest Gironde", territoire:"Mérignac, Pessac, Martignas-sur-Jalle, Saint-Jean-d'Illac", tel:"06 51 36 73 45", contact:'', url:'https://www.cpts-ouest-gironde.fr', priorite:"Zone de feu", statut:"À appeler", note:"Martignas-sur-Jalle et Saint-Jean-d'Illac font partie des communes évacuées par FR-Alert le 25/07.", appels:[]},
+    {id:'g1', nom:"CPTS Nord Bassin Océan", territoire:"Marcheprime, Lacanau, Le Porge, Lège-Cap-Ferret, Arès, Andernos", tel:"05 57 18 29 89", contact:"Mme Rivière, secrétaire Accès aux soins — 06 83 25 09 60", url:'https://cptsnordbassinocean.fr', priorite:"Zone de feu", statut:"Appelée", note:"Plein cœur de zone. Travaille avec la CPTS Terre de Médoc sur Lacanau. Contact à entretenir par mail : contact@cptsnordbassinocean.fr", appels:[
+      {id:'ap-g1-2', date:'2026-07-27', heure:'10:43', qui:"Mme Rivière, secrétaire Accès aux soins — 06 83 25 09 60", dit:"Font le point, évacuation en cours. Commande de masques pour les PDS. Pas de demandes particulières pour le moment.", suite:"Envoyer un mail pour garder le contact : contact@cptsnordbassinocean.fr", par:'Eva Poulmarch'},
+      {id:'ap-g1-1', date:'2026-07-27', heure:'10:31', qui:'', dit:"Message laissé sur répondeur.", suite:"À rappeler — SB", par:'Eva Poulmarch'}
+    ]},
+    {id:'g2', nom:"CPTS Sud Bassin Val de l'Eyre", territoire:"Arcachon, La Teste-de-Buch, Gujan-Mestras, Le Teich, Le Barp, Salles, Belin-Béliet, Lugos, Mios", tel:"06 03 00 40 06", contact:"Emma Young, alternante coordination", url:'', priorite:"Zone de feu", statut:"À rappeler", note:"Second numéro relevé dans l'annuaire national des CPTS : 06 62 86 36 59. Adresse : 80 boulevard Deganne, 33120 Arcachon.", appels:[
+      {id:'ap-g2-1', date:'2026-07-27', heure:'10:55', qui:"Emma Young, alternante coordination", dit:"En train de recenser le nombre de personnes sur les lieux d'accueil et les capacités d'accueil, avec un planning tenu par une IDE et un médecin. Ils se rendent sur les lieux ce matin pour connaître les besoins en matériel.", suite:"Ils doivent nous rappeler.", par:'Eva Poulmarch'}
+    ]},
+    {id:'g3', nom:"CPTS Ouest Gironde", territoire:"Mérignac, Pessac, Martignas-sur-Jalle, Saint-Jean-d'Illac", tel:"06 51 36 73 45", contact:"Dr Decroix, pilote SSE — 06 83 36 30 35", url:'https://www.cpts-ouest-gironde.fr', priorite:"Zone de feu", statut:"Appelée", note:"Martignas-sur-Jalle et Saint-Jean-d'Illac font partie des communes évacuées par FR-Alert le 25/07.", appels:[
+      {id:'ap-g3-1', date:'2026-07-27', heure:'10:37', qui:"Dr Decroix, pilote SSE — 06 83 36 30 35", dit:"Pas de demandes particulières des administrés malgré l'évacuation récente de la zone. Pas de demande en matériel médical : les masques FFP2 vont être reçus et distribués par les pharmaciens. Pas encore de demandes d'hébergement d'urgence. Gironde, Landes et Dordogne saturés, ils élargissent les transferts de patients et appuient donc le mouvement insufflé par l'ARS, qui est de libérer les lits le plus possible.", suite:"Coordonnées de la CPTS Pau Béarn transmises. Proposition faite de faire le lien avec les autres CPTS en nous positionnant comme renfort potentiel.", par:'Eva Poulmarch'}
+    ]},
     {id:'g4', nom:"CPTS Terre de Médoc", territoire:"Médoc, secteur de Lacanau", tel:'', contact:'', url:'', priorite:"Zone de feu", statut:"À appeler", note:"Numéro à obtenir — passer par Claire (Agora Lib) ou par la CPTS Nord Bassin Océan.", appels:[]},
     {id:'g5', nom:"CPTS des Landes — secteur Biscarrosse", territoire:"Biscarrosse, Parentis, Mimizan", tel:'', contact:'', url:'', priorite:"Zone de feu", statut:"À appeler", note:"Périmètre exact et coordonnées à faire confirmer par Claire (Agora Lib) avant appel.", appels:[]},
     {id:'g6', nom:"CPTS Sud Médoc", territoire:"Arsac et communes du Sud Médoc", tel:'', contact:'', url:'', priorite:"Proche", statut:"À appeler", note:'', appels:[]},
@@ -535,12 +542,21 @@ Retenir ce qui a un impact pour le territoire, avec le lien vers la source.`, av
 
 let etat = JSON.parse(JSON.stringify(etatInitial));
 let stockageActif = false;
+let dernierNom = '';
 
 /* =========================================================
    PERSISTANCE
    ========================================================= */
+/* Le cockpit ouvert depuis le site n'a pas le stockage de Claude :
+   on retombe sur celui du navigateur, même interface, données
+   conservées d'une session à l'autre sur l'appareil. */
+const stockageNavigateur = {
+  async get(cle){ const v = localStorage.getItem('cpts64_' + cle); return v === null ? null : {value:v}; },
+  async set(cle, val){ localStorage.setItem('cpts64_' + cle, val); }
+};
+if(typeof window.storage === 'undefined') window.storage = stockageNavigateur;
+
 async function charger(){
-  if(typeof window.storage === 'undefined'){ majBandeau(); rendre(); avertirHorsLigne(); return; }
   try{
     const r = await window.storage.get(CLE, true);
     if(r && r.value){
@@ -554,10 +570,10 @@ async function charger(){
   }
   try{
     const p = await window.storage.get('cpts_identite', false);
-    if(p && p.value) moi = p.value;
+    if(p && p.value) dernierNom = p.value;
   }catch(e){}
   majBandeau(); rendre();
-  if(moi === 'Anonyme') demanderIdentite();
+  demanderIdentite(true);
 }
 
 const SEEDS = ['missions','veille','diffusions','ars','sources','lignes','offre','cpts'];
@@ -581,14 +597,6 @@ async function sauver(){
   }catch(e){
     toast("Enregistrement impossible — pensez à exporter");
   }
-}
-
-function avertirHorsLigne(){
-  const n = document.createElement('div');
-  n.className = 'note';
-  n.style.margin = '0 26px 0';
-  n.innerHTML = "<strong>Mode hors ligne.</strong> Ce fichier est ouvert en dehors de Claude : les saisies ne seront pas partagées ni conservées à la fermeture. Utilisez « Exporter » pour sauvegarder, et « Importer » pour reprendre un état existant.";
-  document.querySelector('.zone').insertBefore(n, document.getElementById('vue'));
 }
 
 function editerEntete(){
@@ -635,7 +643,8 @@ function toast(m){
   t.textContent = m; t.classList.add('on');
   clearTimeout(t._id); t._id = setTimeout(()=>t.classList.remove('on'), 2600);
 }
-function fermer(){ document.getElementById('rideau').classList.remove('on'); }
+let verrouModale = false;
+function fermer(){ if(verrouModale) return; document.getElementById('rideau').classList.remove('on'); }
 document.getElementById('rideau').addEventListener('click', e => { if(e.target.id === 'rideau') fermer(); });
 document.addEventListener('keydown', e => { if(e.key === 'Escape') fermer(); });
 
@@ -661,39 +670,55 @@ async function validerContact(nom){
   await sauver(); fermer(); rendre(); toast("Contact enregistré");
 }
 
+/* Toute personne dont le nom figure déjà dans le cockpit : pilotes et
+   suppléants des missions, mais aussi auteurs d'un appel ou d'une saisie.
+   C'est la liste proposée en un clic à l'ouverture. */
 function nomsMissionnes(){
   const v = new Map();
-  etat.missions.forEach(m => {
-    [m.pilote, m.suppleant].forEach(n => { if((n||'').trim()) v.set(cleP(n), n.trim()); });
-  });
+  const ajouter = n => {
+    const t = (n||'').trim();
+    if(t && t !== 'Anonyme') v.set(cleP(t), t);
+  };
+  etat.missions.forEach(m => { ajouter(m.pilote); ajouter(m.suppleant); });
+  (etat.cpts||[]).forEach(c => (c.appels||[]).forEach(a => ajouter(a.par)));
+  ['veille','diffusions','ars'].forEach(k =>
+    (etat[k]||[]).forEach(o => { ajouter(o.auteur); ajouter(o.modifiePar); }));
   return [...v.values()].sort((a,b)=>a.localeCompare(b,'fr'));
 }
 
-function demanderIdentite(){
+/* Passage obligé à chaque ouverture : rien n'est saisi sous « Anonyme ».
+   En mode porte (ouverture du lien), la fenêtre ne peut pas être fermée
+   sans avoir donné un nom. */
+function demanderIdentite(porte){
   const m = document.getElementById('modale');
   const noms = nomsMissionnes();
+  verrouModale = !!porte;
   let h = `<h3>Qui êtes-vous&nbsp;?</h3>
-    <p style="color:var(--texte-2);margin:0 0 14px">Votre nom est associé à chaque saisie. Il n'est demandé qu'une fois sur cet appareil.</p>`;
+    <p style="color:var(--texte-2);margin:0 0 14px">Votre nom est associé à chacune de vos saisies. Il est demandé à chaque ouverture du cockpit, pour que tout ce qui est consigné reste traçable.</p>`;
   if(noms.length){
-    h += `<div class="choixnom">` + noms.map(n =>
-      `<button onclick="choisirNom('${esc(n).replace(/'/g,"\\'")}')">${esc(n)}</button>`).join('') + `</div>
+    h += `<p style="color:var(--texte-2);font-size:13px;margin:0 0 8px">Déjà missionné·e ou déjà intervenu·e — un clic suffit&nbsp;:</p>
+      <div class="choixnom">` + noms.map(n =>
+      `<button onclick="choisirNom('${esc(n).replace(/'/g,"\\'")}')"${cleP(n)===cleP(dernierNom)?' style="border-color:var(--marque);font-weight:600"':''}>${esc(n)}</button>`).join('') + `</div>
       <p style="color:var(--texte-2);font-size:13px;margin:0 0 8px">Vous n'êtes pas dans cette liste&nbsp;?</p>`;
   }
-  h += `<label><span class="k">Saisir un autre nom</span><input id="in-moi" value="${esc(moi === 'Anonyme' ? '' : moi)}" placeholder="Prénom et nom"></label>
-    <div class="actions"><button class="btn" onclick="validerIdentite()">Enregistrer</button></div>`;
+  h += `<label><span class="k">Prénom et nom</span><input id="in-moi" value="${esc(moi === 'Anonyme' ? dernierNom : moi)}" placeholder="Prénom et nom" onkeydown="if(event.key==='Enter')validerIdentite()"></label>
+    <div class="actions"><button class="btn" onclick="validerIdentite()">Entrer dans le cockpit</button>${porte?'':'<button class="btn sec" onclick="fermer()">Annuler</button>'}</div>`;
   m.innerHTML = h;
   document.getElementById('rideau').classList.add('on');
-  if(!noms.length) setTimeout(()=>document.getElementById('in-moi').focus(), 60);
+  setTimeout(()=>{ const i = document.getElementById('in-moi'); if(i && !noms.length) i.focus(); }, 60);
 }
 async function choisirNom(n){
   moi = n;
+  dernierNom = n;
   try{ await window.storage.set('cpts_identite', n, false); }catch(e){}
+  verrouModale = false;
   fermer(); majBandeau(); rendre();
+  toast("Session ouverte au nom de " + n);
 }
 async function validerIdentite(){
   const v = document.getElementById('in-moi').value.trim();
-  if(v){ moi = v; try{ await window.storage.set('cpts_identite', v, false); }catch(e){} }
-  fermer(); majBandeau(); rendre();
+  if(!v){ toast("Indiquez votre prénom et votre nom"); return; }
+  await choisirNom(v);
 }
 
 function csvVal(v){ return '"' + String(v ?? '').replace(/"/g,'""') + '"'; }
