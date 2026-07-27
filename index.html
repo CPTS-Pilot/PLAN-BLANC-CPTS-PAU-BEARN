@@ -259,6 +259,91 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .veille a{color:var(--encre-2);font-size:13.5px;display:inline-block;margin-top:7px;text-decoration:none;border-bottom:1px solid var(--trait)}
 .veille a:hover{border-color:var(--encre-2)}
 
+/* ---------- collecte de matériel ---------- */
+.jauge{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--trait);margin:0 0 8px}
+.jauge i{display:block;height:100%;transition:width .3s}
+.jauge i.oui{background:var(--stable)}
+.jauge i.non{background:var(--braise)}
+.jauge i.att{background:var(--ambre)}
+.jl{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--texte-2);margin-bottom:20px}
+.jl span{display:flex;align-items:center;gap:6px}
+.jl i{width:11px;height:11px;border-radius:3px;display:block;font-style:normal}
+.jl i.oui{background:var(--stable)}
+.jl i.non{background:var(--braise)}
+.jl i.att{background:var(--ambre)}
+
+.dons{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.don{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--trait);border-radius:9px}
+.don.oui{border-left-color:var(--stable)}
+.don.non{border-left-color:var(--braise)}
+.don.att{border-left-color:var(--ambre)}
+.don .tete{display:flex;gap:12px;align-items:center;padding:12px 14px;cursor:pointer;flex-wrap:wrap;width:100%;background:none;border:0;text-align:left;font-family:inherit;font-size:inherit;color:inherit;border-radius:8px}
+.don .tete:hover{background:var(--cobalt-clair)}
+.don .qd{font-family:var(--mono);font-size:11.5px;color:var(--texte-2);flex:0 0 78px;line-height:1.35}
+.don .ident{flex:1;min-width:170px}
+.don .ident .n{font-family:var(--display);font-weight:600;font-size:15px;color:var(--encre);line-height:1.25}
+.don .ident .s{font-size:12.5px;color:var(--texte-2);margin-top:2px}
+.don .par{font-size:12.5px;color:var(--texte-2);flex:0 0 auto;max-width:170px}
+.don .par b{font-weight:600;color:var(--texte)}
+.don .mat{font-size:12.5px;background:#DFF0E9;color:#1E5C46;border-radius:6px;padding:5px 9px;max-width:260px;line-height:1.35}
+.don .manque{font-size:12.5px;background:#FCF0DA;color:#8A5D12;border-radius:6px;padding:5px 9px}
+.don .chev{font-family:var(--mono);font-size:13px;color:var(--texte-2);flex:0 0 14px;text-align:center}
+.don .detail{border-top:1px dashed var(--trait);padding:15px 14px 16px}
+.don .detail .form{margin-bottom:12px}
+.don .suivi{border-top:1px dashed var(--trait);padding-top:10px;margin-bottom:12px}
+.don .suivi .e{border-left:2px solid var(--cobalt-clair);padding:2px 0 2px 10px;margin-bottom:8px}
+.don .suivi .e .q{font-family:var(--mono);font-size:10.5px;color:var(--texte-2)}
+.don .suivi .e .d{font-size:13px;line-height:1.4;margin-top:2px}
+.don .suivi .e button{background:none;border:0;color:var(--texte-2);opacity:.45;cursor:pointer;font-size:13px;padding:0 3px}
+.don .suivi .e button:hover{opacity:1;color:var(--braise)}
+.don .bas{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.don .bas .sup{margin-left:auto}
+
+.stocks{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));margin-bottom:20px}
+.stock{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--ambre);border-radius:10px;padding:16px 17px;display:flex;flex-direction:column;gap:9px}
+.stock.confirme{border-top-color:var(--stable)}
+.stock.ecarte{border-top-color:var(--trait);background:#FAFBFD}
+.stock .nom{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.2;color:var(--encre)}
+.stock .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:2px}
+.stock .bl{font-size:13.5px;line-height:1.45}
+.stock .horaires{white-space:pre-line;font-size:13.5px;line-height:1.45}
+.stock .obs{font-size:12.5px;background:#FCF3E4;color:#8A5D12;border-radius:6px;padding:8px 10px}
+.stock .liens{display:flex;flex-direction:column;gap:6px;margin-top:auto}
+.stock .liens a{display:inline-flex;align-items:center;min-height:44px;padding:9px 13px;border-radius:8px;text-decoration:none;font-size:14px}
+.stock .liens a.tel{background:var(--encre-2);color:#fff;font-weight:600;font-family:var(--display)}
+.stock .liens a.adr{background:var(--cobalt-clair);color:var(--encre-2);font-size:13px}
+.stock .oriente{font-family:var(--mono);font-size:11px;color:var(--stable)}
+
+/* ---------- bordereau de don ---------- */
+#modale.large{max-width:860px}
+.acte{color:#101820;font-size:13.5px;line-height:1.5}
+.acte .ent{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:2px solid var(--encre);padding-bottom:9px;margin-bottom:16px}
+.acte .ent .org{font-family:var(--display);font-weight:700;font-size:15px;color:var(--encre)}
+.acte .ent .sub{font-size:11px;color:var(--texte-2);margin-top:2px}
+.acte .ent .d{text-align:right}
+.acte .ent .ref{font-family:var(--mono);font-size:11.5px;color:var(--encre)}
+.acte .ttl{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;margin:0;color:var(--encre);text-transform:uppercase}
+.acte .ss{font-size:12.5px;color:var(--texte-2);margin:3px 0 14px}
+.acte .ctx{font-size:12.5px;background:var(--cobalt-clair);border-left:3px solid var(--encre-2);border-radius:0 6px 6px 0;padding:11px 13px;margin-bottom:16px;text-align:justify}
+.acte h2{font-family:var(--display);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--encre-2);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--trait);display:block}
+.acte h2::before{display:none}
+.acte .lg{display:flex;gap:10px;align-items:baseline;padding:3.5px 0}
+.acte .lg .e{flex:0 0 190px;font-size:12px;color:var(--texte-2)}
+.acte .lg .v{flex:1;border-bottom:1px dotted #98A6BA;min-height:19px;padding:0 3px}
+.acte .lg .v:focus{outline:none;background:#FFFBEF;border-bottom-color:var(--ambre)}
+.acte table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
+.acte th{background:var(--cobalt-clair);border:1px solid var(--trait);padding:6px 8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--texte-2);text-align:left}
+.acte td{border:1px solid var(--trait);padding:7px 8px;height:26px;vertical-align:top}
+.acte td:focus{outline:none;background:#FFFBEF}
+.acte ol{margin:0;padding-left:20px;font-size:12.5px}
+.acte ol li{margin-bottom:5px;text-align:justify}
+.acte .sig{display:flex;gap:14px;margin-top:10px}
+.acte .sig .b{flex:1;border:1px solid var(--trait);border-radius:7px;padding:10px 12px;min-height:118px}
+.acte .sig .b .q{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--texte-2);margin-bottom:6px}
+.acte .sig .b .l{font-size:11.5px;color:var(--texte-2);margin-top:7px}
+.acte .pied{font-size:11px;color:var(--texte-2);border-top:1px solid var(--trait);margin-top:16px;padding-top:8px;text-align:justify}
+@media(max-width:600px){.acte .lg{flex-direction:column;gap:2px}.acte .lg .e{flex:none}.acte .sig{flex-direction:column}}
+
 /* ---------- tableaux ---------- */
 .tw{overflow-x:auto;background:var(--carte);border:1px solid var(--trait);border-radius:9px}
 table{border-collapse:collapse;width:100%;font-size:13.5px}
@@ -532,7 +617,7 @@ Retenir ce qui a un impact pour le territoire, avec le lien vers la source.`, av
     {id:'a5', date:'2026-07-25', heure:'', sens:"Reçu de l'ARS", canal:'Communiqué', interlocuteur:"ARS Nouvelle-Aquitaine", objet:"Recommandations sanitaires aux populations et masques FFP2", demande:"Épisode de dégradation de la qualité de l'air au-delà du seuil d'alerte. Masques acheminés sur les plateformes régionales, prioritairement pour les patients cardio-respiratoires chroniques, les personnes vulnérables et les professionnels exposés.", reponse:'', attendu:"À relayer aux adhérents et à leurs patients vulnérables. Circuit de retrait des FFP2 dans le 64 à obtenir.", lien:'https://www.nouvelle-aquitaine.ars.sante.fr/communique-de-presse-2026-incendies-en-gironde-et-dans-les-landes-recommandations-sanitaires-aux', echeance:'', statut:'En cours', auteur:'', quand:''},
     {id:'a3', date:'2026-07-27', heure:'', sens:'À envoyer', canal:'Mail', interlocuteur:"ARS — Délégation départementale 64", objet:"Six questions de cadrage pour la CPTS", demande:"1. Interlocuteur nommé à la DD64 pour la CPTS pendant le plan blanc. 2. Circuit de mise à disposition des FFP2 pour les libéraux du 64 et leurs patients vulnérables. 3. Consigne régionale sur l'accueil ambulatoire des personnes évacuées hébergées dans le 64. 4. Impact attendu sur les transports sanitaires du 64 et arbitrage sur les transports programmés. 5. Souhaitez-vous que la CPTS constitue une liste de volontaires, sous quel statut et via quel canal ? 6. Existe-t-il une liste de besoins matériels validée, ou la consigne est-elle de ne pas collecter ?", reponse:'', attendu:"Les réponses 5 et 6 conditionnent l'ouverture ou non des missions renfort et collecte.", echeance:'', statut:'À faire', auteur:'', quand:''}
   ],
-  courante: [], terrain: [], appels: [], materiel: [], volontaires: [], contacts: [
+  courante: [], terrain: [], appels: [], materiel: [], dons: [], stockage: [], volontaires: [], contacts: [
     {id:'c1', structure:"ARS — Délégation départementale 64", nom:'', fonction:'', tel:'', mail:'', role:"Interlocuteur unique de la CPTS pendant le plan blanc", auteur:'', quand:''},
     {id:'c0', structure:"CPTS Pau Béarn", nom:'Anne Latisnère', fonction:'Vice-présidente, infirmière', tel:'', mail:'', role:"Relation ARS, pilotage de la collecte de matériel, diffusion aux groupes WhatsApp (environ 210 professionnels de santé)", auteur:'', quand:''},
     {id:'c2', structure:"Agora Lib", nom:'Claire', fonction:'', tel:'', mail:'', role:"Appui aux CPTS ayant déclenché leur SSE — point d'entrée vers les CPTS de Gironde et des Landes", auteur:'', quand:''},
@@ -546,34 +631,184 @@ let dernierNom = '';
 
 /* =========================================================
    PERSISTANCE
+
+   Trois situations, dans cet ordre de préférence :
+
+   1. Cockpit servi par l'hébergement — api.php répond. L'état
+      est partagé : tout le copil voit les mêmes données.
+   2. Cockpit ouvert dans Claude — window.storage existe.
+   3. Fichier ouvert ailleurs — stockage du navigateur, propre
+      à l'appareil.
+
+   Le stockage du navigateur est alimenté dans tous les cas :
+   il sert de filet si le serveur devient injoignable.
    ========================================================= */
-/* Le cockpit ouvert depuis le site n'a pas le stockage de Claude :
-   on retombe sur celui du navigateur, même interface, données
-   conservées d'une session à l'autre sur l'appareil. */
+const API = 'api.php';
+let modeServeur = false;
+let versionServeur = 0;
+let codeAcces = '';
+let empreinte = {};
+let sondage = null;
+
 const stockageNavigateur = {
   async get(cle){ const v = localStorage.getItem('cpts64_' + cle); return v === null ? null : {value:v}; },
   async set(cle, val){ localStorage.setItem('cpts64_' + cle, val); }
 };
 if(typeof window.storage === 'undefined') window.storage = stockageNavigateur;
 
-async function charger(){
-  try{
-    const r = await window.storage.get(CLE, true);
-    if(r && r.value){
-      const d = JSON.parse(r.value);
-      for(const k in etatInitial){ if(d[k] !== undefined) etat[k] = d[k]; }
-    }
-    fusionnerNouveautes();
-    stockageActif = true;
-  }catch(e){
-    stockageActif = true; // clé absente au premier lancement : normal
+/* --- Suivi de ce qui reste à envoyer -------------------- */
+const RUBRIQUES = Object.keys(etatInitial);
+let instantane = {};   // état des rubriques au dernier échange avec le serveur
+function copie(v){ return v === undefined ? undefined : JSON.parse(JSON.stringify(v)); }
+function empreinteDe(k){ try{ return JSON.stringify(etat[k]); }catch(e){ return ''; } }
+function rubriquesModifiees(){ return RUBRIQUES.filter(k => empreinteDe(k) !== empreinte[k]); }
+function marquerSynchronise(){
+  RUBRIQUES.forEach(k => { empreinte[k] = empreinteDe(k); instantane[k] = copie(etat[k]); });
+}
+
+/* Deux personnes qui travaillent sur la même rubrique — deux
+   membres appelant deux CPTS différentes, typiquement — ne
+   doivent pas s'écraser. On repart donc de la version du
+   serveur et on n'y réapplique que les fiches réellement
+   touchées de notre côté, repérées par leur identifiant. */
+function fusionner(base, mien, serveur){
+  const tableauIdentifie = a => Array.isArray(a) && a.every(x => x && typeof x === 'object' && x.id !== undefined);
+  if(!tableauIdentifie(base) || !tableauIdentifie(mien) || !tableauIdentifie(serveur)) return mien;
+
+  const avant = new Map(base.map(x => [x.id, x]));
+  const apres = new Map(mien.map(x => [x.id, x]));
+  const resultat = copie(serveur);
+
+  apres.forEach((fiche, id) => {
+    const initiale = avant.get(id);
+    if(initiale && JSON.stringify(initiale) === JSON.stringify(fiche)) return;  // intacte chez nous
+    const i = resultat.findIndex(x => x.id === id);
+    if(i >= 0) resultat[i] = fiche; else resultat.push(fiche);
+  });
+
+  const supprimees = [...avant.keys()].filter(id => !apres.has(id));
+  return resultat.filter(x => supprimees.indexOf(x.id) === -1);
+}
+
+async function appelApi(methode, corps){
+  const opts = { method: methode, headers: { 'X-Code-Acces': codeAcces } };
+  if(corps){
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(corps);
   }
+  const r = await fetch(API, opts);
+  let d = null;
+  try{ d = await r.json(); }catch(e){}
+  return { ok: r.ok, statut: r.status, corps: d };
+}
+
+function appliquerDistant(d){
+  versionServeur = d && d.version ? d.version : 0;
+  const src = (d && d.donnees) || {};
+  for(const k in etatInitial){ if(src[k] !== undefined) etat[k] = src[k]; }
+  fusionnerNouveautes();
+  marquerSynchronise();
+}
+
+/* Renvoie 'ok', 'code' (code d'accès à fournir) ou 'absent'
+   (pas d'hébergement en face : on reste en local). */
+async function joindreServeur(){
+  try{
+    const r = await appelApi('GET');
+    if(r.statut === 401) return 'code';
+    if(!r.ok || !r.corps) return 'absent';
+    appliquerDistant(r.corps);
+    return 'ok';
+  }catch(e){ return 'absent'; }
+}
+
+async function charger(){
   try{
     const p = await window.storage.get('cpts_identite', false);
     if(p && p.value) dernierNom = p.value;
   }catch(e){}
+  try{
+    const c = localStorage.getItem('cpts64_code');
+    if(c) codeAcces = c;
+  }catch(e){}
+
+  const etatLocal = await lireLocal();
+  let issue = await joindreServeur();
+
+  if(issue === 'code'){
+    majBandeau(); rendre();
+    return demanderCode();
+  }
+  if(issue === 'ok'){
+    modeServeur = true;
+    stockageActif = true;
+    /* Serveur vierge : on l'amorce avec l'état de référence,
+       appels aux CPTS compris. */
+    if(versionServeur === 0){ empreinte = {}; await sauver(); }
+    lancerSondage();
+  }else{
+    if(etatLocal) for(const k in etatInitial){ if(etatLocal[k] !== undefined) etat[k] = etatLocal[k]; }
+    fusionnerNouveautes();
+    marquerSynchronise();
+    stockageActif = true;
+  }
   majBandeau(); rendre();
   demanderIdentite(true);
+}
+
+async function lireLocal(){
+  try{
+    const r = await window.storage.get(CLE, true);
+    if(r && r.value) return JSON.parse(r.value);
+  }catch(e){}
+  return null;
+}
+
+function demanderCode(){
+  verrouModale = true;
+  document.getElementById('modale').innerHTML = `<h3>Code d'accès</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px">Ce cockpit contient des coordonnées de professionnels de santé et le détail des échanges de crise. Le code vous a été communiqué par la coordination.</p>
+    <label><span class="k">Code</span><input id="in-code" type="password" placeholder="Code d'accès" onkeydown="if(event.key==='Enter')validerCode()"></label>
+    <div class="actions"><button class="btn" onclick="validerCode()">Entrer</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+  setTimeout(()=>{ const i = document.getElementById('in-code'); if(i) i.focus(); }, 60);
+}
+async function validerCode(){
+  const v = document.getElementById('in-code').value.trim();
+  if(!v){ toast("Saisissez le code d'accès"); return; }
+  codeAcces = v;
+  const issue = await joindreServeur();
+  if(issue === 'code'){ toast("Code d'accès incorrect"); return; }
+  try{ localStorage.setItem('cpts64_code', v); }catch(e){}
+  verrouModale = false;
+  if(issue === 'ok'){
+    modeServeur = true;
+    if(versionServeur === 0){ empreinte = {}; await sauver(); }
+    lancerSondage();
+  }
+  stockageActif = true;
+  fermer(); majBandeau(); rendre();
+  demanderIdentite(true);
+}
+
+/* Relève régulière des modifications des autres postes. On
+   s'abstient pendant une saisie ou tant qu'il reste quelque
+   chose à envoyer, pour ne rien écraser sous les doigts. */
+function lancerSondage(){
+  if(sondage) clearInterval(sondage);
+  sondage = setInterval(async () => {
+    if(!modeServeur) return;
+    if(document.getElementById('rideau').classList.contains('on')) return;
+    if(rubriquesModifiees().length) return;
+    try{
+      const r = await appelApi('GET');
+      if(!r.ok || !r.corps) return;
+      if((r.corps.version || 0) === versionServeur) return;
+      appliquerDistant(r.corps);
+      majBandeau(); rendre();
+      toast("Cockpit actualisé — saisie de " + (r.corps.par || 'un membre du copil'));
+    }catch(e){}
+  }, 15000);
 }
 
 const SEEDS = ['missions','veille','diffusions','ars','sources','lignes','offre','cpts'];
@@ -591,12 +826,58 @@ function fusionnerNouveautes(){
 async function sauver(){
   etat.entete.maj = new Date().toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   majBandeau();
-  if(!stockageActif){ toast("Modification enregistrée dans cette session seulement"); return; }
+
+  /* Copie locale systématique : même en mode partagé, elle sert
+     de filet si l'hébergement devient injoignable. */
+  try{ await window.storage.set(CLE, JSON.stringify(etat), true); }catch(e){}
+
+  if(modeServeur) return sauverServeur();
+  if(!stockageActif) toast("Modification enregistrée dans cette session seulement");
+}
+
+async function sauverServeur(reste){
+  if(reste === undefined) reste = 4;
+  const modifiees = rubriquesModifiees();
+  if(!modifiees.length) return;
+
+  const corps = { version: versionServeur, par: moi, donnees: {} };
+  modifiees.forEach(k => corps.donnees[k] = etat[k]);
+
+  let r;
   try{
-    await window.storage.set(CLE, JSON.stringify(etat), true);
+    r = await appelApi('POST', corps);
   }catch(e){
-    toast("Enregistrement impossible — pensez à exporter");
+    toast("Serveur injoignable — saisie conservée sur cet appareil");
+    return;
   }
+
+  if(r.ok && r.corps){
+    versionServeur = r.corps.version;
+    marquerSynchronise();
+    return;
+  }
+
+  /* Quelqu'un a enregistré entre-temps. On repart de sa version et
+     on y réapplique nos seules modifications, fiche par fiche. */
+  if(r.statut === 409 && r.corps && reste > 0){
+    versionServeur = r.corps.version || 0;
+    const src = r.corps.donnees || {};
+    RUBRIQUES.forEach(k => {
+      if(src[k] === undefined) return;
+      etat[k] = modifiees.indexOf(k) === -1 ? src[k] : fusionner(instantane[k], etat[k], src[k]);
+      instantane[k] = copie(src[k]);
+    });
+    RUBRIQUES.forEach(k => { empreinte[k] = modifiees.indexOf(k) === -1 ? empreinteDe(k) : null; });
+    majBandeau(); rendre();
+    return sauverServeur(reste - 1);
+  }
+
+  if(r.statut === 401){
+    modeServeur = false;
+    toast("Session expirée — code d'accès à ressaisir");
+    return demanderCode();
+  }
+  toast("Enregistrement sur le serveur impossible — copie locale conservée");
 }
 
 function editerEntete(){
@@ -616,7 +897,11 @@ function majBandeau(){
   document.getElementById('niveau').textContent = etat.entete.niveau;
   document.getElementById('phrase').textContent = etat.entete.phrase;
   document.getElementById('maj').textContent = etat.entete.maj ? 'Dernière saisie ' + etat.entete.maj : '';
-  document.getElementById('identite').textContent = 'Connecté·e comme ' + moi;
+  const etatSync = modeServeur
+    ? 'Cockpit partagé — le copil voit vos saisies'
+    : 'Enregistré sur cet appareil seulement';
+  document.getElementById('identite').innerHTML =
+    'Connecté·e comme ' + esc(moi) + '<br><span style="opacity:.7">' + etatSync + '</span>';
 }
 
 /* =========================================================
@@ -785,7 +1070,7 @@ const ONGLETS = [
   {id:'courante',  nom:'Main courante',      groupe:'Traçabilité', cpt:'courante'},
   {id:'terrain',   nom:'Remontées terrain',  groupe:'Traçabilité', cpt:'terrain'},
   {id:'appels',    nom:'Appels CPTS',        groupe:'Actions', cpt:'cpts'},
-  {id:'materiel',  nom:'Matériel',           groupe:'Actions', cpt:'materiel'},
+  {id:'materiel',  nom:'Collecte de matériel', groupe:'Actions', cpt:'dons'},
   {id:'volontaires',nom:'Volontaires',       groupe:'Actions', cpt:'volontaires'},
   {id:'offre',     nom:'Offre de soins du territoire', groupe:'Ressources', cpt:'offre'},
   {id:'lignes',    nom:'Qui appeler',         groupe:'Ressources', cpt:'lignes'},
@@ -914,6 +1199,45 @@ const CHAMPS = {
     ],
     cols:['date','demandeur','nature','quantite','lieu','contactPlace','valide','statut','auteur']
   },
+  dons: {
+    titre:"Appels aux donateurs de matériel",
+    chapo:"Qui a été contacté sur le territoire pour donner du matériel, à quelle heure, par qui, et ce qui a été répondu. Un « non » se consigne comme un « oui » : c'est ce qui évite de rappeler deux fois la même structure.",
+    f:[
+      {c:'heure', l:"Heure de l'appel", t:'time', d:maintenant},
+      {c:'structure', l:"Structure ou personne contactée", t:'text', req:true, large:true},
+      {c:'type', l:"Type", t:'select', o:['Pharmacie','Cabinet médical','Cabinet infirmier','Kinésithérapie','Laboratoire','Clinique ou hôpital','EHPAD ou ESMS','Fournisseur, distributeur','Association','Collectivité','Professionnel libéral','Particulier','Autre']},
+      {c:'commune', l:"Commune", t:'text'},
+      {c:'tel', l:"Téléphone", t:'text'},
+      {c:'interlocuteur', l:"Interlocuteur joint", t:'text'},
+      {c:'par', l:"Appel mené par", t:'text', d:() => moi === 'Anonyme' ? '' : moi},
+      {c:'reponse', l:"Réponse à la collecte", t:'select', o:['En attente','Oui','Non','À rappeler']},
+      {c:'materiel', l:"Nature du matériel donné", t:'textarea', large:true},
+      {c:'quantite', l:"Quantité", t:'text'},
+      {c:'dispo', l:"Disponible à partir de / conditions", t:'text'},
+      {c:'lieu', l:"Lieu de stockage prévu", t:'select', o:() => ['', ...(etat.stockage||[]).map(s => s.nom)]},
+      {c:'retrait', l:"Enlèvement", t:'select', o:['À organiser','Planifié','Collecté','Remis au receveur','Sans objet']},
+      {c:'bordereau', l:"Bordereau de don signé ?", t:'select', o:['Non','Édité','Signé']},
+      {c:'note', l:"Observation", t:'textarea', large:true}
+    ],
+    cols:['date','heure','structure','type','commune','interlocuteur','par','reponse','materiel','quantite','lieu','retrait','bordereau','auteur']
+  },
+  stockage: {
+    titre:"Lieux de stockage du territoire",
+    chapo:"Où le matériel collecté peut être réuni avant son acheminement. Un lieu n'est utilisable que si l'on connaît son adresse, ses horaires d'accès et la personne qui en détient les clés.",
+    f:[
+      {c:'nom', l:"Nom du lieu", t:'text', req:true, large:true},
+      {c:'adresse', l:"Adresse complète", t:'text', large:true},
+      {c:'tel', l:"Téléphone du lieu", t:'text'},
+      {c:'referent', l:"Personne référente (nom, fonction)", t:'text'},
+      {c:'referentTel', l:"Téléphone du référent", t:'text'},
+      {c:'horaires', l:"Horaires d'accès", t:'textarea', large:true},
+      {c:'capacite', l:"Capacité, volume acceptable", t:'text'},
+      {c:'acces', l:"Accès (plain-pied, quai, véhicule…)", t:'text'},
+      {c:'statut', l:"Statut", t:'select', o:['Proposé','Confirmé','Écarté']},
+      {c:'note', l:"Observation", t:'textarea', large:true}
+    ],
+    cols:['nom','adresse','tel','referent','referentTel','horaires','capacite','acces','statut']
+  },
   volontaires: {
     titre:"Professionnels volontaires",
     chapo:"La CPTS Pau Béarn recense, l'ARS affecte. Vérifier assurance, statut et continuité des soins avant toute transmission de nom.",
@@ -958,7 +1282,13 @@ function formulaire(k, o){
     const id = `f-${k}-${f.c}`;
     h += `<label class="${f.large?'large':''}"><span class="k">${f.l}${f.req?' *':''}</span>`;
     if(f.t === 'textarea') h += `<textarea id="${id}">${esc(val)}</textarea>`;
-    else if(f.t === 'select') h += `<select id="${id}">${f.o.map(x=>`<option ${x===val?'selected':''}>${x}</option>`).join('')}</select>`;
+    else if(f.t === 'select'){
+      /* Certaines listes se construisent à la volée : les lieux de
+         stockage déjà saisis, par exemple. */
+      const opts = typeof f.o === 'function' ? f.o() : f.o;
+      const liste = opts.indexOf(val) === -1 && val ? [val, ...opts] : opts;
+      h += `<select id="${id}">${liste.map(x=>`<option ${x===val?'selected':''}>${esc(x)}</option>`).join('')}</select>`;
+    }
     else h += `<input type="${f.t}" id="${id}" value="${esc(val)}">`;
     h += `</label>`;
   });
