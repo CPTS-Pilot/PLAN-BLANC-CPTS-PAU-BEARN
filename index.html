@@ -643,6 +643,49 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .stock .taches button.on{background:var(--cobalt-clair);border-color:var(--encre-2);color:var(--encre);font-weight:600}
 .stock label.bl select{margin-top:2px}
 
+/* ---------- points de collecte ----------
+   Un point de collecte tenu, c'est un fait daté et chiffré : la
+   carte le donne d'un coup d'œil, le récapitulatif imprimable le
+   détaille ligne à ligne. */
+.pcs{display:flex;flex-direction:column;gap:14px;margin-bottom:20px}
+.pc{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--ambre);border-radius:10px;padding:17px 18px}
+.pc.clos{border-top-color:var(--stable)}
+.pc .tete{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.pc .tete .id{flex:1;min-width:230px}
+.pc .tete .n{font-family:var(--display);font-weight:700;font-size:18px;line-height:1.2;color:var(--encre)}
+.pc .tete .s{font-size:13px;color:var(--texte-2);margin-top:3px}
+.pc .chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:9px;margin-bottom:13px}
+.pc .chiffres div{background:var(--surface);border:1px solid var(--trait);border-radius:8px;padding:11px 12px}
+.pc .chiffres .v{font-family:var(--display);font-size:23px;font-weight:700;line-height:1;color:var(--encre)}
+.pc .chiffres .l{font-size:11.5px;color:var(--texte-2);margin-top:4px;line-height:1.3}
+.pc .chiffres .manque .v{color:var(--ambre)}
+.pc .synth{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:13px}
+.pc .synth span{font-size:12.5px;background:#DFF0E9;color:#1E5C46;border-radius:14px;padding:5px 11px}
+.pc .synth span.conso{background:#FCF0DA;color:#8A5D12}
+.pc .synth span b{font-weight:700}
+.pc .bl{font-size:13.5px;line-height:1.45;margin-bottom:9px}
+.pc .bl .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:2px}
+.pc .obs{font-size:12.5px;background:#FCF3E4;color:#8A5D12;border-radius:6px;padding:9px 11px;white-space:pre-line;line-height:1.45;margin-bottom:11px}
+.pc .pieces{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.pc .piece{display:flex;gap:9px;align-items:center;flex-wrap:wrap;font-size:13px;
+  background:var(--cobalt-clair);border-radius:7px;padding:8px 11px}
+.pc .piece a{color:var(--encre-2);font-weight:600;text-decoration:none;border-bottom:1px solid var(--trait)}
+.pc .piece a:hover{border-color:var(--encre-2)}
+.pc .piece .q{font-family:var(--mono);font-size:10.5px;color:var(--texte-2)}
+.pc .piece button{background:none;border:0;cursor:pointer;color:var(--texte-2);opacity:.45;font-size:14px;margin-left:auto}
+.pc .piece button:hover{opacity:1;color:var(--braise)}
+.pc .sanspiece{font-size:12.5px;color:var(--texte-2);border:1px dashed var(--trait);border-radius:7px;padding:9px 11px;margin-bottom:12px}
+.pc .actions{margin-top:0}
+/* Saisie des lignes de dépôt : un tableau qui se remplit au
+   fil des dépôts, une ligne par matériel et par déposant. */
+.lgd{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+.lgd th{padding:7px 6px;font-size:9.5px}
+.lgd td{padding:4px 4px;border-bottom:1px solid var(--trait)}
+.lgd input,.lgd select{padding:6px 8px;font-size:13px}
+.lgd td.sup{width:34px;text-align:center}
+.lgd td.sup button{background:none;border:0;cursor:pointer;color:var(--texte-2);opacity:.4;font-size:14px}
+.lgd td.sup button:hover{opacity:1;color:var(--braise)}
+
 /* ---------- bordereau de don ---------- */
 #modale.large{max-width:860px}
 .acte{color:#101820;font-size:13.5px;line-height:1.5}
@@ -1016,6 +1059,8 @@ Tenir le registre à jour et ne transmettre que des noms vérifiés.`, avec:`ARS
      attendu. */
   renfort: { ouverte:false, message:'', cadre:"Le type exact de renfort n'est pas encore arrêté : la CPTS Pau Béarn recense d'abord qui serait disponible, pour quoi et jusqu'où, afin de pouvoir répondre vite quand une demande précise arrivera. S'inscrire n'engage à rien et ne vaut pas affectation." },
   courante: [
+    {id:'mc15', date:'2026-07-27', heure:'19:00', source:'Coordination', evenement:"Acheminement du matériel collecté à la Foire Expo vers le Parc des Expositions de Bordeaux — centre d'accueil et de regroupement — le soir même, dans la foulée de la clôture du point de collecte. Les 94 unités partent conditionnées ; le nombre de colis n'est pas encore arrêté au moment de la clôture.", suite:"Compléter le nombre de colis au conditionnement et la quantité de gel hydroalcoolique (unité de conditionnement non renseignée). Faire viser le récapitulatif à la réception par le site de Bordeaux, et en conserver un exemplaire au dossier de traçabilité. Nommer le conducteur et l'heure de départ effective dans le point de collecte.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
+    {id:'mc14', date:'2026-07-27', heure:'19:00', source:'Coordination', evenement:"Clôture du point de collecte de la Foire Expo — Parc des Expositions de Pau, ouvert de 17h00 à 19h00, sous la responsabilité d'Anne Latisnère, vice-présidente, avec Camille Fillaudeau. 94 unités collectées auprès de 8 déposants distincts, en 26 lignes de dépôt : 62 dispositifs médicaux — 19 thermomètres, 18 lecteurs d'hémoglucotest, 12 tensiomètres, 10 saturomètres, 3 stéthoscopes — et 32 consommables — 31 masques FFP2 et du gel hydroalcoolique. Déposants : Joeva, Valérie, Florie, Anne et Jibran, Sandra, la pharmacie de la Paix (Camille), la pharmacie Berlioz (Sophie Maréchal) et Distri Med. Aucun matériel refusé ni signalé non conforme, aucun don annoncé non reçu. Les masques FFP2 et le gel hydroalcoolique sortent de la liste des cinq dispositifs annoncés : acceptés, ils sont comptabilisés à part en consommables.", suite:"Détail ligne à ligne et récapitulatif imprimable dans « Collecte de matériel », feuillet « Points de collecte ». Rapprocher les déposants du registre des donateurs : la plupart des dépôts ne correspondent pas à une déclaration reçue par le formulaire, et plusieurs déclarations reçues n'ont pas encore été déposées.", statut:'Clos', auteur:'Anne Latisnère', quand:''},
     {id:'mc13', date:'2026-07-27', heure:'', source:'Coordination', evenement:"Décision de lancer un appel au renfort en propre : un formulaire de recensement sera diffusé à l'ensemble des professionnels de santé du territoire répondant aux critères, pour identifier ceux qui pourraient se déplacer sur les zones touchées ou dans les hubs de santé, auprès de la population blessée ou évacuée. Le type exact de renfort attendu n'est pas encore connu : le recensement est ouvert large, et vaudra base de réponse quand une demande précise arrivera. Deuxième appel lancé en propre par la CPTS après celui de la logistique de collecte — celui-ci porte sur le soin.", suite:"Ouvrir le formulaire depuis l'onglet « Appel au renfort » et diffuser le lien profession par profession. Rappeler chaque inscrit : assurance hors cabinet, continuité de sa patientèle, accord pour que ses coordonnées circulent. La question 5 posée à la DD ARS 64 — souhaitez-vous que la CPTS constitue une liste de volontaires, sous quel statut et via quel canal — reste sans réponse : le recensement se mène sans attendre, la transmission des noms non.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc12', date:'2026-07-27', heure:'', source:'Coordination', evenement:"Patricia Benastre vient en renfort d'Anne Latisnère sur la collecte de matériel médical : elle prend le phoning auprès des pharmaciens du territoire.", suite:"Renfort inscrit sur la mission dans « Missions & organigramme ». Consigner les retours des pharmaciens dans le registre des donateurs.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc11', date:'2026-07-27', heure:'15:30', source:'Coordination', evenement:"Envoi d'un appel à volontaires pour participer à la logistique de la collecte de dons à la Foire Expo de Pau : réception, tri et conditionnement du matériel donné. Diffusé par WhatsApp aux professionnels de santé du territoire, sous la signature d'Eva Poulmarch. Premier appel à volontaires lancé en propre par la CPTS Pau Béarn, et sur de la logistique, non du soin : distinct des appels à renfort officiels qu'elle se contente de relayer.", suite:"Recenser les réponses dans « Volontaires ». Préciser les créneaux, qui encadre sur place et la couverture assurantielle avant d'affecter qui que ce soit. Aucun canal de retour n'a été indiqué dans le message : à corriger dans le suivant.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
@@ -1039,6 +1084,52 @@ Tenir le registre à jour et ne transmettre que des noms vérifiés.`, avec:`ARS
   dons: [],
   stockage: [
     {id:'st1', nom:"Agence ADHAP — Pau", adresse:"29 rue Carrerot, 64000 Pau", tel:'', referent:"Anne Tarascon, agence ADHAP", referentTel:"06 83 24 07 60", horaires:"Ouvert 8h30-19h. Le mercredi, 9h-18h : Anne Tarascon est absente, l'accueil de l'agence prend le relais.", capacite:'', acces:'', statut:'Proposé', note:"Lieu proposé le 27/07. Capacité de stockage, accès (plain-pied, véhicule) et ligne fixe de l'agence restent à renseigner avant d'annoncer ce point de dépôt aux professionnels.", auteur:'Eva Poulmarch', quand:''}
+  ],
+  /* Points de collecte tenus sur le territoire. Un point, c'est
+     un lieu, un créneau, un responsable sur place et ce qui a
+     effectivement été déposé — à distinguer du registre des
+     donateurs, qui recense ce qui a été annoncé. La synthèse par
+     type de matériel n'est pas saisie : elle se recalcule à
+     partir des lignes, pour qu'un chiffre annoncé ne puisse
+     jamais diverger du détail qui le compose. */
+  points: [
+    {id:'pc1', lieu:"Foire Expo — Parc des Expositions de Pau", adresse:"7 Bd Champetier de Ribes, 64000 Pau",
+     date:'2026-07-27', debut:'17:00', fin:'19:00', cloture:'19:00', statut:'Clôturé',
+     responsable:"Anne Latisnère — vice-présidente, CPTS Pau Béarn",
+     equipe:"Camille Fillaudeau — manutention, chargement et assistance",
+     destination:"Parc des Expositions de Bordeaux — centre d'accueil et de regroupement",
+     acheminement:"Acheminé le soir même, 27/07, après conditionnement.",
+     colis:'',
+     observations:"Aucun matériel refusé ni signalé non conforme sur ce point de collecte.\nAucun don annoncé non reçu à signaler.\nLes horaires individuels de dépôt n'ont pas été relevés : l'ensemble des dépôts est intervenu sur le créneau d'ouverture 17h00 – 19h00.\nDeux références sortent de la liste des cinq dispositifs prévus au menu (masques FFP2 et gel hydroalcoolique) ; elles ont été acceptées et sont comptabilisées séparément en consommables.\nQuantité de gel hydroalcoolique à préciser lors du conditionnement (unité de conditionnement non renseignée).\nNombre de colis / cartons à compléter à la fermeture, après conditionnement pour l'acheminement.",
+     lignes: [
+       {deposant:'Joeva', qualite:'Professionnel de santé', materiel:'Saturomètre', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Joeva', qualite:'Professionnel de santé', materiel:'Tensiomètre', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Joeva', qualite:'Professionnel de santé', materiel:'Hémoglucotest', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Joeva', qualite:'Professionnel de santé', materiel:'Stéthoscope', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Valérie', qualite:'Professionnelle de santé', materiel:'Stéthoscope', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Valérie', qualite:'Professionnelle de santé', materiel:'Tensiomètre', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Valérie', qualite:'Professionnelle de santé', materiel:'Hémoglucotest', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Valérie', qualite:'Professionnelle de santé', materiel:'Masques FFP2', categorie:'Consommable', quantite:31},
+       {deposant:'Florie', qualite:'Professionnelle de santé', materiel:'Thermomètre', categorie:'Dispositif médical', quantite:8},
+       {deposant:'Florie', qualite:'Professionnelle de santé', materiel:'Hémoglucotest', categorie:'Dispositif médical', quantite:7},
+       {deposant:'Anne et Jibran', qualite:'Professionnels de santé', materiel:'Saturomètre', categorie:'Dispositif médical', quantite:3},
+       {deposant:'Anne et Jibran', qualite:'Professionnels de santé', materiel:'Tensiomètre', categorie:'Dispositif médical', quantite:2},
+       {deposant:'Anne et Jibran', qualite:'Professionnels de santé', materiel:'Thermomètre', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Sandra', qualite:'Professionnelle de santé', materiel:'Thermomètre', categorie:'Dispositif médical', quantite:2},
+       {deposant:'Camille — Pharmacie de la Paix', qualite:'Officine', materiel:'Hémoglucotest', categorie:'Dispositif médical', quantite:5},
+       {deposant:'Camille — Pharmacie de la Paix', qualite:'Officine', materiel:'Saturomètre', categorie:'Dispositif médical', quantite:5},
+       {deposant:'Camille — Pharmacie de la Paix', qualite:'Officine', materiel:'Tensiomètre', categorie:'Dispositif médical', quantite:5},
+       {deposant:'Camille — Pharmacie de la Paix', qualite:'Officine', materiel:'Thermomètre', categorie:'Dispositif médical', quantite:5},
+       {deposant:'Sophie Maréchal — Pharmacie Berlioz', qualite:'Officine', materiel:'Hémoglucotest', categorie:'Dispositif médical', quantite:4},
+       {deposant:'Sophie Maréchal — Pharmacie Berlioz', qualite:'Officine', materiel:'Thermomètre', categorie:'Dispositif médical', quantite:2},
+       {deposant:'Sophie Maréchal — Pharmacie Berlioz', qualite:'Officine', materiel:'Tensiomètre', categorie:'Dispositif médical', quantite:2},
+       {deposant:'Sophie Maréchal — Pharmacie Berlioz', qualite:'Officine', materiel:'Saturomètre', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Distri Med', qualite:'Fournisseur / prestataire', materiel:'Thermomètre', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Distri Med', qualite:'Fournisseur / prestataire', materiel:'Tensiomètre', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Distri Med', qualite:'Fournisseur / prestataire', materiel:'Stéthoscope', categorie:'Dispositif médical', quantite:1},
+       {deposant:'Distri Med', qualite:'Fournisseur / prestataire', materiel:'Gel hydroalcoolique', categorie:'Consommable', quantite:1}
+     ],
+     pieces: [], auteur:'Anne Latisnère', quand:''}
   ],
   renforts: [], volontaires: [], contacts: [
     {id:'c1', structure:"ARS — Délégation départementale 64", nom:'', fonction:'', tel:'', mail:'', role:"Interlocuteur unique de la CPTS pendant le plan blanc", auteur:'', quand:''},
@@ -1279,7 +1370,7 @@ function lancerSondage(){
    et qu'elle n'a pas été retirée à la main : ce qui a été saisi
    par le copil n'est jamais touché. C'est par là qu'arrivent les
    éléments consignés hors ligne, au téléphone notamment. */
-const SEEDS = ['missions','veille','ars','sources','rubriques','lignes','offre','cpts','courante','materiel','stockage','contacts','referents'];
+const SEEDS = ['missions','veille','ars','sources','rubriques','lignes','offre','cpts','courante','materiel','stockage','points','contacts','referents'];
 function fusionnerNouveautes(){
   etat.retires = etat.retires || [];
   SEEDS.forEach(k => {
@@ -3985,18 +4076,21 @@ function vueCollecte(){
   const pc = n => d.length ? (n * 100 / d.length) : 0;
 
   let h = `<h1>Collecte de matériel</h1>
-  <p class="chapo">Qui a été contacté sur le territoire pour donner du matériel, à quelle heure, par qui, et ce qui a été obtenu. Chaque don accepté se formalise par un bordereau signé et se range dans un lieu de stockage identifié.</p>
+  <p class="chapo">Qui a été contacté sur le territoire pour donner du matériel, à quelle heure, par qui, et ce qui a été obtenu. Chaque don accepté se formalise par un bordereau signé et se range dans un lieu de stockage identifié. Ce qui a été <strong>réellement déposé</strong> se compte, lui, point de collecte par point de collecte.</p>
   <div class="filtres">
+    <button class="${feuilletMat==='points'?'on':''}" onclick="allerFeuilletMat('points')">Points de collecte <span style="opacity:.6">${(etat.points||[]).length}</span></button>
     <button class="${feuilletMat==='dons'?'on':''}" onclick="allerFeuilletMat('dons')">Appels aux donateurs <span style="opacity:.6">${d.length}</span></button>
     <button class="${feuilletMat==='stockage'?'on':''}" onclick="allerFeuilletMat('stockage')">Lieux de stockage <span style="opacity:.6">${s.length}</span></button>
     <button class="${feuilletMat==='renforts'?'on':''}" onclick="allerFeuilletMat('renforts')">Volontaires de la collecte <span style="opacity:.6">${(etat.renforts||[]).length}</span></button>
     <button class="${feuilletMat==='besoins'?'on':''}" onclick="allerFeuilletMat('besoins')">Besoins exprimés <span style="opacity:.6">${(etat.materiel||[]).length}</span></button>
   </div>`;
 
+  if(feuilletMat === 'points')   return h + feuilletPoints();
   if(feuilletMat === 'stockage') return h + feuilletStockage();
   if(feuilletMat === 'renforts') return h + feuilletRenforts();
   if(feuilletMat === 'besoins')  return h + feuilletBesoins();
 
+  h += carteDernierPoint();
   h += carteFormulaire();
 
   const parFormulaire = d.filter(x => x.source === 'formulaire').length;
@@ -4405,6 +4499,503 @@ function feuilletBesoins(){
       <button class="btn" onclick="ouvrirAjout('materiel')">Ajouter un besoin</button></div>
     ${barreOrdre('materiel')}
     ${tableau('materiel')}`;
+}
+
+/* =========================================================
+   POINTS DE COLLECTE
+
+   Une permanence tenue quelque part, un soir, par quelqu'un de
+   nommé, et ce qui en est ressorti. C'est la pièce qui atteste
+   de ce que la CPTS a réellement réuni — à distinguer du
+   registre des donateurs, qui recense ce qui a été annoncé.
+
+   Rien de ce qui est chiffré ici n'est saisi deux fois : les
+   totaux, la synthèse par type de matériel et le nombre de
+   déposants se recalculent depuis les lignes de dépôt. Le
+   récapitulatif imprimable en sort tel quel, et le document
+   signé sur place se joint au point comme pièce.
+   ========================================================= */
+
+const CAT_MAT = ['Dispositif médical', 'Consommable', 'Autre'];
+const MAT_SUGGERES = ['Thermomètre','Hémoglucotest','Tensiomètre','Saturomètre','Stéthoscope',
+                      'Masques FFP2','Gel hydroalcoolique'];
+/* La désignation courante suffit à l'écran ; le document, lui,
+   nomme le dispositif en toutes lettres. */
+const MAT_PRECISION = {'Hémoglucotest':'lecteur de glycémie', 'Saturomètre':'oxymètre de pouls'};
+/* Deux dispositifs de mesure ont été demandés sous ces deux noms
+   par le site de Bordeaux : on range par défaut ce qui entre. */
+const CAT_PAR_DEFAUT = {'Masques FFP2':'Consommable', 'Gel hydroalcoolique':'Consommable'};
+
+const lignesPoint = p => Array.isArray(p.lignes) ? p.lignes : [];
+const qte = l => { const n = parseFloat(String(l.quantite).replace(',','.')); return isFinite(n) ? n : 0; };
+const nomMat = m => m + (MAT_PRECISION[m] ? ' (' + MAT_PRECISION[m] + ')' : '');
+
+/* Une seule lecture des lignes, tout le monde s'en sert : les
+   cartes, le document, la main courante et les exports. */
+function synthesePoint(p){
+  const lig = lignesPoint(p);
+  const mats = new Map();
+  const deps = new Map();
+  lig.forEach(l => {
+    const m = (l.materiel || '').trim(); if(!m) return;
+    const cat = l.categorie || CAT_PAR_DEFAUT[m] || 'Dispositif médical';
+    if(!mats.has(m)) mats.set(m, {materiel:m, categorie:cat, quantite:0, deposants:new Set()});
+    const e = mats.get(m);
+    e.quantite += qte(l);
+    if(l.deposant) e.deposants.add(l.deposant.trim());
+    const d = (l.deposant || '').trim();
+    if(d && !deps.has(d)) deps.set(d, {deposant:d, qualite:l.qualite || '', lignes:[]});
+    if(d) deps.get(d).lignes.push(l);
+  });
+  const parMat = [...mats.values()]
+    .map(e => ({...e, deposants: e.deposants.size}))
+    .sort((a,b) => (CAT_MAT.indexOf(a.categorie) - CAT_MAT.indexOf(b.categorie)) || (b.quantite - a.quantite));
+  const parCat = CAT_MAT.map(c => ({
+    categorie: c,
+    quantite: parMat.filter(m => m.categorie === c).reduce((s,m) => s + m.quantite, 0),
+    types: parMat.filter(m => m.categorie === c).length
+  })).filter(c => c.types);
+  return {
+    lignes: lig.length,
+    deposants: [...deps.values()],
+    unites: parMat.reduce((s,m) => s + m.quantite, 0),
+    parMat, parCat
+  };
+}
+
+const pointsClotures = () => (etat.points||[]).filter(p => p.statut === 'Clôturé');
+function pointsTries(){
+  return [...(etat.points||[])].sort((a,b) =>
+    ((b.date||'') + ' ' + (b.debut||'')).localeCompare((a.date||'') + ' ' + (a.debut||'')));
+}
+
+/* --- Pièces jointes -------------------------------------
+   Le récapitulatif signé sur place, la photo d'un bordereau : le
+   fichier part sur l'hébergement par une porte à part, et le
+   point n'en garde que le nom. Il ne transite jamais par l'état
+   partagé, que chaque poste relit en entier toutes les quinze
+   secondes. */
+const PIECE_MAX_MO = 4;
+function lienPiece(idp){ return API + '?piece=' + encodeURIComponent(idp) + '&code=' + encodeURIComponent(codeAcces); }
+const poids = o => o < 1024 ? o + ' o' : o < 1048576 ? Math.round(o/1024) + ' Ko' : (o/1048576).toFixed(1).replace('.',',') + ' Mo';
+
+function choisirPiece(id){
+  if(!modeServeur){ toast("Le serveur ne répond pas : une pièce ne peut être jointe que depuis le cockpit partagé"); return; }
+  const i = document.getElementById('pj-' + id);
+  if(i) i.click();
+}
+async function joindrePiece(id, input){
+  const f = input.files && input.files[0];
+  input.value = '';
+  if(!f) return;
+  if(f.size > PIECE_MAX_MO * 1000000){ toast("Fichier trop lourd — " + PIECE_MAX_MO + " Mo au maximum"); return; }
+  const p = (etat.points||[]).find(x => x.id === id); if(!p) return;
+  toast("Envoi de « " + f.name + " »…");
+  const lu = await new Promise(res => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result || ''));
+    r.onerror = () => res('');
+    r.readAsDataURL(f);
+  });
+  if(!lu){ toast("Fichier illisible"); return; }
+  let r;
+  try{
+    r = await fetch(API + '?piece', {
+      method: 'POST',
+      headers: {'X-Code-Acces': codeAcces, 'Content-Type': 'application/json'},
+      body: JSON.stringify({nom: f.name, donnees: lu, par: moi})
+    });
+  }catch(e){ toast("Serveur injoignable — la pièce n'a pas été envoyée"); return; }
+  let d = null;
+  try{ d = await r.json(); }catch(e){}
+  if(!r.ok || !d || !d.id){ toast((d && d.erreur) || "Envoi impossible"); return; }
+  p.pieces = Array.isArray(p.pieces) ? p.pieces : [];
+  p.pieces.push({id:d.id, nom:d.nom, taille:d.taille, le:d.le, par:moi});
+  p.modifiePar = moi;
+  await sauver(); rendre();
+  toast("« " + d.nom + " » joint au point de collecte");
+}
+async function retirerPiece(id, idp){
+  const p = (etat.points||[]).find(x => x.id === id); if(!p) return;
+  const pc = (p.pieces||[]).find(x => x.id === idp);
+  if(!confirm("Retirer « " + ((pc && pc.nom) || 'cette pièce') + " » ? Le fichier est supprimé de l'hébergement.")) return;
+  try{
+    await fetch(API + '?piece=' + encodeURIComponent(idp), {
+      method: 'POST',
+      headers: {'X-Code-Acces': codeAcces, 'Content-Type': 'application/json'},
+      body: JSON.stringify({supprimer: true})
+    });
+  }catch(e){}
+  p.pieces = (p.pieces||[]).filter(x => x.id !== idp);
+  p.modifiePar = moi;
+  await sauver(); rendre(); toast("Pièce retirée");
+}
+
+/* --- Le feuillet ---------------------------------------- */
+function feuilletPoints(){
+  const pts = pointsTries();
+  const clos = pointsClotures();
+  const total = clos.reduce((s,p) => s + synthesePoint(p).unites, 0);
+  const deposants = new Set();
+  clos.forEach(p => synthesePoint(p).deposants.forEach(d => deposants.add(d.deposant.toLowerCase())));
+
+  let h = `<div class="compteurs" style="margin-bottom:16px">
+    <div class="compteur"><div class="n">${pts.length}</div><div class="l">point${pts.length>1?'s':''} de collecte tenu${pts.length>1?'s':''}</div></div>
+    <div class="compteur"><div class="n" style="color:var(--stable)">${total}</div><div class="l">unités collectées, tous points confondus</div></div>
+    <div class="compteur"><div class="n">${deposants.size}</div><div class="l">déposants distincts</div></div>
+    <div class="compteur"><div class="n">${clos.length}</div><div class="l">point${clos.length>1?'s':''} clôturé${clos.length>1?'s':''}</div></div>
+  </div>
+  <div class="note">Un point de collecte se clôture par un <strong>récapitulatif</strong> : ce qui a été déposé, par qui, en quelles quantités, et à quelle heure la permanence a fermé. Les totaux ne se saisissent pas — ils se recalculent à partir des lignes de dépôt, pour qu'un chiffre annoncé ne puisse jamais diverger du détail qui le compose. Le <strong>document signé sur place</strong> se joint au point : il est conservé sur l'hébergement, à côté du cockpit, et suit la copie transmise au site destinataire.</div>
+  <div class="barre-h">
+    <span class="cpt-h">${pts.length} point${pts.length>1?'s':''} · ${total} unité${total>1?'s':''}</span>
+    <button class="btn sec" onclick="exporterPoints()">Excel</button>
+    <button class="btn sec" onclick="imprimer()">PDF</button>
+    <button class="btn" onclick="ouvrirPoint()">Ouvrir un point de collecte</button>
+  </div>`;
+
+  if(!pts.length) return h + `<div class="carte"><p class="vide">Aucun point de collecte enregistré. Ouvrez-en un dès que le lieu et le créneau sont arrêtés : les dépôts s'y consignent au fil de l'eau, et la clôture produit le récapitulatif.</p></div>`;
+
+  h += `<div class="pcs">`;
+  pts.forEach(p => {
+    const s = synthesePoint(p);
+    const clot = p.statut === 'Clôturé';
+    h += `<div class="pc ${clot?'clos':''}">
+      <div class="tete">
+        <div class="id">
+          <div class="n">${esc(p.lieu || 'Point de collecte')}</div>
+          <div class="s">${[frdateL(p.date),
+             (p.debut || p.fin) ? (esc(p.debut||'—') + ' – ' + esc(p.fin||'—')) : '',
+             p.adresse ? esc(p.adresse) : ''].filter(Boolean).join(' · ')}</div>
+        </div>
+        <span class="etiq ${clot?'e-fini':'e-cours'}">${esc(p.statut || 'Ouvert')}</span>
+      </div>
+      <div class="chiffres">
+        <div><div class="v">${s.lignes}</div><div class="l">lignes de dépôt</div></div>
+        <div><div class="v">${s.deposants.length}</div><div class="l">déposants distincts</div></div>
+        <div><div class="v">${s.unites}</div><div class="l">unités collectées</div></div>
+        <div class="${p.colis?'':'manque'}"><div class="v">${esc(p.colis || '—')}</div><div class="l">colis / cartons</div></div>
+        <div><div class="v">${esc(p.cloture || '—')}</div><div class="l">heure de clôture</div></div>
+      </div>
+      ${s.parMat.length ? `<div class="synth">${s.parMat.map(m =>
+        `<span class="${m.categorie==='Dispositif médical'?'':'conso'}"><b>${m.quantite}</b> ${esc(m.materiel)}<span style="opacity:.6"> · ${m.deposants} dépos.</span></span>`).join('')}</div>` : ''}
+      ${p.responsable ? `<div class="bl"><span class="k">Responsable sur place</span>${esc(p.responsable)}</div>` : `<div class="obs">Responsable sur place à nommer.</div>`}
+      ${p.equipe ? `<div class="bl"><span class="k">Avec</span>${esc(p.equipe)}</div>` : ''}
+      ${p.destination ? `<div class="bl"><span class="k">Destination</span>${esc(p.destination)}${p.acheminement ? ' — ' + esc(p.acheminement) : ''}</div>` : `<div class="obs">Destination du matériel à nommer : aucun enlèvement sans lieu de livraison.</div>`}
+      ${p.observations ? `<div class="obs">${esc(p.observations)}</div>` : ''}
+      ${(p.pieces||[]).length
+        ? `<div class="pieces">${p.pieces.map(x => `<div class="piece">
+             <a href="${esc(lienPiece(x.id))}" target="_blank" rel="noopener">${esc(x.nom)}</a>
+             <span class="q">${esc(poids(x.taille||0))}${x.par ? ' · déposé par ' + esc(x.par) : ''}</span>
+             <button onclick="retirerPiece('${p.id}','${x.id}')" title="Retirer la pièce">✕</button>
+           </div>`).join('')}</div>`
+        : `<div class="sanspiece">Aucune pièce jointe. Le récapitulatif signé sur place, ou sa photo, se joint ici : c'est lui qui fait foi auprès du site destinataire.</div>`}
+      <input type="file" id="pj-${p.id}" style="display:none"
+        accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.csv,.xlsx,.docx" onchange="joindrePiece('${p.id}', this)">
+      <div class="actions">
+        <button class="btn" onclick="recapPoint('${p.id}')">Récapitulatif</button>
+        <button class="btn sec" onclick="choisirPiece('${p.id}')">Joindre une pièce</button>
+        <button class="btn sec" onclick="ouvrirPoint('${p.id}')">Modifier ${clot ? '' : 'et consigner les dépôts'}</button>
+        ${clot ? '' : `<button class="btn sec" onclick="cloturerPoint('${p.id}')">Clôturer</button>`}
+        <button class="btn sec" onclick="supprimerPoint('${p.id}')" style="margin-left:auto">Retirer</button>
+      </div>
+    </div>`;
+  });
+  return h + `</div>`;
+}
+
+/* Rappel du dernier point clôturé en tête du registre des
+   donateurs : c'est le résultat de la journée, il ne se cherche
+   pas dans un feuillet. */
+function carteDernierPoint(){
+  const p = pointsTries().filter(x => x.statut === 'Clôturé')[0];
+  if(!p) return '';
+  const s = synthesePoint(p);
+  return `<div class="carte" style="border-left:4px solid var(--stable)">
+    <div class="ligne-f" style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px">
+      <div style="flex:1;min-width:240px">
+        <h2 style="margin-bottom:2px">${esc(p.lieu)} — clôturé${p.cloture ? ' à ' + esc(p.cloture) : ''}</h2>
+        <p style="font-size:13px;color:var(--texte-2);margin:0"><strong>${s.unites} unités</strong> déposées par <strong>${s.deposants.length} déposants</strong> en ${s.lignes} lignes, le ${frdateL(p.date)}${p.destination ? ' — destination : ' + esc(p.destination) : ''}.</p>
+      </div>
+      <span class="etiq e-fini">Point clôturé</span>
+    </div>
+    <div class="actions" style="margin-top:0">
+      <button class="btn sec" onclick="allerFeuilletMat('points')">Voir le point de collecte</button>
+      <button class="btn sec" onclick="recapPoint('${p.id}')">Récapitulatif</button>
+    </div>
+  </div>`;
+}
+
+/* --- Saisie ---------------------------------------------
+   Les lignes de dépôt se tiennent à part le temps de la saisie :
+   elles ne rejoignent le point qu'à l'enregistrement. */
+let lignesSaisie = [];
+
+function ligneDepotHTML(l, i){
+  return `<tr>
+    <td><input value="${esc(l.deposant||'')}" placeholder="Nom ou structure" oninput="majLigneDepot(${i},'deposant',this.value)"></td>
+    <td><input value="${esc(l.qualite||'')}" placeholder="Officine, professionnel…" oninput="majLigneDepot(${i},'qualite',this.value)"></td>
+    <td><input list="mat-suggeres" value="${esc(l.materiel||'')}" placeholder="Désignation" oninput="majLigneDepot(${i},'materiel',this.value)"></td>
+    <td><select onchange="majLigneDepot(${i},'categorie',this.value)">${CAT_MAT.map(c =>
+      `<option ${c===(l.categorie||'Dispositif médical')?'selected':''}>${esc(c)}</option>`).join('')}</select></td>
+    <td style="width:88px"><input type="number" min="0" step="1" value="${esc(l.quantite ?? '')}" oninput="majLigneDepot(${i},'quantite',this.value)"></td>
+    <td class="sup"><button onclick="retirerLigneDepot(${i})" title="Retirer la ligne">✕</button></td>
+  </tr>`;
+}
+function majLigneDepot(i, champ, v){
+  if(!lignesSaisie[i]) return;
+  lignesSaisie[i][champ] = champ === 'quantite' ? (v === '' ? '' : Number(v)) : v;
+  /* La catégorie suit la désignation tant qu'on ne l'a pas
+     forcée à la main : les consommables se rangent seuls. */
+  if(champ === 'materiel' && CAT_PAR_DEFAUT[v.trim()]){
+    lignesSaisie[i].categorie = CAT_PAR_DEFAUT[v.trim()];
+    const s = document.querySelectorAll('#lignes-depot tbody tr')[i];
+    if(s){ const sel = s.querySelector('select'); if(sel) sel.value = lignesSaisie[i].categorie; }
+  }
+  majTotalDepot();
+}
+function majTotalDepot(){
+  const t = document.getElementById('total-depot');
+  if(!t) return;
+  const s = synthesePoint({lignes: lignesSaisie.filter(l => (l.materiel||'').trim())});
+  t.textContent = s.lignes + ' ligne' + (s.lignes>1?'s':'') + ' · ' + s.deposants.length
+    + ' déposant' + (s.deposants.length>1?'s':'') + ' · ' + s.unites + ' unité' + (s.unites>1?'s':'');
+}
+function redessinerLignesDepot(){
+  const c = document.querySelector('#lignes-depot tbody');
+  if(c) c.innerHTML = lignesSaisie.map(ligneDepotHTML).join('');
+  majTotalDepot();
+}
+function ajouterLigneDepot(){
+  const d = lignesSaisie.length ? lignesSaisie[lignesSaisie.length-1] : {};
+  lignesSaisie.push({deposant:d.deposant||'', qualite:d.qualite||'', materiel:'', categorie:'Dispositif médical', quantite:1});
+  redessinerLignesDepot();
+  const tr = document.querySelectorAll('#lignes-depot tbody tr');
+  const dernier = tr[tr.length-1];
+  if(dernier){ const i = dernier.querySelectorAll('input')[2]; if(i) i.focus(); }
+}
+function retirerLigneDepot(i){ lignesSaisie.splice(i,1); redessinerLignesDepot(); }
+
+function ouvrirPoint(id){
+  const p = id ? (etat.points||[]).find(x => x.id === id) : null;
+  lignesSaisie = p ? JSON.parse(JSON.stringify(lignesPoint(p))) : [];
+  if(!lignesSaisie.length) lignesSaisie.push({deposant:'', qualite:'', materiel:'', categorie:'Dispositif médical', quantite:1});
+  const g = (c, d) => esc(p ? (p[c] ?? '') : (d ?? ''));
+  const m = document.getElementById('modale');
+  m.classList.add('large');
+  m.innerHTML = `<h3>${p ? 'Point de collecte' : 'Ouvrir un point de collecte'}</h3>
+  <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">Le lieu, le créneau et la personne responsable sur place. Les dépôts se consignent ligne par ligne, une ligne par matériel et par déposant : les totaux s'en déduisent.</p>
+  <datalist id="mat-suggeres">${MAT_SUGGERES.map(x => `<option value="${esc(x)}">`).join('')}</datalist>
+  <div class="form">
+    <label class="large"><span class="k">Lieu *</span><input id="pt-lieu" value="${g('lieu')}" placeholder="Ex. Foire Expo — Parc des Expositions de Pau"></label>
+    <label class="large"><span class="k">Adresse</span><input id="pt-adresse" value="${g('adresse')}" placeholder="Numéro, rue, commune"></label>
+    <label><span class="k">Date *</span><input id="pt-date" type="date" value="${g('date', aujourdhui())}"></label>
+    <label><span class="k">Statut</span><select id="pt-statut">${['Ouvert','Clôturé','Annulé'].map(x =>
+      `<option ${x===(p?p.statut:'Ouvert')?'selected':''}>${esc(x)}</option>`).join('')}</select></label>
+    <label><span class="k">Ouverture</span><input id="pt-debut" type="time" value="${g('debut')}"></label>
+    <label><span class="k">Fermeture annoncée</span><input id="pt-fin" type="time" value="${g('fin')}"></label>
+    <label><span class="k">Heure de clôture effective</span><input id="pt-cloture" type="time" value="${g('cloture')}"></label>
+    <label><span class="k">Colis / cartons</span><input id="pt-colis" value="${g('colis')}" placeholder="À compléter au conditionnement"></label>
+    <label class="large"><span class="k">Responsable sur place</span><input id="pt-responsable" value="${g('responsable')}" placeholder="Nom et qualité"></label>
+    <label class="large"><span class="k">Avec</span><input id="pt-equipe" value="${g('equipe')}" placeholder="Les autres personnes présentes et ce qu'elles y font"></label>
+    <label class="large"><span class="k">Destination du matériel</span><input id="pt-destination" value="${g('destination', RECEVEUR.nom)}"></label>
+    <label class="large"><span class="k">Acheminement</span><input id="pt-acheminement" value="${g('acheminement')}" placeholder="Ex. Acheminé le soir même, 27/07, après conditionnement."></label>
+    <label class="large"><span class="k">Observations</span><textarea id="pt-observations" placeholder="Matériel refusé, dons annoncés non reçus, références hors liste, ce qui reste à préciser…">${g('observations')}</textarea></label>
+  </div>
+  <div style="margin-top:18px">
+    <div class="barre-h" style="margin-bottom:6px">
+      <span class="cpt-h" id="total-depot">—</span>
+      <button class="btn sec" onclick="ajouterLigneDepot()">Ajouter une ligne</button>
+    </div>
+    <div class="tw"><table class="lgd" id="lignes-depot">
+      <thead><tr><th>Déposant</th><th>Qualité</th><th>Matériel</th><th>Catégorie</th><th>Quantité</th><th></th></tr></thead>
+      <tbody>${lignesSaisie.map(ligneDepotHTML).join('')}</tbody>
+    </table></div>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="validerPoint(${p ? "'" + p.id + "'" : ''})">Enregistrer</button>
+    <button class="btn sec" onclick="fermer()">Annuler</button>
+  </div>`;
+  document.getElementById('rideau').classList.add('on');
+  majTotalDepot();
+}
+
+async function validerPoint(id){
+  const g = c => (document.getElementById('pt-' + c) || {}).value || '';
+  const lieu = g('lieu').trim();
+  if(!lieu){ toast("Le lieu est obligatoire"); return; }
+  const lignes = lignesSaisie
+    .filter(l => (l.materiel||'').trim())
+    .map(l => ({deposant:(l.deposant||'').trim(), qualite:(l.qualite||'').trim(),
+                materiel:(l.materiel||'').trim(), categorie:l.categorie || 'Dispositif médical',
+                quantite: l.quantite === '' ? 0 : Number(l.quantite)}));
+  const champs = {
+    lieu, adresse:g('adresse').trim(), date:g('date'), debut:g('debut'), fin:g('fin'),
+    cloture:g('cloture'), statut:g('statut'), colis:g('colis').trim(),
+    responsable:g('responsable').trim(), equipe:g('equipe').trim(),
+    destination:g('destination').trim(), acheminement:g('acheminement').trim(),
+    observations:g('observations').trim(), lignes
+  };
+  etat.points = etat.points || [];
+  const o = id ? etat.points.find(x => x.id === id) : null;
+  if(o){ Object.assign(o, champs); o.modifiePar = moi; }
+  else etat.points.push(Object.assign({id:uid(), pieces:[], auteur:moi, quand:new Date().toISOString()}, champs));
+  await sauver(); fermer(); rendre();
+  toast(o ? "Point de collecte mis à jour" : "Point de collecte ouvert");
+}
+
+async function cloturerPoint(id){
+  const p = (etat.points||[]).find(x => x.id === id); if(!p) return;
+  const s = synthesePoint(p);
+  if(!confirm("Clôturer « " + p.lieu + " » ?\n\n"
+    + s.lignes + " lignes de dépôt, " + s.deposants.length + " déposants, " + s.unites + " unités.\n\n"
+    + "La clôture se consigne en main courante — vérifiez que tous les dépôts sont saisis.")) return;
+  p.statut = 'Clôturé';
+  if(!p.cloture) p.cloture = p.fin || maintenant();
+  p.modifiePar = moi;
+  /* Une clôture est un fait de la journée : elle se consigne en
+     main courante en même temps qu'ici, avec ses chiffres. */
+  etat.courante = etat.courante || [];
+  etat.courante.push({
+    id: uid(), date: p.date || aujourdhui(), heure: p.cloture, source: 'Coordination',
+    evenement: "Clôture du point de collecte " + p.lieu
+      + (p.debut || p.fin ? ", ouvert de " + (p.debut||'—') + " à " + (p.fin||'—') : '')
+      + (p.responsable ? ", sous la responsabilité de " + p.responsable : '') + ". "
+      + s.unites + " unités collectées auprès de " + s.deposants.length + " déposants distincts, en "
+      + s.lignes + " lignes de dépôt"
+      + (s.parMat.length ? " : " + s.parMat.map(m => m.quantite + ' ' + m.materiel.toLowerCase()).join(', ') : '') + ".",
+    suite: "Détail ligne à ligne et récapitulatif imprimable dans « Collecte de matériel », feuillet « Points de collecte »."
+      + (p.destination ? " Destination : " + p.destination + "." : " Destination du matériel à nommer.")
+      + (p.colis ? '' : " Nombre de colis à compléter au conditionnement."),
+    statut: 'Clos', auteur: moi, quand: new Date().toISOString()
+  });
+  await sauver(); rendre();
+  toast("Point clôturé et consigné en main courante");
+}
+
+async function supprimerPoint(id){
+  const p = (etat.points||[]).find(x => x.id === id); if(!p) return;
+  if(!confirm("Retirer « " + p.lieu + " » et ses " + lignesPoint(p).length + " lignes de dépôt ?")) return;
+  noterRetrait(id);
+  etat.points = (etat.points||[]).filter(x => x.id !== id);
+  await sauver(); rendre(); toast("Point de collecte retiré");
+}
+
+function exporterPoints(){
+  const rows = [['Point','Date','Créneau','Statut','N°','Déposant','Qualité','Matériel','Catégorie','Quantité'].map(csvVal)];
+  pointsTries().forEach(p => {
+    const creneau = (p.debut||'') + (p.fin ? ' – ' + p.fin : '');
+    lignesPoint(p).forEach((l, i) => rows.push([p.lieu, p.date, creneau, p.statut,
+      i+1, l.deposant, l.qualite, l.materiel, l.categorie, l.quantite].map(csvVal)));
+  });
+  telechargerCSV('Points de collecte', rows);
+}
+
+/* --- Le récapitulatif ------------------------------------
+   Même document que celui rempli sur place : synthèse par type
+   de matériel, détail par déposant, clôture. Il se recalcule à
+   chaque ouverture — il ne peut donc pas être en retard sur les
+   lignes saisies. */
+function recapPoint(id){
+  const p = (etat.points||[]).find(x => x.id === id); if(!p) return;
+  const s = synthesePoint(p);
+  const ligne = (l, v, ph) => `<div class="lg"><span class="e">${l}</span><span class="v" contenteditable="true" data-ph="${esc(ph||'')}">${esc(v||'')}</span></div>`;
+  const ref = 'RC-2026-' + String(p.id).slice(-4).toUpperCase();
+
+  let n = 0;
+  const detail = s.deposants.map(d => {
+    const total = d.lignes.reduce((t,l) => t + qte(l), 0);
+    return d.lignes.map((l, i) => `<tr>
+      <td style="text-align:center;color:var(--texte-2)">${++n}</td>
+      ${i === 0 ? `<td rowspan="${d.lignes.length}"><b>${esc(d.deposant)}</b>${d.qualite ? `<div style="font-size:11px;color:var(--texte-2)">${esc(d.qualite)} · ${total} unité${total>1?'s':''}</div>` : ''}</td>` : ''}
+      <td>${esc(l.materiel)}</td>
+      <td style="text-align:right;font-weight:600">${qte(l)}</td>
+    </tr>`).join('');
+  }).join('');
+
+  const synthese = s.parCat.map(c =>
+    s.parMat.filter(m => m.categorie === c.categorie).map(m => `<tr>
+      <td>${esc(nomMat(m.materiel))}</td>
+      <td style="color:var(--texte-2)">${esc(m.categorie)}</td>
+      <td style="text-align:right;font-weight:600">${m.quantite}</td>
+      <td style="text-align:right">${m.deposants}</td>
+    </tr>`).join('') + (s.parCat.length > 1 ? `<tr>
+      <td colspan="2"><b>Sous-total ${esc(c.categorie.toLowerCase())}${c.types>1?'s':''}</b></td>
+      <td style="text-align:right;font-weight:700">${c.quantite}</td><td></td></tr>` : '')).join('');
+
+  const m = document.getElementById('modale');
+  m.classList.add('large');
+  m.innerHTML = `<div class="acte">
+    <div class="ent">
+      <div class="g">
+        <div class="org">CPTS Pau Béarn</div>
+        <div class="sub">Plan blanc régional · ORSAN AMAVI — collecte solidaire au profit de la Gironde</div>
+      </div>
+      <div class="d">
+        <div class="ref">Réf. ${esc(ref)}</div>
+        <div class="sub">${esc(p.lieu)}<br>${frdateL(p.date)}${p.debut||p.fin ? ' · ' + esc(p.debut||'—') + ' – ' + esc(p.fin||'—') : ''}</div>
+      </div>
+    </div>
+
+    <h1 class="ttl">Récapitulatif des dépôts de matériel médical</h1>
+    <div class="ss">Document de traçabilité établi à la clôture du point de collecte</div>
+
+    <h2>1 · Point de collecte</h2>
+    ${ligne("Lieu", p.lieu)}
+    ${ligne("Adresse", p.adresse)}
+    ${ligne("Créneau d'ouverture", (p.debut||'—') + ' – ' + (p.fin||'—'))}
+    ${ligne("Responsable sur place", p.responsable, "Nom et qualité")}
+    ${ligne("Autres personnes présentes", p.equipe)}
+    ${ligne("Destination", p.destination)}
+    ${ligne("Acheminement", p.acheminement, "Date et modalité")}
+
+    <h2>2 · Synthèse quantitative par type de matériel</h2>
+    <table>
+      <thead><tr><th style="width:44%">Matériel</th><th style="width:26%">Catégorie</th><th style="width:15%;text-align:right">Quantité</th><th style="width:15%;text-align:right">Déposants</th></tr></thead>
+      <tbody>${synthese}
+        <tr><td colspan="2"><b>Total général — unités collectées</b></td>
+          <td style="text-align:right;font-weight:700">${s.unites}</td>
+          <td style="text-align:right;font-weight:700">${s.deposants.length}</td></tr>
+      </tbody>
+    </table>
+
+    <h2>3 · Détail des dépôts par déposant</h2>
+    <table>
+      <thead><tr><th style="width:8%">N°</th><th style="width:44%">Déposant / structure</th><th style="width:33%">Matériel déposé</th><th style="width:15%;text-align:right">Quantité</th></tr></thead>
+      <tbody>${detail || `<tr><td colspan="4">Aucun dépôt consigné.</td></tr>`}</tbody>
+    </table>
+
+    <h2>4 · Clôture du point de collecte</h2>
+    ${ligne("Lignes de dépôt", String(s.lignes))}
+    ${ligne("Déposants distincts", String(s.deposants.length))}
+    ${ligne("Unités collectées", String(s.unites))}
+    ${ligne("Colis / cartons", p.colis, "À compléter après conditionnement")}
+    ${ligne("Heure de clôture", p.cloture)}
+    ${p.observations ? `<div class="ctx" style="margin-top:12px"><b>Observations.</b><br>${p.observations.split('\n').filter(Boolean).map(esc).join('<br>')}</div>` : ''}
+
+    <h2>5 · Visa</h2>
+    <div class="sig">
+      <div class="b">
+        <div class="q">Nom et signature du responsable sur place</div>
+        <div class="l">${esc(p.responsable || '')}</div>
+        <div class="l">Fait à …………………………, le ……… / ……… / 2026</div>
+        <div class="l">Signature :</div>
+      </div>
+      <div class="b">
+        <div class="q">Réception — entité destinataire</div>
+        <div class="l">Nom et qualité :</div>
+        <div class="l">Fait à …………………………, le ……… / ……… / 2026</div>
+        <div class="l">Signature :</div>
+      </div>
+    </div>
+
+    <div class="pied">Récapitulatif consolidé à partir des lignes de dépôt consignées dans le cockpit de crise de la CPTS Pau Béarn. Copie à transmettre à l'entité destinataire ; un exemplaire est conservé au dossier de traçabilité de la CPTS. Édité le ${new Date().toLocaleString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}${moi!=='Anonyme'?' par '+esc(moi):''}.</div>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="imprimerModale()">Imprimer ou enregistrer en PDF</button>
+    <button class="btn sec" onclick="fermer()">Fermer</button>
+  </div>`;
+  document.getElementById('rideau').classList.add('on');
+  toast("Les champs pointillés se complètent directement à l'écran");
 }
 
 /* =========================================================
@@ -4942,6 +5533,32 @@ function vueDossier(){
 
   DOSSIER.forEach(k => {
     h += `<h2 style="margin-top:24px">${esc(CHAMPS[k].titre)}</h2>${tableauFige(k)}`;
+  });
+
+  /* Les points de collecte ne sont pas une liste de fiches mais
+     des permanences chiffrées : chacun est repris avec sa
+     synthèse et son détail, comme dans son récapitulatif. */
+  h += `<h2 style="margin-top:24px">Points de collecte tenus</h2>`;
+  const pts = pointsTries();
+  if(!pts.length) h += `<p class="vide">Aucun point de collecte tenu.</p>`;
+  pts.forEach(p => {
+    const s = synthesePoint(p);
+    h += `<div class="carte" style="margin-bottom:14px">
+      <div style="font-family:var(--display);font-weight:700;font-size:15px">${esc(p.lieu)} — ${frdateL(p.date)}</div>
+      <div style="font-size:13px;color:var(--texte-2);margin:3px 0 9px">
+        ${esc(p.statut||'Ouvert')} · créneau ${esc(p.debut||'—')} – ${esc(p.fin||'—')}${p.cloture ? ', clôturé à ' + esc(p.cloture) : ''} ·
+        responsable : ${esc(p.responsable) || 'à nommer'}${p.destination ? ' · destination : ' + esc(p.destination) : ''}
+      </div>
+      <div style="font-size:13.5px;margin-bottom:8px"><strong>${s.unites} unités</strong> déposées par <strong>${s.deposants.length} déposants</strong> en ${s.lignes} lignes${p.colis ? ', ' + esc(p.colis) + ' colis' : ''}${
+        s.parMat.length ? ' — ' + s.parMat.map(m => m.quantite + ' ' + esc(m.materiel.toLowerCase())).join(', ') : ''}.</div>
+      ${p.acheminement ? `<div style="font-size:13px;color:var(--texte-2);margin-bottom:8px">Acheminement : ${esc(p.acheminement)}</div>` : ''}
+      ${s.deposants.length ? `<div class="tw"><table><thead><tr><th>Déposant</th><th>Qualité</th><th>Matériel déposé</th></tr></thead><tbody>` +
+        s.deposants.map(d => `<tr><td>${esc(d.deposant)}</td><td>${esc(d.qualite)||'—'}</td><td>${
+          d.lignes.map(l => esc(l.materiel) + ' (' + qte(l) + ')').join(', ')}</td></tr>`).join('') + `</tbody></table></div>` : ''}
+      ${p.observations ? `<div style="font-size:12.5px;color:var(--texte-2);margin-top:9px;white-space:pre-line">${esc(p.observations)}</div>` : ''}
+      ${(p.pieces||[]).length ? `<div style="font-size:12.5px;color:var(--texte-2);margin-top:9px">Pièces jointes : ${
+        p.pieces.map(x => esc(x.nom)).join(', ')}</div>` : ''}
+    </div>`;
   });
 
   h += `<h2 style="margin-top:24px">Appels aux CPTS</h2><div class="tw"><table>

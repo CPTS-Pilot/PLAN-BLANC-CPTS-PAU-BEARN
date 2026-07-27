@@ -523,6 +523,137 @@ if (CODE_ACCES !== '') {
     }
 }
 
+/* =========================================================
+   PIÈCES JOINTES
+
+   Le récapitulatif d'un point de collecte signé sur place, la
+   photo d'un bordereau : des documents qui font foi et qu'on ne
+   peut pas retaper. Ils ne tiennent pas dans l'état partagé —
+   celui-ci est relu en entier toutes les quinze secondes par
+   chaque poste — et vivent donc à côté, dans donnees/pieces.
+   L'état ne garde que le nom du fichier et son identifiant.
+
+   Réservé au copil : le contrôle d'accès ci-dessus est déjà
+   passé. La lecture accepte le code en paramètre d'adresse, pour
+   qu'un lien s'ouvre dans un onglet du navigateur.
+   ========================================================= */
+
+const PIECES    = DOSSIER . '/pieces';
+const PIECE_MAX = 4000000;   /* octets, une fois décodé */
+
+/* Liste fermée : rien d'exécutable ne peut entrer. Le contenu
+   est écrit en .bin, jamais sous son extension d'origine, et le
+   dossier refuse déjà d'être servi (.htaccess + garde PHP). */
+function typesPiece() {
+    return [
+        'pdf'  => 'application/pdf',
+        'jpg'  => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png'  => 'image/png',
+        'webp' => 'image/webp',
+        'heic' => 'image/heic',
+        'csv'  => 'text/csv',
+        'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ];
+}
+
+if (isset($_GET['piece'])) {
+    if (!is_dir(PIECES)) {
+        @mkdir(PIECES, 0750, true);
+    }
+    $id = preg_replace('/[^a-z0-9]/', '', strtolower((string) $_GET['piece']));
+
+    /* --- Lecture d'une pièce --- */
+    if ($methode === 'GET') {
+        if ($id === '') {
+            repondre(400, ['erreur' => 'Pièce non désignée']);
+        }
+        $brutMeta = @file_get_contents(PIECES . '/' . $id . '.json');
+        $fichier  = PIECES . '/' . $id . '.bin';
+        if ($brutMeta === false || !file_exists($fichier)) {
+            repondre(404, ['erreur' => 'Pièce introuvable']);
+        }
+        if (strpos($brutMeta, GARDE) === 0) {
+            $brutMeta = substr($brutMeta, strlen(GARDE));
+        }
+        $meta = json_decode($brutMeta, true);
+        if (!is_array($meta)) {
+            repondre(500, ['erreur' => 'Pièce illisible']);
+        }
+        $nom = str_replace(['"', "\r", "\n"], '', (string) ($meta['nom'] ?? 'piece'));
+        header('Content-Type: ' . ($meta['mime'] ?? 'application/octet-stream'));
+        header('Content-Disposition: inline; filename="' . $nom . '"');
+        header('Content-Length: ' . filesize($fichier));
+        header('Cache-Control: private, max-age=3600');
+        readfile($fichier);
+        exit;
+    }
+
+    if ($methode !== 'POST') {
+        repondre(405, ['erreur' => 'Méthode non autorisée']);
+    }
+
+    $in = json_decode(file_get_contents('php://input') ?: '', true);
+    if (!is_array($in)) {
+        repondre(400, ['erreur' => 'Requête mal formée']);
+    }
+
+    /* --- Retrait d'une pièce --- */
+    if (!empty($in['supprimer'])) {
+        if ($id === '') {
+            repondre(400, ['erreur' => 'Pièce non désignée']);
+        }
+        @unlink(PIECES . '/' . $id . '.bin');
+        @unlink(PIECES . '/' . $id . '.json');
+        tracer('pièce retirée — ' . $id);
+        repondre(200, ['ok' => true]);
+    }
+
+    /* --- Dépôt d'une pièce --- */
+    $nom = txt($in['nom'] ?? '', 160);
+    if ($nom === '') {
+        repondre(400, ['erreur' => 'Nom de fichier manquant']);
+    }
+    $ext = strtolower(pathinfo($nom, PATHINFO_EXTENSION));
+    $types = typesPiece();
+    if (!isset($types[$ext])) {
+        repondre(415, ['erreur' => 'Format non accepté : ' . implode(', ', array_keys($types))]);
+    }
+
+    /* Le fichier arrive encodé en base64, éventuellement précédé
+       de l'en-tête « data: » que produit le navigateur. */
+    $b64 = (string) ($in['donnees'] ?? '');
+    $virgule = strpos($b64, ',');
+    if (strpos($b64, 'data:') === 0 && $virgule !== false) {
+        $b64 = substr($b64, $virgule + 1);
+    }
+    $contenu = base64_decode($b64, true);
+    if ($contenu === false || $contenu === '') {
+        repondre(400, ['erreur' => 'Fichier illisible']);
+    }
+    if (strlen($contenu) > PIECE_MAX) {
+        repondre(413, ['erreur' => 'Fichier trop volumineux (4 Mo au maximum)']);
+    }
+
+    $id = 'p' . substr(md5(uniqid('', true)), 0, 12);
+    $meta = [
+        'id'     => $id,
+        'nom'    => $nom,
+        'mime'   => $types[$ext],
+        'taille' => strlen($contenu),
+        'le'     => date('c'),
+        'par'    => txt($in['par'] ?? '', 80),
+    ];
+    if (@file_put_contents(PIECES . '/' . $id . '.bin', $contenu) === false
+        || @file_put_contents(PIECES . '/' . $id . '.json', GARDE . json_encode($meta, JSON_UNESCAPED_UNICODE)) === false) {
+        repondre(500, ['erreur' => 'Enregistrement de la pièce impossible']);
+    }
+    tracer(sprintf('pièce déposée — %s (%s, %d o) par %s',
+        $id, $nom, $meta['taille'], $meta['par'] !== '' ? $meta['par'] : 'inconnu'));
+    repondre(200, $meta);
+}
+
 /* --- Lecture -------------------------------------------- */
 if ($methode === 'GET') {
     repondre(200, lireEtat());
