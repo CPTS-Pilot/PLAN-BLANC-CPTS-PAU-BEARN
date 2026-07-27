@@ -383,6 +383,14 @@ try {
         $donnees[$rubrique] = $valeur;
     }
 
+    /* Le carnet de coordonnées est un dictionnaire indexé par nom.
+       Vide, PHP ne le distingue pas d'une liste et le renverrait en
+       `[]` : le cockpit rangerait alors les numéros dans un tableau,
+       qui les perd silencieusement au réenregistrement. */
+    if (isset($donnees['personnes']) && $donnees['personnes'] === []) {
+        $donnees['personnes'] = new stdClass();
+    }
+
     $nouveau = [
         'version' => $version + 1,
         'maj'     => date('c'),
