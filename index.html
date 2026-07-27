@@ -128,7 +128,7 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 
 /* ---------- organigramme ---------- */
 .orga{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));margin-bottom:26px}
-.pers{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--encre-2);border-radius:11px;padding:17px 18px}
+.pers{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--encre-2);border-radius:11px;padding:17px 18px;display:flex;flex-direction:column}
 .pers.vacant{border-top-color:var(--braise);background:#FDF7F5}
 .pers .qui{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--texte-2)}
 .pers .nom{font-family:var(--display);font-weight:700;font-size:23px;line-height:1.12;letter-spacing:-.015em;margin:7px 0 3px;color:var(--encre)}
@@ -164,6 +164,35 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .choixnom{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
 .choixnom button{text-align:left;background:var(--cobalt-clair);border:1px solid var(--trait);border-radius:8px;padding:12px 14px;font-size:16px;font-family:var(--display);font-weight:600;cursor:pointer;min-height:48px}
 .choixnom button:hover{border-color:var(--encre-2)}
+/* Même liste, en pastilles, quand elle sert à désigner un pilote
+   au milieu d'un formulaire plutôt qu'à s'identifier. */
+.choixnom.compact{flex-direction:row;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.choixnom.compact button{font-family:var(--corps);font-weight:400;font-size:13.5px;
+  padding:7px 13px;min-height:38px;border-radius:20px;border-color:transparent;color:var(--encre-2)}
+.choixnom.compact button.on{border-color:var(--encre-2);font-weight:600}
+
+/* Une mission sur une carte : la pastille ouvre la fiche, le
+   crayon ouvre la modification. */
+.mrow{display:flex;align-items:stretch;gap:6px;margin-bottom:6px}
+.mrow .chip{margin-bottom:0;flex:1;min-width:0}
+.pers .chip.vac{background:#F8E5E0;color:var(--texte)}
+.crayon-m{background:none;border:1px solid var(--trait);border-radius:7px;color:var(--texte-2);
+  font-size:14px;padding:0 10px;cursor:pointer;flex:0 0 auto}
+.crayon-m:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.confier{margin-top:auto;background:none;border:1px dashed var(--trait);border-radius:7px;
+  color:var(--encre-2);font-family:inherit;font-size:13px;padding:10px;cursor:pointer;min-height:42px}
+.confier:hover{border-color:var(--encre-2);background:var(--cobalt-clair)}
+/* Dernière carte de la grille : créer sans quitter l'organigramme. */
+.neuve{background:none;border:2px dashed var(--trait);border-radius:11px;padding:22px 18px;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;
+  cursor:pointer;font-family:inherit;text-align:left;min-height:190px;color:var(--texte-2)}
+.neuve:hover{border-color:var(--encre-2);background:var(--cobalt-clair)}
+.neuve .plus{font-family:var(--display);font-size:30px;line-height:1;color:var(--encre-2)}
+.neuve .t{font-family:var(--display);font-weight:700;font-size:19px;color:var(--encre)}
+.neuve .d{font-size:13px;line-height:1.4}
+.sup-mod{background:none;border:0;color:var(--braise);font-family:inherit;font-size:13.5px;
+  cursor:pointer;margin-left:auto;padding:8px 4px}
+.sup-mod:hover{text-decoration:underline}
 /* Renforts : les personnes positionnées auprès du pilote. Elles
    se lisent sous la mission qu'elles épaulent, décalées d'un cran
    pour que le rattachement saute aux yeux. */
@@ -605,7 +634,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 @media print{
   @page{margin:14mm}
   body{background:#fff;font-size:10.5pt}
-  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.src-c .b,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn{display:none!important}
+  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.src-c .b,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve{display:none!important}
   td.act,th:last-child{display:none!important}
   .contenu{padding:0;max-width:none}
   .carte,.tw,.mission,.pers,.ligne,.src-c,.ent-r{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
@@ -720,7 +749,7 @@ Dérouler les appels avec la même trame.
 Noter chaque appel, y compris quand la réponse est « rien ».`, avec:`Agora Lib, CPTS Nord Bassin Océan, Terre de Médoc, Sud Bassin Val de l'Eyre, Ouest Gironde, CPTS landaises.`, pour:`Les équipes de coordination sur place.`, limite:`On n'annonce pas de matériel disponible. Aucun engagement sans lieu de livraison nommé.`}},
     {id:'m5', titre:"Relais de diffusion des appels à renfort", detail:"Uniquement les appels officiels (URPS, ARS, ordres). La CPTS Pau Béarn n'est opératrice d'aucun dispositif.", pilote:'', suppleant:'', mandat:"Non — relais uniquement", statut:'En cours', prochaine:"Préparer une réponse d'attente pour les professionnels hors kinésithérapie.", echeance:'', fiche:{but:`Faire circuler les appels officiels sans que la CPTS Pau Béarn soit prise pour l'opérateur.`, faire:`Relayer les appels URPS, ARS et ordres en nommant qui porte le dispositif.
 Préparer une réponse d'attente pour les professions sans canal ouvert.
-Consigner chaque diffusion, sa portée et son canal de retour.`, avec:`URPS, ordres professionnels, délégation départementale de l'ARS.`, pour:`Les 210 professionnels de santé des groupes de la CPTS Pau Béarn.`, limite:`On ne lance pas d'appel à volontaires en propre.`}},
+Consigner chaque diffusion en main courante : sa portée, son canal et le canal de retour indiqué.`, avec:`URPS, ordres professionnels, délégation départementale de l'ARS.`, pour:`Les 210 professionnels de santé des groupes de la CPTS Pau Béarn.`, limite:`On ne lance pas d'appel à volontaires en propre.`}},
     {id:'m6', titre:"Traçabilité et retour d'expérience", detail:"Alimenter ce cockpit en continu : c'est la matière du futur plan SSE.", pilote:'', suppleant:'', mandat:'Non', statut:'En cours', prochaine:"Rappeler la règle d'alimentation à chaque point quotidien.", echeance:'', fiche:{but:`Que cette semaine laisse une trace exploitable pour écrire le plan SSE.`, faire:`Consigner décisions et informations au fil de l'eau.
 Vérifier chaque soir que rien d'important n'est resté hors du cockpit.
 Rappeler la règle d'alimentation au point quotidien.`, avec:`Toute l'équipe de gestion de crise.`, pour:`La CPTS en septembre, et l'ARS au retour d'expérience.`, limite:`On ne rédige pas de fiches réflexe pendant la crise.`}}
@@ -805,16 +834,6 @@ Consigner le compte rendu dans « Échanges avec l'ARS » et en main courante ap
     {id:'s11', nom:"Alertes feux — besoins en bénévoles", url:'https://alertesfeux.fr/benevoles', cat:'Suivi incendies', rythme:'Une fois par jour', quoi:"Appels à bénévoles — à croiser avec la mission Volontaires.", verifieLe:'', verifiePar:''},
     {id:'s12', nom:"France 3 Nouvelle-Aquitaine", url:'https://france3-regions.franceinfo.fr/nouvelle-aquitaine/', cat:'Presse', rythme:'Chaque tour', quoi:"Ce qui sort dans la presse avant les canaux officiels, et ce que voient nos adhérents.", verifieLe:'', verifiePar:''}
   ],
-  diffusions: [
-    {id:'d1', date:'2026-07-25', heure:'', objet:"Information — plan blanc régional / ORSAN AMAVI", canal:'WhatsApp', cible:"Tous les membres de la CPTS Pau Béarn — groupes WhatsApp", portee:'210', emetteur:'Anne Latisnère, vice-présidente', valide:'Vice-présidence', demande:"Aucune demande précise — message d'information", retourCanal:"Aucun canal de retour indiqué", retours:'', observation:"Annonce de besoins en renforts humains et matériels sans demande précise : attente créée auprès des adhérents, à recadrer dans le message suivant.", auteur:'Anne Latisnère', quand:''},
-    {id:'d2', date:'2026-07-26', heure:'', objet:"Relais de l'appel à volontaires kinésithérapeutes (URPS MK Nouvelle-Aquitaine)", canal:'WhatsApp', cible:"Tous les membres de la CPTS Pau Béarn — groupes WhatsApp", portee:'210', emetteur:'Anne Latisnère, vice-présidente', valide:'Vice-présidence', demande:"Compléter le formulaire de l'URPS", retourCanal:"Formulaire URPS", retours:'', observation:"Le message ne précise pas que la CPTS Pau Béarn n'est pas opératrice du dispositif : prévoir une réponse d'attente pour les autres professions.", auteur:'Anne Latisnère', quand:''},
-    {id:'d3', date:'2026-07-27', heure:'09:27', objet:"Cadrage de la gestion de crise et missions de la CPTS Pau Béarn", canal:'WhatsApp', cible:"Équipe de gestion de crise sanitaire — CPTS Pau Béarn", portee:'', emetteur:'Eva', valide:'Vice-présidence', demande:"Prise de connaissance, disponibilités, alimentation du tableau de bord", retourCanal:"Groupe de gestion de crise", retours:'', observation:"Mention du Parc des Expositions de Bordeaux comme destination de la collecte : à corriger, le site est pourvu.", auteur:'', quand:''},
-    {id:'d4', date:'2026-07-27', heure:'', objet:"Relais de l'information aux groupes de travail", canal:'WhatsApp', cible:"Référents des groupes de travail", portee:'', emetteur:'Camélia', valide:'Vice-présidence', demande:"Relayer l'information aux membres de chaque groupe", retourCanal:"Groupes de travail", retours:'', observation:'', auteur:'', quand:''},
-    {id:'d5', date:'2026-07-27', heure:'', objet:"Relais aux groupes sans référent actif", canal:'WhatsApp', cible:"Vaccination grippale, Maladie rénale, Cancer du sein", portee:'', emetteur:'Eva', valide:'Vice-présidence', demande:"Relayer l'information", retourCanal:'', retours:'', observation:'', auteur:'', quand:''},
-    {id:'d6', date:'2026-07-27', heure:'', objet:"Mise au courant des CPTS du 64 en InterCPTS — mutualisation des transports", canal:'Autre', cible:"CPTS des Pyrénées-Atlantiques (InterCPTS 64), notamment CPTS Est Béarn et CPTS des 3 Vallées", portee:'', emetteur:'Anne Latisnère, vice-présidente', valide:'Vice-présidence', demande:"Mutualiser les moyens de transport vers la Gironde", retourCanal:"InterCPTS 64", retours:'', observation:"Canal exact et liste des destinataires à préciser.", auteur:'Anne Latisnère', quand:''},
-    {id:'d7', date:'2026-07-27', heure:'14:30', objet:"Appel à la collecte de matériel médical — hémoglucotests, tensiomètres, thermomètres, saturomètres", canal:'WhatsApp', cible:"Ensemble des professionnels de santé du territoire, sollicités canal par canal et profession par profession — pharmaciens en particulier", portee:'', emetteur:'Eva Poulmarch', valide:'', demande:"Déclarer le matériel pouvant être donné : lecteurs d'hémoglucotest, tensiomètres, thermomètres, saturomètres", retourCanal:"Formulaire en ligne (Google Forms) — réponses à reporter à la main dans le registre des donateurs", retours:'', observation:"Diffusion ciblée profession par profession plutôt qu'en message unique, pour que chaque groupe reçoive l'appel sur son canal habituel. La liste demandée reprend exactement le besoin exprimé par le centre d'accueil du parc des expositions de Bordeaux (fiche « Besoins en matériel »). Le formulaire hébergé avec le cockpit déclenchant un avertissement « site non sécurisé » chez une partie des destinataires, le recueil passe par un Google Forms : les réponses ne remontent pas seules et doivent être reportées ici.", auteur:'Eva Poulmarch', quand:''},
-    {id:'d8', date:'2026-07-27', heure:'15:30', objet:"Appel à volontaires pour la logistique de la collecte de dons à la Foire Expo de Pau", canal:'WhatsApp', cible:"Professionnels de santé du territoire", portee:'', emetteur:'Eva Poulmarch', valide:'', demande:"Se signaler pour participer à la logistique de la collecte de dons à la Foire Expo de Pau : réception, tri, conditionnement des dons.", retourCanal:'', retours:'', observation:"Premier appel à volontaires lancé en propre par la CPTS Pau Béarn, et sur de la logistique, non du soin : distinct des appels à renfort officiels qu'elle se contente de relayer. Créneaux, encadrement sur place et couverture assurantielle des volontaires restent à préciser.", auteur:'Eva Poulmarch', quand:''}
-  ],
   ars: [
     {id:'a1', date:'2026-07-24', heure:'22:42', sens:"Reçu de l'ARS", canal:'Mail', interlocuteur:"ARS — Délégation départementale 64", objet:"Déclenchement du plan blanc régional / ORSAN AMAVI", demande:"Pour les professionnels de santé libéraux : maintenir la prise en charge des patients en ambulatoire pour éviter le recours non justifié aux urgences. Activation de la CRAPS. Les délégations départementales restent à disposition.", reponse:"Diffusion aux membres le 25/07 par Anne Latisnère, vice-présidente (message n°1) — environ 210 professionnels de santé destinataires via les groupes WhatsApp.", attendu:"Organiser le maintien des soins en ville et limiter le recours aux urgences du CH.", echeance:'', statut:'En cours', auteur:'', quand:''},
     {id:'a2', date:'2026-07-26', heure:'', sens:"Envoyé à l'ARS", canal:'Mail', interlocuteur:"ARS Nouvelle-Aquitaine", objet:"Demande des besoins en matériel et des lieux de livraison", demande:'', reponse:"Sollicitation portée par Anne Latisnère, vice-présidente.", attendu:"Sans retour écrit, aucune collecte n'est ouverte aux adhérents.", echeance:'', statut:'En attente', auteur:'Anne Latisnère', quand:''},
@@ -832,17 +851,19 @@ Consigner le compte rendu dans « Échanges avec l'ARS » et en main courante ap
   collecte: { ouverte:false, message:'', besoins:"Lecteurs d'hémoglucotest, tensiomètres, thermomètres, saturomètres, stéthoscopes. Rien au-delà de cette liste : aucun consommable, aucun médicament." },
   courante: [
     {id:'mc12', date:'2026-07-27', heure:'', source:'Coordination', evenement:"Patricia Benastre vient en renfort d'Anne Latisnère sur la collecte de matériel médical : elle prend le phoning auprès des pharmaciens du territoire.", suite:"Renfort inscrit sur la mission dans « Missions & organigramme ». Consigner les retours des pharmaciens dans le registre des donateurs.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
-    {id:'mc11', date:'2026-07-27', heure:'15:30', source:'Coordination', evenement:"Envoi d'un appel à volontaires pour participer à la logistique de la collecte de dons à la Foire Expo de Pau : réception, tri et conditionnement du matériel donné.", suite:"Recenser les réponses dans « Volontaires ». Préciser les créneaux, qui encadre sur place et la couverture assurantielle avant d'affecter qui que ce soit.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
+    {id:'mc11', date:'2026-07-27', heure:'15:30', source:'Coordination', evenement:"Envoi d'un appel à volontaires pour participer à la logistique de la collecte de dons à la Foire Expo de Pau : réception, tri et conditionnement du matériel donné. Diffusé par WhatsApp aux professionnels de santé du territoire, sous la signature d'Eva Poulmarch. Premier appel à volontaires lancé en propre par la CPTS Pau Béarn, et sur de la logistique, non du soin : distinct des appels à renfort officiels qu'elle se contente de relayer.", suite:"Recenser les réponses dans « Volontaires ». Préciser les créneaux, qui encadre sur place et la couverture assurantielle avant d'affecter qui que ce soit. Aucun canal de retour n'a été indiqué dans le message : à corriger dans le suivant.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc10', date:'2026-07-27', heure:'15:00', source:'ARS Nouvelle-Aquitaine', evenement:"Réunion de crise de l'ARS en visioconférence à 15h : la CPTS Pau Béarn y assiste. Eva Poulmarch en a la charge et y représente la CPTS.", suite:"Consigner le compte rendu dans « Échanges avec l'ARS » et ici à l'issue de la séance, et en tirer ce qui appelle une décision du copil.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
-    {id:'mc9', date:'2026-07-27', heure:'14:30', source:'Coordination', evenement:"Ouverture de la collecte de matériel médical et diffusion de l'appel aux professionnels de santé du territoire, canal par canal et profession par profession — pharmaciens en particulier. Liste fermée : lecteurs d'hémoglucotest, tensiomètres, thermomètres, saturomètres, auxquels s'ajoutent les stéthoscopes. Recueil des déclarations par un Google Forms, le formulaire hébergé avec le cockpit ayant déclenché un avertissement « site non sécurisé » chez une partie des destinataires.", suite:"Reporter à la main les réponses du Google Forms dans le registre des donateurs. Ne rien accepter au-delà de la liste. Aucun enlèvement sans point de livraison nommé.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
+    {id:'mc9', date:'2026-07-27', heure:'14:30', source:'Coordination', evenement:"Ouverture de la collecte de matériel médical et diffusion de l'appel aux professionnels de santé du territoire, canal par canal et profession par profession — pharmaciens en particulier. Liste fermée : lecteurs d'hémoglucotest, tensiomètres, thermomètres, saturomètres, auxquels s'ajoutent les stéthoscopes. Recueil des déclarations par un Google Forms, le formulaire hébergé avec le cockpit ayant déclenché un avertissement « site non sécurisé » chez une partie des destinataires. Appel diffusé par WhatsApp sous la signature d'Eva Poulmarch, demande faite de déclarer le matériel pouvant être donné. La liste demandée reprend exactement le besoin exprimé par le centre d'accueil du parc des expositions de Bordeaux (fiche « Besoins en matériel »).", suite:"Reporter à la main les réponses du Google Forms dans le registre des donateurs. Ne rien accepter au-delà de la liste. Aucun enlèvement sans point de livraison nommé.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc8', date:'2026-07-27', heure:'', source:'Coordination', evenement:"Premier lieu de stockage proposé pour la collecte : l'agence ADHAP, 29 rue Carrerot à Pau, référente Anne Tarascon (06 83 24 07 60). Ouvert 8h30-19h ; le mercredi 9h-18h, l'accueil de l'agence prend le relais en son absence.", suite:"Renseigner la capacité de stockage, l'accès (plain-pied, véhicule) et la ligne fixe de l'agence avant d'annoncer ce point de dépôt aux professionnels.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc7', date:'2026-07-27', heure:'10:30', source:'Appels CPTS', evenement:"Appels aux CPTS des zones touchées. Nord Bassin Océan (10h43) : évacuation en cours, commande de masques pour les PDS, aucune demande particulière. Ouest Gironde (10h37, Dr Decroix, pilote SSE) : aucune demande des administrés, FFP2 reçus et distribués par les pharmaciens, transferts de patients élargis faute de place en Gironde, Landes et Dordogne. Sud Bassin Val de l'Eyre (10h55 puis rappel à 14h54) : aucun besoin matériel, situation gérée, pharmaciens et prestataires sur le pont.", suite:"Aucun besoin matériel exprimé à ce stade par les CPTS jointes. Envoyer le mail de contact à Nord Bassin Océan, rappeler Sud Bassin, et joindre Terre de Médoc et les CPTS landaises.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
-    {id:'mc6', date:'2026-07-27', heure:'09:27', source:'Coordination', evenement:"Diffusion du cadrage de la gestion de crise et des missions de la CPTS Pau Béarn : message au groupe de gestion de crise à 9h27, relais par les référents aux groupes de travail, et relais aux groupes sans référent actif (vaccination grippale, maladie rénale, cancer du sein).", suite:"Consigné dans « Ce qu'on a diffusé ». Corriger dans le prochain message la mention du parc des expositions de Bordeaux comme destination de la collecte : le site est pourvu.", statut:'Clos', auteur:'Eva Poulmarch', quand:''},
-    {id:'mc5', date:'2026-07-27', heure:'', source:'Vice-présidence', evenement:"Préparation de la communication à venir vers les professionnels de santé, pour que l'appel soit cadré : nature exacte du matériel attendu, point de dépôt, et ce que la CPTS ne prend pas.", suite:"À valider par la gouvernance avant envoi, puis à consigner dans « Ce qu'on a diffusé ». Rien ne part tant que le lieu de stockage n'est pas nommé.", statut:'En cours', auteur:'Anne Latisnère', quand:''},
-    {id:'mc4', date:'2026-07-27', heure:'', source:'Vice-présidence', evenement:"Mobilisation des CPTS des Pyrénées-Atlantiques en InterCPTS pour les mettre au courant, notamment la CPTS Est Béarn et la CPTS des 3 Vallées, en vue de mutualiser les transports vers la Gironde.", suite:"Recenser les moyens de transport mutualisables et nommer un interlocuteur par CPTS.", statut:'En cours', auteur:'Anne Latisnère', quand:''},
+    {id:'mc6', date:'2026-07-27', heure:'09:27', source:'Coordination', evenement:"Diffusion du cadrage de la gestion de crise et des missions de la CPTS Pau Béarn, par WhatsApp et sous validation de la vice-présidence : message d'Eva Poulmarch au groupe de gestion de crise à 9h27, demandant prise de connaissance, disponibilités et alimentation du tableau de bord, avec retour attendu sur le groupe de gestion de crise ; relais par Camélia aux référents des groupes de travail, à charge pour eux de le porter à leurs membres ; relais par Eva Poulmarch aux groupes sans référent actif (vaccination grippale, maladie rénale, cancer du sein).", suite:"Corriger dans le prochain message la mention du parc des expositions de Bordeaux comme destination de la collecte : le site est pourvu.", statut:'Clos', auteur:'Eva Poulmarch', quand:''},
+    {id:'mc5', date:'2026-07-27', heure:'', source:'Vice-présidence', evenement:"Préparation de la communication à venir vers les professionnels de santé, pour que l'appel soit cadré : nature exacte du matériel attendu, point de dépôt, et ce que la CPTS ne prend pas.", suite:"À valider par la gouvernance avant envoi, puis à consigner ici une fois partie. Rien ne part tant que le lieu de stockage n'est pas nommé.", statut:'En cours', auteur:'Anne Latisnère', quand:''},
+    {id:'mc4', date:'2026-07-27', heure:'', source:'Vice-présidence', evenement:"Mobilisation des CPTS des Pyrénées-Atlantiques en InterCPTS pour les mettre au courant, notamment la CPTS Est Béarn et la CPTS des 3 Vallées, en vue de mutualiser les transports vers la Gironde. Mise au courant portée par Anne Latisnère, vice-présidente, avec retour attendu par l'InterCPTS 64.", suite:"Recenser les moyens de transport mutualisables et nommer un interlocuteur par CPTS. Préciser le canal exact employé et la liste des CPTS effectivement destinataires.", statut:'En cours', auteur:'Anne Latisnère', quand:''},
     {id:'mc3', date:'2026-07-27', heure:'08:00', source:'Vice-présidence', evenement:"Appel à Valérie Revel pour centraliser les dons dans un lieu de stockage unique. Réunion du bureau des maires le jour même à 14h. Elle devait appeler M. Guinaman, délégation départementale de l'ARS 64.", suite:"Attendre le retour de la réunion de 14h et du contact avec la DD ARS 64. Sans lieu de stockage nommé, la collecte reste fermée aux adhérents.", statut:'En cours', auteur:'Anne Latisnère', quand:''},
     {id:'mc2', date:'2026-07-26', heure:'22:40', source:"Médecin coordonnateur du parc des expositions de Bordeaux", evenement:"Appelé à 22h — il faisait alors le point de la journée — et rappel de sa part à 22h40. Aucun besoin en consommables : le site est fourni en médicaments. En revanche, forte tension sur les dispositifs de mesure — tensiomètres, thermomètres, lecteurs d'hémoglucotest et saturomètres : 10 appareils pour 500 patients, avec beaucoup de casse. La question de la nature de l'acheminement s'est posée.", suite:"Besoin reporté dans « Besoins en matériel ». Acheminement à arbitrer — piste de mutualisation des transports avec les CPTS du 64.", statut:'À suivre', auteur:'Anne Latisnère', quand:''},
-    {id:'mc1', date:'2026-07-26', heure:'19:30', source:'ARS Nouvelle-Aquitaine', evenement:"Appel avec l'ARS Nouvelle-Aquitaine à 19h30 pour savoir quels besoins en matériel médical avaient été identifiés. L'ARS ne les connaissait pas et devait rappeler. Rappel à 22h : transmission du numéro du médecin coordonnateur du parc des expositions de Bordeaux pour la collecte, et de celui de la personne en charge de la logistique.", suite:"Consigné dans « Échanges avec l'ARS ». Le médecin coordonnateur a été appelé dans la foulée.", statut:'Clos', auteur:'Anne Latisnère', quand:''}
+    {id:'mc1', date:'2026-07-26', heure:'19:30', source:'ARS Nouvelle-Aquitaine', evenement:"Appel avec l'ARS Nouvelle-Aquitaine à 19h30 pour savoir quels besoins en matériel médical avaient été identifiés. L'ARS ne les connaissait pas et devait rappeler. Rappel à 22h : transmission du numéro du médecin coordonnateur du parc des expositions de Bordeaux pour la collecte, et de celui de la personne en charge de la logistique.", suite:"Consigné dans « Échanges avec l'ARS ». Le médecin coordonnateur a été appelé dans la foulée.", statut:'Clos', auteur:'Anne Latisnère', quand:''},
+    {id:'mc0b', date:'2026-07-26', heure:'', source:'Vice-présidence', evenement:"Relais aux membres de la CPTS Pau Béarn, sur les groupes WhatsApp (environ 210 professionnels de santé), de l'appel à volontaires kinésithérapeutes de l'URPS MK Nouvelle-Aquitaine. Message d'Anne Latisnère, vice-présidente, validé par la vice-présidence, demandant de compléter le formulaire de l'URPS, qui sert aussi de canal de retour.", suite:"Le message ne précise pas que la CPTS Pau Béarn n'est pas opératrice du dispositif : préparer une réponse d'attente pour les professionnels des autres professions.", statut:'En cours', auteur:'Anne Latisnère', quand:''},
+    {id:'mc0a', date:'2026-07-25', heure:'', source:'Vice-présidence', evenement:"Message n°1 diffusé aux membres de la CPTS Pau Béarn sur les groupes WhatsApp, environ 210 professionnels de santé destinataires : information sur le déclenchement du plan blanc régional / ORSAN AMAVI, rappel de la consigne de maintien de la prise en charge en ambulatoire, et annonce de besoins en renforts humains et matériels. Message d'Anne Latisnère, vice-présidente, validé par la vice-présidence.", suite:"Aucune demande précise ni canal de retour indiqué : le message ne fait rien remonter et crée une attente chez les adhérents. À recadrer dans le message suivant.", statut:'À suivre', auteur:'Anne Latisnère', quand:''}
   ],
   terrain: [], appels: [],
   materiel: [
@@ -946,6 +967,7 @@ async function appelApi(methode, corps){
 function appliquerDistant(d){
   versionServeur = d && d.version ? d.version : 0;
   const src = (d && d.donnees) || {};
+  if(Array.isArray(src.diffusions)) diffusionsHeritees = src.diffusions;
   for(const k in etatInitial){ if(src[k] !== undefined) etat[k] = src[k]; }
   fusionnerNouveautes();
   normaliserPersonnes();
@@ -989,7 +1011,10 @@ async function charger(){
     if(versionServeur === 0){ empreinte = {}; await sauver(); }
     lancerSondage();
   }else{
-    if(etatLocal) for(const k in etatInitial){ if(etatLocal[k] !== undefined) etat[k] = etatLocal[k]; }
+    if(etatLocal){
+      if(Array.isArray(etatLocal.diffusions)) diffusionsHeritees = etatLocal.diffusions;
+      for(const k in etatInitial){ if(etatLocal[k] !== undefined) etat[k] = etatLocal[k]; }
+    }
     fusionnerNouveautes();
     normaliserPersonnes();
     marquerSynchronise();
@@ -1059,7 +1084,7 @@ function lancerSondage(){
    et qu'elle n'a pas été retirée à la main : ce qui a été saisi
    par le copil n'est jamais touché. C'est par là qu'arrivent les
    éléments consignés hors ligne, au téléphone notamment. */
-const SEEDS = ['missions','veille','diffusions','ars','sources','lignes','offre','cpts','courante','materiel','stockage','contacts'];
+const SEEDS = ['missions','veille','ars','sources','lignes','offre','cpts','courante','materiel','stockage','contacts'];
 function fusionnerNouveautes(){
   etat.retires = etat.retires || [];
   SEEDS.forEach(k => {
@@ -1069,7 +1094,47 @@ function fusionnerNouveautes(){
       if(!vus.has(o.id) && !etat.retires.includes(o.id)) etat[k].push(JSON.parse(JSON.stringify(o)));
     });
   });
+  reverserDiffusions();
   completerVeille();
+}
+
+/* « Ce qu'on a diffusé » faisait doublon avec la main courante et a été
+   retiré du cockpit : tout ce qui partait de la CPTS se consigne
+   désormais en main courante, comme le reste. Les messages qui y avaient
+   été saisis sont repris ici : ceux déjà consignés en main courante
+   (identifiants ci-dessous) n'y sont pas remis une seconde fois, les
+   autres y sont reversés pour qu'aucune saisie ne parte avec l'onglet.
+   La reprise se fait une fois : la fiche reversée porte un identifiant
+   dérivé du sien, et n'est pas recréée si elle est déjà là ou si elle a
+   été retirée à la main. */
+let diffusionsHeritees = [];
+const DIFF_DEJA_CONSIGNEES = ['d1','d2','d3','d4','d5','d6','d7','d8'];
+function reverserDiffusions(){
+  if(!diffusionsHeritees.length) return;
+  etat.courante = etat.courante || [];
+  etat.retires = etat.retires || [];
+  const vus = new Set(etat.courante.map(o => o.id));
+  diffusionsHeritees.forEach(d => {
+    if(!d || !d.id || DIFF_DEJA_CONSIGNEES.includes(d.id)) return;
+    const id = 'mcd-' + d.id;
+    if(vus.has(id) || etat.retires.includes(id)) return;
+    const detail = [
+      d.canal       ? "Canal : " + d.canal : '',
+      d.cible       ? "Destinataires : " + d.cible : '',
+      d.portee      ? "Nombre de destinataires : " + d.portee : '',
+      d.emetteur    ? "Émetteur : " + d.emetteur : '',
+      d.valide      ? "Validé par : " + d.valide : '',
+      d.demande     ? "Demande formulée : " + d.demande : '',
+      d.retourCanal ? "Canal de retour indiqué : " + d.retourCanal : ''
+    ].filter(Boolean).join(' · ');
+    etat.courante.push({
+      id, date: d.date || '', heure: d.heure || '', source: 'Diffusion',
+      evenement: "Message diffusé — " + (d.objet || 'objet non renseigné') + (detail ? "\n" + detail : ''),
+      suite: [d.retours ? "Retours reçus : " + d.retours : '', d.observation || ''].filter(Boolean).join(' '),
+      statut: 'À suivre', auteur: d.auteur || '', quand: d.quand || ''
+    });
+    vus.add(id);
+  });
 }
 
 /* Les fiches enregistrées avant l'arrivée du poste de veille n'ont
@@ -1180,7 +1245,7 @@ function majBandeau(){
 /* =========================================================
    OUTILS
    ========================================================= */
-const ESPACES = {m1:'terrain', m2:'terrain', m3:'materiel', m4:'appels', m5:'diffusions', m6:'courante'};
+const ESPACES = {m1:'terrain', m2:'terrain', m3:'materiel', m4:'appels', m5:'courante', m6:'courante'};
 const espaceDe = m => m.espace || ESPACES[m.id] || 'courante';
 const nomEspace = id => (ONGLETS.find(o => o.id === id) || {}).nom || 'Main courante';
 const cleP = n => (n||'').trim().toLowerCase();
@@ -1266,7 +1331,7 @@ function nomsMissionnes(){
     (Array.isArray(m.renforts) ? m.renforts : []).forEach(r => ajouter(r.nom));
   });
   (etat.cpts||[]).forEach(c => (c.appels||[]).forEach(a => ajouter(a.par)));
-  ['veille','diffusions','ars'].forEach(k =>
+  ['veille','ars'].forEach(k =>
     (etat[k]||[]).forEach(o => { ajouter(o.auteur); ajouter(o.modifiePar); }));
   return [...v.values()].sort((a,b)=>a.localeCompare(b,'fr'));
 }
@@ -1349,6 +1414,7 @@ function importer(ev){
   r.onload = async () => {
     try{
       const d = JSON.parse(r.result);
+      if(Array.isArray(d.diffusions)) diffusionsHeritees = d.diffusions;
       for(const k in etatInitial){ if(d[k] !== undefined) etat[k] = d[k]; }
       fusionnerNouveautes();
       await sauver(); rendre(); toast("Données importées");
@@ -1366,7 +1432,6 @@ const ONGLETS = [
   {id:'ars',       nom:'Échanges avec l\'ARS', groupe:'Pilotage', cpt:'ars'},
   {id:'fil',       nom:'Fil d\'actualité',    groupe:'Suivi', cpt:null},
   {id:'veille',    nom:'Situation régionale', groupe:'Suivi', cpt:'sources'},
-  {id:'diffusions',nom:'Ce qu\'on a diffusé', groupe:'Traçabilité', cpt:'diffusions'},
   {id:'courante',  nom:'Main courante',      groupe:'Traçabilité', cpt:'courante'},
   {id:'terrain',   nom:'Remontées terrain',  groupe:'Traçabilité', cpt:'terrain'},
   {id:'appels',    nom:'Appels CPTS',        groupe:'Actions', cpt:'cpts'},
@@ -1418,24 +1483,6 @@ const TACHES = ['Transport et enlèvement','Tri et conditionnement','Permanence 
 const VEHICULES = ['','Aucun','Voiture','Break ou monospace','Utilitaire','Camion'];
 
 const CHAMPS = {
-  diffusions: {
-    titre:"Ce qu'on a diffusé",
-    chapo:"Tout ce qui est parti de la CPTS Pau Béarn vers sa communauté de soignants : quoi, quand, par quel canal, vers qui, et ce que ça a produit. Un message sans demande précise et sans canal de retour ne fait pas remonter d'information — la colonne « retours » le rend visible.",
-    f:[
-      {c:'heure', l:"Heure", t:'time', d:maintenant},
-      {c:'objet', l:"Objet du message", t:'text', req:true, large:true},
-      {c:'canal', l:"Canal", t:'select', o:['WhatsApp','Mail','SMS','Réunion','Site web','Autre']},
-      {c:'cible', l:"Destinataires", t:'text'},
-      {c:'portee', l:"Nombre de destinataires", t:'text'},
-      {c:'emetteur', l:"Émetteur", t:'text'},
-      {c:'valide', l:"Validé par", t:'text'},
-      {c:'demande', l:"Demande précise formulée", t:'textarea', large:true},
-      {c:'retourCanal', l:"Canal de retour indiqué", t:'text'},
-      {c:'retours', l:"Retours reçus", t:'textarea', large:true},
-      {c:'observation', l:"Observation, correction à apporter", t:'textarea', large:true}
-    ],
-    cols:['date','heure','objet','canal','cible','portee','emetteur','valide','retours','auteur']
-  },
   ars: {
     titre:"Échanges avec l'ARS",
     chapo:"Tout ce que l'ARS fait descendre : consignes, communiqués, demandes. Et en regard, ce que la CPTS Pau Béarn répond et ce que ça implique pour elle. C'est la pièce qui distingue ce qui est mandaté de ce que la CPTS Pau Béarn entreprend de sa propre initiative.",
@@ -1694,7 +1741,7 @@ async function supprimer(k, id){
    la page, et on remonte le temps en descendant. Le tri se fait à
    l'affichage seulement — l'ordre de stockage n'est pas touché, et les
    lignes saisies sans heure se rangent en fin de journée. */
-const CHRONO = ['diffusions','ars','courante','terrain','materiel','appels'];
+const CHRONO = ['ars','courante','terrain','materiel','appels'];
 
 /* L'heure est ramenée à HH:MM avant d'être comparée : une entrée saisie
    « 9h05 » ou « 9:05 » doit se ranger avant 14:01, pas après. Une entrée
@@ -1810,14 +1857,6 @@ const JOURNAL = {
            {c:'commune', l:"Commune"},{c:'transmis', l:"Transmis à"}],
     blocs:[{c:'action', l:"Action menée"}]
   },
-  diffusions: {
-    titre:'objet', etiq:['canal'],
-    chips:[{c:'cible', l:"Destinataires"},{c:'portee', l:"Nombre"},
-           {c:'emetteur', l:"Émetteur"},{c:'valide', l:"Validé par"},
-           {c:'retourCanal', l:"Canal de retour"}],
-    blocs:[{c:'demande', l:"Demande formulée"},{c:'retours', l:"Retours reçus"},
-           {c:'observation', l:"Observation, correction à apporter"}]
-  },
   ars: {
     titre:'objet', etiq:['sens','statut'],
     chips:[{c:'canal', l:"Canal"},{c:'interlocuteur', l:"Interlocuteur"}],
@@ -1931,8 +1970,6 @@ function vueCockpit(){
   <div class="compteurs">
     <div class="compteur"><div class="n">${etat.missions.filter(m=>m.statut==='En cours').length}</div><div class="l">missions en cours</div></div>
     <div class="compteur"><div class="n">${missionsSansPilote}</div><div class="l">missions sans pilote désigné</div></div>
-    <div class="compteur"><div class="n">${etat.diffusions.length}</div><div class="l">messages diffusés à la communauté</div></div>
-    <div class="compteur"><div class="n">${Math.max(0,...etat.diffusions.map(d=>parseInt(d.portee,10)||0))}</div><div class="l">professionnels de santé touchés par diffusion</div></div>
     <div class="compteur"><div class="n">${etat.ars.filter(a=>a.statut==='À faire'||a.statut==='En attente').length}</div><div class="l">échanges ARS en attente</div></div>
     <div class="compteur"><div class="n">${etat.courante.length}</div><div class="l">entrées en main courante</div></div>
     <div class="compteur"><div class="n">${etat.appels.length}</div><div class="l">CPTS contactées</div></div>
@@ -2058,9 +2095,9 @@ function organigramme(){
       <div class="coord">${contact}
         <button class="modif" onclick="editerContact('${nEsc}')">${c.tel||c.mail?'Modifier le contact':'Ajouter un contact'}</button>
       </div>
-      ${p.pilote.map(o=>`<button class="chip" onclick="voirFiche('${o.mid}')"><span class="r">Pilote · fiche mission</span>${esc(o.t)}</button>
-        ${blocRenforts(o.mid)}`).join('')}
-      ${p.appui.map(o=>`<button class="chip appui" onclick="voirFiche('${o.mid}')"><span class="r">${esc(o.mention || 'Appui')} · fiche mission</span>${esc(o.t)}</button>`).join('')}
+      ${p.pilote.map(o=>ligneMission(o.mid, 'Pilote') + blocRenforts(o.mid)).join('')}
+      ${p.appui.map(o=>ligneMission(o.mid, o.mention || 'Appui')).join('')}
+      <button class="confier" onclick="nouvelleMission('${nEsc}')">+ Confier une mission à ${esc(p.nom.split(' ')[0])}</button>
     </div>`;
   });
 
@@ -2069,10 +2106,33 @@ function organigramme(){
       <div class="qui">Personne n'est dessus</div>
       <div class="nom">À pourvoir</div>
       <div class="compte">${vacantes.length} mission${vacantes.length>1?'s':''} sans pilote désigné</div>
-      ${vacantes.map(m=>`<div class="chip" style="background:#F8E5E0">${esc(m.titre)}</div>`).join('')}
+      ${vacantes.map(m=>`<div class="mrow">
+        <button class="chip vac" onclick="voirFiche('${m.id}')"><span class="r">Sans pilote · fiche mission</span>${esc(m.titre)}</button>
+        <button class="crayon-m" title="Modifier la mission" onclick="modifierMission('${m.id}')">✎</button></div>
+        <button class="rplus" style="margin:0 0 10px 12px" onclick="modifierMission('${m.id}')">Désigner un pilote</button>`).join('')}
     </div>`;
   }
+
+  /* Dernière carte de la grille : créer une mission sans quitter
+     l'organigramme. Elle se range ensuite sur la carte du pilote. */
+  h += `<button class="neuve" onclick="nouvelleMission('')">
+    <span class="plus">+</span>
+    <span class="t">Créer une mission</span>
+    <span class="d">Un intitulé, un pilote. La carte se range toute seule dans l'organigramme.</span>
+  </button>`;
+
   return h + `</div>`;
+}
+
+/* La pastille ouvre la fiche mission, le crayon la modifie :
+   deux boutons côte à côte, jamais l'un dans l'autre. */
+function ligneMission(mid, role){
+  const m = etat.missions.find(x => x.id === mid); if(!m) return '';
+  return `<div class="mrow">
+    <button class="chip${role === 'Pilote' ? '' : ' appui'}" onclick="voirFiche('${mid}')">
+      <span class="r">${esc(role)} · fiche mission</span>${esc(m.titre)}</button>
+    <button class="crayon-m" title="Modifier la mission" onclick="modifierMission('${mid}')">✎</button>
+  </div>`;
 }
 
 /* Les renforts s'ajoutent là où on les cherche : sous la mission,
@@ -2207,32 +2267,82 @@ async function validerFiche(id){
   await sauver(); fermer(); rendre(); toast("Fiche enregistrée");
 }
 
-function nouvelleMission(){
+/* Les noms déjà connus, proposés en un clic : on tape rarement
+   deux fois le même nom, et une faute de frappe crée une carte
+   en double dans l'organigramme. */
+function choixPilote(champ, actuel, exclu){
+  const noms = nomsMissionnes().filter(n => !exclu || cleP(n) !== cleP(exclu));
+  if(!noms.length) return '';
+  return `<div class="choixnom compact">` + noms.map(n =>
+    `<button class="${cleP(n)===cleP(actuel)?'on':''}" onclick="document.getElementById('${champ}').value='${esc(n).replace(/'/g,"\\'")}'">${esc(n)}</button>`).join('') + `</div>`;
+}
+
+function nouvelleMission(pilote){
+  pilote = pilote || '';
   const opts = ONGLETS.filter(o => !['cockpit','missions'].includes(o.id))
     .map(o => `<option value="${o.id}">${o.nom}</option>`).join('');
   document.getElementById('modale').innerHTML = `
-    <h3>Créer une mission</h3>
-    <label style="margin-bottom:10px"><span class="k">Intitulé *</span><input id="nm-titre" placeholder="Ex. Veille des sources"></label>
+    <h3>${pilote ? `Confier une mission à ${esc(pilote)}` : 'Créer une mission'}</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px">Ce que la CPTS entreprend, et qui le porte. Le mandat et la fiche mission se complètent après.</p>
+    <label style="margin-bottom:10px"><span class="k">Intitulé *</span><input id="nm-titre" placeholder="Ex. Logistique de la collecte à la Foire Expo"></label>
     <label style="margin-bottom:10px"><span class="k">En une phrase</span><textarea id="nm-detail" style="min-height:56px"></textarea></label>
-    <label style="margin-bottom:10px"><span class="k">Pilote</span><input id="nm-pilote"></label>
+    <span class="k">Pilote</span>
+    ${choixPilote('nm-pilote', pilote)}
+    <label style="margin-bottom:10px"><input id="nm-pilote" value="${esc(pilote)}" placeholder="Prénom et nom, ou à désigner plus tard"></label>
     <label style="margin-bottom:10px"><span class="k">Mandat ARS</span><input id="nm-mandat" value="Non"></label>
     <label style="margin-bottom:10px"><span class="k">Où consigner</span><select id="nm-espace">${opts}</select></label>
-    <div class="actions"><button class="btn" onclick="validerMission()">Créer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+    <div class="actions"><button class="btn" onclick="validerMission()">${pilote ? 'Confier la mission' : 'Créer la mission'}</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
   document.getElementById('rideau').classList.add('on');
-  setTimeout(()=>document.getElementById('nm-titre').focus(), 60);
+  setTimeout(()=>{ const i = document.getElementById('nm-titre'); if(i) i.focus(); }, 60);
+}
+
+/* Renommer, réaffecter, clore : tout ce qui se corrige au fil de
+   l'eau sur une mission, sans descendre dans la répartition. */
+function modifierMission(id){
+  const m = etat.missions.find(x => x.id === id); if(!m) return;
+  document.getElementById('modale').innerHTML = `
+    <h3>Modifier la mission</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px">Ce qui est saisi ici se répercute aussitôt sur les cartes de l'organigramme.</p>
+    <label style="margin-bottom:10px"><span class="k">Intitulé</span><input id="em-titre" value="${esc(m.titre)}"></label>
+    <label style="margin-bottom:10px"><span class="k">En une phrase</span><textarea id="em-detail" style="min-height:56px">${esc(m.detail||'')}</textarea></label>
+    <span class="k">Pilote</span>
+    ${choixPilote('em-pilote', m.pilote)}
+    <label style="margin-bottom:10px"><input id="em-pilote" value="${esc(m.pilote)}" placeholder="à désigner"></label>
+    <label style="margin-bottom:10px"><span class="k">Suppléant</span><input id="em-suppleant" value="${esc(m.suppleant)}" placeholder="indispensable en août"></label>
+    <label style="margin-bottom:10px"><span class="k">Statut</span><select id="em-statut">${
+      ['À lancer','En cours','En attente','Bloqué','Terminé'].map(s=>`<option ${s===m.statut?'selected':''}>${esc(s)}</option>`).join('')}</select></label>
+    <label style="margin-bottom:10px"><span class="k">Mandat ARS</span><input id="em-mandat" value="${esc(m.mandat)}"></label>
+    <div class="actions"><button class="btn" onclick="validerModifMission('${id}')">Enregistrer</button>
+      <button class="btn sec" onclick="fermer()">Annuler</button>
+      <button class="btn sec" onclick="voirFiche('${id}')">Fiche mission</button>
+      <button class="sup-mod" onclick="supprimerMission('${id}')">Supprimer la mission</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerModifMission(id){
+  const m = etat.missions.find(x => x.id === id); if(!m) return;
+  const g = k => document.getElementById('em-'+k).value.trim();
+  const t = g('titre');
+  if(!t){ toast("L'intitulé est obligatoire"); return; }
+  m.titre = t; m.detail = g('detail');
+  m.pilote = g('pilote'); m.suppleant = g('suppleant');
+  m.statut = document.getElementById('em-statut').value; m.mandat = g('mandat');
+  m.modifiePar = moi;
+  await sauver(); fermer(); rendre(); toast("Mission mise à jour");
 }
 async function validerMission(){
   const t = document.getElementById('nm-titre').value.trim();
   if(!t){ toast("L'intitulé est obligatoire"); return; }
+  const p = document.getElementById('nm-pilote').value.trim();
   etat.missions.push({
     id:uid(), titre:t,
     detail:document.getElementById('nm-detail').value.trim(),
-    pilote:document.getElementById('nm-pilote').value.trim(), suppleant:'',
+    pilote:p, suppleant:'', renforts:[],
     mandat:document.getElementById('nm-mandat').value.trim() || 'Non',
     statut:'À lancer', espace:document.getElementById('nm-espace').value,
     fiche:{but:'', faire:'', avec:'', pour:'', limite:''}, creePar:moi
   });
-  await sauver(); fermer(); rendre(); toast("Mission créée");
+  await sauver(); fermer(); rendre();
+  toast(p ? `Mission confiée à ${p}` : "Mission créée — reste à désigner un pilote");
 }
 async function supprimerMission(id){
   const m = etat.missions.find(x => x.id === id); if(!m) return;
@@ -2337,7 +2447,7 @@ function vueVeille(){
       <div class="tour-t ${dernier ? 'fait' : ''}">
         <div class="q">Dernier passage</div>
         <div class="v">${dernier
-          ? `<b>${frdate(dernier.slice(0,10))} à ${esc(dernier.slice(11,16))}</b><br>${(etat.sources||[]).length - dues.length} canal${(etat.sources||[]).length - dues.length > 1 ? 'aux' : ''} à jour sur ${(etat.sources||[]).length}`
+          ? `<b>${frdate(dernier.slice(0,10))} à ${esc(dernier.slice(11,16))}</b><br>${(etat.sources||[]).length - dues.length} ${(etat.sources||[]).length - dues.length > 1 ? 'canaux' : 'canal'} à jour sur ${(etat.sources||[]).length}`
           : `<b>Aucun</b><br>Le tour n'a jamais été fait`}</div>
       </div>
       <div class="tour-t ${dues.length ? 'du' : 'fait'}">
@@ -2406,7 +2516,7 @@ function vueVeille(){
   /* --- le carnet de sources, replié --- */
   h += vueSourcesVeille(dues.length);
 
-  h += `<div class="note" style="margin-top:20px"><strong>Ce que cette mission ne fait pas.</strong> On alimente le fil, on ne diffuse rien aux adhérents depuis ici : le relais se décide au copil et part de <a href="#" onclick="aller('diffusions');return false;">Ce qu'on a diffusé</a>. Les communications de l'ARS ont leur propre onglet, <a href="#" onclick="aller('ars');return false;">Échanges avec l'ARS</a>.</div>`;
+  h += `<div class="note" style="margin-top:20px"><strong>Ce que cette mission ne fait pas.</strong> On alimente le fil, on ne diffuse rien aux adhérents depuis ici : le relais se décide au copil et se consigne en <a href="#" onclick="aller('courante');return false;">Main courante</a>. Les communications de l'ARS ont leur propre onglet, <a href="#" onclick="aller('ars');return false;">Échanges avec l'ARS</a>.</div>`;
 
   return h;
 }
@@ -2693,9 +2803,8 @@ function consignerVeilleEnCourante(b){
     heure: maintenant(),
     source: 'Veille',
     evenement: "Veille — " + b.titre + (b.src ? " (source : " + b.src.nom + ")" : '') + (b.resume ? "\n" + b.resume : ''),
-    suite: b.suite === 'rien'
-      ? "Retenu pour la situation régionale, sans suite attendue. Impact : " + (IMPACTS[b.impact] || IMPACTS.contexte).l.toLowerCase() + "."
-      : su.l + ". Impact : " + (IMPACTS[b.impact] || IMPACTS.contexte).l.toLowerCase() + ".",
+    suite: (b.suite === 'rien' ? "Retenu pour la situation régionale, sans suite attendue" : su.l)
+      + " — " + (IMPACTS[b.impact] || IMPACTS.contexte).l + ".",
     statut: b.suite === 'rien' ? 'Clos' : 'À suivre',
     auteur: moi,
     quand: ''
@@ -2754,8 +2863,6 @@ function evenements(){
     if(!titre) return;
     e.push({date:o.date||'', heure:o.heure||'', type, titre, detail:detail||'', qui:qui||o.auteur||''});
   };
-  (etat.diffusions||[]).forEach(o => push(o,'Diffusé',o.objet,
-    [o.canal,o.cible,o.portee?o.portee+' destinataires':''].filter(Boolean).join(' · '), o.emetteur||o.auteur));
   (etat.ars||[]).forEach(o => push(o,'ARS',o.objet,
     [o.sens,o.interlocuteur,o.statut].filter(Boolean).join(' · '), o.auteur));
   (etat.courante||[]).forEach(o => push(o,'Consigné',o.evenement, [o.source,o.suite].filter(Boolean).join(' · '), o.auteur));
@@ -2779,7 +2886,7 @@ function evenements(){
   return e.sort((a,b) => ((b.date+' '+(b.heure||'00:00')).localeCompare(a.date+' '+(a.heure||'00:00'))));
 }
 
-const COUL = {'Diffusé':'e-cours','ARS':'e-attente','Consigné':'e-lancer','Terrain':'e-bloque','Appel CPTS':'e-lancer','Matériel':'e-attente','Collecte':'e-cours','Volontaire':'e-cours','Veille':'e-fini'};
+const COUL = {'ARS':'e-attente','Consigné':'e-lancer','Terrain':'e-bloque','Appel CPTS':'e-lancer','Matériel':'e-attente','Collecte':'e-cours','Volontaire':'e-cours','Veille':'e-fini'};
 
 function vueFil(){
   let ev = evenements();
@@ -3776,7 +3883,7 @@ async function marquerBordereau(id){
   await sauver(); fermer(); rendre(); toast("Bordereau noté comme édité");
 }
 
-const DOSSIER = ['diffusions','ars','courante','terrain','materiel','dons','stockage','renforts','volontaires'];
+const DOSSIER = ['ars','courante','terrain','materiel','dons','stockage','renforts','volontaires'];
 
 function tableauFige(k){
   const cfg = CHAMPS[k], lignes = chrono(k, etat[k]);
