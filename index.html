@@ -321,6 +321,7 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
   margin-left:7px;vertical-align:2px;font-weight:400;white-space:nowrap;
 }
 .don .ident .n .src-f.neuf{background:#FCF0DA;color:#8A5D12}
+.don .ident .n .src-f.saisie{background:var(--fond-2,#F1F3F6);color:var(--texte-2)}
 
 .don .declaration{border:1px solid var(--trait);border-left:3px solid var(--encre-2);border-radius:0 8px 8px 0;padding:13px 15px;margin-bottom:14px;background:#FCFDFF}
 .don .declaration .dt{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--encre-2);margin-bottom:9px}
@@ -583,7 +584,10 @@ Rappeler la règle d'alimentation au point quotidien.`, avec:`Toute l'équipe de
 ,
     {id:'m7', titre:"Veille des sources et actualités", detail:"Passer en revue les canaux officiels et tenir à jour la situation régionale.", pilote:'', suppleant:'', mandat:'Non', statut:'À lancer', prochaine:'', echeance:'', espace:'veille', fiche:{but:`Savoir avant les adhérents ce qui sort sur les incendies et ce qui concerne la ville.`, faire:`Passer les sources en revue deux fois par jour, le matin et en fin d'après-midi.
 Marquer chaque canal comme vérifié après consultation.
-Retenir ce qui a un impact pour le territoire, avec le lien vers la source.`, avec:`ARS, préfectures, ATMO, URPS, presse régionale.`, pour:`L'équipe de gestion de crise, et indirectement les adhérents.`, limite:`On ne diffuse rien aux adhérents depuis cette mission : on alimente le fil, la diffusion se décide ailleurs.`}}
+Retenir ce qui a un impact pour le territoire, avec le lien vers la source.`, avec:`ARS, préfectures, ATMO, URPS, presse régionale.`, pour:`L'équipe de gestion de crise, et indirectement les adhérents.`, limite:`On ne diffuse rien aux adhérents depuis cette mission : on alimente le fil, la diffusion se décide ailleurs.`}},
+    {id:'m8', titre:"Participation à la visio de crise de l'ARS", detail:"Réunion de crise de l'ARS en visio à 15h : la CPTS Pau Béarn y assiste.", pilote:'Eva Poulmarch', suppleant:'', mandat:"Oui — visio de crise de l'ARS", statut:'En cours', prochaine:"Assister à la visio de 15h et consigner ce qui en sort dans « Échanges avec l'ARS » et la main courante.", echeance:'', espace:'ars', fiche:{but:`Entendre la consigne régionale de première main et faire remonter ce qui concerne le territoire béarnais.`, faire:`Assister à la visio de crise de l'ARS à 15h.
+Noter les consignes, les demandes et ce qui appelle une décision de la CPTS.
+Consigner le compte rendu dans « Échanges avec l'ARS » et en main courante après chaque séance.`, avec:`ARS Nouvelle-Aquitaine, délégation départementale 64.`, pour:`L'équipe de gestion de crise, qui décide à partir de ce qui s'y dit.`, limite:`On rapporte ce qui est dit. Rien n'est diffusé aux adhérents avant validation de la gouvernance.`}}
   ],
   veille: [
     {id:'v4', date:'2026-07-25', source:'Préfecture', titre:"FR-Alert : évacuation de nouvelles communes girondines", resume:"Saint-Aubin-de-Médoc, Saint-Médard-en-Jalles, Martignas-sur-Jalle, Saint-Jean-d'Illac.", lien:'https://www.gironde.gouv.fr/Actualites/Communiques-de-presse/Communiques-de-presse-2026/Juillet-2026/Incendie-en-Gironde-declenchement-de-FR-Alert-pour-l-evacuation-des-nouvelles-communes'},
@@ -1314,16 +1318,23 @@ const CHAMPS = {
   dons: {
     titre:"Appels aux donateurs de matériel",
     chapo:"Qui a été contacté sur le territoire pour donner du matériel, à quelle heure, par qui, et ce qui a été répondu. Un « non » se consigne comme un « oui » : c'est ce qui évite de rappeler deux fois la même structure.",
+    /* Deux façons de remplir ce registre : consigner un appel qu'on a
+       mené, ou reporter à la main une réponse arrivée autrement — le
+       formulaire Google notamment. D'où les deux marques ci-dessous :
+       « appel » n'apparaît que dans le premier cas, « manuel » que
+       dans le second, et « lm » donne le libellé de la saisie à la
+       main quand celui de l'appel ne convient pas. */
     f:[
-      {c:'heure', l:"Heure de l'appel", t:'time', d:maintenant},
+      {c:'heure', l:"Heure de l'appel", lm:"Heure de la réponse", t:'time', d:maintenant},
       {c:'structure', l:"Structure ou personne contactée", t:'text', req:true, large:true},
       {c:'type', l:"Type", t:'select', o:['Pharmacie','Cabinet médical','Cabinet infirmier','Kinésithérapie','Laboratoire','Clinique ou hôpital','EHPAD ou ESMS','Fournisseur, distributeur','Association','Collectivité','Professionnel libéral','Particulier','Autre']},
       {c:'commune', l:"Commune", t:'text'},
       {c:'adresse', l:"Adresse", t:'text', large:true},
       {c:'tel', l:"Téléphone", t:'text'},
       {c:'mail', l:"Courriel", t:'text'},
-      {c:'interlocuteur', l:"Interlocuteur joint", t:'text'},
-      {c:'par', l:"Appel mené par", t:'text', d:() => moi === 'Anonyme' ? '' : moi},
+      {c:'interlocuteur', l:"Interlocuteur joint", lm:"Personne qui a répondu", t:'text'},
+      {c:'par', l:"Appel mené par", t:'text', d:() => moi === 'Anonyme' ? '' : moi, appel:true},
+      {c:'origine', l:"Provenance de la réponse", t:'select', manuel:true, o:['Formulaire en ligne (Google Forms)','Message reçu (SMS, courriel, WhatsApp)','Échange de vive voix','Autre']},
       {c:'reponse', l:"Réponse à la collecte", t:'select', o:['En attente','Oui','Non','À rappeler']},
       {c:'materiel', l:"Nature du matériel donné", t:'textarea', large:true},
       {c:'quantite', l:"Quantité", t:'text'},
@@ -1333,7 +1344,7 @@ const CHAMPS = {
       {c:'bordereau', l:"Bordereau de don signé ?", t:'select', o:BORDEREAU_ETATS},
       {c:'note', l:"Observation", t:'textarea', large:true}
     ],
-    cols:['date','heure','structure','type','commune','adresse','tel','mail','interlocuteur','par','reponse','materiel','quantite','lieu','retrait','bordereau','auteur']
+    cols:['date','heure','structure','type','commune','adresse','tel','mail','interlocuteur','par','origine','reponse','materiel','quantite','lieu','retrait','bordereau','auteur']
   },
   stockage: {
     titre:"Lieux de stockage du territoire",
@@ -1400,20 +1411,30 @@ const CHAMPS = {
   }
 };
 
-function ouvrirAjout(k){
-  document.getElementById('modale').innerHTML = formulaire(k);
+function ouvrirAjout(k, mode){
+  document.getElementById('modale').innerHTML = formulaire(k, null, mode);
   document.getElementById('rideau').classList.add('on');
 }
 
-function formulaire(k, o){
+/* Les champs retenus selon le mode de saisie : en saisie manuelle on
+   ne demande pas qui a mené l'appel, puisqu'il n'y a pas eu d'appel. */
+function champsVisibles(cfg, mode){
+  return cfg.f.filter(f => mode === 'manuel' ? !f.appel : !f.manuel);
+}
+
+function formulaire(k, o, mode){
   const cfg = CHAMPS[k];
   const ed = !!o;
-  let h = `<h3>${esc(cfg.titre)} — ${ed ? 'modifier' : 'nouvelle entrée'}</h3><div class="form">`;
+  if(!mode && ed && o.source === 'saisie') mode = 'manuel';
+  const man = mode === 'manuel';
+  let h = `<h3>${esc(cfg.titre)} — ${ed ? 'modifier' : (man ? 'saisie manuelle' : 'nouvelle entrée')}</h3>`;
+  if(man) h += `<p class="chapo" style="margin:-6px 0 14px">Pour reporter au registre une réponse obtenue autrement que par un appel de la CPTS — une réponse au formulaire en ligne, un message reçu. La ligne compte comme les autres ; elle porte la mention « saisie à la main » au lieu du nom de l'appelant.</p>`;
+  h += `<div class="form">`;
   h += `<label><span class="k">Date</span><input type="date" id="f-${k}-date" value="${esc(ed ? (o.date||'') : aujourdhui())}"></label>`;
-  cfg.f.forEach(f => {
+  champsVisibles(cfg, mode).forEach(f => {
     const val = ed ? (o[f.c] ?? '') : (typeof f.d === 'function' ? f.d() : '');
     const id = `f-${k}-${f.c}`;
-    h += `<label class="${f.large?'large':''}"><span class="k">${f.l}${f.req?' *':''}</span>`;
+    h += `<label class="${f.large?'large':''}"><span class="k">${esc(man && f.lm ? f.lm : f.l)}${f.req?' *':''}</span>`;
     if(f.t === 'textarea') h += `<textarea id="${id}">${esc(val)}</textarea>`;
     else if(f.t === 'select'){
       /* Certaines listes se construisent à la volée : les lieux de
@@ -1425,7 +1446,7 @@ function formulaire(k, o){
     else h += `<input type="${f.t}" id="${id}" value="${esc(val)}">`;
     h += `</label>`;
   });
-  h += `</div><div class="actions"><button class="btn" onclick="enregistrer('${k}'${ed?`,'${o.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  h += `</div><div class="actions"><button class="btn" onclick="enregistrer('${k}',${ed?`'${o.id}'`:'null'},'${mode||''}')">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
   return h;
 }
 
@@ -1435,14 +1456,17 @@ function ouvrirEdition(k, id){
   document.getElementById('rideau').classList.add('on');
 }
 
-async function enregistrer(k, id){
+async function enregistrer(k, id, mode){
   const cfg = CHAMPS[k];
   const existant = id ? (etat[k]||[]).find(x => x.id === id) : null;
   const o = existant || {id:uid(), auteur:moi, quand:new Date().toISOString()};
+  if(!existant && mode === 'manuel') o.source = 'saisie';
   let manque = null;
   const dEl = document.getElementById(`f-${k}-date`);
   o.date = dEl ? dEl.value : aujourdhui();
-  cfg.f.forEach(f => {
+  /* Seuls les champs affichés sont relus : sinon un champ masqué par
+     le mode de saisie serait effacé à chaque enregistrement. */
+  champsVisibles(cfg, mode || (o.source === 'saisie' ? 'manuel' : '')).forEach(f => {
     const el = document.getElementById(`f-${k}-${f.c}`);
     const v = el ? el.value.trim() : '';
     if(f.req && !v && !manque) manque = f.l;
@@ -2379,6 +2403,7 @@ function vueCollecte(){
   h += carteFormulaire();
 
   const parFormulaire = d.filter(x => x.source === 'formulaire').length;
+  const parSaisie = d.filter(x => x.source === 'saisie').length;
 
   h += `<div class="compteurs" style="margin-bottom:16px">
     <div class="compteur"><div class="n">${d.length}</div><div class="l">structures contactées ou déclarées</div></div>
@@ -2388,6 +2413,7 @@ function vueCollecte(){
     <div class="compteur"><div class="n">${taux}&thinsp;%</div><div class="l">d'accord parmi les réponses obtenues</div></div>
     <div class="compteur"><div class="n">${d.filter(x=>x.reponse==='Oui'&&BORDEREAU_ACQUIS.indexOf(x.bordereau)>=0).length}</div><div class="l">bordereaux signés ou engagés en ligne</div></div>
     ${parFormulaire ? `<div class="compteur"><div class="n" style="color:var(--encre-2)">${parFormulaire}</div><div class="l">reçus par le formulaire</div></div>` : ''}
+    ${parSaisie ? `<div class="compteur"><div class="n" style="color:var(--encre-2)">${parSaisie}</div><div class="l">réponses reportées à la main</div></div>` : ''}
   </div>`;
 
   if(d.length){
@@ -2403,31 +2429,36 @@ function vueCollecte(){
     </div>`;
   }
 
-  h += `<div class="note">Un don n'est acquis qu'une fois le <strong>bordereau signé ou engagé en ligne</strong> et le <strong>lieu de stockage</strong> connu. Le bordereau s'édite depuis la ligne du donateur, ou vierge depuis le bouton en haut à droite. Les lignes marquées <strong>Formulaire</strong> ont été déclarées par le donateur lui-même : leur bordereau est déjà rempli et son engagement recueilli, il reste à les vérifier et à organiser l'enlèvement.</div>
+  h += `<div class="note">Un don n'est acquis qu'une fois le <strong>bordereau signé ou engagé en ligne</strong> et le <strong>lieu de stockage</strong> connu. Le bordereau s'édite depuis la ligne du donateur, ou vierge depuis le bouton en haut à droite. Les lignes marquées <strong>Formulaire</strong> ont été déclarées par le donateur lui-même : leur bordereau est déjà rempli et son engagement recueilli, il reste à les vérifier et à organiser l'enlèvement. Une réponse obtenue autrement — le formulaire Google, un message reçu — se reporte ici avec <strong>Reporter une réponse</strong> : la ligne compte comme les autres, sans nom d'appelant.</div>
   <div class="barre-h">
     <span class="cpt-h">${d.length} ligne${d.length>1?'s':''} au registre</span>
     <button class="btn sec" onclick="exporterCSV('dons')">Excel</button>
     <button class="btn sec" onclick="imprimer()">PDF</button>
     <button class="btn sec" onclick="bordereau()">Bordereau de don officiel</button>
+    <button class="btn sec" onclick="ouvrirAjout('dons','manuel')">Reporter une réponse</button>
     <button class="btn" onclick="ouvrirAjout('dons')">Consigner un appel</button>
   </div>`;
 
-  const compte = r => r === 'Formulaire'
-    ? parFormulaire
+  const LIB_SRC = {Formulaire:'Reçus par formulaire', Saisie:'Reportés à la main'};
+  const compte = r => r === 'Formulaire' ? parFormulaire
+    : r === 'Saisie' ? parSaisie
     : d.filter(x => x.reponse === r).length;
-  const reps = ['Tout','Oui','Non','En attente','À rappeler'].concat(parFormulaire ? ['Formulaire'] : []);
+  const reps = ['Tout','Oui','Non','En attente','À rappeler']
+    .concat(parFormulaire ? ['Formulaire'] : [])
+    .concat(parSaisie ? ['Saisie'] : []);
   if(d.length) h += `<div class="filtres">${reps.map(r =>
-    `<button class="${filtreDon===r?'on':''}" onclick="filtrerDon('${r}')">${r==='Formulaire'?'Reçus par formulaire':esc(r)}${r!=='Tout'?` <span style="opacity:.6">${compte(r)}</span>`:''}</button>`).join('')}</div>`;
+    `<button class="${filtreDon===r?'on':''}" onclick="filtrerDon('${r}')">${LIB_SRC[r] || esc(r)}${r!=='Tout'?` <span style="opacity:.6">${compte(r)}</span>`:''}</button>`).join('')}</div>`;
 
   let vus = filtreDon === 'Tout' ? [...d]
     : filtreDon === 'Formulaire' ? d.filter(x => x.source === 'formulaire')
+    : filtreDon === 'Saisie' ? d.filter(x => x.source === 'saisie')
     : d.filter(x => x.reponse === filtreDon);
   vus.sort((a,b) => ((b.date||'')+' '+(b.heure||'')).localeCompare((a.date||'')+' '+(a.heure||'')));
 
   if(!vus.length){
     return h + `<div class="carte"><p class="vide">${d.length
-      ? "Aucun appel dans ce filtre."
-      : "Aucun appel consigné. Le premier appel ouvre le tableau de bord : structure appelée, heure, personne qui a mené l'appel, réponse."}</p></div>`;
+      ? "Aucune ligne dans ce filtre."
+      : "Registre vide. Il se remplit de deux façons : consigner un appel qu'on a mené, ou reporter une réponse arrivée autrement — une réponse au formulaire Google, un message reçu."}</p></div>`;
   }
 
   h += `<div class="dons">`;
@@ -2440,10 +2471,16 @@ function vueCollecte(){
         <span class="ident">
           <span class="n">${esc(o.structure)}${o.source === 'formulaire'
             ? `<span class="src-f">Formulaire</span>${o.aVerifier ? `<span class="src-f neuf">À vérifier</span>` : ''}`
+            : o.source === 'saisie'
+            ? `<span class="src-f saisie">Saisie à la main</span>`
             : ''}</span>
           <span class="s">${[o.type, o.commune, o.interlocuteur].filter(Boolean).map(esc).join(' · ') || '—'}</span>
         </span>
-        <span class="par">${o.source === 'formulaire' ? 'Déclaré par' : 'Appel mené par'}<br><b>${esc(o.source === 'formulaire' ? (o.interlocuteur || 'le donateur') : (o.par || o.auteur || '—'))}</b></span>
+        <span class="par">${o.source === 'formulaire' ? 'Déclaré par'
+            : o.source === 'saisie' ? 'Réponse de'
+            : 'Appel mené par'}<br><b>${esc(o.source === 'formulaire' ? (o.interlocuteur || 'le donateur')
+            : o.source === 'saisie' ? (o.interlocuteur || o.origine || 'le donateur')
+            : (o.par || o.auteur || '—'))}</b></span>
         <span class="etiq ${REPET[o.reponse]||'e-lancer'}">${esc(o.reponse||'En attente')}</span>
         ${o.reponse === 'Oui'
           ? (o.materiel
@@ -2484,6 +2521,22 @@ function detailDon(o){
         <tbody>${o.lignes.map(l => `<tr><td>${esc(l.designation||'')}</td><td>${esc(l.quantite||'')}</td><td>${esc(l.etat||'')}</td><td>${esc(l.obs||'')}</td></tr>`).join('')}</tbody></table>` : ''}
       ${o.note ? `<div class="dn"><span class="k">Précisions à l'enlèvement</span>${esc(o.note)}</div>` : ''}
       ${e.le ? `<div class="de">Conditions du bordereau acceptées le ${frdateL(e.le)} à ${esc(String(e.le).slice(11,16))} par ${esc(e.nom||'—')}${e.qualite?', '+esc(e.qualite):''}. Cette acceptation tient lieu de signature de l'entité donneuse.</div>` : ''}
+    </div>`;
+  }
+
+  /* Une ligne reportée à la main n'engage pas la CPTS de la même
+     façon qu'un appel : on rappelle d'où vient la réponse et qui
+     l'a recopiée, sans quoi la ligne n'est plus vérifiable. */
+  if(o.source === 'saisie'){
+    h += `<div class="declaration">
+      <div class="dt">Réponse reportée à la main au registre</div>
+      <div class="dc">
+        ${[['Provenance', o.origine], ['Personne qui a répondu', o.interlocuteur],
+           ['Courriel', o.mail], ['Adresse', o.adresse]]
+          .filter(x => x[1]).map(x => `<div><span class="k">${x[0]}</span>${esc(x[1])}</div>`).join('')
+          || `<div><span class="k">Provenance non précisée</span></div>`}
+      </div>
+      <div class="de">Reportée par ${esc(o.auteur || '—')}${o.quand ? ' le ' + frdateL(String(o.quand).slice(0,10)) : ''}. Cette ligne n'a pas fait l'objet d'un appel de la CPTS.</div>
     </div>`;
   }
 
