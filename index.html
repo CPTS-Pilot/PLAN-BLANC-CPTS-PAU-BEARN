@@ -171,6 +171,33 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
   padding:7px 13px;min-height:38px;border-radius:20px;border-color:transparent;color:var(--encre-2)}
 .choixnom.compact button.on{border-color:var(--encre-2);font-weight:600}
 
+/* Les référents de la gestion de crise : en tête de l'onglet,
+   plus compacts que les cartes de mission — on vient y chercher
+   un numéro, pas à s'y attarder. */
+.refs{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 26px}
+.ref{flex:1 1 212px;max-width:290px;background:var(--carte);border:1px solid var(--trait);
+  border-left:4px solid var(--encre);border-radius:10px;padding:12px 14px;
+  display:flex;flex-direction:column;gap:3px}
+.ref .nom{font-family:var(--display);font-weight:700;font-size:16.5px;color:var(--encre);line-height:1.15}
+.ref .prof{font-size:13px;color:var(--texte-2);line-height:1.3}
+.ref a{margin-top:5px;display:inline-flex;align-items:center;gap:7px;text-decoration:none;
+  color:var(--encre-2);font-size:14.5px;padding:7px 10px;background:var(--cobalt-clair);
+  border-radius:7px;min-height:40px}
+.ref a:active{background:#D6E5F9}
+.ref .abs{margin-top:5px;font-size:12.5px;color:var(--texte-2);font-style:italic}
+.ref .b{display:flex;gap:6px;align-items:center;margin-top:6px}
+.ref .modif{background:none;border:1px solid var(--trait);border-radius:6px;color:var(--texte-2);
+  font-family:inherit;font-size:12px;padding:6px 10px;cursor:pointer;min-height:36px}
+.ref .modif:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.ref .rx{background:none;border:0;color:var(--texte-2);font-size:17px;line-height:1;
+  cursor:pointer;padding:4px 8px;border-radius:5px}
+.ref .rx:hover{background:#F8E5E0;color:var(--braise)}
+.ref.neuf{border:2px dashed var(--trait);align-items:flex-start;justify-content:center;
+  cursor:pointer;font-family:inherit;text-align:left;min-height:98px;color:var(--texte-2)}
+.ref.neuf:hover{border-color:var(--encre-2);background:var(--cobalt-clair)}
+.ref.neuf .plus{font-family:var(--display);font-size:24px;line-height:1;color:var(--encre-2)}
+.ref.neuf .t{font-family:var(--display);font-weight:600;font-size:15px;color:var(--encre)}
+
 /* Une mission sur une carte : la pastille ouvre la fiche, le
    crayon ouvre la modification. */
 .mrow{display:flex;align-items:stretch;gap:6px;margin-bottom:6px}
@@ -634,7 +661,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 @media print{
   @page{margin:14mm}
   body{background:#fff;font-size:10.5pt}
-  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.src-c .b,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve{display:none!important}
+  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.src-c .b,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve,.ref .b,.ref.neuf{display:none!important}
   td.act,th:last-child{display:none!important}
   .contenu{padding:0;max-width:none}
   .carte,.tw,.mission,.pers,.ligne,.src-c,.ent-r{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
@@ -820,6 +847,13 @@ Consigner le compte rendu dans « Échanges avec l'ARS » et en main courante ap
   ],
   retires: [],
   personnes: {},
+  /* L'équipe de gestion de crise elle-même : qui la compose et
+     comment on les joint. C'est la première chose qu'on cherche
+     en ouvrant le cockpit, avant même les missions. */
+  referents: [
+    {id:'r1', nom:"Anne Latisnère", profession:"Infirmière — vice-présidente de la CPTS", tel:'', auteur:'', quand:''},
+    {id:'r2', nom:"Eva Poulmarch", profession:"Coordinatrice de la CPTS", tel:'', auteur:'', quand:''}
+  ],
   sources: [
     {id:'s1', nom:"ARS Nouvelle-Aquitaine — communiqués", url:'https://www.nouvelle-aquitaine.ars.sante.fr', cat:'Institutionnel', rythme:'Chaque tour', quoi:"Nouveaux communiqués, consignes aux professionnels de santé, évolutions du plan blanc.", verifieLe:'', verifiePar:''},
     {id:'s2', nom:"Préfecture de la Gironde", url:'https://www.gironde.gouv.fr', cat:'Préfecture', rythme:'Chaque tour', quoi:"Arrêtés, FR-Alert, évacuations et retours de population.", verifieLe:'', verifiePar:''},
@@ -1112,7 +1146,7 @@ function lancerSondage(){
    et qu'elle n'a pas été retirée à la main : ce qui a été saisi
    par le copil n'est jamais touché. C'est par là qu'arrivent les
    éléments consignés hors ligne, au téléphone notamment. */
-const SEEDS = ['missions','veille','ars','sources','lignes','offre','cpts','courante','materiel','stockage','contacts'];
+const SEEDS = ['missions','veille','ars','sources','lignes','offre','cpts','courante','materiel','stockage','contacts','referents'];
 function fusionnerNouveautes(){
   etat.retires = etat.retires || [];
   SEEDS.forEach(k => {
@@ -2162,6 +2196,78 @@ function organigramme(){
   return h + `</div>`;
 }
 
+/* =========================================================
+   RÉFÉRENTS DE LA GESTION DE CRISE
+
+   L'équipe qui tient la crise, en tête de l'onglet : nom,
+   profession, numéro. On les appelle, on ne les cherche pas.
+   ========================================================= */
+function blocReferents(){
+  etat.referents = etat.referents || [];
+  return `<h2 style="margin-top:0">Référents de la gestion de crise</h2>
+    <div class="refs">` +
+    etat.referents.map(r => `<div class="ref">
+      <div class="nom">${esc(r.nom)}</div>
+      ${r.profession ? `<div class="prof">${esc(r.profession)}</div>` : ''}
+      ${r.tel ? `<a href="tel:${esc(String(r.tel).replace(/\s/g,''))}">📞 ${esc(r.tel)}</a>`
+              : `<span class="abs">Numéro à renseigner</span>`}
+      <div class="b">
+        <button class="modif" onclick="editerReferent('${r.id}')">Modifier</button>
+        <button class="rx" title="Retirer ce référent" onclick="retirerReferent('${r.id}')">×</button>
+      </div></div>`).join('') +
+    `<button class="ref neuf" onclick="editerReferent('')">
+      <span class="plus">+</span><span class="t">Ajouter un référent</span></button></div>`;
+}
+
+function editerReferent(id){
+  const r = id ? (etat.referents || []).find(x => x.id === id) : null;
+  document.getElementById('modale').innerHTML = `<h3>${r ? 'Modifier le référent' : 'Ajouter un référent'}</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px">Les personnes qui tiennent la gestion de crise pour la CPTS Pau Béarn.</p>
+    <label style="margin-bottom:10px"><span class="k">Prénom et nom *</span>
+      <input id="rf-r-nom" value="${esc(r ? r.nom : '')}" placeholder="Prénom et nom"></label>
+    <label style="margin-bottom:10px"><span class="k">Profession et rôle</span>
+      <input id="rf-r-prof" value="${esc(r ? r.profession : '')}" placeholder="Ex. infirmière — vice-présidente"></label>
+    <label style="margin-bottom:10px"><span class="k">Téléphone</span>
+      <input id="rf-r-tel" type="tel" value="${esc(r ? r.tel : '')}" placeholder="06 12 34 56 78"
+        onkeydown="if(event.key==='Enter')validerReferent('${id}')"></label>
+    <div class="actions"><button class="btn" onclick="validerReferent('${id}')">Enregistrer</button>
+      <button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+  setTimeout(()=>{ const i = document.getElementById('rf-r-nom'); if(i) i.focus(); }, 60);
+}
+
+async function validerReferent(id){
+  const nom = document.getElementById('rf-r-nom').value.trim();
+  if(!nom){ toast("Le nom est obligatoire"); return; }
+  const v = {
+    nom: nom,
+    profession: document.getElementById('rf-r-prof').value.trim(),
+    tel: document.getElementById('rf-r-tel').value.trim()
+  };
+  etat.referents = etat.referents || [];
+  const r = id ? etat.referents.find(x => x.id === id) : null;
+  if(r){ Object.assign(r, v); r.modifiePar = moi; }
+  else etat.referents.push(Object.assign({id:uid()}, v, {auteur:moi, quand:new Date().toISOString()}));
+  const issue = await sauver();
+  fermer(); rendre();
+  toast(issue === 'ok' ? "Référent enregistré et partagé avec le copil"
+                       : "Référent conservé sur cet appareil — le serveur n'a pas répondu");
+}
+
+async function retirerReferent(id){
+  const r = (etat.referents || []).find(x => x.id === id); if(!r) return;
+  document.getElementById('modale').innerHTML = `<h3>Retirer ce référent&nbsp;?</h3>
+    <p style="color:var(--texte-2)">${esc(r.nom)} ne figurera plus parmi les référents de la gestion de crise.</p>
+    <div class="actions"><button class="btn" onclick="confirmerRetraitReferent('${id}')">Retirer</button>
+      <button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function confirmerRetraitReferent(id){
+  noterRetrait(id);
+  etat.referents = (etat.referents || []).filter(x => x.id !== id);
+  await sauver(); fermer(); rendre(); toast("Référent retiré");
+}
+
 /* La pastille ouvre la fiche mission, le crayon la modifie :
    deux boutons côte à côte, jamais l'un dans l'autre. */
 function ligneMission(mid, role){
@@ -2222,6 +2328,7 @@ async function retirerRenfort(mid, i){
 function vueMissions(){
   let h = `<h1>Missions et organigramme</h1>
   <p class="chapo">Qui porte quoi, et qui prend le relais. Le visuel se construit tout seul à partir des noms saisis plus bas.</p>
+  ${blocReferents()}
   ${organigramme()}
   <h2>Répartition détaillée</h2>
   <div class="actions" style="margin:0 0 14px"><button class="btn" onclick="nouvelleMission()">Créer une mission</button></div>
