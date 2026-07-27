@@ -934,6 +934,19 @@ function marquerSynchronise(){
    serveur et on n'y réapplique que les fiches réellement
    touchées de notre côté, repérées par leur identifiant. */
 function fusionner(base, mien, serveur){
+  /* Un dictionnaire — le carnet de coordonnées — se fusionne par clé :
+     ce qu'on a soi-même touché l'emporte, le reste du serveur est
+     conservé. Sans ça, deux personnes qui renseignent deux numéros en
+     même temps s'effacent l'une l'autre. */
+  const dico = o => o && typeof o === 'object' && !Array.isArray(o);
+  if(dico(base) && dico(mien) && dico(serveur)){
+    const r = Object.assign({}, serveur);
+    Object.keys(mien).forEach(c => {
+      if(!(c in r) || JSON.stringify(base[c]) !== JSON.stringify(mien[c])) r[c] = mien[c];
+    });
+    return r;
+  }
+
   const tableauIdentifie = a => Array.isArray(a) && a.every(x => x && typeof x === 'object' && x.id !== undefined);
   if(!tableauIdentifie(base) || !tableauIdentifie(mien) || !tableauIdentifie(serveur)) return mien;
 
@@ -968,10 +981,25 @@ function appliquerDistant(d){
   versionServeur = d && d.version ? d.version : 0;
   const src = (d && d.donnees) || {};
   if(Array.isArray(src.diffusions)) diffusionsHeritees = src.diffusions;
+
+  /* Le carnet de coordonnées ne se remplace pas, il se complète.
+     Un numéro saisi ici et pas encore connu du serveur survit donc à
+     la relève, et repart au prochain enregistrement : c'est ce qui
+     manquait quand les numéros des pilotes disparaissaient. En cas de
+     saisie concurrente sur la même personne, le serveur l'emporte. */
+  normaliserPersonnes();
+  const carnetLocal = etat.personnes;
+
   for(const k in etatInitial){ if(src[k] !== undefined) etat[k] = src[k]; }
   fusionnerNouveautes();
   normaliserPersonnes();
+
+  const aDeposer = Object.keys(carnetLocal).filter(c => !etat.personnes[c]);
+  etat.personnes = Object.assign({}, carnetLocal, etat.personnes);
   marquerSynchronise();
+  /* Ce que le serveur ignore encore doit repartir : on marque la
+     rubrique comme à envoyer plutôt que comme synchronisée. */
+  if(aDeposer.length) empreinte.personnes = null;
 }
 
 /* Renvoie 'ok', 'code' (code d'accès à fournir) ou 'absent'
@@ -1171,6 +1199,7 @@ async function sauver(){
 
   if(modeServeur) return sauverServeur();
   if(!stockageActif) toast("Modification enregistrée dans cette session seulement");
+  return 'local';
 }
 
 async function sauverServeur(reste){
@@ -1186,13 +1215,13 @@ async function sauverServeur(reste){
     r = await appelApi('POST', corps);
   }catch(e){
     toast("Serveur injoignable — saisie conservée sur cet appareil");
-    return;
+    return 'local';
   }
 
   if(r.ok && r.corps){
     versionServeur = r.corps.version;
     marquerSynchronise();
-    return;
+    return 'ok';
   }
 
   /* Quelqu'un a enregistré entre-temps. On repart de sa version et
@@ -1213,9 +1242,11 @@ async function sauverServeur(reste){
   if(r.statut === 401){
     modeServeur = false;
     toast("Session expirée — code d'accès à ressaisir");
-    return demanderCode();
+    demanderCode();
+    return 'local';
   }
   toast("Enregistrement sur le serveur impossible — copie locale conservée");
+  return 'local';
 }
 
 function editerEntete(){
@@ -1314,7 +1345,14 @@ async function validerContact(nom){
     tel: document.getElementById('ct-tel').value.trim(),
     mail: document.getElementById('ct-mail').value.trim()
   };
-  await sauver(); fermer(); rendre(); toast("Contact enregistré");
+  /* Ce carnet a déjà été perdu une fois : on force son envoi au lieu
+     de s'en remettre à la détection de changement, et on dit ce qui
+     s'est réellement passé plutôt qu'un « enregistré » de principe. */
+  empreinte.personnes = null;
+  const issue = await sauver();
+  fermer(); rendre();
+  toast(issue === 'ok' ? "Contact enregistré et partagé avec le copil"
+                       : "Contact conservé sur cet appareil — le serveur n'a pas répondu");
 }
 
 /* Toute personne dont le nom figure déjà dans le cockpit : pilotes et
