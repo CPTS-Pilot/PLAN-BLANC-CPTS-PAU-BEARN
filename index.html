@@ -781,6 +781,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 @media(max-width:600px){.flechage select,.flechage input{font-size:16px;padding:11px 12px}}
 /* Les créneaux cochés au calendrier du formulaire, relus jour
    par jour dans la fiche du médecin. */
+/* La liste des motifs acceptés peut être longue : on la borne à
+   trois lignes sur la carte, elle reste entière à l'export. */
+.borne{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .agenda-l{display:flex;flex-direction:column;gap:2px;margin-top:2px}
 .agenda-l span{font-size:13px}
 .agenda-l b{font-weight:600;color:var(--encre)}
@@ -1142,6 +1145,7 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
   consultations: { ouverte:false, message:'', cadre:"Il s'agit de consultations ponctuelles au cabinet, aux horaires que vous choisissez : renouvellement d'ordonnance interrompue par un départ précipité, suites d'inhalation de fumées. Répondre ne vous engage ni à devenir médecin traitant, ni à recevoir plus de patients que vous ne l'avez indiqué." },
   courante: [
     {id:'mc18', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Préparation d'un message d'information aux pharmaciens du territoire, en accompagnement du sondage des médecins généralistes de l'action « Patients évacués ». Le message assume la situation telle qu'elle est : le réseau d'orientation n'est pas encore constitué, aucun nom de médecin ne peut être donné à ce stade, et le vivier de volontaires est en cours de constitution. Il invite les pharmaciens à continuer de faire remonter les situations rencontrées au comptoir, en indiquant que ces remontées ont des suites — c'est l'une d'elles qui a ouvert l'action. Deux lignes y sont ouvertes : Anne Latisnère, vice-présidente, référente de cette coordination (06 29 82 29 10), et Eva Poulmarch, coordinatrice, sur la logistique (07 61 18 16 35).", suite:"Diffuser le message aux pharmaciens du territoire, puis consigner ici la date de diffusion, le canal employé et le nombre de destinataires. Recueillir les retours dans « Remontées terrain », et le fléchage dans l'action « Patients évacués » dès que le vivier de généralistes est ouvert.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
+    {id:'mc21', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Allègement du formulaire de recensement des généralistes, après relecture. Les horaires d'une demi-journée s'ouvrent désormais dans la semaine même, juste sous sa grille : cocher mercredi matin et devoir descendre en bas de page pour en préciser l'heure n'était pas tenable pour un médecin qui répond entre deux patients. Les six motifs ne se cochent plus un par un — la liste se lit, et une seule case la couvre : accepter, c'est accepter ce qui relève de la médecine générale courante. Trois questions sont retirées : le nombre de patients acceptés, le délai de rendez-vous et les conditions posées, qui se demandent mieux au téléphone qu'au formulaire.", suite:"Les champs « nombre de patients » et « conditions posées » restent disponibles dans le cockpit pour la saisie à la main et se renseignent au moment du rappel de confirmation. Le reste du formulaire est inchangé : identité, réponse oui ou non, créneaux, prise de rendez-vous, accord de diffusion, et la question du médecin traitant en dernier.", statut:'Clos', auteur:'Eva Poulmarch', quand:''},
     {id:'mc20', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Mise en service de l'agenda des créneaux, dans l'onglet « Patients évacués ». Les médecins qui répondent au formulaire cochent leurs demi-journées puis, d'un appui, les horaires exacts qu'ils peuvent proposer. Tous ces créneaux se rassemblent en un seul calendrier, jour par jour, qui distingue ce qui est libre de ce qui est positionné. Quand une pharmacie appelle, la coordination repère un créneau libre, y pose la personne signalée, et le cockpit rend aussitôt le téléphone et le courriel du médecin, avec un message tout écrit à lui envoyer — un créneau positionné dont le médecin n'est pas prévenu n'est pas un rendez-vous.", suite:"Rappeler aux médecins, à la diffusion du formulaire, que préciser des horaires évite un appel de calage et permet de placer une personne dans la journée. Suivre le compteur « à confirmer avec le médecin » : il compte les créneaux posés dont le praticien n'a pas encore été averti.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc19', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Mise en place de la campagne de recensement des médecins généralistes volontaires pour recevoir en consultation les personnes évacuées. Un formulaire en ligne, sur le modèle de ceux de la collecte et de l'appel au renfort, permet au médecin de répondre depuis son téléphone : identité, adresse du cabinet et téléphone, réponse oui ou non, motifs qu'il accepte de prendre, nombre de patients, et surtout ses créneaux — cochés demi-journée par demi-journée sur un calendrier de trois semaines plutôt que rédigés. La question de devenir médecin traitant est posée en dernier et ne conditionne rien. Un refus s'enregistre comme un accord : cela évite de rappeler deux fois le même cabinet.", suite:"Le recensement reste fermé tant que la coordination ne l'ouvre pas depuis l'onglet « Patients évacués », feuillet « Médecins volontaires ». À l'ouverture, diffuser le lien aux généralistes du territoire et consigner chaque diffusion. Attention : le cockpit et ses formulaires sont servis en http, ce qui a déjà provoqué un avertissement « site non sécurisé » lors de la diffusion du formulaire de don — arbitrer le canal avant d'envoyer.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc17', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Cadre de protection des données arrêté pour le fléchage des patients évacués. Le cockpit ne conserve aucune donnée nominative de patient : le registre est pseudonymisé — initiales, âge, commune, motif — et le nom reste chez la pharmacie ou la structure de soins non programmés qui reçoit la personne. La CPTS aiguille vers un médecin, elle ne constitue pas de liste de patients et ne transporte aucun dossier médical. L'information et l'accord du patient sont recueillis au comptoir par la structure qui le reçoit, et tracés dans le registre. Quand des coordonnées doivent malgré tout circuler vers un médecin, elles passent par messagerie sécurisée de santé entre professionnels, jamais par le cockpit, ni par courriel ordinaire ou WhatsApp.", suite:"Un bouton « Anonymiser le registre » efface les références patients et les précisions en conservant les compteurs : à actionner une fois la crise passée, pour ne garder au dossier de traçabilité que ce qui sert au retour d'expérience et au bilan ACI. Reste à ajouter cette activité au registre des traitements de la CPTS et à remettre aux pharmacies une mention d'information à afficher au comptoir.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
@@ -3323,7 +3327,7 @@ function vuePoints(nbRafraichir){
         ? `Mis à jour ${frdate(r.maj.slice(0,10))} à ${esc(r.maj.slice(11,16))}${r.par ? ' par ' + esc(r.par) : ''}${vieux ? ' · à rafraîchir' : ''}`
         : 'Jamais renseigné'}</div>
       <div class="b">
-        <button class="maj" onclick="ouvrirPoint('${r.id}')">${r.etat ? 'Mettre à jour' : 'Écrire le point'}</button>
+        <button class="maj" onclick="ouvrirPointSituation('${r.id}')">${r.etat ? 'Mettre à jour' : 'Écrire le point'}</button>
         <button class="lire" onclick="filtrer('pt:${r.id}')">${infos.length
           ? infos.length + ' information' + (infos.length > 1 ? 's' : '') + (ouvertes ? ' · ' + ouvertes + ' en attente' : '')
           : 'Aucune information rangée ici'}</button>
@@ -3740,7 +3744,7 @@ function consignerVeilleEnCourante(b, pt){
   });
 }
 /* ---------- les points de situation ---------- */
-function ouvrirPoint(id){
+function ouvrirPointSituation(id){
   const r = rubriqueDe(id);
   if(!r) return;
   brouillonPoint = id;
@@ -3762,13 +3766,13 @@ function ouvrirPoint(id){
         <span class="d">Coché par défaut : toute information recueillie se retrouve dans la main courante, en plus de sa rubrique.</span></span>
     </label></div>
     <div class="actions">
-      <button class="btn" onclick="validerPoint()">Enregistrer le point</button>
+      <button class="btn" onclick="validerPointSituation()">Enregistrer le point</button>
       <button class="btn sec" onclick="fermer()">Annuler</button>
     </div>`;
   document.getElementById('rideau').classList.add('on');
   setTimeout(()=>{ const i = document.getElementById('p-etat'); if(i) i.focus(); }, 60);
 }
-async function validerPoint(){
+async function validerPointSituation(){
   const r = rubriqueDe(brouillonPoint);
   if(!r) return;
   const v = document.getElementById('p-etat').value.trim();
@@ -6398,7 +6402,7 @@ function feuilletMedecins(med, vivier, diffusables, ori){
         <div style="font-size:13px;color:var(--texte-2);margin-top:2px">${[o.structure, o.commune].filter(Boolean).map(esc).join(' · ') || 'Structure et commune à préciser'}</div>
         <div style="margin-top:6px"><span class="etiq ${MED_ET[st] || 'e-attente'}">${esc(st)}</span></div>
       </div>
-      ${o.motifs ? `<div class="bl"><span class="k">Accepte de prendre</span>${esc(o.motifs)}</div>` : `<div class="obs">Ce qu'il ou elle accepte de prendre reste à préciser.</div>`}
+      ${o.motifs ? `<div class="bl"><span class="k">Accepte de prendre</span><span class="borne">${esc(o.motifs)}</span></div>` : `<div class="obs">Ce qu'il ou elle accepte de prendre reste à préciser.</div>`}
       ${o.capacite ? `<div class="bl"><span class="k">Nombre de patients</span>${esc(o.capacite)}</div>` : ''}
       ${cren.length
         ? `<div class="bl"><span class="k">Créneaux cochés sur le calendrier</span>

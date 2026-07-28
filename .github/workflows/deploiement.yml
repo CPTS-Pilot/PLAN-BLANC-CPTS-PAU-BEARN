@@ -1,13 +1,23 @@
-# Dépôt automatique du cockpit sur l'hébergement OVH.
+# Dépôt automatique du cockpit sur ses hébergements.
 #
 # Se déclenche à chaque modification poussée sur main. Plus aucune
 # manipulation FTP n'est nécessaire côté coordination.
 #
-# Un seul secret à renseigner dans GitHub : OVH_FTP_MOTDEPASSE.
-# Le serveur et l'identifiant ne sont pas des secrets, ils figurent
-# tels quels dans l'espace client OVH.
+# Deux destinations pendant la bascule de juillet 2026 :
+#
+#   - AlwaysData (nouvelle) : https://cptspaubearn.alwaysdata.net
+#     Seule adresse en HTTPS, donc la seule diffusable aux
+#     professionnels sans avertissement « site non sécurisé ».
+#   - OVH (ancienne) : http://cptspip.cluster129.hosting.ovh.net
+#     Conservée le temps de vérifier la nouvelle. L'offre gratuite y
+#     interdit tout certificat, c'est la raison du déménagement.
+#
+# Deux secrets à renseigner dans GitHub :
+#   OVH_FTP_MOTDEPASSE et ALWAYSDATA_FTP_MOTDEPASSE.
+# Les serveurs et identifiants ne sont pas des secrets, ils figurent
+# tels quels dans les espaces clients.
 
-name: Déploiement OVH
+name: Déploiement
 
 on:
   push:
@@ -33,7 +43,31 @@ jobs:
           sed -i "s|<div class=\"version\">[^<]*</div>|<div class=\"version\">Version du ${horodatage}</div>|" index.html
           grep -o '<div class="version">[^<]*</div>' index.html
 
-      - name: Déposer sur l'hébergement
+      # Destination principale. En FTPS : le mot de passe ne circule
+      # pas en clair, contrairement au FTP simple imposé par OVH.
+      - name: Déposer sur AlwaysData
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ftp-cptspaubearn.alwaysdata.net
+          username: cptspaubearn
+          password: ${{ secrets.ALWAYSDATA_FTP_MOTDEPASSE }}
+          protocol: ftps
+          port: 21
+          server-dir: www/
+          # Le dossier « donnees » contient l'état saisi par le copil :
+          # il vit sur le serveur et ne doit jamais être écrasé.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.github/**
+            **/donnees/**
+            **/*.md
+
+      # Ancienne destination, gardée le temps de la bascule. Un échec
+      # ici ne doit pas faire passer le dépôt AlwaysData pour raté :
+      # c'est ce dernier qui compte désormais.
+      - name: Déposer sur OVH (ancienne adresse)
+        continue-on-error: true
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ftp.cluster129.hosting.ovh.net
@@ -42,8 +76,6 @@ jobs:
           protocol: ftp
           port: 21
           server-dir: www/
-          # Le dossier « donnees » contient l'état saisi par le copil :
-          # il vit sur le serveur et ne doit jamais être écrasé.
           exclude: |
             **/.git*
             **/.git*/**

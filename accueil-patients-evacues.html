@@ -41,21 +41,39 @@ button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit
 .page{max-width:880px;margin:0 auto;padding:26px 22px 60px}
 h1{font-family:var(--display);font-weight:700;font-size:27px;letter-spacing:-.01em;margin:0 0 6px}
 .chapo{color:var(--texte-2);margin:0 0 22px;max-width:66ch}
-.carte{background:var(--carte);border:1px solid var(--trait);border-radius:10px;padding:20px;margin-bottom:16px}
-h2{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.02em;margin:0 0 4px;display:flex;align-items:center;gap:9px}
-h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-radius:2px;display:block;flex:0 0 3px}
-.sous-h{font-size:13px;color:var(--texte-2);margin:0 0 15px}
+.carte{background:var(--carte);border:1px solid var(--trait);border-radius:13px;padding:22px 24px;
+  margin-bottom:15px;box-shadow:0 1px 2px rgba(9,35,71,.04),0 6px 18px -12px rgba(9,35,71,.14)}
+/* Le numéro de section dans une pastille : le formulaire se lit
+   comme une suite d'étapes, pas comme un mur de champs. */
+h2{font-family:var(--display);font-weight:700;font-size:16.5px;letter-spacing:-.005em;margin:0 0 5px;
+  display:flex;align-items:center;gap:11px;color:var(--encre)}
+h2 .num{flex:0 0 26px;height:26px;border-radius:50%;background:var(--encre);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.sous-h{font-size:13.5px;color:var(--texte-2);margin:0 0 17px;line-height:1.45}
 
-.form{display:grid;gap:13px}
+.form{display:grid;gap:15px}
 @media(min-width:720px){.form{grid-template-columns:1fr 1fr}.form .large{grid-column:1/-1}}
 label{display:block}
-label .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:4px}
-label .k i{font-style:normal;color:var(--braise)}
-input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--trait);border-radius:6px;background:#fff}
-textarea{min-height:74px;resize:vertical}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-offset:1px;border-color:var(--ambre)}
+label .k{font-size:13px;font-weight:600;color:var(--encre);display:block;margin-bottom:5px;letter-spacing:-.002em}
+label .k i{font-style:normal;color:var(--braise);font-weight:400}
+input,select,textarea{width:100%;padding:12px 14px;border:1.5px solid #E1E9F4;border-radius:9px;
+  background:#FCFDFF;transition:border-color .12s,box-shadow .12s}
+input::placeholder,textarea::placeholder{color:#A6B3C6}
+textarea{min-height:78px;resize:vertical;line-height:1.5}
+input:hover,select:hover,textarea:hover{border-color:#C6D5EA}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--encre-2);background:#fff;
+  box-shadow:0 0 0 3px rgba(11,79,168,.13)}
 input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4F2}
-.aide{font-size:12.5px;color:var(--texte-2);margin-top:4px}
+input.faux:focus,textarea.faux:focus{box-shadow:0 0 0 3px rgba(194,72,47,.15)}
+.aide{font-size:12.5px;color:var(--texte-2);margin-top:5px;line-height:1.4}
+
+/* La question de la fin — devenir médecin traitant — se pose sur
+   un fond différent : elle ne conditionne rien de ce qui précède,
+   et doit se voir comme une question à part. */
+.carte.apres{background:#FDF9F1;border-color:#EDDFC4}
+.carte.apres h2 .num{background:#B07C22}
+.carte.apres select{background:#fff;border-color:#E6D6B6}
+.carte.apres select:focus{border-color:#B07C22;box-shadow:0 0 0 3px rgba(176,124,34,.15)}
 .leurre{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
 /* Les types de renfort : des cases à cocher rangées en colonnes,
@@ -67,19 +85,32 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
 .choix .c input{width:19px;height:19px;flex:0 0 19px;margin:1px 0 0;accent-color:var(--encre-2)}
 .choix .c span{font-size:14px;line-height:1.4}
 
-.cond{background:var(--cobalt-clair);border-radius:8px;padding:14px 16px;margin-bottom:14px}
+/* Les motifs ne se cochent plus un par un : la liste se lit, et
+   une seule case la couvre. Six cases à cocher pour dire oui à
+   ce qui relève de la médecine générale, c'était six fois trop. */
+.motifs{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+@media(min-width:720px){.motifs{grid-template-columns:1fr 1fr}}
+.motifs li{position:relative;padding-left:24px;font-size:14px;line-height:1.4}
+.motifs li::before{content:"";position:absolute;left:7px;top:8px;width:5px;height:5px;border-radius:50%;
+  background:var(--encre-2)}
+.coche.coche-forte{background:var(--cobalt-clair);border-color:#C3D6F0}
+.coche.coche-forte span{font-weight:600;color:var(--encre)}
+.coche.coche-forte:hover{border-color:var(--encre-2)}
+
+.cond{background:var(--cobalt-clair);border-radius:10px;padding:15px 17px;margin-bottom:15px}
 .cond ol{margin:0;padding-left:19px;font-size:13.5px}
 .cond li{margin-bottom:6px;text-align:justify}
-.coche{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--trait);border-radius:8px;margin-bottom:9px;cursor:pointer;background:#fff}
+.coche{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;border:1.5px solid #E1E9F4;border-radius:10px;margin-bottom:9px;cursor:pointer;background:#fff;transition:border-color .12s}
 .coche:hover{border-color:var(--encre-2)}
 .coche.faux{border-color:var(--braise);background:#FDF4F2}
-.coche input{width:19px;height:19px;flex:0 0 19px;margin:1px 0 0;accent-color:var(--encre-2)}
-.coche span{font-size:14px;line-height:1.45}
+.coche input{width:20px;height:20px;flex:0 0 20px;margin:1px 0 0;accent-color:var(--encre-2)}
+.coche span{font-size:14.5px;line-height:1.45}
 
-.btn{background:var(--encre);color:#fff;border:0;border-radius:7px;padding:12px 22px;font-family:var(--display);font-weight:600;font-size:15px;cursor:pointer;min-height:48px}
+.btn{background:var(--encre);color:#fff;border:0;border-radius:9px;padding:13px 24px;font-family:var(--display);font-weight:600;font-size:15px;cursor:pointer;min-height:48px;
+  box-shadow:0 2px 10px -4px rgba(6,43,99,.5);transition:background .12s,box-shadow .12s}
 .btn:hover{background:var(--encre-2)}
 .btn:disabled{opacity:.55;cursor:default}
-.btn.sec{background:#fff;color:var(--encre);border:1px solid var(--trait)}
+.btn.sec{background:#fff;color:var(--encre);border:1.5px solid #E1E9F4;box-shadow:none}
 .btn.sec:hover{border-color:var(--encre)}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
 
@@ -106,7 +137,7 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
   .acte ol li,.acte .ctx,.acte .cachet,.note{text-align:left}
 }
 
-.alerte{border-radius:8px;padding:12px 14px;font-size:14px;margin-bottom:16px}
+.alerte{border-radius:10px;padding:13px 16px;font-size:14px;margin-bottom:16px;line-height:1.5}
 .alerte.rouge{background:#FDF0EC;border:1px solid #E8C3B8;color:#8C2F1B}
 .alerte.ambre{background:#FCF3E4;border:1px solid #E9D3A6;color:#8A5D12}
 .alerte.bleue{background:var(--cobalt-clair);border:1px solid #C3D6F0;color:var(--encre)}
@@ -145,13 +176,13 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
    jours passés restent visibles mais éteints — on ne fait pas
    disparaître des colonnes sous les yeux de quelqu'un. */
 .agenda{display:flex;flex-direction:column;gap:14px}
-.sem{border:1px solid var(--trait);border-radius:9px;overflow:hidden;background:#fff}
+.sem{border:1.5px solid #E1E9F4;border-radius:11px;overflow:hidden;background:#fff}
 .sem-t{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
   padding:9px 12px;background:var(--surface);border-bottom:1px solid var(--trait)}
 .sem-t .n{font-family:var(--display);font-weight:600;font-size:13.5px;color:var(--encre)}
 .sem-t .a{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
-.sem-t .a button{background:#fff;border:1px solid var(--trait);border-radius:5px;
-  padding:5px 9px;font-size:11.5px;color:var(--encre-2);cursor:pointer;min-height:32px}
+.sem-t .a button{background:#fff;border:1.5px solid #E1E9F4;border-radius:7px;
+  padding:6px 11px;font-size:12px;color:var(--encre-2);cursor:pointer;min-height:34px;font-weight:600}
 .sem-t .a button:hover{border-color:var(--encre-2)}
 .grille{display:grid;grid-template-columns:52px repeat(7,1fr);gap:3px;padding:9px}
 .grille .lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
@@ -160,8 +191,9 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
 .grille .jr b{display:block;font-size:14px;color:var(--texte);font-weight:600}
 .grille .jr.we{color:#9AA8BC}
 .grille .jr.auj b{color:var(--encre-2)}
-.cr{border:1px solid var(--trait);border-radius:6px;background:#fff;min-height:40px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;font-size:15px;color:transparent;padding:0}
+.cr{border:1.5px solid #E4EBF5;border-radius:8px;background:#fff;min-height:42px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:15px;color:transparent;padding:0;
+  transition:background .1s,border-color .1s}
 .cr:hover{border-color:var(--encre-2);background:var(--cobalt-clair)}
 .cr.on{background:var(--encre-2);border-color:var(--encre-2);color:#fff}
 .cr.we{background:#FBFCFE}
@@ -169,24 +201,27 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
 .cr[disabled]{cursor:default;background:repeating-linear-gradient(135deg,#F7F9FC,#F7F9FC 4px,#EEF2F8 4px,#EEF2F8 8px);border-color:#E9EEF6}
 .cr[disabled]:hover{border-color:#E9EEF6}
 .cr:focus-visible{outline:2px solid var(--ambre);outline-offset:1px}
-.recap-cr{margin-top:12px;background:var(--cobalt-clair);border-radius:8px;padding:11px 13px;font-size:13px}
-.recap-cr .t{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--texte-2);margin-bottom:5px}
-.recap-cr ul{margin:0;padding-left:18px}
-.recap-cr li{margin-bottom:2px}
+/* Le total, sous les trois semaines. */
+.recap-cr{margin-top:14px;background:var(--cobalt-clair);border-radius:9px;padding:12px 14px;font-size:13.5px}
+.recap-cr .t{font-weight:600;color:var(--encre)}
 .recap-cr.vide{background:#FCF3E4;color:#8A5D12}
 /* Les horaires d'une demi-journée cochée : des puces qu'on
-   appuie, pas un champ qu'on remplit. */
-.dj-aide{font-size:12.5px;color:var(--texte-2);margin:0 0 11px}
-.dj{background:#fff;border:1px solid var(--trait);border-radius:7px;padding:10px 11px;margin-bottom:8px}
+   appuie, pas un champ qu'on remplit. Elles s'ouvrent dans la
+   semaine même, juste sous sa grille — cocher mercredi matin et
+   devoir descendre en bas de page pour en préciser l'heure, ce
+   n'est pas tenable au téléphone. */
+.dj-liste{border-top:1px dashed var(--trait);padding:11px 9px 9px;background:#FBFCFE}
+.dj-liste:empty{display:none}
+.dj-aide{font-size:12.5px;color:var(--texte-2);margin:0 0 10px;padding:0 2px}
+.dj{background:#fff;border:1px solid var(--trait);border-radius:9px;padding:11px 12px;margin-bottom:8px}
 .dj:last-child{margin-bottom:0}
-.dj-t{font-size:13.5px;margin-bottom:7px}
-.dj-t b{font-family:var(--display);font-weight:600;color:var(--encre)}
-.dj-n{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--texte-2);margin-top:2px}
+.dj-t{font-size:13.5px;margin-bottom:8px}
+.dj-t b{font-family:var(--display);font-weight:700;color:var(--encre)}
+.dj-n{display:block;font-size:12px;color:var(--texte-2);margin-top:2px}
+.dj-n.mis{color:var(--encre-2);font-weight:600}
 .chh{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
-.ch{border:1px solid var(--trait);border-radius:14px;background:#fff;padding:6px 11px;font-size:13px;
-  font-family:var(--mono);cursor:pointer;color:var(--texte-2);min-height:34px}
+.ch{border:1.5px solid #E4EBF5;border-radius:16px;background:#fff;padding:7px 13px;font-size:13px;
+  font-family:var(--mono);cursor:pointer;color:var(--texte-2);min-height:36px;transition:all .1s}
 .ch:hover{border-color:var(--encre-2);color:var(--encre-2)}
 .ch.on{background:var(--encre-2);border-color:var(--encre-2);color:#fff}
 .ch-autre{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--texte-2);
@@ -211,8 +246,8 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
    qui suit ne s'affiche que si la réponse est oui. */
 .oupas{display:grid;gap:10px;grid-template-columns:1fr 1fr}
 @media(max-width:640px){.oupas{grid-template-columns:1fr}}
-.oupas label{display:flex;gap:11px;align-items:flex-start;padding:14px 15px;border:1px solid var(--trait);
-  border-radius:8px;cursor:pointer;background:#fff}
+.oupas label{display:flex;gap:12px;align-items:flex-start;padding:16px 17px;border:1.5px solid #E1E9F4;
+  border-radius:11px;cursor:pointer;background:#fff;transition:border-color .12s,background .12s}
 .oupas label:hover{border-color:var(--encre-2)}
 .oupas label.sel{border-color:var(--encre-2);background:var(--cobalt-clair);box-shadow:inset 0 0 0 1px var(--encre-2)}
 .oupas input{width:20px;height:20px;flex:0 0 20px;margin:1px 0 0;accent-color:var(--encre-2)}
@@ -274,13 +309,6 @@ const MOTIFS = ["Renouvellement d'ordonnance interrompue",
   "Situation aiguë sans gravité",
   "Certificat, document administratif de santé",
   "Toute demande relevant de la médecine générale"];
-
-const CAPACITES = ['','1 patient par semaine','2 patients par semaine',
-  '3 à 5 patients par semaine','Plus de 5 patients par semaine',
-  'Autant que mon planning le permet','À préciser'];
-
-const DELAIS = ['','Dans les 48 heures','Sous une semaine',
-  'Selon mes créneaux cochés ci-dessus','À préciser'];
 
 /* Les horaires proposés d'un appui, une fois la demi-journée
    cochée. Ce sont des propositions : le médecin peut en ajouter
@@ -365,8 +393,6 @@ function ferme(){
 /* --- Le formulaire -------------------------------------- */
 function formulaire(){
   construireSemaines();
-  const opts = (liste, id) => `<select id="${id}">${liste.map(t => `<option>${esc(t)}</option>`).join('')}</select>`;
-
   afficher(`<h1>Recevoir en consultation une personne évacuée</h1>
   <p class="chapo">Des personnes évacuées des zones incendiées de Gironde sont revenues dans leur commune
   ou ont été relogées en Béarn. Parties dans l'urgence, elles ont besoin de faire renouveler une
@@ -382,7 +408,7 @@ function formulaire(){
   ${contexte.cadre ? `<div class="alerte ambre"><strong>Ce que la CPTS demande exactement :</strong> ${esc(contexte.cadre)}</div>` : ''}
 
   <div class="carte">
-    <h2>1 · Qui vous êtes</h2>
+    <h2><span class="num">1</span>Qui vous êtes</h2>
     <p class="sous-h">Le minimum pour que la coordination puisse vous rappeler et, si vous l'acceptez,
     indiquer votre cabinet aux pharmacies du territoire.</p>
     <div class="form">
@@ -409,7 +435,7 @@ function formulaire(){
   </div>
 
   <div class="carte">
-    <h2>2 · Acceptez-vous de recevoir ces patients ?</h2>
+    <h2><span class="num">2</span>Acceptez-vous de recevoir ces patients ?</h2>
     <p class="sous-h">C'est la seule question à laquelle il faut répondre. Un « non » se consigne comme un
     « oui » : cela évite qu'on vous rappelle une deuxième fois.</p>
     <div class="oupas">
@@ -426,40 +452,40 @@ function formulaire(){
 
   <div class="si-oui">
     <div class="carte">
-      <h2>3 · Ce que vous acceptez de prendre</h2>
-      <p class="sous-h">Cochez ce qui vous convient. Ce que vous ne cochez pas ne vous sera pas adressé.</p>
-      <div class="choix">
-        ${MOTIFS.map((t,i) => `<label class="c"><input type="checkbox" id="m-${i}"><span>${esc(t)}</span></label>`).join('')}
-      </div>
+      <h2><span class="num">3</span>Ce que vous acceptez de prendre</h2>
+      <p class="sous-h">Ce pour quoi ces personnes se présentent, dans l'immense majorité des cas. Rien qui sorte
+      de la médecine générale courante.</p>
+      <ul class="motifs">
+        ${MOTIFS.map(t => `<li>${esc(t)}</li>`).join('')}
+      </ul>
+      <label class="coche coche-forte" id="c-motifs-l" style="margin-top:14px">
+        <input type="checkbox" id="c-motifs" checked>
+        <span>J'accepte de recevoir toute personne évacuée dont la demande relève de ces motifs.</span></label>
+      <p class="aide" style="margin-top:2px">Si une demande précise ne vous convient pas le moment venu, vous
+      restez libre de la refuser : la coordination vous appelle avant de vous adresser qui que ce soit.</p>
     </div>
 
     <div class="carte">
-      <h2>4 · Vos créneaux</h2>
+      <h2><span class="num">4</span>Vos créneaux</h2>
       <p class="sous-h">Cochez les demi-journées où vous pourriez recevoir une de ces personnes. Rien
       n'est réservé : ces créneaux servent à la coordination pour savoir vers qui se tourner, et à quel
       moment vous appeler. Si votre organisation ne rentre pas dans cette grille, écrivez-la en clair
       juste en dessous.</p>
       <div class="agenda" id="agenda">${semaines.map((s,i) => blocSemaine(s,i)).join('')}</div>
       <div id="recap-cr"></div>
-      <div class="form" style="margin-top:14px">
-        <label><span class="k">Combien de patients pouvez-vous recevoir ?</span>
-          ${opts(CAPACITES, 'f-capacite')}</label>
-        <label><span class="k">Sous quel délai pouvez-vous en recevoir un ?</span>
-          ${opts(DELAIS, 'f-delai')}</label>
+      <div class="form" style="margin-top:16px">
         <label class="large"><span class="k">Autres précisions sur vos disponibilités</span>
           <textarea id="f-precisions" placeholder="Ex. plutôt en fin de journée, jamais le mercredi, à partir de la semaine du 11 août, me joindre la veille…"></textarea></label>
       </div>
     </div>
 
     <div class="carte">
-      <h2>5 · Comment prendre rendez-vous chez vous</h2>
+      <h2><span class="num">5</span>Comment prendre rendez-vous chez vous</h2>
       <p class="sous-h">C'est ce que la pharmacie remettra au patient. Sans cette information, personne ne
       peut vous être adressé.</p>
       <div class="form">
         <label class="large"><span class="k">Ligne directe, secrétariat ou lien de prise de rendez-vous</span>
           <input id="f-rdv" placeholder="Ex. secrétariat au 05 59 00 00 00, ou mon lien Doctolib"></label>
-        <label class="large"><span class="k">Conditions que vous posez</span>
-          <textarea id="f-contraintes" placeholder="Ex. uniquement sur adressage de la pharmacie, avec l'ordonnance en cours, patient qui appelle lui-même…"></textarea></label>
       </div>
       <label class="coche" id="c-diffusion-l" style="margin-top:14px">
         <input type="checkbox" id="c-diffusion" checked>
@@ -469,8 +495,8 @@ function formulaire(){
         adressé autrement que par un appel de la coordination.</strong></span></label>
     </div>
 
-    <div class="carte">
-      <h2>6 · Et si la situation se prolonge</h2>
+    <div class="carte apres">
+      <h2><span class="num">6</span>Et si la situation se prolonge</h2>
       <p class="sous-h">Question posée en dernier, et volontairement : elle ne conditionne rien de ce qui
       précède. Répondre « non » ne retire rien à ce que vous venez d'accepter.</p>
       <div class="form">
@@ -487,7 +513,7 @@ function formulaire(){
   </div>
 
   <div class="carte">
-    <h2>7 · Ce que votre réponse veut dire</h2>
+    <h2><span class="num">7</span>Ce que votre réponse veut dire</h2>
     <p class="sous-h">À lire avant de valider : c'est le cadre dans lequel la CPTS Pau Béarn recense.</p>
     <div class="cond"><ol>
       <li>Votre réponse vaut déclaration de disponibilité. Elle ne vaut ni engagement contractuel, ni
@@ -522,7 +548,7 @@ function formulaire(){
   mobilisation et de son retour d'expérience. Vous pouvez demander leur rectification ou leur suppression
   auprès de la coordination de la CPTS Pau Béarn.</p>`);
 
-  majRecap();
+  majTotal();
 }
 
 /* Une semaine du calendrier : l'en-tête des sept jours, puis la
@@ -558,7 +584,35 @@ function blocSemaine(s, i){
       <div class="lab">A.-m.</div>
       ${cellules('apresmidi')}
     </div>
+    <div class="dj-liste" id="djl-${i}">${listeSemaine(i)}</div>
   </div>`;
+}
+
+/* Les demi-journées cochées de cette semaine-là, avec leurs
+   horaires, juste sous sa grille. */
+function clesDeSemaine(i){
+  const rang = x => x.split(':')[1] === 'matin' ? 0 : 1;
+  return semaines[i].jours.flatMap(j => ['matin','apresmidi'].map(p => j.cle + ':' + p))
+    .filter(c => creneaux.has(c))
+    .sort((a,b) => a.slice(0,10).localeCompare(b.slice(0,10)) || rang(a) - rang(b));
+}
+
+function listeSemaine(i){
+  const cles = clesDeSemaine(i);
+  if(!cles.length) return '';
+  return `<p class="dj-aide">Vous pouvez préciser vos horaires exacts, d'un appui. C'est facultatif :
+    sans horaire, la coordination vous appellera pour le caler.</p>` + cles.map(ligneDemiJournee).join('');
+}
+
+function majSemaine(i){
+  const e = document.getElementById('djl-' + i);
+  if(e) e.innerHTML = listeSemaine(i);
+}
+
+/* À quelle semaine affichée appartient cette demi-journée. */
+function semaineDe(cle){
+  const d = cle.slice(0, 10);
+  return semaines.findIndex(s => s.jours.some(j => j.cle === d));
 }
 
 function marquerCase(cle){
@@ -572,7 +626,9 @@ function marquerCase(cle){
 function basculer(cle){
   if(creneaux.has(cle)){ creneaux.delete(cle); delete heures[cle]; }
   else creneaux.add(cle);
-  marquerCase(cle); majRecap();
+  marquerCase(cle);
+  majSemaine(semaineDe(cle));
+  majTotal();
 }
 
 /* --- les horaires d'une demi-journée --------------------
@@ -606,7 +662,7 @@ function toutesLesHeures(cle){
 function redessinerJour(cle){
   const e = document.getElementById('dj-' + cle);
   if(e) e.outerHTML = ligneDemiJournee(cle);
-  majTitreRecap();
+  majTotal();
 }
 
 function libelleJour(cle){
@@ -620,12 +676,11 @@ function libelleJour(cle){
 function ligneDemiJournee(cle){
   const l = libelleJour(cle);
   const prises = heuresTriees(cle);
-  const part = cle.split(':')[1];
   return `<div class="dj" id="dj-${cle}">
     <div class="dj-t"><b>${esc(l.jour)}</b> · ${esc(l.part)}
-      <span class="dj-n">${prises.length
-        ? prises.length + ' horaire' + (prises.length>1?'s':'') + ' : ' + prises.join(', ')
-        : 'horaire à caler par téléphone'}</span></div>
+      <span class="dj-n${prises.length ? ' mis' : ''}">${prises.length
+        ? prises.length + ' horaire' + (prises.length>1?'s':'') + ' : ' + prises.map(h => h.replace(':','h')).join(', ')
+        : 'horaire à caler par téléphone — ou choisissez ci-dessous'}</span></div>
     <div class="chh">
       ${toutesLesHeures(cle).map(h => `<button type="button" class="ch${prises.indexOf(h)>=0?' on':''}"
         aria-pressed="${prises.indexOf(h)>=0}" onclick="basculerHeure('${cle}','${h}')">${esc(h)}</button>`).join('')}
@@ -636,13 +691,20 @@ function ligneDemiJournee(cle){
   </div>`;
 }
 
-function majTitreRecap(){
-  const e = document.getElementById('recap-t');
-  if(!e) return;
+/* Le total, sous les trois semaines : ce qu'on a dit en un coup
+   d'œil, sans avoir à remonter. */
+function majTotal(){
+  const z = document.getElementById('recap-cr');
+  if(!z) return;
   const n = creneaux.size;
   const h = [...creneaux].reduce((s, c) => s + heuresTriees(c).length, 0);
-  e.textContent = n + ' demi-journée' + (n>1?'s':'') + ' cochée' + (n>1?'s':'')
-    + (h ? ' · ' + h + ' horaire' + (h>1?'s':'') + ' précisé' + (h>1?'s':'') : '');
+  z.innerHTML = n
+    ? `<div class="recap-cr"><span class="t">${n} demi-journée${n>1?'s':''} cochée${n>1?'s':''}${
+        h ? ', dont ' + h + ' horaire' + (h>1?'s':'') + ' précisé' + (h>1?'s':'') : ''}.</span>
+        ${h ? ' La coordination pourra vous adresser quelqu\'un directement sur ces horaires.'
+            : ' Elle vous appellera pour convenir de l\'heure.'}</div>`
+    : `<div class="recap-cr vide">Aucune demi-journée cochée pour le moment. Si aucune ne convient,
+        décrivez vos disponibilités en clair juste en dessous — la coordination s'en accommodera.</div>`;
 }
 
 /* « Tous les matins » coche les cinq jours ouvrés de la semaine.
@@ -652,16 +714,19 @@ function remplir(i, part){
   const ouvres = semaines[i].jours.filter(j => !j.passe && j.jour < 5);
   const cles = ouvres.map(j => j.cle + ':' + part);
   const tous = cles.length > 0 && cles.every(c => creneaux.has(c));
-  cles.forEach(c => { tous ? creneaux.delete(c) : creneaux.add(c); marquerCase(c); });
-  majRecap();
+  cles.forEach(c => {
+    if(tous){ creneaux.delete(c); delete heures[c]; } else creneaux.add(c);
+    marquerCase(c);
+  });
+  majSemaine(i); majTotal();
 }
 
 function viderSemaine(i){
   semaines[i].jours.forEach(j => ['matin','apresmidi'].forEach(p => {
     const c = j.cle + ':' + p;
-    if(creneaux.delete(c)) marquerCase(c);
+    if(creneaux.delete(c)){ delete heures[c]; marquerCase(c); }
   }));
-  majRecap();
+  majSemaine(i); majTotal();
 }
 
 /* Ce qu'on a coché, relu en clair. Sans ce rappel, on ne sait
@@ -690,23 +755,7 @@ function creneauxLisibles(){
   });
 }
 
-function majRecap(){
-  const z = document.getElementById('recap-cr');
-  if(!z) return;
-  const rang = x => x.split(':')[1] === 'matin' ? 0 : 1;
-  const cles = [...creneaux].sort((a,b) => a.slice(0,10).localeCompare(b.slice(0,10)) || rang(a) - rang(b));
-  z.innerHTML = cles.length
-    ? `<div class="recap-cr">
-        <div class="t" id="recap-t"></div>
-        <p class="dj-aide">Sur chaque demi-journée cochée, vous pouvez préciser les horaires exacts que vous
-        pouvez proposer — d'un appui. C'est facultatif : sans horaire, la coordination vous appellera pour
-        le caler. Avec, elle place directement la personne.</p>
-        ${cles.map(ligneDemiJournee).join('')}
-      </div>`
-    : `<div class="recap-cr vide">Aucune demi-journée cochée pour le moment. Si aucune ne convient,
-        décrivez vos disponibilités en clair dans le champ ci-dessous — la coordination s'en accommodera.</div>`;
-  majTitreRecap();
-}
+
 
 /* La réponse à la question 2 commande l'affichage : dire non
    n'oblige pas à faire défiler quatre écrans de questions
@@ -727,8 +776,10 @@ function marquer(id, faux){
   if(e) e.classList.toggle('faux', faux);
 }
 
-function motifsCoches(){
-  return MOTIFS.filter((t,i) => document.getElementById('m-'+i)?.checked);
+/* Une seule case couvre toute la liste : cochée, le médecin
+   accepte les motifs tels qu'ils sont énoncés. */
+function motifsAcceptes(){
+  return document.getElementById('c-motifs')?.checked ? MOTIFS.slice() : [];
 }
 
 async function valider(){
@@ -744,15 +795,12 @@ async function valider(){
     adresse:     val('f-adresse'),
     commune:     val('f-commune'),
     accepte:     accepte === true,
-    motifs:      accepte ? motifsCoches() : [],
+    motifs:      accepte ? motifsAcceptes() : [],
     dispos:      accepte ? [...creneaux].sort() : [],
     heures:      accepte ? Object.fromEntries([...creneaux]
                    .map(c => [c, heuresTriees(c)]).filter(x => x[1].length)) : {},
     precisions:  accepte ? val('f-precisions') : '',
-    capacite:    accepte ? val('f-capacite') : '',
-    delai:       accepte ? val('f-delai') : '',
     rdv:         accepte ? val('f-rdv') : '',
-    contraintes: accepte ? val('f-contraintes') : '',
     mt:          accepte ? val('f-mt') : '',
     diffusion:   accepte ? !!document.getElementById('c-diffusion')?.checked : false,
     note:        '',
@@ -894,9 +942,7 @@ function recapitulatif(d, ref, quand){
     <h3>3 · Ce qui est accepté</h3>
     ${d.motifs.length
       ? `<ul>${d.motifs.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`
-      : `<div style="font-size:12.5px;color:#5A6B84">Aucun motif coché — à préciser lors du rappel de la coordination.</div>`}
-    ${l('Nombre de patients acceptés', d.capacite)}
-    ${l("Délai pour recevoir un patient", d.delai)}
+      : `<div style="font-size:12.5px;color:#5A6B84">Les motifs proposés n'ont pas été acceptés — à préciser lors du rappel de la coordination.</div>`}
 
     <h3>4 · Créneaux déclarés</h3>
     ${cren.length
@@ -906,7 +952,6 @@ function recapitulatif(d, ref, quand){
 
     <h3>5 · Prise de rendez-vous</h3>
     ${l('Ligne directe, secrétariat ou lien', d.rdv)}
-    ${d.contraintes ? l('Conditions posées', d.contraintes) : ''}
     ${l('Médecin traitant si le séjour se prolonge', d.mt)}
     ` : ''}
 

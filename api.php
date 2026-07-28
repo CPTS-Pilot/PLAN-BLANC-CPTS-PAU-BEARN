@@ -688,7 +688,10 @@ if (isset($_GET['consultations'])) {
             'tel'        => $tel,
             'mail'       => $mail,
             'rdv'        => txt($in['rdv'] ?? '', 200),
-            'motifs'     => implode(', ', $motifs),
+            /* Séparés par un point médian, jamais par une virgule :
+               « Certificat, document administratif de santé » en contient
+               une, et la liste deviendrait illisible. */
+            'motifs'     => implode(' · ', $motifs),
             'capacite'   => txt($in['capacite'] ?? '', 80),
             'creneaux'   => $creneaux,
             'dispos'     => $dispos,
