@@ -398,6 +398,7 @@ if (isset($_GET['renfort'])) {
     $prenom     = txt($in['prenom'] ?? '', 80);
     $profession = txt($in['profession'] ?? '', 80);
     $tel        = txt($in['tel'] ?? '', 40);
+    $commune    = txt($in['commune'] ?? '', 80);
     $mail       = txt($in['mail'] ?? '', 120);
     if ($mail !== '' && !filter_var($mail, FILTER_VALIDATE_EMAIL)) $mail = '';
 
@@ -411,8 +412,14 @@ if (isset($_GET['renfort'])) {
         if ($t !== '') $types[] = $t;
     }
 
-    if ($nom === '' || $prenom === '' || $profession === '' || $tel === '') {
-        repondre(400, ['erreur' => 'Nom, prénom, profession et téléphone sont nécessaires']);
+    /* Commune d'exercice et courriel sont devenus obligatoires
+       côté formulaire : le serveur le tient aussi, sinon la règle
+       ne vaut que pour ceux qui passent par la page. */
+    if ($nom === '' || $prenom === '' || $profession === '' || $tel === '' || $commune === '') {
+        repondre(400, ['erreur' => 'Nom, prénom, profession, commune d\'exercice et téléphone sont nécessaires']);
+    }
+    if ($mail === '') {
+        repondre(400, ['erreur' => 'Un courriel valide est nécessaire']);
     }
     if (empty($in['conditions'])) {
         repondre(400, ['erreur' => 'Les conditions du recensement doivent être acceptées']);
@@ -453,7 +460,7 @@ if (isset($_GET['renfort'])) {
             'rpps'        => txt($in['rpps'] ?? '', 40),
             'tel'         => $tel,
             'mail'        => $mail,
-            'commune'     => txt($in['commune'] ?? '', 80),
+            'commune'     => $commune,
             'structure'   => txt($in['structure'] ?? '', 160),
             'renforts'    => implode(', ', $types),
             'zone'        => txt($in['zone'] ?? '', 100),

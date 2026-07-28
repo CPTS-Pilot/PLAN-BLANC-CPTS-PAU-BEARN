@@ -56,6 +56,10 @@ textarea{min-height:74px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-offset:1px;border-color:var(--ambre)}
 input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4F2}
 .aide{font-size:12.5px;color:var(--texte-2);margin-top:4px}
+/* Le champ libre qui s'ouvre sous une liste quand aucune de ses
+   entrées ne convient : « Autre — à préciser ». */
+.autre{margin-top:7px}
+.autre[hidden]{display:none}
 .leurre{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
 /* Les types de renfort : des cases à cocher rangées en colonnes,
@@ -194,7 +198,7 @@ const PROFESSIONS = ['','Médecin généraliste','Médecin spécialiste','Infirm
   'Non-soignant — appui logistique'];
 
 const EXERCICES = ['','Libéral','Salarié','Remplaçant','Mixte','Retraité','Étudiant ou interne',
-  'Sans activité actuelle'];
+  'Sans activité actuelle','Autre — à préciser'];
 
 const RENFORTS_TYPES = ["Soins en zone touchée",
   "Renfort en centre d'accueil ou hub santé",
@@ -210,10 +214,10 @@ const ZONES = ['','Sur le territoire de la CPTS Pau Béarn','Dans les Pyrénées
   'Dans les départements voisins',"Partout en Nouvelle-Aquitaine, zones touchées comprises",
   'À préciser'];
 
-const DUREES = ['','Quelques heures',"Une demi-journée",'Une journée','Deux à trois jours',
-  'Plusieurs jours consécutifs','À préciser'];
-
-const VEHICULES = ['','Aucun','Voiture','Break ou monospace','Utilitaire','Camion'];
+/* Durées, véhicule, créneaux, nuitée : ces listes existent
+   toujours dans le cockpit, où le copil les renseigne au
+   téléphone. Le formulaire public ne les demande plus — il ne
+   pose que le rayon de déplacement. */
 
 let envoiEnCours = false;
 let contexte = { ouverte: false, message: '', cadre: '' };
@@ -223,7 +227,6 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
 const val = id => (document.getElementById(id)?.value || '').trim();
 const frdate = d => d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '';
 const frheure = d => d ? new Date(d).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '';
-const frjour = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '';
 
 /* --- Ouverture de l'appel -------------------------------
    Le copil ouvre et ferme l'appel depuis le cockpit. Tant qu'il
@@ -264,7 +267,7 @@ function formulaire(){
   afficher(`<h1>Se déclarer volontaire au renfort</h1>
   <p class="chapo">La CPTS Pau Béarn recense les professionnels de santé du territoire prêts à venir en
   renfort — sur les zones touchées, dans les hubs de santé, ou auprès de la population accueillie ici.
-  Vous remplissez ce formulaire une fois, vous recevez votre récapitulatif, et la coordination vous
+  Vous remplissez ce formulaire une fois, vous recevez votre récapitulatif, et c'est l'ARS qui vous
   rappelle avant toute mission.</p>
 
   <div class="alerte bleue"><strong>S'inscrire ici n'engage à rien.</strong> Ce n'est ni une affectation,
@@ -282,18 +285,21 @@ function formulaire(){
       <label><span class="k">Prénom <i>*</i></span>
         <input id="f-prenom" autocomplete="given-name" placeholder="Ex. Marie"></label>
       <label><span class="k">Profession <i>*</i></span>
-        ${opts(PROFESSIONS, 'f-profession')}</label>
+        ${opts(PROFESSIONS, 'f-profession')}
+        <input id="f-profession-autre" class="autre" hidden placeholder="Précisez votre profession">
+        <span class="aide">Si elle ne figure pas dans la liste, choisissez « Autre profession de santé » et saisissez-la.</span></label>
       <label><span class="k">Mode d'exercice</span>
-        ${opts(EXERCICES, 'f-exercice')}</label>
+        ${opts(EXERCICES, 'f-exercice')}
+        <input id="f-exercice-autre" class="autre" hidden placeholder="Précisez votre mode d'exercice"></label>
       <label><span class="k">Téléphone <i>*</i></span>
         <input id="f-tel" type="tel" autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78">
-        <span class="aide">Indispensable : c'est par téléphone que la coordination vous rappellera.</span></label>
-      <label><span class="k">Courriel</span>
+        <span class="aide">Indispensable : c'est par téléphone que vous serez rappelé.</span></label>
+      <label><span class="k">Courriel <i>*</i></span>
         <input id="f-mail" type="email" autocomplete="email" placeholder="nom@exemple.fr"></label>
       <label><span class="k">N° RPPS ou ADELI</span>
         <input id="f-rpps" inputmode="numeric" placeholder="Ex. 10001234567">
         <span class="aide">Utile si votre nom doit être transmis aux autorités sanitaires. Non obligatoire.</span></label>
-      <label><span class="k">Commune d'exercice</span>
+      <label><span class="k">Commune d'exercice <i>*</i></span>
         <input id="f-commune" autocomplete="address-level2" placeholder="Ex. Pau"></label>
       <label class="large"><span class="k">Cabinet, structure ou employeur</span>
         <input id="f-structure" autocomplete="organization" placeholder="Ex. Cabinet infirmier des Halles, CH de Pau"></label>
@@ -312,30 +318,16 @@ function formulaire(){
       <label class="large"><span class="k">Expérience utile</span>
         <textarea id="f-experience" placeholder="Ex. dix ans aux urgences, réserve sanitaire, sapeur-pompier volontaire, CUMP, AFGSU à jour, médecine de catastrophe…"></textarea>
         <span class="aide">Ce qui vous rendrait immédiatement opérationnel dans un contexte inhabituel.</span></label>
-      <label class="large"><span class="k">Êtes-vous déjà engagé dans un autre dispositif ?</span>
-        <input id="f-engage" placeholder="Ex. réserve sanitaire, appel de mon URPS, SDIS, association agréée">
-        <span class="aide">Pour ne pas vous solliciter deux fois pour la même journée.</span></label>
     </div>
   </div>
 
   <div class="carte">
-    <h2>3 · Quand et jusqu'où</h2>
-    <p class="sous-h">C'est ce qui décide de tout : un volontaire dont on ignore les créneaux n'est pas mobilisable.</p>
+    <h2>3 · Jusqu'où vous pouvez vous déplacer</h2>
+    <p class="sous-h">Les créneaux et les modalités se verront au téléphone. Ici, une seule question : le rayon
+    que vous acceptez.</p>
     <div class="form">
-      <label class="large"><span class="k">Vos disponibilités</span>
-        <textarea id="f-dispo" placeholder="Ex. les mardis et jeudis toute la journée, les week-ends, tous les soirs après 18 h…"></textarea></label>
-      <label><span class="k">Mobilisable à partir du</span>
-        <input id="f-apartir" type="date"></label>
-      <label><span class="k">Durée mobilisable d'affilée</span>
-        ${opts(DUREES, 'f-duree')}</label>
-      <label><span class="k">Jusqu'où pouvez-vous vous déplacer ?</span>
+      <label class="large"><span class="k">Jusqu'où pouvez-vous vous déplacer ?</span>
         ${opts(ZONES, 'f-zone')}</label>
-      <label><span class="k">Véhicule</span>
-        ${opts(VEHICULES, 'f-vehicule')}</label>
-      <label><span class="k">Pourriez-vous dormir sur place si besoin ?</span>
-        <select id="f-nuit"><option>À préciser</option><option>Oui</option><option>Non</option></select></label>
-      <label class="large"><span class="k">Précisions utiles</span>
-        <textarea id="f-note" placeholder="Contraintes de garde d'enfants, jours à éviter, langues parlées, matériel dont vous disposez, tout ce qui aide à vous solliciter au bon moment…"></textarea></label>
     </div>
   </div>
 
@@ -345,8 +337,9 @@ function formulaire(){
     <div class="cond"><ol>
       <li>Votre inscription vaut déclaration de disponibilité. Elle ne vaut ni affectation, ni réquisition,
       ni engagement contractuel d'aucune sorte, et ne crée aucune obligation à votre charge.</li>
-      <li>La coordination de la CPTS Pau Béarn vous rappellera avant toute proposition de mission. Vous
-      restez libre de refuser toute mission, à tout moment, sans avoir à vous justifier.</li>
+      <li>C'est l'ARS Nouvelle-Aquitaine qui vous rappellera avant toute proposition de mission, et non la
+      coordination de la CPTS Pau Béarn. Vous restez libre de refuser toute mission, à tout moment, sans
+      avoir à vous justifier.</li>
       <li>La CPTS Pau Béarn recense et coordonne. Elle n'affecte pas : l'affectation relève de l'ARS
       Nouvelle-Aquitaine et des structures qui accueillent les renforts.</li>
       <li>Il vous appartient de vérifier auprès de votre assureur que votre responsabilité civile
@@ -379,7 +372,30 @@ function formulaire(){
   ORSAN AMAVI. Elles ne sont ni cédées, ni utilisées à d'autres fins, et sont conservées le temps de la
   mobilisation et de son retour d'expérience. Vous pouvez demander leur rectification ou leur suppression
   auprès de la coordination de la CPTS Pau Béarn.</p>`);
+
+  ['f-profession','f-exercice'].forEach(id => {
+    const s = document.getElementById(id);
+    if(s) s.addEventListener('change', () => bascule(id));
+  });
 }
+
+/* Les deux listes fermées ne couvrent pas tout le monde : choisir
+   « Autre » ouvre un champ libre juste dessous, et c'est ce qu'on
+   y écrit qui part au registre. Sans cela, tous les cas
+   particuliers se rangent sous « Autre » et on ne sait plus qui
+   fait quoi au moment de rappeler. */
+const estAutre = v => /^Autre/.test(v || '');
+
+function bascule(id){
+  const s = document.getElementById(id), i = document.getElementById(id + '-autre');
+  if(!s || !i) return;
+  i.hidden = !estAutre(s.value);
+  if(i.hidden) i.value = '';
+}
+
+/* La valeur retenue : la saisie libre si elle est remplie, sinon
+   l'entrée de la liste. */
+const choix = id => estAutre(val(id)) ? (val(id + '-autre') || val(id)) : val(id);
 
 function marquer(id, faux){
   const e = document.getElementById(id);
@@ -396,8 +412,8 @@ async function valider(){
   const donnees = {
     nom:        val('f-nom'),
     prenom:     val('f-prenom'),
-    profession: val('f-profession'),
-    exercice:   val('f-exercice'),
+    profession: choix('f-profession'),
+    exercice:   choix('f-exercice'),
     rpps:       val('f-rpps'),
     tel:        val('f-tel'),
     mail:       val('f-mail'),
@@ -405,14 +421,7 @@ async function valider(){
     structure:  val('f-structure'),
     renforts:   typesCoches(),
     experience: val('f-experience'),
-    engage:     val('f-engage'),
-    dispo:      val('f-dispo'),
-    apartir:    val('f-apartir'),
-    duree:      val('f-duree'),
     zone:       val('f-zone'),
-    vehicule:   val('f-vehicule'),
-    nuit:       val('f-nuit'),
-    note:       val('f-note'),
     site:       val('f-site'),
     conditions: document.getElementById('c-conditions').checked,
     transmission: document.getElementById('c-transmission').checked
@@ -428,6 +437,13 @@ async function valider(){
   exiger('f-prenom',     donnees.prenom,     'votre prénom');
   exiger('f-profession', donnees.profession, 'votre profession');
   exiger('f-tel',        donnees.tel,        'un téléphone');
+  exiger('f-commune',    donnees.commune,    "votre commune d'exercice");
+  /* Le courriel est devenu obligatoire : c'est la seconde voie
+     pour joindre le volontaire quand le téléphone ne répond pas.
+     Mal formé, il ne vaut pas mieux qu'absent — le serveur le
+     viderait, et le manque ne se verrait qu'après coup. */
+  exiger('f-mail', donnees.mail && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(donnees.mail),
+    donnees.mail ? 'un courriel valide' : 'votre courriel');
 
   document.getElementById('c-conditions-l').classList.toggle('faux', !donnees.conditions);
   if(!donnees.conditions){
@@ -487,8 +503,9 @@ function recapitulatif(d, ref, quand){
   const nom = [d.prenom, d.nom].filter(Boolean).join(' ');
   afficher(`<div class="recu no-print">
     <div class="t">Votre inscription est enregistrée.</div>
-    <p style="margin:0">La coordination de la CPTS Pau Béarn en a reçu le détail et vous rappellera au
-    ${esc(d.tel)} avant toute proposition de mission. Vous n'avez rien d'autre à faire.</p>
+    <p style="margin:0">La coordination de la CPTS Pau Béarn en a reçu le détail. C'est l'ARS
+    Nouvelle-Aquitaine qui vous rappellera au ${esc(d.tel)} avant toute proposition de mission. Vous n'avez
+    rien d'autre à faire.</p>
     <div class="r">Référence de votre inscription : <strong>${esc(ref)}</strong></div>
   </div>
 
@@ -535,23 +552,17 @@ function recapitulatif(d, ref, quand){
       ? `<ul>${d.renforts.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`
       : `<div style="font-size:12.5px;color:#5A6B84">Aucun type de renfort coché — à préciser lors du rappel de la coordination.</div>`}
     ${d.experience ? l('Expérience utile déclarée', d.experience) : ''}
-    ${d.engage ? l('Déjà engagé dans un autre dispositif', d.engage) : ''}
 
-    <h3>3 · Disponibilité déclarée</h3>
-    ${l('Disponibilités', d.dispo)}
-    ${l('Mobilisable à partir du', d.apartir ? frjour(d.apartir) : '')}
-    ${l("Durée mobilisable d'affilée", d.duree)}
+    <h3>3 · Déplacement déclaré</h3>
     ${l('Zone de déplacement acceptée', d.zone)}
-    ${l('Véhicule', d.vehicule)}
-    ${l('Peut dormir sur place', d.nuit)}
-    ${d.note ? l('Précisions', d.note) : ''}
 
     <h3>4 · Ce à quoi cette déclaration engage — et n'engage pas</h3>
     <ol>
       <li>La déclaration vaut disponibilité annoncée. Elle ne vaut ni affectation, ni réquisition, ni
       engagement contractuel, et ne crée aucune obligation à la charge du professionnel déclarant.</li>
-      <li>La coordination de la CPTS Pau Béarn rappelle le professionnel avant toute proposition de
-      mission. Celui-ci reste libre de refuser toute mission, à tout moment et sans justification.</li>
+      <li>Le professionnel est rappelé par l'ARS Nouvelle-Aquitaine, et non par la coordination de la CPTS
+      Pau Béarn, avant toute proposition de mission. Il reste libre de refuser toute mission, à tout moment
+      et sans justification.</li>
       <li>La CPTS Pau Béarn recense et coordonne. L'affectation relève de l'ARS Nouvelle-Aquitaine et des
       structures qui accueillent les renforts.</li>
       <li>Il appartient au professionnel de vérifier que sa responsabilité civile professionnelle couvre
