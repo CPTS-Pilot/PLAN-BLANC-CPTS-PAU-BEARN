@@ -45,7 +45,18 @@ jobs:
 
       # Destination principale. En FTPS : le mot de passe ne circule
       # pas en clair, contrairement au FTP simple imposé par OVH.
+      #
+      # Tant que le secret n'est pas renseigné, cette étape se saute
+      # au lieu de faire échouer tout le dépôt : sans cette condition,
+      # une bascule d'hébergement à moitié configurée empêche aussi
+      # les mises à jour de partir vers l'ancienne adresse, et plus
+      # rien n'arrive nulle part.
+      - name: Prévenir si le mot de passe AlwaysData manque
+        if: ${{ secrets.ALWAYSDATA_FTP_MOTDEPASSE == '' }}
+        run: echo "::warning::Secret ALWAYSDATA_FTP_MOTDEPASSE absent — dépôt AlwaysData sauté, seule l'ancienne adresse OVH est mise à jour."
+
       - name: Déposer sur AlwaysData
+        if: ${{ secrets.ALWAYSDATA_FTP_MOTDEPASSE != '' }}
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ftp-cptspaubearn.alwaysdata.net
@@ -68,6 +79,7 @@ jobs:
       # c'est ce dernier qui compte désormais.
       - name: Déposer sur OVH (ancienne adresse)
         continue-on-error: true
+        if: ${{ secrets.OVH_FTP_MOTDEPASSE != '' }}
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ftp.cluster129.hosting.ovh.net
