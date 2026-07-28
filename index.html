@@ -785,6 +785,54 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .agenda-l span{font-size:13px}
 .agenda-l b{font-weight:600;color:var(--encre)}
 
+/* ---------- l'agenda des créneaux ----------
+   Une ligne par créneau : l'heure à gauche, le médecin au
+   milieu, l'action à droite. Ce qui est libre saute aux yeux,
+   ce qui reste à confirmer aussi. */
+.cren{display:flex;align-items:center;gap:14px;background:var(--carte);border:1px solid var(--trait);
+  border-left:4px solid var(--stable);border-radius:9px;padding:12px 14px;margin-bottom:8px}
+.cren.pris{border-left-color:#A7B6CA;background:var(--surface)}
+.cren.attente{border-left-color:var(--ambre)}
+.cren .q{flex:0 0 74px;font-family:var(--mono);font-size:16px;color:var(--encre);line-height:1.15}
+.cren .q span{display:block;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--texte-2);margin-top:3px}
+.cren .qui{flex:1;min-width:0}
+.cren .qui .nm{font-family:var(--display);font-weight:600;font-size:14.5px}
+.cren .qui .s{font-size:12.5px;color:var(--texte-2);margin-top:1px}
+.cren .qui .pat{font-size:13px;margin-top:5px;padding-left:9px;border-left:2px solid var(--cobalt-clair)}
+.cren .act{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.cren .act .btn{padding:8px 14px;font-size:13.5px;min-height:0}
+@media(max-width:640px){
+  .cren{flex-wrap:wrap;gap:10px}
+  .cren .q{flex:0 0 60px}
+  .cren .qui{flex:1 1 55%}
+  .cren .act{flex:1 1 100%;justify-content:flex-start}
+  .cren .act .btn{flex:1;padding:11px 14px;min-height:44px}
+}
+
+/* Le choix du patient à poser sur un créneau. */
+.choix-pat{display:flex;flex-direction:column;gap:7px;max-height:44vh;overflow:auto;margin-bottom:6px}
+.choix-pat button{text-align:left;background:#fff;border:1px solid var(--trait);border-radius:8px;
+  padding:11px 13px;cursor:pointer;width:100%}
+.choix-pat button:hover{border-color:var(--encre-2);background:var(--cobalt-clair)}
+.choix-pat .r{display:block;font-family:var(--display);font-weight:600;font-size:14.5px}
+.choix-pat .r .deja{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--fond-2,#F1F3F6);color:var(--texte-2);border-radius:4px;padding:2px 6px;margin-left:7px;
+  vertical-align:2px;font-weight:400}
+.choix-pat .d{display:block;font-size:12.5px;color:var(--texte-2);margin-top:2px}
+
+/* Le contact du médecin, rendu au moment où on en a besoin. */
+.contact-med{background:var(--cobalt-clair);border-radius:9px;padding:14px 15px}
+.contact-med .nm{font-family:var(--display);font-weight:700;font-size:16px;color:var(--encre)}
+.contact-med .s{font-size:12.5px;color:var(--texte-2);margin-top:1px}
+.contact-med .voies{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:11px}
+.contact-med .voie{display:block;background:#fff;border:1px solid var(--trait);border-radius:7px;
+  padding:9px 11px;font-size:14px;text-decoration:none;color:var(--texte);word-break:break-word}
+.contact-med a.voie:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.contact-med .voie .k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--texte-2);margin-bottom:2px}
+.contact-med .alerte-med{margin-top:11px;background:#FDF0EC;border:1px solid #E8C3B8;color:#8C2F1B;
+  border-radius:7px;padding:10px 12px;font-size:13px}
+
 .toast{
   position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(80px);
   background:var(--encre);color:#fff;padding:10px 18px;border-radius:7px;font-size:14px;
@@ -1094,6 +1142,7 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
   consultations: { ouverte:false, message:'', cadre:"Il s'agit de consultations ponctuelles au cabinet, aux horaires que vous choisissez : renouvellement d'ordonnance interrompue par un départ précipité, suites d'inhalation de fumées. Répondre ne vous engage ni à devenir médecin traitant, ni à recevoir plus de patients que vous ne l'avez indiqué." },
   courante: [
     {id:'mc18', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Préparation d'un message d'information aux pharmaciens du territoire, en accompagnement du sondage des médecins généralistes de l'action « Patients évacués ». Le message assume la situation telle qu'elle est : le réseau d'orientation n'est pas encore constitué, aucun nom de médecin ne peut être donné à ce stade, et le vivier de volontaires est en cours de constitution. Il invite les pharmaciens à continuer de faire remonter les situations rencontrées au comptoir, en indiquant que ces remontées ont des suites — c'est l'une d'elles qui a ouvert l'action. Deux lignes y sont ouvertes : Anne Latisnère, vice-présidente, référente de cette coordination (06 29 82 29 10), et Eva Poulmarch, coordinatrice, sur la logistique (07 61 18 16 35).", suite:"Diffuser le message aux pharmaciens du territoire, puis consigner ici la date de diffusion, le canal employé et le nombre de destinataires. Recueillir les retours dans « Remontées terrain », et le fléchage dans l'action « Patients évacués » dès que le vivier de généralistes est ouvert.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
+    {id:'mc20', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Mise en service de l'agenda des créneaux, dans l'onglet « Patients évacués ». Les médecins qui répondent au formulaire cochent leurs demi-journées puis, d'un appui, les horaires exacts qu'ils peuvent proposer. Tous ces créneaux se rassemblent en un seul calendrier, jour par jour, qui distingue ce qui est libre de ce qui est positionné. Quand une pharmacie appelle, la coordination repère un créneau libre, y pose la personne signalée, et le cockpit rend aussitôt le téléphone et le courriel du médecin, avec un message tout écrit à lui envoyer — un créneau positionné dont le médecin n'est pas prévenu n'est pas un rendez-vous.", suite:"Rappeler aux médecins, à la diffusion du formulaire, que préciser des horaires évite un appel de calage et permet de placer une personne dans la journée. Suivre le compteur « à confirmer avec le médecin » : il compte les créneaux posés dont le praticien n'a pas encore été averti.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc19', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Mise en place de la campagne de recensement des médecins généralistes volontaires pour recevoir en consultation les personnes évacuées. Un formulaire en ligne, sur le modèle de ceux de la collecte et de l'appel au renfort, permet au médecin de répondre depuis son téléphone : identité, adresse du cabinet et téléphone, réponse oui ou non, motifs qu'il accepte de prendre, nombre de patients, et surtout ses créneaux — cochés demi-journée par demi-journée sur un calendrier de trois semaines plutôt que rédigés. La question de devenir médecin traitant est posée en dernier et ne conditionne rien. Un refus s'enregistre comme un accord : cela évite de rappeler deux fois le même cabinet.", suite:"Le recensement reste fermé tant que la coordination ne l'ouvre pas depuis l'onglet « Patients évacués », feuillet « Médecins volontaires ». À l'ouverture, diffuser le lien aux généralistes du territoire et consigner chaque diffusion. Attention : le cockpit et ses formulaires sont servis en http, ce qui a déjà provoqué un avertissement « site non sécurisé » lors de la diffusion du formulaire de don — arbitrer le canal avant d'envoyer.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc17', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Cadre de protection des données arrêté pour le fléchage des patients évacués. Le cockpit ne conserve aucune donnée nominative de patient : le registre est pseudonymisé — initiales, âge, commune, motif — et le nom reste chez la pharmacie ou la structure de soins non programmés qui reçoit la personne. La CPTS aiguille vers un médecin, elle ne constitue pas de liste de patients et ne transporte aucun dossier médical. L'information et l'accord du patient sont recueillis au comptoir par la structure qui le reçoit, et tracés dans le registre. Quand des coordonnées doivent malgré tout circuler vers un médecin, elles passent par messagerie sécurisée de santé entre professionnels, jamais par le cockpit, ni par courriel ordinaire ou WhatsApp.", suite:"Un bouton « Anonymiser le registre » efface les références patients et les précisions en conservant les compteurs : à actionner une fois la crise passée, pour ne garder au dossier de traçabilité que ce qui sert au retour d'expérience et au bilan ACI. Reste à ajouter cette activité au registre des traitements de la CPTS et à remettre aux pharmacies une mention d'information à afficher au comptoir.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc16', date:'2026-07-28', heure:'', source:'CMSI de Billère', evenement:"Remontée du CMSI de Billère : plusieurs pharmaciens du territoire ont appelé la structure après avoir reçu au comptoir des patients évacués des zones en feu de Gironde — les uns revenus dans leur commune d'origine, les autres relogés en Béarn. Partis dans la précipitation, ces patients demandent le renouvellement de leurs ordonnances ; certains relèvent de soins liés aux inhalations de fumées ou d'autres situations de santé délicates. Sans médecin traitant sur le territoire, ils se tournent vers les structures de soins non programmés, qui ne sont pas adaptées à cette prise en charge.", suite:"La CPTS Pau Béarn ouvre l'action « Patients évacués » : sonder les médecins généralistes du territoire pour constituer un vivier de volontaires acceptant les renouvellements d'ordonnance et les suivis liés aux inhalations, informer les pharmacies et les structures de soins non programmés, et organiser un fléchage coordonné des patients. Pilote : Anne Latisnère ; appui coordination : Eva Poulmarch. Remontée également tracée dans « Remontées terrain ».", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
@@ -1948,6 +1997,11 @@ const ORI_MOTIFS = ['',"Renouvellement d'ordonnance","Suites d'inhalation de fum
 const ORI_DELAIS = ['','Sous 48 heures','Dans la semaine','Non urgent','À préciser'];
 const ORI_STATUTS = ['À orienter','Orienté','Rendez-vous fixé','Patient vu','Sans suite'];
 
+/* Positionner quelqu'un sur un créneau ne suffit pas : le
+   médecin doit l'apprendre. Tant qu'il ne l'a pas su, le
+   rendez-vous n'existe que dans le cockpit. */
+const ORI_CONFIRME = ['À confirmer','Confirmé avec le médecin','Sans objet'];
+
 /* Le patient est informé et ne s'oppose pas : c'est ce qui autorise
    la structure qui le reçoit à faire circuler ses coordonnées vers
    un médecin qui ne le suit pas encore. Recueilli au comptoir, il se
@@ -2218,12 +2272,14 @@ const CHAMPS = {
         .filter(m => MED_OK.indexOf(m.statut) >= 0).map(nomMed)]},
       {c:'circuit', l:"Comment les coordonnées du patient ont circulé", t:'select', o:ORI_CIRCUITS},
       {c:'rdvle', l:"Rendez-vous fixé le", t:'date'},
+      {c:'rdvh', l:"Heure du rendez-vous", t:'time'},
+      {c:'confirme', l:"Créneau confirmé avec le médecin", t:'select', o:ORI_CONFIRME},
       {c:'par', l:"Orientation faite par", t:'text', d:() => moi === 'Anonyme' ? '' : moi},
       {c:'statut', l:"Statut", t:'select', o:ORI_STATUTS},
       {c:'note', l:"Observation", t:'textarea', large:true}
     ],
     cols:['date','heure','ref','provenance','relais','interlocuteur','commune','situation','motif','detail',
-          'delai','accord','medecin','circuit','rdvle','par','statut','auteur']
+          'delai','accord','medecin','circuit','rdvle','rdvh','confirme','par','statut','auteur']
   },
   /* Les points d'entrée du dispositif : ceux qui reçoivent ces
      patients au comptoir et à qui la liste des médecins
@@ -5830,7 +5886,13 @@ function creneauxGroupes(o){
   return [...par.entries()].map(([d, p]) => {
     const t = new Date(d + 'T12:00:00');
     const j = isNaN(t.getTime()) ? '' : JOURS_CT[t.getDay()];
-    return {jour: (j ? j.charAt(0).toUpperCase() + j.slice(1) + ' ' : '') + frdate(d), parts: p};
+    /* Les horaires précisés se lisent à côté de leur demi-journée :
+       c'est ce qui permet de poser quelqu'un sans rappeler. */
+    const q = p.map(lib => {
+      const h = heuresDuCreneau(o, d + ':' + (lib === 'après-midi' ? 'apresmidi' : 'matin'));
+      return lib + (h.length ? ' — ' + h.map(hFr).join(', ') : '');
+    });
+    return {jour: (j ? j.charAt(0).toUpperCase() + j.slice(1) + ' ' : '') + frdate(d), parts: q};
   });
 }
 
@@ -5875,15 +5937,303 @@ function vueOrientation(){
 
   <div class="filtres">
     <button class="${feuilletOri==='medecins'?'on':''}" onclick="allerFeuilletOri('medecins')">Médecins volontaires <span style="opacity:.6">${med.length}</span></button>
+    <button class="${feuilletOri==='agenda'?'on':''}" onclick="allerFeuilletOri('agenda')">Agenda des créneaux <span style="opacity:.6">${creneauxOfferts().filter(s => s.d >= aujourdhui() && !occupantDe(s)).length}</span></button>
     <button class="${feuilletOri==='recueil'?'on':''}" onclick="allerFeuilletOri('recueil')">Recueillir un patient</button>
     <button class="${feuilletOri==='patients'?'on':''}" onclick="allerFeuilletOri('patients')">Patients signalés <span style="opacity:.6">${ori.length}</span></button>
     <button class="${feuilletOri==='relais'?'on':''}" onclick="allerFeuilletOri('relais')">Pharmacies et structures <span style="opacity:.6">${rel.length}</span></button>
   </div>`;
 
+  if(feuilletOri === 'agenda')   return h + feuilletAgenda();
   if(feuilletOri === 'recueil')  return h + feuilletRecueil(rel, vivier);
   if(feuilletOri === 'patients') return h + feuilletPatients(ori, vivier);
   if(feuilletOri === 'relais')   return h + feuilletRelais(rel, ori, diffusables.length);
   return h + feuilletMedecins(med, vivier, diffusables, ori);
+}
+
+/* =========================================================
+   L'AGENDA DES CRÉNEAUX
+
+   Les créneaux de tous les médecins volontaires mis bout à
+   bout, jour par jour. C'est la page à ouvrir quand une
+   pharmacie appelle : on voit ce qui est libre, on y pose la
+   personne, et le cockpit rend aussitôt le numéro et le
+   courriel du médecin — parce qu'un créneau positionné qui
+   n'est pas dit au médecin n'est pas un rendez-vous.
+
+   Un créneau n'existe pas comme fiche : il se déduit de ce que
+   le médecin a coché. Ce qui est enregistré, c'est le patient
+   qu'on y pose — une seule source de vérité, celle du registre
+   des patients.
+   ========================================================= */
+let filtreAgenda = 'libres';
+let agendaPasse = false;
+function filtrerAgenda(f){ filtreAgenda = f; rendre(); }
+function basculerAgendaPasse(){ agendaPasse = !agendaPasse; rendre(); }
+
+const PART_L = { matin:'matin', apresmidi:'après-midi' };
+const heuresDuCreneau = (m, cle) =>
+  (m.heures && Array.isArray(m.heures[cle])) ? m.heures[cle].filter(h => /^\d{1,2}:\d{2}$/.test(h)) : [];
+
+/* Un créneau se désigne par le médecin, la demi-journée et
+   l'heure — vide si le médecin n'en a pas précisé. */
+const cleCreneau = s => s.m.id + '|' + s.d + ':' + s.p + '|' + (s.h || '');
+
+/* « 09:30 » se dit « 9h30 », et « 10:00 » se dit « 10h ». */
+const hFr = h => String(h || '').replace(/^0/, '').replace(':', 'h').replace(/h00$/, 'h');
+
+function creneauxOfferts(){
+  const l = [];
+  (etat.medecins || []).filter(m => MED_OK.indexOf(m.statut) >= 0).forEach(m => {
+    (Array.isArray(m.dispos) ? m.dispos : []).forEach(cle => {
+      const d = String(cle).slice(0, 10), p = String(cle).slice(11);
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(d) || !PART_L[p]) return;
+      const hs = heuresDuCreneau(m, cle);
+      if(hs.length) hs.forEach(h => l.push({m, d, p, h}));
+      else l.push({m, d, p, h:''});
+    });
+  });
+  return l.sort((a,b) => a.d.localeCompare(b.d)
+    || (a.p === 'matin' ? 0 : 1) - (b.p === 'matin' ? 0 : 1)
+    || (a.h || '99:99').localeCompare(b.h || '99:99')
+    || nomMed(a.m).localeCompare(nomMed(b.m), 'fr'));
+}
+
+function creneauDeCle(cle){
+  const [mid, quand, h] = String(cle).split('|');
+  const m = (etat.medecins || []).find(x => x.id === mid);
+  if(!m) return null;
+  return { m, d: quand.slice(0, 10), p: quand.slice(11), h: h || '' };
+}
+
+/* Qui occupe ce créneau. On rattache par identifiant quand on
+   l'a — le nom d'un médecin peut se corriger, son identifiant
+   non. */
+function occupantDe(s){
+  return (etat.orientes || []).find(o =>
+    (o.medecinId ? o.medecinId === s.m.id : o.medecin === nomMed(s.m))
+    && o.rdvle === s.d && (o.rdvpart || '') === s.p && (o.rdvh || '') === s.h);
+}
+
+function libelleCreneau(s){
+  const t = new Date(s.d + 'T12:00:00');
+  const j = isNaN(t.getTime()) ? s.d
+    : t.toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long'});
+  return j + ' ' + (s.h ? 'à ' + hFr(s.h) : '— ' + PART_L[s.p]);
+}
+
+function feuilletAgenda(){
+  const tous = creneauxOfferts();
+  const auj = aujourdhui();
+  const visibles = agendaPasse ? tous : tous.filter(s => s.d >= auj);
+  const passes = tous.length - tous.filter(s => s.d >= auj).length;
+  const libres = visibles.filter(s => !occupantDe(s));
+  const pris = visibles.filter(s => occupantDe(s));
+  const aConfirmer = pris.filter(s => (occupantDe(s).confirme || 'À confirmer') === 'À confirmer').length;
+  const attente = (etat.orientes || []).filter(enAttenteMed).length;
+
+  let h = `<div class="note">Tous les créneaux proposés par les médecins volontaires, mis bout à bout. Quand une pharmacie appelle, c'est cette page qu'on ouvre : on repère un créneau libre, on y pose la personne, et le cockpit donne aussitôt <strong>le numéro et le courriel du médecin</strong> pour lui dire que c'est calé. Un médecin qui n'a coché qu'une demi-journée apparaît sans heure : elle se convient au téléphone.${attente ? ` <strong style="color:var(--ambre)">${attente}</strong> patient${attente>1?'s attendent':' attend'} encore un médecin.` : ''}${aConfirmer ? ` <strong style="color:var(--ambre)">${aConfirmer}</strong> créneau${aConfirmer>1?'x positionnés restent à confirmer':' positionné reste à confirmer'} avec le médecin.` : ''}</div>
+
+  <div class="compteurs" style="margin-bottom:16px">
+    <div class="compteur"><div class="n" style="color:var(--stable)">${libres.length}</div><div class="l">créneaux libres à venir</div></div>
+    <div class="compteur"><div class="n">${pris.length}</div><div class="l">créneaux positionnés</div></div>
+    ${aConfirmer ? `<div class="compteur"><div class="n" style="color:var(--ambre)">${aConfirmer}</div><div class="l">à confirmer avec le médecin</div></div>` : ''}
+    ${attente ? `<div class="compteur"><div class="n" style="color:var(--ambre)">${attente}</div><div class="l">patients sans créneau</div></div>` : ''}
+  </div>
+
+  <div class="filtres">
+    <button class="${filtreAgenda==='libres'?'on':''}" onclick="filtrerAgenda('libres')">Créneaux libres <span style="opacity:.6">${libres.length}</span></button>
+    <button class="${filtreAgenda==='pris'?'on':''}" onclick="filtrerAgenda('pris')">Positionnés <span style="opacity:.6">${pris.length}</span></button>
+    <button class="${filtreAgenda==='tout'?'on':''}" onclick="filtrerAgenda('tout')">Tout <span style="opacity:.6">${visibles.length}</span></button>
+  </div>
+
+  <div class="barre-h">
+    <span class="cpt-h">${visibles.length} créneau${visibles.length>1?'x':''} au calendrier</span>
+    <button class="btn sec" onclick="imprimer()">PDF</button>
+    ${passes ? `<button class="btn sec" onclick="basculerAgendaPasse()">${agendaPasse ? 'Masquer' : 'Afficher'} les ${passes} créneau${passes>1?'x':''} passé${passes>1?'s':''}</button>` : ''}
+    <button class="btn" onclick="allerFeuilletOri('recueil')">Recueillir un patient</button>
+  </div>`;
+
+  if(!tous.length){
+    return h + `<div class="carte"><p class="vide">Aucun créneau proposé. L'agenda se remplit tout seul à mesure que les médecins répondent au formulaire en cochant leurs demi-journées — et leurs horaires. Un médecin saisi à la main n'y apparaît que si ses créneaux ont été cochés depuis sa fiche.</p></div>`;
+  }
+
+  const vus = filtreAgenda === 'libres' ? libres : filtreAgenda === 'pris' ? pris : visibles;
+  if(!vus.length){
+    return h + `<div class="carte"><p class="vide">${filtreAgenda === 'libres'
+      ? "Plus aucun créneau libre à venir. Relancer les médecins volontaires, ou en solliciter de nouveaux."
+      : "Aucun créneau positionné pour le moment."}</p></div>`;
+  }
+
+  let jour = null;
+  vus.forEach(s => {
+    if(s.d !== jour){
+      jour = s.d;
+      h += `<div class="reg-jour"><span class="n">${esc(frdateJour(jour))}</span>` +
+           (jour === auj ? `<span class="auj">aujourd'hui</span>` : '') + `</div>`;
+    }
+    const o = occupantDe(s);
+    const cle = cleCreneau(s);
+    const conf = o ? (o.confirme || 'À confirmer') : '';
+    h += `<div class="cren ${o ? (conf === 'À confirmer' ? 'attente' : 'pris') : 'libre'}">
+      <div class="q">${s.h ? esc(hFr(s.h)) : '—'}<span>${esc(PART_L[s.p])}</span></div>
+      <div class="qui">
+        <div class="nm">${esc(nomMed(s.m))}</div>
+        <div class="s">${[s.m.structure, s.m.commune].filter(Boolean).map(esc).join(' · ') || 'Commune à préciser'}</div>
+        ${o ? `<div class="pat">${esc(o.ref || 'Patient')}${o.motif ? ' — ' + esc(o.motif) : ''}${o.relais ? ' · signalé par ' + esc(o.relais) : ''}</div>` : ''}
+      </div>
+      <div class="act">
+        ${o
+          ? `<span class="etiq ${conf === 'À confirmer' ? 'e-attente' : 'e-cours'}">${esc(conf)}</span>
+             <button class="btn sec" onclick="ouvrirConfirmation('${cle}')">Prévenir le médecin</button>
+             <button class="retirer" onclick="libererCreneau('${cle}')">Libérer</button>`
+          : `<button class="btn" onclick="ouvrirPositionnement('${cle}')">Positionner un patient</button>`}
+      </div>
+    </div>`;
+  });
+  return h;
+}
+
+/* --- poser quelqu'un sur un créneau ---------------------- */
+function ouvrirPositionnement(cle){
+  const s = creneauDeCle(cle);
+  if(!s) return toast("Ce créneau n'existe plus");
+  const tous = (etat.orientes || []).filter(o => o.statut !== 'Sans suite');
+  /* Ceux qui attendent d'abord : c'est pour eux qu'on cherche. */
+  const l = tous.slice().sort((a,b) => (enAttenteMed(a) ? 0 : 1) - (enAttenteMed(b) ? 0 : 1)
+    || ((a.date||'') + (a.heure||'')).localeCompare((b.date||'') + (b.heure||'')));
+
+  document.getElementById('modale').innerHTML = `<h3>Positionner un patient</h3>
+    <p style="color:var(--texte-2);margin:0 0 6px;font-size:13.5px">${esc(nomMed(s.m))}${s.m.commune ? ' — ' + esc(s.m.commune) : ''}</p>
+    <p style="margin:0 0 14px;font-family:var(--display);font-weight:600">${esc(libelleCreneau(s))}</p>
+    ${s.m.motifs ? `<div class="note" style="margin-bottom:12px">Ce médecin accepte : ${esc(s.m.motifs)}.${s.m.conditions ? ` Conditions posées : ${esc(s.m.conditions)}.` : ''}</div>` : ''}
+    ${l.length
+      ? `<div class="choix-pat">${l.map(o => `
+          <button onclick="positionner('${cle}','${o.id}')">
+            <span class="r">${esc(o.ref || 'Patient')}${enAttenteMed(o) ? '' : `<span class="deja">déjà orienté</span>`}</span>
+            <span class="d">${[o.motif, o.commune, o.relais, o.delai].filter(Boolean).map(esc).join(' · ') || 'Aucun détail'}</span>
+          </button>`).join('')}</div>`
+      : `<p class="vide">Aucun patient au registre. Recueillez d'abord la demande de la pharmacie.</p>`}
+    <div class="actions">
+      <button class="btn sec" onclick="fermer();allerFeuilletOri('recueil')">Recueillir un nouveau patient</button>
+      <button class="btn sec" onclick="fermer()">Annuler</button>
+    </div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+
+async function positionner(cle, pid){
+  const s = creneauDeCle(cle);
+  const o = (etat.orientes || []).find(x => x.id === pid);
+  if(!s || !o) return toast("Créneau ou patient introuvable");
+  if(occupantDe(s)) return toast("Ce créneau vient d'être pris");
+
+  o.medecin = nomMed(s.m);
+  o.medecinId = s.m.id;
+  o.rdvle = s.d; o.rdvpart = s.p; o.rdvh = s.h;
+  o.confirme = 'À confirmer';
+  if(!o.statut || o.statut === 'À orienter' || o.statut === 'Orienté') o.statut = 'Rendez-vous fixé';
+  o.modifiePar = moi;
+  await sauver();
+  /* On enchaîne sur le contact du médecin sans laisser le choix
+     de fermer : c'est le geste qui manque le plus souvent. */
+  ouvrirConfirmation(cle);
+  rendreFond();
+}
+
+/* Rafraîchit la page sous la fenêtre sans la refermer. */
+function rendreFond(){
+  const v = document.getElementById('vue');
+  if(v && onglet === 'orientation'){ v.innerHTML = vueOrientation(); majPrintHead(); }
+  rendreNav();
+}
+
+async function libererCreneau(cle){
+  const s = creneauDeCle(cle); if(!s) return;
+  const o = occupantDe(s); if(!o) return;
+  o.rdvle = ''; o.rdvpart = ''; o.rdvh = ''; o.confirme = '';
+  if(o.statut === 'Rendez-vous fixé') o.statut = 'Orienté';
+  o.modifiePar = moi;
+  await sauver(); rendre();
+  toast(`Créneau libéré — ${esc(o.ref || 'le patient')} reste orienté vers ${esc(o.medecin || 'ce médecin')}`);
+}
+
+/* --- prévenir le médecin --------------------------------
+   L'exigence de la coordination : un créneau posé ne vaut rien
+   tant que le médecin ne le sait pas. La fenêtre rend donc son
+   numéro, son courriel, et le message tout écrit. */
+function messageConfirmation(s, o){
+  const quand = libelleCreneau(s);
+  return `Bonjour Docteur ${s.m.nom || ''},
+
+La CPTS Pau Béarn vous adresse une personne évacuée des zones incendiées de Gironde, sur le créneau que vous avez proposé : ${quand}.
+
+Motif : ${o.motif || 'à préciser'}.
+Référence du dossier : ${o.ref || '—'}${o.relais ? ` — signalée par ${o.relais}` : ''}.
+
+La personne, ou la structure qui la suit, prendra contact avec votre secrétariat. Merci de nous prévenir si ce créneau ne convient plus.
+
+Bien cordialement,
+${moi === 'Anonyme' ? 'La coordination' : moi} — CPTS Pau Béarn`;
+}
+
+function ouvrirConfirmation(cle){
+  const s = creneauDeCle(cle);
+  if(!s) return toast("Ce créneau n'existe plus");
+  const o = occupantDe(s);
+  if(!o) return toast("Ce créneau n'est pas positionné");
+
+  const msg = messageConfirmation(s, o);
+  const tel = String(s.m.tel || '').trim();
+  const mail = String(s.m.mail || '').trim();
+  const sujet = `CPTS Pau Béarn — patient adressé le ${frdateL(s.d)}${s.h ? ' à ' + hFr(s.h) : ''}`;
+  const lienMail = mail
+    ? `mailto:${encodeURIComponent(mail)}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(msg)}`
+    : '';
+
+  document.getElementById('modale').innerHTML = `<h3>Créneau positionné — prévenir le médecin</h3>
+    <p style="margin:0 0 14px;color:var(--texte-2);font-size:13.5px">${esc(o.ref || 'Le patient')} est posé sur le créneau de <strong>${esc(nomMed(s.m))}</strong>, ${esc(libelleCreneau(s))}. Il reste à le lui dire : sans cela, le rendez-vous n'existe que dans le cockpit.</p>
+
+    <div class="contact-med">
+      <div class="nm">${esc(nomMed(s.m))}</div>
+      <div class="s">${[s.m.structure, s.m.commune].filter(Boolean).map(esc).join(' · ') || ''}</div>
+      ${tel || mail ? `<div class="voies">
+        ${tel ? `<a class="voie tel" href="tel:${esc(tel.replace(/[^0-9+]/g,''))}"><span class="k">Téléphone</span>${esc(tel)}</a>` : ''}
+        ${mail ? `<a class="voie mail" href="${esc(lienMail)}"><span class="k">Courriel</span>${esc(mail)}</a>` : ''}
+        ${s.m.rdv ? `<span class="voie"><span class="k">Prise de rendez-vous</span>${esc(s.m.rdv)}</span>` : ''}
+      </div>` : `<div class="alerte-med">Ce médecin n'a ni téléphone ni courriel au registre. Complétez sa fiche avant de pouvoir le prévenir — sinon ce créneau ne sert à rien.</div>`}
+    </div>
+
+    <label style="margin:14px 0 0"><span class="k">Message tout prêt — à adapter</span>
+      <textarea id="msg-conf" style="min-height:190px">${esc(msg)}</textarea></label>
+
+    <div class="actions">
+      ${mail ? `<a class="btn" href="${esc(lienMail)}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Écrire au médecin</a>` : ''}
+      <button class="btn${mail ? ' sec' : ''}" onclick="copierMessageConf()">Copier le message</button>
+      ${(o.confirme || 'À confirmer') === 'À confirmer'
+        ? `<button class="btn sec" onclick="marquerConfirme('${o.id}')" style="margin-left:auto;color:var(--stable);border-color:#BEDCCE">C'est confirmé avec le médecin</button>`
+        : `<span class="etiq e-cours" style="margin-left:auto">${esc(o.confirme)}</span>`}
+      <button class="btn sec" onclick="fermer()">Fermer</button>
+    </div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+
+function copierMessageConf(){
+  const t = document.getElementById('msg-conf');
+  if(!t) return;
+  const fini = () => toast("Message copié — collez-le dans votre SMS ou votre courriel");
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t.value).then(fini, () => { t.select(); toast("Sélectionnez le message à la main"); });
+  }else{
+    t.select();
+    try{ document.execCommand('copy'); fini(); }catch(e){ toast("Sélectionnez le message à la main"); }
+  }
+}
+
+async function marquerConfirme(pid){
+  const o = (etat.orientes || []).find(x => x.id === pid); if(!o) return;
+  o.confirme = 'Confirmé avec le médecin';
+  o.modifiePar = moi;
+  await sauver(); fermer(); rendre();
+  toast("Créneau confirmé avec le médecin");
 }
 
 /* --- recueillir un patient ------------------------------
@@ -6144,6 +6494,7 @@ function feuilletPatients(ori, vivier){
         <label><span class="k">Rendez-vous fixé le</span>
           <input type="date" value="${esc(o.rdvle||'')}" onchange="majPatient('${o.id}','rdvle', this.value)"></label>
       </div>
+      ${o.rdvle ? `<div class="bloc"><span class="k">Créneau</span><div class="v">${esc(frdateL(o.rdvle))}${o.rdvh ? ' à ' + esc(hFr(o.rdvh)) : (o.rdvpart ? ' — ' + esc(PART_L[o.rdvpart] || o.rdvpart) : '')}${o.confirme ? ` · ${esc(o.confirme)}` : ''}</div></div>` : ''}
       ${estOriente(o) && o.circuit ? `<div class="bloc"><span class="k">Circuit suivi</span><div class="v">${esc(o.circuit)}</div></div>` : ''}
       ${(o.accord || 'À recueillir') === 'À recueillir' && st !== 'Sans suite'
         ? `<div class="bloc"><span class="k">Accord du patient</span><div class="v">À recueillir par la structure qui le reçoit avant que ses coordonnées ne circulent.</div></div>`
@@ -6163,6 +6514,11 @@ function feuilletPatients(ori, vivier){
 async function orienterPatient(id, medecin){
   const o = (etat.orientes||[]).find(x => x.id === id); if(!o) return;
   o.medecin = medecin;
+  /* On retient aussi l'identifiant : c'est par lui que l'agenda
+     rattache le patient au créneau, et un nom peut se corriger. */
+  const m = (etat.medecins||[]).find(x => nomMed(x) === medecin);
+  o.medecinId = m ? m.id : '';
+  if(!medecin){ o.rdvle = ''; o.rdvpart = ''; o.rdvh = ''; o.confirme = ''; }
   if(medecin && (!o.statut || o.statut === 'À orienter')) o.statut = 'Orienté';
   if(!medecin && o.statut === 'Orienté') o.statut = 'À orienter';
   o.modifiePar = moi;

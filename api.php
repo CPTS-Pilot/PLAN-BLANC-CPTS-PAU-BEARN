@@ -531,6 +531,7 @@ if (isset($_GET['renfort'])) {
 const CONSULT_PLAFOND = 2000;   /* garde-fou sur la taille du vivier   */
 const CONSULT_MOTIFS  = 10;     /* motifs cochés par médecin           */
 const CONSULT_DISPOS  = 60;     /* demi-journées cochées au calendrier */
+const CONSULT_HEURES  = 16;     /* horaires précis par demi-journée    */
 
 if (isset($_GET['consultations'])) {
 
@@ -603,12 +604,32 @@ if (isset($_GET['consultations'])) {
             : strcmp($ja, $jb);
     });
 
-    /* La même liste, en clair, pour l'export et l'impression :
-       « Mar 29/07 matin · Jeu 31/07 matin et après-midi ». */
+    /* Les horaires précis, demi-journée par demi-journée. Une clé
+       qui ne correspond à aucune demi-journée cochée n'a pas de
+       sens : elle est écartée. */
+    $heures = [];
+    $brutHeures = isset($in['heures']) && is_array($in['heures']) ? $in['heures'] : [];
+    foreach ($brutHeures as $cle => $liste) {
+        $cle = txt($cle, 22);
+        if (!in_array($cle, $dispos, true) || !is_array($liste)) continue;
+        $h = [];
+        foreach ($liste as $x) {
+            if (count($h) >= CONSULT_HEURES) break;
+            $x = txt($x, 5);
+            if (preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $x) && !in_array($x, $h, true)) $h[] = $x;
+        }
+        sort($h);
+        if ($h) $heures[$cle] = $h;
+    }
+
+    /* La même chose en clair, pour l'export et l'impression :
+       « Mar 29/07 matin (09:30, 10:00) · Jeu 31/07 après-midi ». */
     $parJour = [];
     foreach ($dispos as $x) {
         [$j, $p] = explode(':', $x);
-        $parJour[$j][] = ($p === 'apresmidi') ? 'après-midi' : 'matin';
+        $lib = ($p === 'apresmidi') ? 'après-midi' : 'matin';
+        if (isset($heures[$x])) $lib .= ' (' . implode(', ', $heures[$x]) . ')';
+        $parJour[$j][] = $lib;
     }
     $JOURS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
     $lisible = [];
@@ -671,6 +692,7 @@ if (isset($_GET['consultations'])) {
             'capacite'   => txt($in['capacite'] ?? '', 80),
             'creneaux'   => $creneaux,
             'dispos'     => $dispos,
+            'heures'     => $heures,
             'delai'      => txt($in['delai'] ?? '', 80),
             'conditions' => txt($in['contraintes'] ?? '', 600),
             /* Le médecin traitant, c'est la question de la fin : elle

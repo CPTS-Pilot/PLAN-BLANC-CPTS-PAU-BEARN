@@ -175,6 +175,28 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
 .recap-cr ul{margin:0;padding-left:18px}
 .recap-cr li{margin-bottom:2px}
 .recap-cr.vide{background:#FCF3E4;color:#8A5D12}
+/* Les horaires d'une demi-journée cochée : des puces qu'on
+   appuie, pas un champ qu'on remplit. */
+.dj-aide{font-size:12.5px;color:var(--texte-2);margin:0 0 11px}
+.dj{background:#fff;border:1px solid var(--trait);border-radius:7px;padding:10px 11px;margin-bottom:8px}
+.dj:last-child{margin-bottom:0}
+.dj-t{font-size:13.5px;margin-bottom:7px}
+.dj-t b{font-family:var(--display);font-weight:600;color:var(--encre)}
+.dj-n{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--texte-2);margin-top:2px}
+.chh{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.ch{border:1px solid var(--trait);border-radius:14px;background:#fff;padding:6px 11px;font-size:13px;
+  font-family:var(--mono);cursor:pointer;color:var(--texte-2);min-height:34px}
+.ch:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.ch.on{background:var(--encre-2);border-color:var(--encre-2);color:#fff}
+.ch-autre{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--texte-2);
+  border:1px dashed var(--trait);border-radius:14px;padding:3px 6px 3px 11px;cursor:pointer;width:auto}
+.ch-autre input{width:auto;min-width:112px;padding:4px 6px;border-radius:10px;font-size:13px}
+@media(max-width:640px){
+  .ch{min-height:40px;padding:8px 13px;font-size:14px}
+  .ch-autre{width:100%;justify-content:space-between}
+  .ch-autre input{font-size:16px}
+}
 @media(max-width:640px){
   .grille{grid-template-columns:38px repeat(7,1fr);gap:2px;padding:7px}
   .grille .lab{font-size:8.5px;letter-spacing:.02em}
@@ -260,6 +282,15 @@ const CAPACITES = ['','1 patient par semaine','2 patients par semaine',
 const DELAIS = ['','Dans les 48 heures','Sous une semaine',
   'Selon mes créneaux cochés ci-dessus','À préciser'];
 
+/* Les horaires proposés d'un appui, une fois la demi-journée
+   cochée. Ce sont des propositions : le médecin peut en ajouter
+   d'autres, ou n'en donner aucun — la demi-journée vaut alors
+   créneau à elle seule, et la coordination appellera pour caler
+   l'heure. */
+const HEURES_MATIN = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00'];
+const HEURES_APREM = ['14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00'];
+const heuresDe = part => part === 'matin' ? HEURES_MATIN : HEURES_APREM;
+
 const SEMAINES = 3;
 const JOURS_C = ['L','M','M','J','V','S','D'];
 const JOURS_L = ['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'];
@@ -271,6 +302,7 @@ let envoiEnCours = false;
 let contexte = { ouverte: false, message: '', cadre: '' };
 let accepte = null;                 /* null tant que rien n'est coché */
 const creneaux = new Set();         /* « 2026-07-29:matin » */
+const heures = {};                  /* { « 2026-07-29:matin »: ['09:30','10:00'] } */
 let semaines = [];                  /* les trois semaines affichées */
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
@@ -538,8 +570,79 @@ function marquerCase(cle){
 }
 
 function basculer(cle){
-  creneaux.has(cle) ? creneaux.delete(cle) : creneaux.add(cle);
+  if(creneaux.has(cle)){ creneaux.delete(cle); delete heures[cle]; }
+  else creneaux.add(cle);
   marquerCase(cle); majRecap();
+}
+
+/* --- les horaires d'une demi-journée --------------------
+   Cocher « mardi matin » suffit à répondre. Mais un médecin qui
+   sait déjà qu'il peut prendre quelqu'un à 9h30 et à 10h le dit
+   ici, d'un appui : la coordination place alors la personne sans
+   avoir à rappeler pour caler l'heure. */
+function heuresTriees(cle){
+  return (heures[cle] || []).slice().sort();
+}
+function basculerHeure(cle, h){
+  const l = heures[cle] || (heures[cle] = []);
+  const i = l.indexOf(h);
+  i >= 0 ? l.splice(i, 1) : l.push(h);
+  redessinerJour(cle);
+}
+function ajouterHeure(cle, h){
+  if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(h || '')) return;
+  const l = heures[cle] || (heures[cle] = []);
+  if(l.indexOf(h) === -1) l.push(h);
+  redessinerJour(cle);
+}
+function toutesLesHeures(cle){
+  const part = cle.split(':')[1];
+  const l = heuresTriees(cle);
+  const std = heuresDe(part);
+  /* Un horaire saisi à la main qui ne figure pas dans la liste
+     proposée doit tout de même apparaître, à sa place. */
+  return [...new Set(std.concat(l))].sort();
+}
+function redessinerJour(cle){
+  const e = document.getElementById('dj-' + cle);
+  if(e) e.outerHTML = ligneDemiJournee(cle);
+  majTitreRecap();
+}
+
+function libelleJour(cle){
+  const [d, p] = cle.split(':');
+  const t = new Date(d + 'T12:00:00');
+  return { jour: JOURS_A[(t.getDay() + 6) % 7] + ' ' + String(t.getDate()).padStart(2,'0')
+             + '/' + String(t.getMonth()+1).padStart(2,'0'),
+           part: p === 'apresmidi' ? 'après-midi' : 'matin' };
+}
+
+function ligneDemiJournee(cle){
+  const l = libelleJour(cle);
+  const prises = heuresTriees(cle);
+  const part = cle.split(':')[1];
+  return `<div class="dj" id="dj-${cle}">
+    <div class="dj-t"><b>${esc(l.jour)}</b> · ${esc(l.part)}
+      <span class="dj-n">${prises.length
+        ? prises.length + ' horaire' + (prises.length>1?'s':'') + ' : ' + prises.join(', ')
+        : 'horaire à caler par téléphone'}</span></div>
+    <div class="chh">
+      ${toutesLesHeures(cle).map(h => `<button type="button" class="ch${prises.indexOf(h)>=0?' on':''}"
+        aria-pressed="${prises.indexOf(h)>=0}" onclick="basculerHeure('${cle}','${h}')">${esc(h)}</button>`).join('')}
+      <label class="ch-autre">Autre
+        <input type="time" aria-label="Ajouter un autre horaire pour ${esc(l.jour)} ${esc(l.part)}"
+          onchange="ajouterHeure('${cle}', this.value); this.value=''"></label>
+    </div>
+  </div>`;
+}
+
+function majTitreRecap(){
+  const e = document.getElementById('recap-t');
+  if(!e) return;
+  const n = creneaux.size;
+  const h = [...creneaux].reduce((s, c) => s + heuresTriees(c).length, 0);
+  e.textContent = n + ' demi-journée' + (n>1?'s':'') + ' cochée' + (n>1?'s':'')
+    + (h ? ' · ' + h + ' horaire' + (h>1?'s':'') + ' précisé' + (h>1?'s':'') : '');
 }
 
 /* « Tous les matins » coche les cinq jours ouvrés de la semaine.
@@ -577,20 +680,32 @@ function creneauxLisibles(){
   return [...par.entries()].map(([d, parts]) => {
     const t = new Date(d + 'T12:00:00');
     const j = JOURS_A[(t.getDay() + 6) % 7];
+    const q = parts.map(p => {
+      const cle = d + ':' + (p === 'après-midi' ? 'apresmidi' : 'matin');
+      const h = heuresTriees(cle);
+      return p + (h.length ? ' (' + h.join(', ') + ')' : '');
+    });
     return j + ' ' + String(t.getDate()).padStart(2,'0') + '/' + String(t.getMonth()+1).padStart(2,'0')
-      + ' ' + parts.join(' et ');
+      + ' ' + q.join(' et ');
   });
 }
 
 function majRecap(){
   const z = document.getElementById('recap-cr');
   if(!z) return;
-  const l = creneauxLisibles();
-  z.innerHTML = l.length
-    ? `<div class="recap-cr"><div class="t">${l.length} demi-journée${l.length>1?'s':''} cochée${l.length>1?'s':''}</div>
-        <ul>${l.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`
+  const rang = x => x.split(':')[1] === 'matin' ? 0 : 1;
+  const cles = [...creneaux].sort((a,b) => a.slice(0,10).localeCompare(b.slice(0,10)) || rang(a) - rang(b));
+  z.innerHTML = cles.length
+    ? `<div class="recap-cr">
+        <div class="t" id="recap-t"></div>
+        <p class="dj-aide">Sur chaque demi-journée cochée, vous pouvez préciser les horaires exacts que vous
+        pouvez proposer — d'un appui. C'est facultatif : sans horaire, la coordination vous appellera pour
+        le caler. Avec, elle place directement la personne.</p>
+        ${cles.map(ligneDemiJournee).join('')}
+      </div>`
     : `<div class="recap-cr vide">Aucune demi-journée cochée pour le moment. Si aucune ne convient,
         décrivez vos disponibilités en clair dans le champ ci-dessous — la coordination s'en accommodera.</div>`;
+  majTitreRecap();
 }
 
 /* La réponse à la question 2 commande l'affichage : dire non
@@ -631,6 +746,8 @@ async function valider(){
     accepte:     accepte === true,
     motifs:      accepte ? motifsCoches() : [],
     dispos:      accepte ? [...creneaux].sort() : [],
+    heures:      accepte ? Object.fromEntries([...creneaux]
+                   .map(c => [c, heuresTriees(c)]).filter(x => x[1].length)) : {},
     precisions:  accepte ? val('f-precisions') : '',
     capacite:    accepte ? val('f-capacite') : '',
     delai:       accepte ? val('f-delai') : '',
