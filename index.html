@@ -86,6 +86,32 @@ h1{font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:-.01
 h2{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.02em;margin:0 0 12px;display:flex;align-items:center;gap:9px}
 h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-radius:2px;display:block}
 
+/* ---------- feuillets ----------
+   Un onglet du rail ne tient pas sur une seule page : il se lit
+   en feuillets. Cette barre-là n'est pas un filtre, c'est de la
+   navigation — elle passe donc avant le titre, en haut de l'écran,
+   et se donne la taille qui va avec. Quelqu'un qui arrive doit
+   voir du premier coup d'œil qu'il y a d'autres pages à ouvrir,
+   et laquelle il est en train de lire. */
+.feuillets{background:var(--carte);border:1px solid var(--trait);border-top:3px solid var(--encre);
+  border-radius:11px;padding:11px 13px 13px;margin:0 0 22px;box-shadow:0 1px 3px rgba(6,43,99,.06)}
+.feuillets .k{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--texte-2);display:block;margin-bottom:9px}
+.feuillets .rangee{display:flex;gap:7px;flex-wrap:wrap}
+.feuillets button{display:inline-flex;align-items:center;gap:8px;background:var(--surface);
+  border:1px solid var(--trait);border-radius:9px;padding:10px 15px;min-height:46px;cursor:pointer;
+  font-family:var(--display);font-weight:600;font-size:15px;line-height:1.15;color:var(--encre-2)}
+.feuillets button:hover{border-color:var(--encre-2);background:var(--cobalt-clair)}
+.feuillets button.on{background:var(--encre);border-color:var(--encre);color:#fff;
+  box-shadow:inset 0 -3px 0 var(--ambre)}
+.feuillets button .n{font-family:var(--mono);font-weight:400;font-size:11.5px;
+  background:var(--cobalt-clair);color:var(--encre-2);border-radius:20px;padding:2px 8px}
+.feuillets button.on .n{background:rgba(255,255,255,.22);color:#fff}
+@media(max-width:640px){
+  .feuillets{padding:10px 11px 12px;margin-bottom:18px}
+  .feuillets button{font-size:14px;padding:9px 12px;min-height:44px}
+}
+
 /* ---------- cartes ---------- */
 .carte{background:var(--carte);border:1px solid var(--trait);border-radius:9px;padding:18px;margin-bottom:18px}
 .grille{display:grid;gap:14px}
@@ -853,7 +879,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 @media print{
   @page{margin:14mm}
   body{background:#fff;font-size:10.5pt}
-  .rail,.bandeau,.filtres,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.pt .b,.guide,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve,.ref .b,.ref.neuf{display:none!important}
+  .rail,.bandeau,.filtres,.feuillets,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.pt .b,.guide,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve,.ref .b,.ref.neuf{display:none!important}
   td.act,th:last-child{display:none!important}
   .contenu{padding:0;max-width:none}
   .carte,.tw,.mission,.pers,.ligne,.pt,.visio,.ent-r{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
@@ -3948,7 +3974,15 @@ function vueOffre(){
   const total = etabs.reduce((a,x) => a + (parseInt(x.lits,10) || 0), 0);
   const urg = etabs.filter(x => x.urgences === 'Oui').length;
 
-  let h = `<h1>Offre de soins du territoire</h1>
+  const cats = [...new Set(l.map(x => x.cat))];
+  if(!feuillet || !cats.includes(feuillet)) feuillet = cats[0];
+
+  let h = cats.length ? `<nav class="feuillets">
+    <span class="k">Offre de soins — ${cats.length} feuillet${cats.length>1?'s':''}</span>
+    <div class="rangee">${cats.map(c=>`<button class="${feuillet===c?'on':''}" onclick="allerFeuillet('${c.replace(/'/g,"\\'")}')">${esc(c)} <span class="n">${l.filter(x=>x.cat===c).length}</span></button>`).join('')}</div>
+  </nav>` : '';
+
+  h += `<h1>Offre de soins du territoire</h1>
   <p class="chapo">Tout ce qui peut absorber ou orienter des patients en cas d'afflux massif de victimes, classé par feuillet : hôpitaux publics, cliniques et privé, soins non programmés, exercice coordonné. Les EHPAD et les structures médico-sociales n'y figurent pas.</p>
   <div class="compteurs" style="margin-bottom:18px">
     <div class="compteur"><div class="n">${etabs.length}</div><div class="l">établissements recensés</div></div>
@@ -3958,10 +3992,6 @@ function vueOffre(){
   </div>
   <div class="note">Les capacités proviennent de sources publiques et n'ont pas valeur de disponibilité : en situation réelle, seul le ROR renseigné par les établissements fait foi. Les fiches marquées d'un avertissement restent à confirmer.</div>
   <div class="barre-h"><button class="btn sec" onclick="imprimer()">PDF</button><button class="btn" onclick="ouvrirEtab()">Ajouter</button></div>`;
-
-  const cats = [...new Set(l.map(x => x.cat))];
-  if(!feuillet || !cats.includes(feuillet)) feuillet = cats[0];
-  h += `<div class="filtres">${cats.map(c=>`<button class="${feuillet===c?'on':''}" onclick="allerFeuillet('${c.replace(/'/g,"\\'")}')">${esc(c)} <span style="opacity:.6">${l.filter(x=>x.cat===c).length}</span></button>`).join('')}</div>`;
 
   [feuillet].forEach(c => {
     h += `<div class="etabs">`;
@@ -4203,15 +4233,19 @@ function vueCollecte(){
   const taux = (oui + non) ? Math.round(oui * 100 / (oui + non)) : 0;
   const pc = n => d.length ? (n * 100 / d.length) : 0;
 
-  let h = `<h1>Collecte de matériel</h1>
-  <p class="chapo">Qui a été contacté sur le territoire pour donner du matériel, à quelle heure, par qui, et ce qui a été obtenu. Chaque don accepté se formalise par un bordereau signé et se range dans un lieu de stockage identifié. Ce qui a été <strong>réellement déposé</strong> se compte, lui, point de collecte par point de collecte.</p>
-  <div class="filtres">
-    <button class="${feuilletMat==='points'?'on':''}" onclick="allerFeuilletMat('points')">Points de collecte <span style="opacity:.6">${(etat.points||[]).length}</span></button>
-    <button class="${feuilletMat==='dons'?'on':''}" onclick="allerFeuilletMat('dons')">Appels aux donateurs <span style="opacity:.6">${d.length}</span></button>
-    <button class="${feuilletMat==='stockage'?'on':''}" onclick="allerFeuilletMat('stockage')">Lieux de stockage <span style="opacity:.6">${s.length}</span></button>
-    <button class="${feuilletMat==='renforts'?'on':''}" onclick="allerFeuilletMat('renforts')">Volontaires de la collecte <span style="opacity:.6">${(etat.renforts||[]).length}</span></button>
-    <button class="${feuilletMat==='besoins'?'on':''}" onclick="allerFeuilletMat('besoins')">Besoins exprimés <span style="opacity:.6">${(etat.materiel||[]).length}</span></button>
-  </div>`;
+  let h = `<nav class="feuillets">
+    <span class="k">Collecte de matériel — 5 feuillets</span>
+    <div class="rangee">
+      <button class="${feuilletMat==='points'?'on':''}" onclick="allerFeuilletMat('points')">Points de collecte <span class="n">${(etat.points||[]).length}</span></button>
+      <button class="${feuilletMat==='dons'?'on':''}" onclick="allerFeuilletMat('dons')">Appels aux donateurs <span class="n">${d.length}</span></button>
+      <button class="${feuilletMat==='stockage'?'on':''}" onclick="allerFeuilletMat('stockage')">Lieux de stockage <span class="n">${s.length}</span></button>
+      <button class="${feuilletMat==='renforts'?'on':''}" onclick="allerFeuilletMat('renforts')">Volontaires de la collecte <span class="n">${(etat.renforts||[]).length}</span></button>
+      <button class="${feuilletMat==='besoins'?'on':''}" onclick="allerFeuilletMat('besoins')">Besoins exprimés <span class="n">${(etat.materiel||[]).length}</span></button>
+    </div>
+  </nav>
+
+  <h1>Collecte de matériel</h1>
+  <p class="chapo">Qui a été contacté sur le territoire pour donner du matériel, à quelle heure, par qui, et ce qui a été obtenu. Chaque don accepté se formalise par un bordereau signé et se range dans un lieu de stockage identifié. Ce qui a été <strong>réellement déposé</strong> se compte, lui, point de collecte par point de collecte.</p>`;
 
   if(feuilletMat === 'points')   return h + feuilletPoints();
   if(feuilletMat === 'stockage') return h + feuilletStockage();
@@ -5844,6 +5878,18 @@ function vueContinuite(){
     && o.statut !== 'Sans suite').length;
 
   let h = `<button class="retour-m" onclick="allerModuleOri('')">‹ Patients évacués — les deux modules</button>
+
+  <nav class="feuillets">
+    <span class="k">Continuité des soins — 5 feuillets</span>
+    <div class="rangee">
+      <button class="${feuilletOri==='medecins'?'on':''}" onclick="allerFeuilletOri('medecins')">Médecins volontaires <span class="n">${med.length}</span></button>
+      <button class="${feuilletOri==='agenda'?'on':''}" onclick="allerFeuilletOri('agenda')">Agenda des créneaux <span class="n">${creneauxOfferts().filter(s => s.d >= aujourdhui() && !occupantDe(s)).length}</span></button>
+      <button class="${feuilletOri==='recueil'?'on':''}" onclick="allerFeuilletOri('recueil')">Recueillir un patient</button>
+      <button class="${feuilletOri==='patients'?'on':''}" onclick="allerFeuilletOri('patients')">Patients signalés <span class="n">${ori.length}</span></button>
+      <button class="${feuilletOri==='relais'?'on':''}" onclick="allerFeuilletOri('relais')">Pharmacies et structures <span class="n">${rel.length}</span></button>
+    </div>
+  </nav>
+
   <h1>Continuité des soins</h1>
   <p class="chapo">Des personnes évacuées des zones en feu de Gironde se présentent au comptoir des pharmacies et dans les structures de soins non programmés du territoire : ordonnances à renouveler après un départ précipité, suites d'inhalation de fumées, et pas de médecin traitant sur place. La CPTS Pau Béarn sonde les médecins généralistes, tient le vivier de ceux qui acceptent, informe les relais et organise le fléchage.</p>
 
@@ -5857,14 +5903,6 @@ function vueContinuite(){
     ${sansAccord ? `<div class="compteur"><div class="n" style="color:var(--ambre)">${sansAccord}</div><div class="l">accords patients à recueillir</div></div>` : ''}
     <div class="compteur"><div class="n" style="color:var(--stable)">${partenaires}</div><div class="l">structures entrées dans la démarche</div></div>
     <div class="compteur"><div class="n">${signalants}</div><div class="l">structures ayant signalé un patient</div></div>
-  </div>
-
-  <div class="filtres">
-    <button class="${feuilletOri==='medecins'?'on':''}" onclick="allerFeuilletOri('medecins')">Médecins volontaires <span style="opacity:.6">${med.length}</span></button>
-    <button class="${feuilletOri==='agenda'?'on':''}" onclick="allerFeuilletOri('agenda')">Agenda des créneaux <span style="opacity:.6">${creneauxOfferts().filter(s => s.d >= aujourdhui() && !occupantDe(s)).length}</span></button>
-    <button class="${feuilletOri==='recueil'?'on':''}" onclick="allerFeuilletOri('recueil')">Recueillir un patient</button>
-    <button class="${feuilletOri==='patients'?'on':''}" onclick="allerFeuilletOri('patients')">Patients signalés <span style="opacity:.6">${ori.length}</span></button>
-    <button class="${feuilletOri==='relais'?'on':''}" onclick="allerFeuilletOri('relais')">Pharmacies et structures <span style="opacity:.6">${rel.length}</span></button>
   </div>`;
 
   if(feuilletOri === 'agenda')   return h + feuilletAgenda();
