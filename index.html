@@ -251,6 +251,82 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .fil .sup{background:none;border:0;color:var(--texte-2);cursor:pointer;opacity:.4;font-size:14px;padding:0 2px;align-self:flex-start}
 .fil .sup:hover{opacity:1;color:var(--braise)}
 
+/* ---------- visios de crise de l'ARS ----------
+   En tête de la situation régionale, et traitées comme telles :
+   fond encré, séance la plus récente dépliée, les précédentes
+   repliées dessous. C'est le premier bloc qu'on lit en arrivant. */
+.visios{background:var(--encre);border-radius:12px;padding:19px 20px;margin-bottom:20px}
+.visios .tete-v{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
+.visios .tete-v > div{flex:1;min-width:250px}
+.visios .tete-v h2{color:#fff;font-size:17px}
+.visios .tete-v h2::before{background:var(--ambre)}
+.visios .sous-v{font-size:13px;color:#A9C4E8;margin:0;max-width:72ch}
+.visios .tete-v .btn{background:#fff;color:var(--encre);flex:0 0 auto}
+.visios .tete-v .btn:hover{background:var(--cobalt-clair)}
+.visios .vide{color:#A9C4E8}
+.visios .alerte-v{background:#7A3520;border:1px solid #A5563A;color:#FFE2D8;border-radius:8px;
+  padding:11px 13px;font-size:13.5px;margin-bottom:12px}
+.visios .avant-v{margin-top:14px}
+.visios .avant-v > .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:#7FA3D4;display:block;margin-bottom:7px}
+
+.visio{background:var(--carte);border-radius:10px;margin-bottom:8px;overflow:hidden}
+.visio:last-child{margin-bottom:0}
+.visio.creuse{background:#FDF7F3}
+.visio .tete{display:flex;gap:13px;align-items:center;padding:13px 15px;cursor:pointer;flex-wrap:wrap;
+  width:100%;background:none;border:0;text-align:left;font-family:inherit;font-size:inherit;color:inherit}
+.visio .tete:hover{background:var(--cobalt-clair)}
+.visio .tete .q{font-family:var(--mono);font-size:11.5px;color:var(--texte-2);flex:0 0 112px}
+.visio .tete .i{flex:1;min-width:190px}
+.visio .tete .i .n{font-family:var(--display);font-weight:700;font-size:16px;color:var(--encre);
+  line-height:1.25;display:block}
+.visio .tete .i .s{font-size:12.5px;color:var(--texte-2);margin-top:2px;display:block}
+.visio .tete .chev{font-family:var(--mono);font-size:13px;color:var(--texte-2);flex:0 0 14px;text-align:center}
+.visio .dedans{padding:2px 15px 15px;border-top:1px dashed var(--trait)}
+.visio .manque-v{background:#FCF0EC;border:1px solid #E8C3B8;color:#8C2F1B;border-radius:7px;
+  padding:11px 13px;font-size:13.5px;margin-top:13px}
+
+/* Les points de la séance : numérotés, dans l'ordre où l'ARS les
+   a déroulés. C'est cette forme-là qu'on relit. */
+.pts-v{margin:14px 0 0;padding:0;list-style:none;counter-reset:ptv}
+.pts-v li{counter-increment:ptv;position:relative;padding:0 0 13px 34px;margin-bottom:13px;
+  border-bottom:1px solid var(--trait)}
+.pts-v li:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}
+.pts-v li::before{content:counter(ptv);position:absolute;left:0;top:1px;width:23px;height:23px;
+  border-radius:50%;background:var(--cobalt-clair);color:var(--encre-2);font-family:var(--mono);
+  font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:500}
+.pts-v .t{font-family:var(--display);font-weight:600;font-size:15px;color:var(--encre);line-height:1.3}
+.pts-v .d{font-size:14px;line-height:1.5;margin-top:4px}
+
+.visio .bloc-v{margin-top:13px;border-radius:0 7px 7px 0;border-left:3px solid var(--trait);
+  padding:10px 13px;background:var(--surface)}
+.visio .bloc-v.consignes{border-left-color:var(--encre-2);background:var(--cobalt-clair)}
+.visio .bloc-v.pour-nous{border-left-color:var(--ambre);background:#FCF3E4}
+.visio .bloc-v .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--texte-2);display:block;margin-bottom:3px}
+.visio .bloc-v .d{font-size:13.5px;line-height:1.45}
+.visio .bas-v{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:15px}
+.visio .bas-v .sup{margin-left:auto}
+
+/* Saisie d'une séance : un bloc par point, ajouté à la demande. */
+.pt-saisie{border:1px solid var(--trait);border-left:3px solid var(--cobalt-clair);border-radius:8px;
+  padding:12px 13px;margin-bottom:10px;background:#FCFDFF}
+.pt-saisie .num{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--texte-2);display:flex;align-items:center;margin-bottom:8px}
+.pt-saisie .num button{margin-left:auto;background:none;border:0;color:var(--texte-2);cursor:pointer;
+  font-size:13px;padding:2px 6px;border-radius:5px}
+.pt-saisie .num button:hover{color:var(--braise);background:#FDF0EC}
+.pt-saisie input{margin-bottom:8px}
+.pt-saisie textarea{min-height:64px}
+
+@media(max-width:640px){
+  .visios{padding:16px 14px;border-radius:10px}
+  .visio .tete{padding:13px 13px;gap:9px}
+  .visio .tete .q{flex:0 0 auto}
+  .visio .dedans{padding:2px 13px 14px}
+  .pts-v li{padding-left:29px}
+}
+
 /* ---------- veille ---------- */
 .filtres{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .filtres button{border:1px solid var(--trait);background:var(--carte);border-radius:20px;padding:5px 13px;font-size:13px;cursor:pointer;color:var(--texte-2)}
@@ -1115,6 +1191,26 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
     {id:'rb-moyens', nom:"Moyens, matériel et renforts", quoi:"Appels à volontaires, réserve sanitaire, besoins matériels exprimés et lieux de collecte.", ou:"Santé publique France, collectivités, alertes feux, URPS.", etat:'', maj:'', par:''},
     {id:'rb-ars', nom:"Points de situation de l'ARS", quoi:"Ce qui ressort des points réguliers de l'ARS : visio de crise de 15 h et communiqués. Le détail des échanges reste dans l'onglet Échanges avec l'ARS.", ou:"ARS Nouvelle-Aquitaine, délégation départementale 64.", etat:'', maj:'', par:''}
   ],
+  /* Les comptes rendus des visios de crise de l'ARS. Elles ont lieu
+     de manière récurrente et donnent, point par point, la situation
+     de la région : c'est la source la plus dense dont dispose la
+     CPTS, et elle passe donc en tête de la situation régionale.
+
+     Une séance = son en-tête (quand, qui représentait la CPTS) et
+     ses points, dans l'ordre où ils ont été abordés. Une séance sans
+     point est une séance à laquelle on a assisté sans en rapporter
+     le contenu : elle s'affiche quand même, et se signale comme
+     telle. Une séance manquante à l'écran, personne ne la voit.
+
+     La séance du 27/07 est dans ce cas : la CPTS y a assisté, son
+     compte rendu n'a jamais été consigné. */
+  visios: [
+    {id:'vs-2607-15', date:'2026-07-27', heure:'15:00', instance:"Visio de crise de l'ARS Nouvelle-Aquitaine",
+     represente:'Eva Poulmarch', points:[], consignes:'', pourNous:'',
+     prochaine:"Fréquence des séances à confirmer auprès de l'ARS.",
+     manquant:"Compte rendu non consigné. La CPTS Pau Béarn a bien assisté à la séance — Eva Poulmarch l'y représentait — mais rien n'en a été rapporté dans le cockpit. À reprendre auprès d'elle tant que c'est frais.",
+     auteur:'', quand:''}
+  ],
   ars: [
     {id:'a1', date:'2026-07-24', heure:'22:42', sens:"Reçu de l'ARS", canal:'Mail', interlocuteur:"ARS — Délégation départementale 64", objet:"Déclenchement du plan blanc régional / ORSAN AMAVI", demande:"Pour les professionnels de santé libéraux : maintenir la prise en charge des patients en ambulatoire pour éviter le recours non justifié aux urgences. Activation de la CRAPS. Les délégations départementales restent à disposition.", reponse:"Diffusion aux membres le 25/07 par Anne Latisnère, vice-présidente (message n°1) — environ 210 professionnels de santé destinataires via les groupes WhatsApp.", attendu:"Organiser le maintien des soins en ville et limiter le recours aux urgences du CH.", echeance:'', statut:'En cours', auteur:'', quand:''},
     {id:'a2', date:'2026-07-26', heure:'', sens:"Envoyé à l'ARS", canal:'Mail', interlocuteur:"ARS Nouvelle-Aquitaine", objet:"Demande des besoins en matériel et des lieux de livraison", demande:'', reponse:"Sollicitation portée par Anne Latisnère, vice-présidente.", attendu:"Sans retour écrit, aucune collecte n'est ouverte aux adhérents.", echeance:'', statut:'En attente', auteur:'Anne Latisnère', quand:''},
@@ -1144,6 +1240,7 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
      public s'anime, les réponses tombent dans le registre. */
   consultations: { ouverte:false, message:'', cadre:"Il s'agit de consultations ponctuelles au cabinet, aux horaires que vous choisissez : renouvellement d'ordonnance interrompue par un départ précipité, suites d'inhalation de fumées. Répondre ne vous engage ni à devenir médecin traitant, ni à recevoir plus de patients que vous ne l'avez indiqué." },
   courante: [
+    {id:'mc19', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Préparation d'un second message d'information sur l'action « Patients évacués », adressé aux médecins de SOS Médecins. Le message part de ce qu'ils constatent déjà — des personnes évacuées reçues en soins non programmés pour des renouvellements d'ordonnance et des suites d'inhalation, motifs qui relèvent du suivi et non de l'urgence — dit sans détour que le vivier de généralistes n'est pas encore constitué ni le circuit d'orientation opérationnel, et les associe à la construction : ce qu'ils voient du flux, ce qui les soulagerait dans le fléchage, et la possibilité de figurer eux-mêmes parmi les médecins volontaires. Mêmes lignes de contact que le message aux pharmaciens.", suite:"Diffuser le message à SOS Médecins et consigner ici la date, le canal et l'interlocuteur joint. Nommer un interlocuteur SOS Médecins au carnet de coordonnées, et reporter leur estimation du flux dans « Remontées terrain ».", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc18', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Préparation d'un message d'information aux pharmaciens du territoire, en accompagnement du sondage des médecins généralistes de l'action « Patients évacués ». Le message assume la situation telle qu'elle est : le réseau d'orientation n'est pas encore constitué, aucun nom de médecin ne peut être donné à ce stade, et le vivier de volontaires est en cours de constitution. Il invite les pharmaciens à continuer de faire remonter les situations rencontrées au comptoir, en indiquant que ces remontées ont des suites — c'est l'une d'elles qui a ouvert l'action. Deux lignes y sont ouvertes : Anne Latisnère, vice-présidente, référente de cette coordination (06 29 82 29 10), et Eva Poulmarch, coordinatrice, sur la logistique (07 61 18 16 35).", suite:"Diffuser le message aux pharmaciens du territoire, puis consigner ici la date de diffusion, le canal employé et le nombre de destinataires. Recueillir les retours dans « Remontées terrain », et le fléchage dans l'action « Patients évacués » dès que le vivier de généralistes est ouvert.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc21', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Allègement du formulaire de recensement des généralistes, après relecture. Les horaires d'une demi-journée s'ouvrent désormais dans la semaine même, juste sous sa grille : cocher mercredi matin et devoir descendre en bas de page pour en préciser l'heure n'était pas tenable pour un médecin qui répond entre deux patients. Les six motifs ne se cochent plus un par un — la liste se lit, et une seule case la couvre : accepter, c'est accepter ce qui relève de la médecine générale courante. Trois questions sont retirées : le nombre de patients acceptés, le délai de rendez-vous et les conditions posées, qui se demandent mieux au téléphone qu'au formulaire.", suite:"Les champs « nombre de patients » et « conditions posées » restent disponibles dans le cockpit pour la saisie à la main et se renseignent au moment du rappel de confirmation. Le reste du formulaire est inchangé : identité, réponse oui ou non, créneaux, prise de rendez-vous, accord de diffusion, et la question du médecin traitant en dernier.", statut:'Clos', auteur:'Eva Poulmarch', quand:''},
     {id:'mc20', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Mise en service de l'agenda des créneaux, dans l'onglet « Patients évacués ». Les médecins qui répondent au formulaire cochent leurs demi-journées puis, d'un appui, les horaires exacts qu'ils peuvent proposer. Tous ces créneaux se rassemblent en un seul calendrier, jour par jour, qui distingue ce qui est libre de ce qui est positionné. Quand une pharmacie appelle, la coordination repère un créneau libre, y pose la personne signalée, et le cockpit rend aussitôt le téléphone et le courriel du médecin, avec un message tout écrit à lui envoyer — un créneau positionné dont le médecin n'est pas prévenu n'est pas un rendez-vous.", suite:"Rappeler aux médecins, à la diffusion du formulaire, que préciser des horaires évite un appel de calage et permet de placer une personne dans la journée. Suivre le compteur « à confirmer avec le médecin » : il compte les créneaux posés dont le praticien n'a pas encore été averti.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
@@ -1237,6 +1334,7 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
     {id:'c6', structure:"Bureau des maires — rattachement à préciser", nom:'Valérie Revel', fonction:'', tel:'', mail:'', role:"Sollicitée le 27/07 à 8h pour centraliser les dons dans un lieu de stockage. Devait contacter M. Guinaman (DD ARS 64). Réunion du bureau des maires le 27/07 à 14h.", auteur:'Anne Latisnère', quand:''},
     {id:'c7', structure:"ARS — Délégation départementale 64", nom:'M. Guinaman', fonction:'', tel:'', mail:'', role:"Cité pour la centralisation des dons ; devait être contacté par Valérie Revel le 27/07. Orthographe du nom à confirmer.", auteur:'Anne Latisnère', quand:''},
     {id:'c10', structure:"CMSI de Billère", nom:'', fonction:"Structure de soins non programmés", tel:'', mail:'', role:"À l'origine de la remontée du 28/07 sur les patients évacués : reçoit les appels des pharmaciens du territoire et les patients sans médecin traitant. Point d'entrée du fléchage vers les généralistes volontaires. Interlocuteur à nommer.", auteur:'Eva Poulmarch', quand:''},
+    {id:'c11', structure:"SOS Médecins", nom:'', fonction:"Structure de soins non programmés", tel:'', mail:'', role:"Reçoit des patients évacués pour des renouvellements d'ordonnance et des suites d'inhalation, motifs qui relèvent du suivi et non de l'urgence. Destinataire du message d'information du 28/07 sur l'action « Patients évacués », et relais du fléchage vers les généralistes volontaires. Interlocuteur, ligne et adresse à renseigner.", auteur:'Eva Poulmarch', quand:''},
     {id:'c8', structure:"CPTS Est Béarn", nom:'', fonction:'', tel:'', mail:'', role:"Mobilisée en InterCPTS 64 le 27/07 — mutualisation des transports vers la Gironde. Interlocuteur à nommer.", auteur:'Anne Latisnère', quand:''},
     {id:'c9', structure:"CPTS des 3 Vallées", nom:'', fonction:'', tel:'', mail:'', role:"Mobilisée en InterCPTS 64 le 27/07 — mutualisation des transports vers la Gironde. Interlocuteur à nommer.", auteur:'Anne Latisnère', quand:''},
     {id:'c0', structure:"CPTS Pau Béarn", nom:'Anne Latisnère', fonction:'Vice-présidente, infirmière', tel:'', mail:'', role:"Relation ARS, pilotage de la collecte de matériel, diffusion aux groupes WhatsApp (environ 210 professionnels de santé)", auteur:'', quand:''},
@@ -1470,7 +1568,7 @@ function lancerSondage(){
    et qu'elle n'a pas été retirée à la main : ce qui a été saisi
    par le copil n'est jamais touché. C'est par là qu'arrivent les
    éléments consignés hors ligne, au téléphone notamment. */
-const SEEDS = ['missions','veille','ars','sources','rubriques','lignes','offre','cpts','courante','terrain','materiel','stockage','points','contacts','referents','medecins','orientes','relais'];
+const SEEDS = ['missions','veille','ars','sources','rubriques','visios','lignes','offre','cpts','courante','terrain','materiel','stockage','points','contacts','referents','medecins','orientes','relais'];
 function fusionnerNouveautes(){
   etat.retires = etat.retires || [];
   SEEDS.forEach(k => {
@@ -3204,6 +3302,284 @@ const infosDuPoint = id => (etat.veille||[]).filter(i => (i.rubrique||'') === id
    espace. Une seule source de vérité, dans Missions & organigramme. */
 const missionVeille = () => (etat.missions||[]).find(m => espaceDe(m) === 'veille');
 
+/* =========================================================
+   LES VISIOS DE CRISE DE L'ARS
+
+   L'ARS réunit ses partenaires en visioconférence à intervalle
+   régulier et y déroule la situation de la région point par
+   point. C'est, de loin, la source la plus dense dont dispose la
+   CPTS : plutôt que de la laisser se diluer dans le fil des
+   informations retenues, elle ouvre la situation régionale.
+
+   La dernière séance s'affiche en entier, dépliée. Les
+   précédentes se replient sous elle et se rouvrent d'un clic :
+   on relit ce qui a été dit il y a deux jours sans quitter la
+   page.
+   ========================================================= */
+let visioOuverte = null;
+let pointsSaisie = [];
+
+const visios = () => etat.visios || [];
+const visiosTriees = () => [...visios()].sort((a,b) =>
+  ((b.date||'') + ' ' + (b.heure||'')).localeCompare((a.date||'') + ' ' + (a.heure||'')));
+const visioVide = v => !(v.points||[]).length && !v.consignes && !v.pourNous;
+
+function ouvrirVisio(id){ visioOuverte = (visioOuverte === id) ? null : id; rendre(); }
+
+function vueVisios(){
+  const l = visiosTriees();
+  const derniere = l[0];
+  const avant = l.slice(1);
+  const aConsigner = l.filter(visioVide).length;
+
+  let h = `<div class="visios">
+    <div class="tete-v">
+      <div>
+        <h2 style="margin:0 0 3px">Ce que l'ARS a dit à sa dernière visio</h2>
+        <p class="sous-v">Les points de situation régionaux de l'ARS Nouvelle-Aquitaine, dans l'ordre où ils ont été abordés. C'est la source la plus complète dont dispose la CPTS : elle passe avant tout le reste.</p>
+      </div>
+      <button class="btn" onclick="ouvrirSaisieVisio()">Consigner une visio</button>
+    </div>`;
+
+  if(!l.length){
+    return h + `<div class="carte" style="margin:0"><p class="vide">Aucune visio consignée. Dès la prochaine séance, notez-en les points ici : c'est ce que le reste de l'équipe lira en premier.</p></div></div>`;
+  }
+
+  if(aConsigner) h += `<div class="alerte-v">${aConsigner === 1
+    ? "Une séance a eu lieu sans que son compte rendu soit consigné."
+    : aConsigner + " séances ont eu lieu sans que leur compte rendu soit consigné."} Ce qui s'y est dit n'existe nulle part ailleurs dans le cockpit : à reprendre auprès de la personne qui y assistait, tant que c'est frais.</div>`;
+
+  h += carteVisio(derniere, true);
+
+  if(avant.length){
+    h += `<div class="avant-v"><span class="k">Séances précédentes</span>`;
+    avant.forEach(v => { h += carteVisio(v, visioOuverte === v.id); });
+    h += `</div>`;
+  }
+
+  return h + `</div>`;
+}
+
+function carteVisio(v, deplie){
+  const pts = v.points || [];
+  const vide = visioVide(v);
+  const quand = `${frdate(v.date)}${v.heure ? ' à ' + esc(v.heure) : ''}`;
+
+  let h = `<div class="visio ${deplie ? 'ouverte' : ''} ${vide ? 'creuse' : ''}">
+    <button class="tete" onclick="ouvrirVisio('${v.id}')" aria-expanded="${!!deplie}">
+      <span class="q">${quand}</span>
+      <span class="i">
+        <span class="n">${esc(v.instance || "Visio de crise de l'ARS")}</span>
+        <span class="s">${[v.represente ? 'CPTS représentée par ' + v.represente : '',
+          vide ? 'compte rendu à consigner' : pts.length + ' point' + (pts.length > 1 ? 's' : '') + ' abordé' + (pts.length > 1 ? 's' : '')]
+          .filter(Boolean).map(esc).join(' · ')}</span>
+      </span>
+      <span class="chev">${deplie ? '▲' : '▼'}</span>
+    </button>`;
+
+  if(deplie){
+    h += `<div class="dedans">`;
+
+    if(vide){
+      h += `<div class="manque-v">${esc(v.manquant ||
+        "Rien n'a été rapporté de cette séance. Ce qui s'y est dit n'existe nulle part ailleurs dans le cockpit.")}</div>`;
+    }
+
+    if(pts.length) h += `<ol class="pts-v">${pts.map(p => `<li>
+      <div class="t">${esc(p.titre)}</div>
+      <div class="d">${esc(p.texte).replace(/\n/g,'<br>')}</div>
+    </li>`).join('')}</ol>`;
+
+    if(v.consignes) h += `<div class="bloc-v consignes">
+      <span class="k">Ce que l'ARS demande</span><div class="d">${esc(v.consignes).replace(/\n/g,'<br>')}</div></div>`;
+
+    if(v.pourNous) h += `<div class="bloc-v pour-nous">
+      <span class="k">Ce que ça change pour la CPTS Pau Béarn</span><div class="d">${esc(v.pourNous).replace(/\n/g,'<br>')}</div></div>`;
+
+    if(v.prochaine) h += `<div class="bloc-v"><span class="k">Prochaine séance</span><div class="d">${esc(v.prochaine)}</div></div>`;
+
+    h += `<div class="bas-v">
+      <button class="btn${vide ? '' : ' sec'}" onclick="ouvrirSaisieVisio('${v.id}')">${vide ? 'Consigner le compte rendu' : 'Modifier'}</button>
+      <button class="retirer sup" onclick="supprimerVisio('${v.id}')">Retirer</button>
+    </div></div>`;
+  }
+
+  return h + `</div>`;
+}
+
+/* --- Saisie d'une séance -------------------------------
+   Les points s'ajoutent un par un, dans l'ordre où ils ont été
+   abordés : c'est la forme sous laquelle l'ARS les déroule, et
+   celle sous laquelle on les relit. */
+function ouvrirSaisieVisio(id){
+  const v = id ? visios().find(x => x.id === id) : null;
+  pointsSaisie = v ? JSON.parse(JSON.stringify(v.points || [])) : [];
+  if(!pointsSaisie.length) pointsSaisie.push({titre:'', texte:''});
+  const g = (c, d) => esc(v ? (v[c] ?? '') : (d ?? ''));
+  const m = document.getElementById('modale');
+  m.classList.add('large');
+  m.innerHTML = `<h3>${v ? 'Compte rendu de la visio' : 'Consigner une visio de crise'}</h3>
+  <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">Un point par sujet abordé, dans l'ordre de la séance. Le titre se lit seul dans la liste ; le texte porte ce qui a été dit. Rien ne remplace une phrase écrite le soir même.</p>
+  <div class="form">
+    <label><span class="k">Date *</span><input id="vs-date" type="date" value="${g('date', aujourdhui())}"></label>
+    <label><span class="k">Heure</span><input id="vs-heure" type="time" value="${g('heure', '15:00')}"></label>
+    <label class="large"><span class="k">Instance</span>
+      <input id="vs-instance" value="${g('instance', "Visio de crise de l'ARS Nouvelle-Aquitaine")}"></label>
+    <label class="large"><span class="k">CPTS représentée par</span>
+      <input id="vs-represente" value="${g('represente', moi === 'Anonyme' ? '' : moi)}" placeholder="Qui y assistait pour la CPTS Pau Béarn"></label>
+  </div>
+
+  <div style="margin-top:18px">
+    <div class="barre-h" style="margin-bottom:8px">
+      <span class="cpt-h">Points abordés</span>
+      <button class="btn sec" onclick="ajouterPointVisio()">Ajouter un point</button>
+    </div>
+    <div id="pts-saisie">${pointsSaisie.map(pointVisioHTML).join('')}</div>
+  </div>
+
+  <div class="form" style="margin-top:16px">
+    <label class="large"><span class="k">Ce que l'ARS demande</span>
+      <textarea id="vs-consignes" placeholder="Les consignes explicites sorties de la séance, celles qu'on peut citer.">${g('consignes')}</textarea></label>
+    <label class="large"><span class="k">Ce que ça change pour la CPTS Pau Béarn</span>
+      <textarea id="vs-pourNous" placeholder="Ce qu'il faut décider, lancer ou arrêter de notre côté à la suite de cette séance.">${g('pourNous')}</textarea></label>
+    <label class="large"><span class="k">Prochaine séance</span>
+      <input id="vs-prochaine" value="${g('prochaine')}" placeholder="Ex. demain 15h, même lien"></label>
+  </div>
+
+  <div style="margin-top:14px"><label class="coche">
+    <input type="checkbox" id="vs-mc" ${v && !visioVide(v) ? '' : 'checked'}>
+    <span>Consigner en main courante
+      <span class="d">Coché par défaut : toute information recueillie se retrouve dans la main courante, en plus de sa rubrique.</span></span>
+  </label></div>
+
+  <div class="actions">
+    <button class="btn" onclick="validerVisio(${v ? `'${v.id}'` : ''})">Enregistrer</button>
+    <button class="btn sec" onclick="fermer()">Annuler</button>
+  </div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+
+function pointVisioHTML(p, i){
+  return `<div class="pt-saisie" data-i="${i}">
+    <div class="num">Point ${i+1}
+      <button type="button" onclick="retirerPointVisio(${i})" title="Retirer ce point">Retirer ×</button></div>
+    <input id="ps-titre-${i}" value="${esc(p.titre||'')}" placeholder="Ex. Évolution des fronts, situation hospitalière, transports sanitaires…"
+      onchange="majPointVisio(${i},'titre',this.value)">
+    <textarea id="ps-texte-${i}" placeholder="Ce qui a été dit sur ce point."
+      onchange="majPointVisio(${i},'texte',this.value)">${esc(p.texte||'')}</textarea>
+  </div>`;
+}
+
+function majPointVisio(i, c, v){ if(pointsSaisie[i]) pointsSaisie[i][c] = v; }
+
+/* Les champs ne se déclarent qu'au « change » : avant de
+   redessiner la liste, on relit ce qui est à l'écran pour ne pas
+   perdre une saisie en cours. */
+function relirePointsVisio(){
+  pointsSaisie.forEach((p, i) => {
+    ['titre','texte'].forEach(c => {
+      const e = document.getElementById(`ps-${c}-${i}`);
+      if(e) p[c] = e.value;
+    });
+  });
+}
+function redessinerPointsVisio(){
+  const z = document.getElementById('pts-saisie');
+  if(z) z.innerHTML = pointsSaisie.map(pointVisioHTML).join('');
+}
+function ajouterPointVisio(){
+  relirePointsVisio();
+  pointsSaisie.push({titre:'', texte:''});
+  redessinerPointsVisio();
+  const e = document.getElementById(`ps-titre-${pointsSaisie.length - 1}`);
+  if(e){ e.scrollIntoView({block:'center'}); e.focus(); }
+}
+function retirerPointVisio(i){
+  relirePointsVisio();
+  pointsSaisie.splice(i, 1);
+  if(!pointsSaisie.length) pointsSaisie.push({titre:'', texte:''});
+  redessinerPointsVisio();
+}
+
+async function validerVisio(id){
+  relirePointsVisio();
+  const g = c => (document.getElementById('vs-' + c) || {}).value || '';
+  const date = g('date');
+  if(!date){ toast("La date de la séance est obligatoire"); return; }
+
+  /* Un point sans titre ni texte n'est qu'une ligne restée vide :
+     on ne la garde pas. Un point titré sans texte se garde — c'est
+     un sujet abordé dont on n'a pas retenu le détail. */
+  const points = pointsSaisie
+    .map(p => ({titre:(p.titre||'').trim(), texte:(p.texte||'').trim()}))
+    .filter(p => p.titre || p.texte)
+    .map(p => ({titre: p.titre || 'Point sans intitulé', texte: p.texte}));
+
+  const champs = {
+    date, heure:g('heure').trim(), instance:g('instance').trim(),
+    represente:g('represente').trim(), points,
+    consignes:g('consignes').trim(), pourNous:g('pourNous').trim(),
+    prochaine:g('prochaine').trim()
+  };
+
+  etat.visios = etat.visios || [];
+  const v = id ? etat.visios.find(x => x.id === id) : null;
+  if(v){
+    Object.assign(v, champs, {modifiePar: moi});
+    /* Le rappel « compte rendu manquant » n'a plus lieu d'être une
+       fois la séance renseignée. */
+    if(points.length || champs.consignes || champs.pourNous) delete v.manquant;
+  }else{
+    etat.visios.push(Object.assign({id:uid(), auteur:moi, quand:new Date().toISOString()}, champs));
+  }
+
+  const mc = (document.getElementById('vs-mc') || {}).checked;
+  if(mc) consignerVisioEnCourante(champs);
+
+  /* Le point de situation « Points de situation de l'ARS » se
+     réécrit à partir de la séance : c'est ce qui se lit au copil. */
+  majPointARS(champs);
+
+  visioOuverte = id || null;
+  await sauver(); fermer(); rendre();
+  toast(mc ? "Visio consignée, et reportée en main courante" : "Visio consignée");
+}
+
+function consignerVisioEnCourante(v){
+  etat.courante = etat.courante || [];
+  const corps = (v.points||[]).map(p => '· ' + p.titre + (p.texte ? ' : ' + p.texte : '')).join('\n');
+  etat.courante.unshift({
+    id: uid(), date: v.date, heure: v.heure || '', source: 'ARS Nouvelle-Aquitaine',
+    evenement: (v.instance || "Visio de crise de l'ARS")
+      + (v.represente ? ` — la CPTS Pau Béarn y était représentée par ${v.represente}` : '')
+      + (corps ? '.\n' + corps : '.')
+      + (v.consignes ? "\nCe que l'ARS demande : " + v.consignes : ''),
+    suite: v.pourNous || "Compte rendu consigné dans « Situation régionale ». Reste à en tirer ce qui appelle une décision du copil.",
+    statut: v.pourNous ? 'À suivre' : 'Clos', auteur: moi, quand: ''
+  });
+}
+
+function majPointARS(v){
+  const r = rubriqueDe('rb-ars');
+  if(!r) return;
+  const lignes = (v.points||[]).map(p => p.titre + (p.texte ? ' : ' + p.texte : ''));
+  if(!lignes.length && !v.consignes) return;
+  r.etat = `Au point du ${frdateL(v.date)}${v.heure ? ' à ' + v.heure : ''} :\n`
+    + lignes.map(x => '— ' + x).join('\n')
+    + (v.consignes ? `\n\nCe que l'ARS demande : ${v.consignes}` : '');
+  r.maj = horodate();
+  r.par = moi;
+}
+
+async function supprimerVisio(id){
+  const v = visios().find(x => x.id === id);
+  if(!v) return;
+  if(!confirm(`Retirer le compte rendu de la séance du ${frdateL(v.date)} ?\n\nCe qui s'y est dit n'existe nulle part ailleurs dans le cockpit.`)) return;
+  noterRetrait(id);
+  etat.visios = visios().filter(x => x.id !== id);
+  await sauver(); rendre(); toast("Séance retirée");
+}
+
 function vueVeille(){
   const m = missionVeille();
   const pilote = m && m.pilote ? m.pilote : '';
@@ -3216,7 +3592,10 @@ function vueVeille(){
   const arafraichir = rubriques().filter(pointARafraichir);
 
   let h = `<h1>Situation régionale</h1>
-  <p class="chapo">Le poste de veille de la CPTS Pau Béarn. ${rubriques().length} points de situation à tenir à jour, ${(etat.sources||[]).length} canaux officiels rangés par famille pour les alimenter. On passe les canaux en revue deux fois par jour, on retient ce qui a un impact sur le territoire, on range chaque information dans son point, et on décide de la suite à donner.</p>`;
+  <p class="chapo">Le poste de veille de la CPTS Pau Béarn. Les visios de crise de l'ARS donnent la situation de la région point par point : elles ouvrent la page. Viennent ensuite ${rubriques().length} points de situation à tenir à jour et ${(etat.sources||[]).length} canaux officiels rangés par famille pour les alimenter.</p>`;
+
+  /* --- ce que l'ARS a dit à sa dernière visio --- */
+  h += vueVisios();
 
   /* --- qui tient la veille, et où en est le tour --- */
   h += `<div class="poste ${pilote ? '' : 'vacant'}">
@@ -3888,10 +4267,14 @@ function evenements(){
   (etat.relais||[]).forEach(o => push(o,'Évacués', o.structure + ' — structure relais',
     [o.type, o.commune, o.info].filter(Boolean).join(' · '), o.par || o.auteur));
   (etat.veille||[]).forEach(o => push(o,'Veille',o.titre, [o.source,o.resume].filter(Boolean).join(' · '), o.auteur));
+  (etat.visios||[]).forEach(o => push(o,'Visio ARS',
+    (o.instance || "Visio de crise de l'ARS") + (visioVide(o) ? ' — compte rendu non consigné' : ''),
+    (o.points||[]).map(p => p.titre).join(' · ') || o.manquant || '',
+    o.represente || o.auteur));
   return e.sort((a,b) => ((b.date+' '+(b.heure||'00:00')).localeCompare(a.date+' '+(a.heure||'00:00'))));
 }
 
-const COUL = {'ARS':'e-attente','Consigné':'e-lancer','Terrain':'e-bloque','Appel CPTS':'e-lancer','Matériel':'e-attente','Collecte':'e-cours','Renfort':'e-cours','Évacués':'e-cours','Veille':'e-fini'};
+const COUL = {'ARS':'e-attente','Consigné':'e-lancer','Terrain':'e-bloque','Appel CPTS':'e-lancer','Matériel':'e-attente','Collecte':'e-cours','Renfort':'e-cours','Évacués':'e-cours','Visio ARS':'e-attente','Veille':'e-fini'};
 
 function vueFil(){
   let ev = evenements();
@@ -6663,6 +7046,26 @@ function vueDossier(){
       ${f.limite?`<div style="font-size:13px;color:var(--braise);margin-top:6px">Ce qu'on ne fait pas : ${esc(f.limite)}</div>`:''}
     </div>`;
   }).join('') + `</div>`;
+
+  /* Les visios de crise de l'ARS ouvrent le dossier comme elles
+     ouvrent la situation régionale : c'est la source à laquelle le
+     retour d'expérience se réfèrera d'abord. */
+  h += `<h2 style="margin-top:24px">Visios de crise de l'ARS</h2>`;
+  const vs = visiosTriees();
+  if(!vs.length) h += `<p class="vide">Aucune séance consignée.</p>`;
+  vs.forEach(v => {
+    h += `<div class="carte" style="margin-bottom:14px">
+      <div style="font-family:var(--display);font-weight:700;font-size:15px">${esc(v.instance || "Visio de crise de l'ARS")} — ${frdate(v.date)}${v.heure ? ' à ' + esc(v.heure) : ''}</div>
+      <div style="font-size:13px;color:var(--texte-2);margin:3px 0 8px">${v.represente
+        ? 'CPTS Pau Béarn représentée par ' + esc(v.represente) : 'Représentation de la CPTS non précisée'}</div>
+      ${(v.points||[]).length
+        ? `<ol style="margin:0;padding-left:19px;font-size:13.5px">${v.points.map(p =>
+            `<li style="margin-bottom:5px"><strong>${esc(p.titre)}</strong>${p.texte ? ' — ' + esc(p.texte) : ''}</li>`).join('')}</ol>`
+        : `<div style="font-size:13px;color:var(--braise)">${esc(v.manquant || "Compte rendu non consigné.")}</div>`}
+      ${v.consignes ? `<div style="font-size:13.5px;margin-top:8px"><strong>Ce que l'ARS demande :</strong> ${esc(v.consignes)}</div>` : ''}
+      ${v.pourNous ? `<div style="font-size:13.5px;margin-top:5px"><strong>Ce que ça change pour la CPTS :</strong> ${esc(v.pourNous)}</div>` : ''}
+    </div>`;
+  });
 
   DOSSIER.forEach(k => {
     h += `<h2 style="margin-top:24px">${esc(CHAMPS[k].titre)}</h2>${tableauFige(k)}`;
