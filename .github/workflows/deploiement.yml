@@ -60,7 +60,13 @@ jobs:
         if: env.MDP_ALWAYSDATA == ''
         run: echo "::warning::Secret ALWAYSDATA_FTP_MOTDEPASSE absent — dépôt AlwaysData sauté, seule l'ancienne adresse OVH est mise à jour."
 
+      # Le transfert FTPS coupe parfois en cours de route (ECONNRESET
+      # sur le canal de données). Un dépôt raté ne doit pas emporter
+      # l'autre destination avec lui : on le signale et on continue,
+      # la vérification finale dira si tout a échoué.
       - name: Déposer sur AlwaysData
+        id: alwaysdata
+        continue-on-error: true
         if: env.MDP_ALWAYSDATA != ''
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -83,6 +89,7 @@ jobs:
       # ici ne doit pas faire passer le dépôt AlwaysData pour raté :
       # c'est ce dernier qui compte désormais.
       - name: Déposer sur OVH (ancienne adresse)
+        id: ovh
         continue-on-error: true
         if: env.MDP_OVH != ''
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -99,3 +106,18 @@ jobs:
             **/.github/**
             **/donnees/**
             **/*.md
+
+      # Chaque dépôt peut échouer sans bloquer l'autre, mais si aucun
+      # n'est passé, la nouvelle version n'est nulle part : il faut
+      # que ça se voie, plutôt qu'un job vert et un cockpit périmé.
+      - name: Vérifier qu'au moins une destination a reçu la version
+        run: |
+          a='${{ steps.alwaysdata.outcome }}'
+          o='${{ steps.ovh.outcome }}'
+          echo "AlwaysData : ${a:-non tenté} · OVH : ${o:-non tenté}"
+          if [ "$a" != "success" ] && [ "$o" != "success" ]; then
+            echo "::error::Aucune destination n'a reçu le dépôt — le cockpit en ligne reste sur la version précédente."
+            exit 1
+          fi
+          [ "$a" = "success" ] || echo "::warning::Dépôt AlwaysData en échec — seule l'ancienne adresse OVH est à jour."
+          [ "$o" = "success" ] || echo "::warning::Dépôt OVH en échec — seule la nouvelle adresse AlwaysData est à jour."
