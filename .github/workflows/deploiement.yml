@@ -60,30 +60,53 @@ jobs:
         if: env.MDP_ALWAYSDATA == ''
         run: echo "::warning::Secret ALWAYSDATA_FTP_MOTDEPASSE absent — dépôt AlwaysData sauté, seule l'ancienne adresse OVH est mise à jour."
 
-      # Le transfert FTPS coupe parfois en cours de route (ECONNRESET
-      # sur le canal de données). Un dépôt raté ne doit pas emporter
-      # l'autre destination avec lui : on le signale et on continue,
-      # la vérification finale dira si tout a échoué.
+      # Dépôt par lftp et non par l'action FTP habituelle : celle-ci
+      # ouvre le canal de données en IPv6 (EPSV), qu'AlwaysData coupe
+      # aussitôt — « enterPassiveModeIPv6 → ECONNRESET », constaté le
+      # 28/07/2026 alors que l'authentification, elle, passait. Le
+      # « dns:order inet » ci-dessous force l'IPv4 et règle la panne.
+      #
+      # Le chiffrement est conservé : ssl-force impose le FTPS, et
+      # ssl-protect-data étend le chiffrement aux fichiers eux-mêmes,
+      # pas seulement au mot de passe.
+      #
+      # Le mot de passe passe par LFTP_PASSWORD plutôt qu'en argument :
+      # il n'apparaît ainsi ni dans la ligne de commande ni dans la
+      # liste des processus du runner.
+      #
+      # Pas de « --delete » : le dossier « donnees », qui porte tout
+      # l'état saisi par le copil, vit sur le serveur et non dans le
+      # dépôt. Une suppression pilotée depuis GitHub l'effacerait au
+      # premier faux pas dans les exclusions. Contrepartie assumée :
+      # un fichier retiré du dépôt reste en ligne, il faut l'enlever
+      # à la main.
+      #
+      # Un dépôt raté ne doit pas emporter l'autre destination avec
+      # lui : on le signale et on continue, la vérification finale
+      # dira si tout a échoué.
       - name: Déposer sur AlwaysData
         id: alwaysdata
         continue-on-error: true
         if: env.MDP_ALWAYSDATA != ''
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ftp-cptspaubearn.alwaysdata.net
-          username: cptspaubearn
-          password: ${{ secrets.ALWAYSDATA_FTP_MOTDEPASSE }}
-          protocol: ftps
-          port: 21
-          server-dir: www/
-          # Le dossier « donnees » contient l'état saisi par le copil :
-          # il vit sur le serveur et ne doit jamais être écrasé.
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/.github/**
-            **/donnees/**
-            **/*.md
+        env:
+          LFTP_PASSWORD: ${{ secrets.ALWAYSDATA_FTP_MOTDEPASSE }}
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+          lftp -c "
+            set dns:order inet;
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate true;
+            set net:max-retries 3;
+            set net:timeout 20;
+            open -u cptspaubearn --env-password ftp-cptspaubearn.alwaysdata.net;
+            mirror --reverse --verbose --no-perms \
+                   --exclude '^\.git' \
+                   --exclude '^\.github/' \
+                   --exclude '^donnees/' \
+                   --exclude-glob '*.md' \
+                   ./ /www/;
+          "
 
       # Ancienne destination, gardée le temps de la bascule. Un échec
       # ici ne doit pas faire passer le dépôt AlwaysData pour raté :
