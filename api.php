@@ -515,6 +515,220 @@ if (isset($_GET['renfort'])) {
     }
 }
 
+/* =========================================================
+   RECENSEMENT DES GÉNÉRALISTES — porte publique
+
+   La troisième porte, après la collecte et le renfort. Celle-ci
+   ne demande pas des bras pour partir : elle demande des
+   créneaux de consultation, au cabinet, pour les personnes
+   évacuées de Gironde qui n'ont pas de médecin traitant ici.
+
+   Le médecin coche ses demi-journées sur un calendrier de trois
+   semaines. Elles arrivent sous forme « 2026-07-29:matin » —
+   une liste courte, vérifiée date par date avant écriture.
+   ========================================================= */
+
+const CONSULT_PLAFOND = 2000;   /* garde-fou sur la taille du vivier   */
+const CONSULT_MOTIFS  = 10;     /* motifs cochés par médecin           */
+const CONSULT_DISPOS  = 60;     /* demi-journées cochées au calendrier */
+
+if (isset($_GET['consultations'])) {
+
+    if ($methode === 'GET') {
+        $etat = lireEtat();
+        $d = isset($etat['donnees']) && is_array($etat['donnees']) ? $etat['donnees'] : [];
+        $c = isset($d['consultations']) && is_array($d['consultations']) ? $d['consultations'] : [];
+        repondre(200, [
+            'ouverte' => porteOuverte($etat, 'consultations'),
+            'message' => txt($c['message'] ?? '', 600),
+            'cadre'   => txt($c['cadre'] ?? '', 1200),
+        ]);
+    }
+
+    if ($methode !== 'POST') {
+        repondre(405, ['erreur' => 'Méthode non autorisée']);
+    }
+
+    $brut = file_get_contents('php://input');
+    if ($brut === false || strlen($brut) > DEPOT_CORPS_MAX) {
+        repondre(413, ['erreur' => 'Formulaire trop volumineux']);
+    }
+    $in = json_decode($brut ?: '', true);
+    if (!is_array($in)) {
+        repondre(400, ['erreur' => 'Formulaire mal formé']);
+    }
+
+    /* Champ leurre, comme ailleurs : seuls les robots le remplissent. */
+    if (txt($in['site'] ?? '', 40) !== '') {
+        repondre(200, ['ok' => true, 'ref' => 'MG-2026-0000']);
+    }
+
+    $nom     = txt($in['nom'] ?? '', 80);
+    $prenom  = txt($in['prenom'] ?? '', 80);
+    $tel     = txt($in['tel'] ?? '', 40);
+    $adresse = txt($in['adresse'] ?? '', 200);
+    $mail    = txt($in['mail'] ?? '', 120);
+    if ($mail !== '' && !filter_var($mail, FILTER_VALIDATE_EMAIL)) $mail = '';
+
+    $accepte = !empty($in['accepte']);
+
+    $motifs = [];
+    $brutMotifs = isset($in['motifs']) && is_array($in['motifs']) ? $in['motifs'] : [];
+    foreach ($brutMotifs as $m) {
+        if (count($motifs) >= CONSULT_MOTIFS) break;
+        $m = txt($m, 120);
+        if ($m !== '') $motifs[] = $m;
+    }
+
+    /* Les demi-journées cochées : « AAAA-MM-JJ:matin » ou
+       « :apresmidi », rien d'autre. La forme ne suffit pas — un
+       31 février la respecte : la date doit exister. Ce qui ne
+       rentre pas est écarté sans faire échouer l'envoi. */
+    $dispos = [];
+    $brutDispos = isset($in['dispos']) && is_array($in['dispos']) ? $in['dispos'] : [];
+    foreach ($brutDispos as $x) {
+        if (count($dispos) >= CONSULT_DISPOS) break;
+        $x = txt($x, 22);
+        if (!preg_match('/^(\d{4})-(\d{2})-(\d{2}):(matin|apresmidi)$/', $x, $m)) continue;
+        if (!checkdate((int) $m[2], (int) $m[3], (int) $m[1])) continue;
+        if (!in_array($x, $dispos, true)) $dispos[] = $x;
+    }
+    /* Le matin passe avant l'après-midi : l'ordre alphabétique
+       ferait le contraire. */
+    usort($dispos, function ($a, $b) {
+        [$ja, $pa] = explode(':', $a);
+        [$jb, $pb] = explode(':', $b);
+        return $ja === $jb
+            ? ($pa === 'matin' ? -1 : 1) * ($pa === $pb ? 0 : 1)
+            : strcmp($ja, $jb);
+    });
+
+    /* La même liste, en clair, pour l'export et l'impression :
+       « Mar 29/07 matin · Jeu 31/07 matin et après-midi ». */
+    $parJour = [];
+    foreach ($dispos as $x) {
+        [$j, $p] = explode(':', $x);
+        $parJour[$j][] = ($p === 'apresmidi') ? 'après-midi' : 'matin';
+    }
+    $JOURS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+    $lisible = [];
+    foreach ($parJour as $j => $parts) {
+        $t = strtotime($j . ' 12:00:00');
+        $etiq = ($t ? $JOURS[(int) date('w', $t)] . ' ' . date('d/m', $t) : $j);
+        $lisible[] = $etiq . ' ' . implode(' et ', array_unique($parts));
+    }
+    $creneaux = implode(' · ', $lisible);
+    $precisions = txt($in['precisions'] ?? '', 400);
+    if ($precisions !== '') {
+        $creneaux = $creneaux === '' ? $precisions : $creneaux . "\n" . $precisions;
+    }
+
+    if ($nom === '' || $prenom === '' || $tel === '') {
+        repondre(400, ['erreur' => 'Nom, prénom et téléphone sont nécessaires']);
+    }
+    if (empty($in['conditions'])) {
+        repondre(400, ['erreur' => 'Le cadre du recensement doit être accepté']);
+    }
+
+    if (!quotaDepot(empreinteAppelant(), 'medecins')) {
+        repondre(429, ['erreur' => 'Trop de réponses en peu de temps. Réessayez dans une heure ou appelez la coordination.']);
+    }
+
+    $fp = @fopen(FICHIER . '.lock', 'c');
+    if ($fp === false || !flock($fp, LOCK_EX)) {
+        repondre(503, ['erreur' => 'Enregistrement momentanément indisponible']);
+    }
+
+    try {
+        $etat = lireEtat();
+        if (!porteOuverte($etat, 'consultations')) {
+            repondre(403, ['erreur' => 'Le recensement n\'est pas ouvert']);
+        }
+
+        $donnees = (array) ($etat['donnees'] ?? []);
+        $med = isset($donnees['medecins']) && is_array($donnees['medecins']) ? $donnees['medecins'] : [];
+        if (count($med) >= CONSULT_PLAFOND) {
+            repondre(507, ['erreur' => 'Registre saturé — contactez la coordination']);
+        }
+
+        $id = 'mf' . substr(md5(uniqid('', true)), 0, 10);
+        $le = date('c');
+
+        $med[] = [
+            'id'         => $id,
+            'date'       => date('Y-m-d'),
+            'heure'      => date('H:i'),
+            'nom'        => $nom,
+            'prenom'     => $prenom,
+            'rpps'       => txt($in['rpps'] ?? '', 40),
+            'structure'  => txt($in['structure'] ?? '', 160),
+            'commune'    => txt($in['commune'] ?? '', 80),
+            'adresse'    => $adresse,
+            'tel'        => $tel,
+            'mail'       => $mail,
+            'rdv'        => txt($in['rdv'] ?? '', 200),
+            'motifs'     => implode(', ', $motifs),
+            'capacite'   => txt($in['capacite'] ?? '', 80),
+            'creneaux'   => $creneaux,
+            'dispos'     => $dispos,
+            'delai'      => txt($in['delai'] ?? '', 80),
+            'conditions' => txt($in['contraintes'] ?? '', 600),
+            /* Le médecin traitant, c'est la question de la fin : elle
+               n'est posée qu'après tout le reste, et sa réponse par
+               défaut n'engage à rien. */
+            'mt'         => txt($in['mt'] ?? '', 30) ?: 'À préciser',
+            /* La diffusion est déclarée par l'intéressé lui-même :
+               c'est son accord, pas une case que le copil coche à sa
+               place. Elle vaut donc telle quelle. */
+            'diffusion'  => !empty($in['diffusion']) ? 'Oui' : 'Non',
+            'par'        => '',
+            'origine'    => '',
+            'statut'     => $accepte ? 'Volontaire' : 'Indisponible',
+            'note'       => txt($in['note'] ?? '', 800),
+            'source'     => 'formulaire',
+            /* Reste à rappeler pour confirmer les créneaux : ce que le
+               médecin coche entre deux consultations se confirme de
+               vive voix avant qu'on lui adresse quelqu'un. */
+            'aVerifier'  => $accepte,
+            'engagement' => [
+                'le'        => $le,
+                'nom'       => trim($prenom . ' ' . $nom),
+                'conditions'=> true,
+                'diffusion' => !empty($in['diffusion']),
+                'empreinte' => empreinteAppelant(),
+            ],
+            'auteur'     => 'Formulaire en ligne',
+            'quand'      => $le,
+        ];
+
+        $donnees['medecins'] = $med;
+        $nouveau = [
+            'version' => (isset($etat['version']) ? (int) $etat['version'] : 0) + 1,
+            'maj'     => date('c'),
+            'par'     => trim($prenom . ' ' . $nom) . ' (recensement médecins)',
+            'donnees' => $donnees,
+        ];
+
+        if (!ecrireEtat($nouveau)) {
+            repondre(500, ['erreur' => 'Enregistrement impossible']);
+        }
+        tracer(sprintf('v%d recensement généraliste — %s, %s, %d créneau%s',
+            $nouveau['version'], trim($prenom . ' ' . $nom),
+            $accepte ? 'accepte' : 'n\'accepte pas',
+            count($dispos), count($dispos) > 1 ? 'x' : ''));
+
+        repondre(200, [
+            'ok'  => true,
+            'id'  => $id,
+            'ref' => 'MG-2026-' . strtoupper(substr($id, -4)),
+            'le'  => $le,
+        ]);
+    } finally {
+        flock($fp, LOCK_UN);
+        fclose($fp);
+    }
+}
+
 /* --- Contrôle d'accès ----------------------------------- */
 if (CODE_ACCES !== '') {
     $code = $_SERVER['HTTP_X_CODE_ACCES'] ?? ($_GET['code'] ?? '');

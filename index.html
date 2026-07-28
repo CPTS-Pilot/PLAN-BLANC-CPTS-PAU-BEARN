@@ -588,13 +588,13 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .carte.formulaire .lien-f .btn{flex:0 0 auto}
 @media(max-width:600px){.carte.formulaire .lien-f .btn{width:100%}}
 
-.don .ident .n .src-f{
+.don .ident .n .src-f,.stock .nom .src-f{
   font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
   background:var(--cobalt-clair);color:var(--encre-2);border-radius:4px;padding:2px 6px;
   margin-left:7px;vertical-align:2px;font-weight:400;white-space:nowrap;
 }
-.don .ident .n .src-f.neuf{background:#FCF0DA;color:#8A5D12}
-.don .ident .n .src-f.saisie{background:var(--fond-2,#F1F3F6);color:var(--texte-2)}
+.don .ident .n .src-f.neuf,.stock .nom .src-f.neuf{background:#FCF0DA;color:#8A5D12}
+.don .ident .n .src-f.saisie,.stock .nom .src-f.saisie{background:var(--fond-2,#F1F3F6);color:var(--texte-2)}
 
 .don .declaration{border:1px solid var(--trait);border-left:3px solid var(--encre-2);border-radius:0 8px 8px 0;padding:13px 15px;margin-bottom:14px;background:#FCFDFF}
 .don .declaration .dt{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--encre-2);margin-bottom:9px}
@@ -769,6 +769,21 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .note.protection .pp>span{background:var(--carte);border:1px solid var(--trait);border-radius:6px;padding:9px 11px;font-size:12.5px}
 .note.protection .pp .k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;
   text-transform:uppercase;color:var(--texte-2);margin-bottom:3px}
+/* Le fléchage se fait sur la ligne du patient : désigner un
+   médecin est le geste le plus fréquent du feuillet, il n'a pas
+   à passer par une fenêtre. */
+.flechage{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  margin-top:11px;padding:11px 12px;background:var(--cobalt-clair);border-radius:7px}
+.flechage .k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--texte-2);margin-bottom:4px}
+.flechage select,.flechage input{width:100%;padding:8px 10px;border:1px solid var(--trait);
+  border-radius:6px;background:#fff;font-size:13.5px}
+@media(max-width:600px){.flechage select,.flechage input{font-size:16px;padding:11px 12px}}
+/* Les créneaux cochés au calendrier du formulaire, relus jour
+   par jour dans la fiche du médecin. */
+.agenda-l{display:flex;flex-direction:column;gap:2px;margin-top:2px}
+.agenda-l span{font-size:13px}
+.agenda-l b{font-weight:600;color:var(--encre)}
 
 .toast{
   position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(80px);
@@ -941,8 +956,9 @@ Consigner le compte rendu dans « Échanges avec l'ARS » et en main courante ap
 Recenser nom, prénom, profession, téléphone et disponibilités — et pour chacun, jusqu'où il peut se déplacer et pour quel type de renfort.
 Rappeler chaque inscrit : couverture d'assurance hors cabinet, continuité de sa patientèle, accord pour que ses coordonnées circulent.
 Tenir le registre à jour et ne transmettre que des noms vérifiés.`, avec:`ARS Nouvelle-Aquitaine et sa délégation départementale 64, URPS, ordres professionnels, CPTS des zones touchées.`, pour:`Les zones touchées et les hubs de santé qui demanderont des bras, et les professionnels du territoire qui veulent aider sans savoir comment.`, limite:`On recense, on ne réquisitionne pas et on n'affecte personne. Aucune promesse de mission n'est faite à l'inscription, et aucun nom ne sort du cockpit sans l'accord de la personne.`}},
-    {id:'m10', titre:"Patients évacués — accès à un médecin généraliste", detail:"Constituer un vivier de généralistes volontaires pour les renouvellements d'ordonnance et les suites d'inhalation, et organiser le fléchage depuis les pharmacies et les structures de soins non programmés.", pilote:'Anne Latisnère', suppleant:'Eva Poulmarch', mandat:"Non — initiative CPTS, sur remontée du CMSI de Billère", statut:'À lancer', prochaine:"Sonder les médecins généralistes du territoire : qui accepte de recevoir des patients évacués, pour quels motifs, combien et à quel délai.", echeance:'', espace:'orientation', fiche:{but:`Qu'une personne évacuée qui se présente au comptoir d'une pharmacie ou dans une structure de soins non programmés trouve un médecin généraliste — et non les urgences, ou rien.`, faire:`Sonder les médecins généralistes du territoire un par un : qui accepte des patients évacués, pour quels motifs, combien, à quel délai et à quelles conditions.
-Tenir le vivier à jour avec les coordonnées, les créneaux réservés et l'accord de diffusion de chacun.
+    {id:'m10', titre:"Patients évacués — accès à un médecin généraliste", detail:"Constituer un vivier de généralistes volontaires pour les renouvellements d'ordonnance et les suites d'inhalation, et organiser le fléchage depuis les pharmacies et les structures de soins non programmés.", pilote:'Anne Latisnère', suppleant:'Eva Poulmarch', mandat:"Non — initiative CPTS, sur remontée du CMSI de Billère", statut:'À lancer', prochaine:"Ouvrir le recensement en ligne des généralistes et diffuser le lien aux médecins du territoire. Rappeler chaque médecin qui accepte pour confirmer ses créneaux, puis transmettre la liste aux pharmacies et aux structures de soins non programmés.", echeance:'', espace:'orientation', fiche:{but:`Qu'une personne évacuée qui se présente au comptoir d'une pharmacie ou dans une structure de soins non programmés trouve un médecin généraliste — et non les urgences, ou rien.`, faire:`Ouvrir le recensement en ligne et diffuser le lien aux médecins généralistes du territoire : qui accepte des patients évacués, pour quels motifs, combien, sur quelles demi-journées et à quelles conditions.
+Rappeler chaque médecin qui accepte pour confirmer ses créneaux avant de lui adresser quiconque.
+Tenir le vivier à jour avec les coordonnées, les créneaux cochés et l'accord de diffusion de chacun.
 Informer les pharmacies et les structures de soins non programmés du circuit d'orientation et leur transmettre la liste des médecins volontaires.
 Enregistrer chaque remontée et chaque patient orienté, jusqu'au rendez-vous obtenu, sous forme pseudonymisée.
 Rappeler aux relais la règle : le patient est informé et donne son accord au comptoir, et ses coordonnées ne circulent que par messagerie sécurisée de santé — ou pas du tout, s'il appelle lui-même.`, avec:`Le CMSI de Billère et les structures de soins non programmés, les pharmacies du territoire, les médecins généralistes, la délégation départementale de l'ARS 64.`, pour:`Les personnes évacuées de Gironde revenues dans leur commune ou relogées en Béarn, sans médecin traitant sur place, et les professionnels qui les reçoivent au comptoir.`, limite:`On ne se substitue ni au médecin traitant ni à la permanence des soins : on flèche vers un médecin volontaire. Aucune coordonnée de médecin n'est diffusée sans son accord. Aucune donnée nominative de patient n'entre dans le cockpit : la CPTS aiguille, elle ne constitue pas de liste de patients et ne transporte aucun dossier médical.`}}
@@ -1071,7 +1087,14 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
      qu'on sait — et ce qu'on ne sait pas encore — du renfort
      attendu. */
   renfort: { ouverte:false, message:'', cadre:"Le type exact de renfort n'est pas encore arrêté : la CPTS Pau Béarn recense d'abord qui serait disponible, pour quoi et jusqu'où, afin de pouvoir répondre vite quand une demande précise arrivera. S'inscrire n'engage à rien et ne vaut pas affectation." },
+  /* La campagne de recensement des généralistes qui acceptent de
+     recevoir les personnes évacuées. Même mécanique que la
+     collecte et le renfort : le copil ouvre, le formulaire
+     public s'anime, les réponses tombent dans le registre. */
+  consultations: { ouverte:false, message:'', cadre:"Il s'agit de consultations ponctuelles au cabinet, aux horaires que vous choisissez : renouvellement d'ordonnance interrompue par un départ précipité, suites d'inhalation de fumées. Répondre ne vous engage ni à devenir médecin traitant, ni à recevoir plus de patients que vous ne l'avez indiqué." },
   courante: [
+    {id:'mc18', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Préparation d'un message d'information aux pharmaciens du territoire, en accompagnement du sondage des médecins généralistes de l'action « Patients évacués ». Le message assume la situation telle qu'elle est : le réseau d'orientation n'est pas encore constitué, aucun nom de médecin ne peut être donné à ce stade, et le vivier de volontaires est en cours de constitution. Il invite les pharmaciens à continuer de faire remonter les situations rencontrées au comptoir, en indiquant que ces remontées ont des suites — c'est l'une d'elles qui a ouvert l'action. Deux lignes y sont ouvertes : Anne Latisnère, vice-présidente, référente de cette coordination (06 29 82 29 10), et Eva Poulmarch, coordinatrice, sur la logistique (07 61 18 16 35).", suite:"Diffuser le message aux pharmaciens du territoire, puis consigner ici la date de diffusion, le canal employé et le nombre de destinataires. Recueillir les retours dans « Remontées terrain », et le fléchage dans l'action « Patients évacués » dès que le vivier de généralistes est ouvert.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
+    {id:'mc18', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Mise en place de la campagne de recensement des médecins généralistes volontaires pour recevoir en consultation les personnes évacuées. Un formulaire en ligne, sur le modèle de ceux de la collecte et de l'appel au renfort, permet au médecin de répondre depuis son téléphone : identité, adresse du cabinet et téléphone, réponse oui ou non, motifs qu'il accepte de prendre, nombre de patients, et surtout ses créneaux — cochés demi-journée par demi-journée sur un calendrier de trois semaines plutôt que rédigés. La question de devenir médecin traitant est posée en dernier et ne conditionne rien. Un refus s'enregistre comme un accord : cela évite de rappeler deux fois le même cabinet.", suite:"Le recensement reste fermé tant que la coordination ne l'ouvre pas depuis l'onglet « Patients évacués », feuillet « Médecins volontaires ». À l'ouverture, diffuser le lien aux généralistes du territoire et consigner chaque diffusion. Attention : le cockpit et ses formulaires sont servis en http, ce qui a déjà provoqué un avertissement « site non sécurisé » lors de la diffusion du formulaire de don — arbitrer le canal avant d'envoyer.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc17', date:'2026-07-28', heure:'', source:'Coordination', evenement:"Cadre de protection des données arrêté pour le fléchage des patients évacués. Le cockpit ne conserve aucune donnée nominative de patient : le registre est pseudonymisé — initiales, âge, commune, motif — et le nom reste chez la pharmacie ou la structure de soins non programmés qui reçoit la personne. La CPTS aiguille vers un médecin, elle ne constitue pas de liste de patients et ne transporte aucun dossier médical. L'information et l'accord du patient sont recueillis au comptoir par la structure qui le reçoit, et tracés dans le registre. Quand des coordonnées doivent malgré tout circuler vers un médecin, elles passent par messagerie sécurisée de santé entre professionnels, jamais par le cockpit, ni par courriel ordinaire ou WhatsApp.", suite:"Un bouton « Anonymiser le registre » efface les références patients et les précisions en conservant les compteurs : à actionner une fois la crise passée, pour ne garder au dossier de traçabilité que ce qui sert au retour d'expérience et au bilan ACI. Reste à ajouter cette activité au registre des traitements de la CPTS et à remettre aux pharmacies une mention d'information à afficher au comptoir.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc16', date:'2026-07-28', heure:'', source:'CMSI de Billère', evenement:"Remontée du CMSI de Billère : plusieurs pharmaciens du territoire ont appelé la structure après avoir reçu au comptoir des patients évacués des zones en feu de Gironde — les uns revenus dans leur commune d'origine, les autres relogés en Béarn. Partis dans la précipitation, ces patients demandent le renouvellement de leurs ordonnances ; certains relèvent de soins liés aux inhalations de fumées ou d'autres situations de santé délicates. Sans médecin traitant sur le territoire, ils se tournent vers les structures de soins non programmés, qui ne sont pas adaptées à cette prise en charge.", suite:"La CPTS Pau Béarn ouvre l'action « Patients évacués » : sonder les médecins généralistes du territoire pour constituer un vivier de volontaires acceptant les renouvellements d'ordonnance et les suivis liés aux inhalations, informer les pharmacies et les structures de soins non programmés, et organiser un fléchage coordonné des patients. Pilote : Anne Latisnère ; appui coordination : Eva Poulmarch. Remontée également tracée dans « Remontées terrain ».", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'mc15', date:'2026-07-27', heure:'19:00', source:'Coordination', evenement:"Acheminement du matériel collecté à la Foire Expo vers le Parc des Expositions de Bordeaux — centre d'accueil et de regroupement — le soir même, dans la foulée de la clôture du point de collecte. Les 94 unités partent conditionnées ; le nombre de colis n'est pas encore arrêté au moment de la clôture.", suite:"Compléter le nombre de colis au conditionnement et la quantité de gel hydroalcoolique (unité de conditionnement non renseignée). Faire viser le récapitulatif à la réception par le site de Bordeaux, et en conserver un exemplaire au dossier de traçabilité. Nommer le conducteur et l'heure de départ effective dans le point de collecte.", statut:'En cours', auteur:'Eva Poulmarch', quand:''},
@@ -1896,6 +1919,21 @@ const MED_STATUTS = ['À solliciter','Sollicité','Volontaire','Sous conditions'
 /* Les médecins sur lesquels le fléchage peut s'appuyer. */
 const MED_OK = ['Volontaire','Sous conditions'];
 
+/* Ce qu'un généraliste accepte de prendre. Ces listes servent
+   des deux côtés : ici pour la saisie à la main, et dans le
+   formulaire public accueil-patients-evacues.html. Toute
+   modification ici doit être reportée là-bas. */
+const MED_MOTIFS = ["Renouvellement d'ordonnance interrompue",
+  "Suites d'inhalation de fumées",
+  "Suivi d'une pathologie chronique le temps du séjour",
+  "Situation aiguë sans gravité",
+  "Certificat, document administratif de santé",
+  "Toute demande relevant de la médecine générale"];
+
+const MED_CAPACITES = ['','1 patient par semaine','2 patients par semaine',
+  '3 à 5 patients par semaine','Plus de 5 patients par semaine',
+  'Autant que mon planning le permet','À préciser'];
+
 const ORI_PROVENANCES = ['','Pharmacie',"Structure de soins non programmés",'Cabinet médical',
   'Cabinet infirmier','Mairie, CCAS, hébergement collectif','SAS ou régulation',
   'Patient lui-même','Autre'];
@@ -1929,6 +1967,11 @@ const RELAIS_TYPES = ['','Pharmacie',"Structure de soins non programmés",
   'Maison ou centre de santé','Cabinet médical','Cabinet infirmier','Mairie, CCAS',
   'Hébergement collectif','Autre'];
 const RELAIS_INFO = ['À informer','Informé','A signalé des patients','Sans réponse'];
+/* Informer une pharmacie du circuit, c'est une chose ; qu'elle
+   accepte d'y prendre part — repérer les personnes évacuées au
+   comptoir, les signaler, leur remettre le nom d'un médecin —
+   en est une autre. C'est cet engagement-là qu'on recense. */
+const RELAIS_DEMARCHE = ['À solliciter','Oui','En attente de réponse','Non'];
 
 const CHAMPS = {
   ars: {
@@ -2130,25 +2173,27 @@ const CHAMPS = {
       {c:'heure', l:"Heure du contact", t:'time', d:maintenant},
       {c:'nom', l:"Nom", t:'text', req:true},
       {c:'prenom', l:"Prénom", t:'text'},
+      {c:'rpps', l:"N° RPPS", t:'text'},
       {c:'structure', l:"Cabinet, maison ou centre de santé", t:'text', large:true},
       {c:'commune', l:"Commune d'exercice", t:'text'},
-      {c:'adresse', l:"Adresse", t:'text', large:true},
+      {c:'adresse', l:"Adresse du cabinet", t:'text', large:true},
       {c:'tel', l:"Téléphone", t:'text'},
       {c:'mail', l:"Courriel", t:'text'},
       {c:'rdv', l:"Prise de rendez-vous (ligne directe, secrétariat, lien)", t:'text', large:true},
       {c:'motifs', l:"Ce qu'il ou elle accepte de prendre", t:'text', large:true, ph:"Renouvellement d'ordonnance, suites d'inhalation…"},
-      {c:'capacite', l:"Nombre de patients acceptés", t:'text', ph:"2 par semaine, 1 par jour…"},
-      {c:'creneaux', l:"Créneaux réservés", t:'textarea', large:true},
+      {c:'capacite', l:"Nombre de patients acceptés", t:'select', o:MED_CAPACITES},
+      {c:'creneaux', l:"Créneaux proposés", t:'textarea', large:true, ph:"Mar 29/07 après-midi, Jeu 31/07 matin…"},
       {c:'delai', l:"Délai pour obtenir un rendez-vous", t:'text'},
       {c:'conditions', l:"Conditions posées", t:'textarea', large:true},
       {c:'mt', l:"Accepte de devenir médecin traitant si besoin", t:'select', o:['À préciser','Oui','Non','Au cas par cas']},
       {c:'diffusion', l:"Accepte que ses coordonnées soient diffusées aux pharmacies et aux structures", t:'select', o:['À vérifier','Oui','Non']},
-      {c:'par', l:"Sondé par", t:'text', d:() => moi === 'Anonyme' ? '' : moi},
+      {c:'par', l:"Sondé par", t:'text', d:() => moi === 'Anonyme' ? '' : moi, appel:true},
+      {c:'origine', l:"Provenance de la réponse", t:'select', manuel:true, o:VOL_ORIGINES},
       {c:'statut', l:"Réponse", t:'select', o:MED_STATUTS},
       {c:'note', l:"Observation", t:'textarea', large:true}
     ],
-    cols:['date','heure','nom','prenom','structure','commune','adresse','tel','mail','rdv','motifs',
-          'capacite','creneaux','delai','conditions','mt','diffusion','par','statut','auteur']
+    cols:['date','heure','nom','prenom','rpps','structure','commune','adresse','tel','mail','rdv','motifs',
+          'capacite','creneaux','delai','conditions','mt','diffusion','par','origine','statut','auteur']
   },
   /* Une ligne par patient signalé, de la remontée de la pharmacie
      jusqu'au rendez-vous obtenu. Aucun nom de patient : une
@@ -2161,7 +2206,8 @@ const CHAMPS = {
       {c:'heure', l:"Heure de la demande", t:'time', d:maintenant},
       {c:'ref', l:"Référence patient — initiales et âge, jamais le nom", t:'text', req:true, ph:"M. D., 62 ans"},
       {c:'provenance', l:"Qui signale", t:'select', o:ORI_PROVENANCES},
-      {c:'relais', l:"Structure qui signale", t:'text', large:true, ph:"Pharmacie de la Paix, CMSI de Billère…"},
+      {c:'relais', l:"Structure qui signale", t:'text', req:true, large:true, ph:"Pharmacie de la Paix, CMSI de Billère…"},
+      {c:'interlocuteur', l:"Interlocuteur au bout du fil", t:'text'},
       {c:'commune', l:"Commune où se trouve le patient", t:'text'},
       {c:'situation', l:"Situation du patient", t:'select', o:ORI_SITUATIONS},
       {c:'motif', l:"Motif de la demande", t:'select', o:ORI_MOTIFS},
@@ -2176,8 +2222,8 @@ const CHAMPS = {
       {c:'statut', l:"Statut", t:'select', o:ORI_STATUTS},
       {c:'note', l:"Observation", t:'textarea', large:true}
     ],
-    cols:['date','heure','ref','provenance','relais','commune','situation','motif','detail','delai',
-          'accord','medecin','circuit','rdvle','par','statut','auteur']
+    cols:['date','heure','ref','provenance','relais','interlocuteur','commune','situation','motif','detail',
+          'delai','accord','medecin','circuit','rdvle','par','statut','auteur']
   },
   /* Les points d'entrée du dispositif : ceux qui reçoivent ces
      patients au comptoir et à qui la liste des médecins
@@ -2193,6 +2239,7 @@ const CHAMPS = {
       {c:'interlocuteur', l:"Interlocuteur", t:'text'},
       {c:'tel', l:"Téléphone", t:'text'},
       {c:'mail', l:"Courriel", t:'text'},
+      {c:'demarche', l:"Volontaire pour intégrer la démarche", t:'select', o:RELAIS_DEMARCHE},
       {c:'info', l:"Information du circuit d'orientation", t:'select', o:RELAIS_INFO},
       {c:'infoLe', l:"Informée le", t:'date'},
       {c:'canal', l:"Par quel canal", t:'select', o:['','Téléphone','Courriel','WhatsApp','Visite','Autre']},
@@ -2200,8 +2247,8 @@ const CHAMPS = {
       {c:'par', l:"Informée par", t:'text', d:() => moi === 'Anonyme' ? '' : moi},
       {c:'note', l:"Observation", t:'textarea', large:true}
     ],
-    cols:['date','structure','type','commune','adresse','interlocuteur','tel','mail','info','infoLe',
-          'canal','liste','par','note','auteur']
+    cols:['date','structure','type','commune','adresse','interlocuteur','tel','mail','demarche','info',
+          'infoLe','canal','liste','par','note','auteur']
   },
   contacts: {
     titre:"Contacts clés",
@@ -5666,7 +5713,126 @@ async function marquerBordereau(id){
    les patients. Trois feuillets, un par maillon de la chaîne.
    ========================================================= */
 let feuilletOri = 'medecins';
+let filtreMed = 'Tout';
 function allerFeuilletOri(f){ feuilletOri = f; rendre(); window.scrollTo(0,0); }
+function filtrerMed(r){ filtreMed = r; rendre(); }
+
+/* --- La campagne de recensement des généralistes ---------
+   Troisième formulaire public de la CPTS, après la collecte et
+   le renfort. Celui-ci ne demande pas des bras pour partir : il
+   demande des créneaux de consultation, ici, au cabinet. */
+const FORMULAIRE_CONSULT = 'accueil-patients-evacues.html';
+function lienConsult(){
+  try{ return new URL(FORMULAIRE_CONSULT, location.href).href; }
+  catch(e){ return FORMULAIRE_CONSULT; }
+}
+
+async function basculerConsult(){
+  etat.consultations = etat.consultations || {ouverte:false, message:'', cadre:''};
+  const ouvre = !etat.consultations.ouverte;
+  if(ouvre && !confirm("Ouvrir le recensement rend le formulaire accessible à tout médecin qui en a le lien.\n\nRépondre ne l'engage qu'à ce qu'il a coché, et le formulaire le dit. Mais la CPTS s'engage à rappeler ceux qui acceptent avant de leur adresser le moindre patient.\n\nConfirmer l'ouverture ?")) return;
+  etat.consultations.ouverte = ouvre;
+  consignerConsultEnCourante(ouvre);
+  await sauver(); rendre();
+  toast(ouvre ? "Recensement ouvert — le formulaire accepte les réponses"
+              : "Recensement fermé — le formulaire n'accepte plus de réponse");
+}
+
+function consignerConsultEnCourante(ouvre){
+  etat.courante = etat.courante || [];
+  etat.courante.unshift({
+    id: uid(), date: aujourdhui(), heure: maintenant(), source: 'Coordination',
+    evenement: ouvre
+      ? "Ouverture du recensement des médecins généralistes volontaires pour recevoir en consultation les personnes évacuées des zones incendiées : le formulaire en ligne est accessible aux généralistes du territoire."
+        + ((etat.consultations && etat.consultations.cadre) ? "\nCadre annoncé : " + etat.consultations.cadre : '')
+      : "Fermeture du recensement des médecins généralistes volontaires : le formulaire n'accepte plus de réponse.",
+    suite: ouvre
+      ? "Diffuser le lien aux médecins généralistes du territoire, canal par canal, et consigner chaque diffusion. Rappeler chaque médecin qui accepte pour confirmer ses créneaux, puis transmettre la liste aux pharmacies et aux structures de soins non programmés."
+      : "Informer les médecins déjà recensés de la suite donnée, et arrêter la liste diffusée aux relais.",
+    statut: ouvre ? 'En cours' : 'Clos', auteur: moi, quand: ''
+  });
+}
+
+function editerConsult(){
+  const c = etat.consultations || {};
+  document.getElementById('modale').innerHTML = `<h3>Textes du formulaire de recensement</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">Ces deux textes s'affichent sur ${esc(FORMULAIRE_CONSULT)}. Le premier quand le recensement est fermé, le second en tête du formulaire quand il est ouvert.</p>
+    <label style="margin-bottom:12px"><span class="k">Message affiché recensement fermé</span>
+      <textarea id="rc-message" placeholder="Ex. Le recensement sera ouvert dans les prochains jours.">${esc(c.message||'')}</textarea></label>
+    <label style="margin-bottom:12px"><span class="k">Cadre annoncé recensement ouvert</span>
+      <textarea id="rc-cadre" placeholder="Ce que la CPTS demande exactement — et ce qu'elle ne demande pas.">${esc(c.cadre||'')}</textarea></label>
+    <div class="actions"><button class="btn" onclick="validerConsult()">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+async function validerConsult(){
+  etat.consultations = etat.consultations || {ouverte:false};
+  etat.consultations.message = document.getElementById('rc-message').value.trim();
+  etat.consultations.cadre = document.getElementById('rc-cadre').value.trim();
+  await sauver(); fermer(); rendre(); toast("Textes du formulaire mis à jour");
+}
+
+function copierLienConsult(){
+  const l = lienConsult();
+  const fini = () => toast("Lien copié — collez-le dans le message aux médecins");
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(l).then(fini, () => toast("Copie impossible — sélectionnez le lien à la main"));
+  }else{
+    const i = document.getElementById('lien-consult');
+    if(i){ i.select(); try{ document.execCommand('copy'); fini(); }catch(e){ toast("Sélectionnez le lien à la main"); } }
+  }
+}
+
+function carteFormulaireConsult(){
+  const c = etat.consultations || {};
+  const aVerifier = (etat.medecins||[]).filter(x => x.source === 'formulaire' && x.aVerifier).length;
+  return `<div class="carte formulaire ${c.ouverte?'ouverte':''}">
+    <div class="ligne-f">
+      <div>
+        <h2 style="margin-bottom:2px">Recensement en ligne des généralistes</h2>
+        <p class="sous-f">Le médecin répond depuis son téléphone : qui il est, s'il accepte, ce qu'il accepte de prendre, et ses créneaux cochés sur un calendrier de trois semaines. La réponse arrive dans le vivier, il repart avec son récapitulatif.</p>
+      </div>
+      <span class="etiq ${c.ouverte?'e-cours':'e-bloque'}">${c.ouverte?'Ouvert aux réponses':'Fermé'}</span>
+    </div>
+    ${c.ouverte
+      ? `<div class="lien-f">
+           <input id="lien-consult" readonly value="${esc(lienConsult())}" onclick="this.select()">
+           <button class="btn sec" onclick="copierLienConsult()">Copier le lien</button>
+         </div>
+         <p class="sous-f" style="margin:9px 0 0">Ce lien est à diffuser aux médecins généralistes du territoire. Toute personne qui l'a peut répondre ; le cockpit, lui, reste protégé par son code d'accès.</p>`
+      : `<div class="note" style="margin:0">Tant que le recensement est fermé, le formulaire affiche aux médecins que la CPTS ne sollicite personne pour le moment. On ne l'ouvre qu'au moment de diffuser l'appel : un formulaire ouvert sans message qui l'accompagne ne reçoit rien.</div>`}
+    <div class="actions">
+      <button class="btn${c.ouverte?' sec':''}" onclick="basculerConsult()">${c.ouverte?"Fermer le recensement":"Ouvrir le recensement"}</button>
+      <button class="btn sec" onclick="editerConsult()">Textes affichés</button>
+      ${c.ouverte ? `<a class="btn sec" href="${esc(lienConsult())}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Voir le formulaire</a>` : ''}
+      ${aVerifier ? `<button class="btn sec" onclick="filtrerMed('Formulaire')" style="margin-left:auto;color:var(--braise);border-color:#E8C3B8">${aVerifier} réponse${aVerifier>1?'s':''} à confirmer</button>` : ''}
+    </div>
+  </div>`;
+}
+
+/* Les créneaux cochés sur le calendrier du formulaire arrivent
+   sous forme « 2026-07-29:matin ». On les regroupe par jour pour
+   les relire d'un coup d'œil, dans l'ordre du calendrier. */
+const JOURS_CT = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+function creneauxGroupes(o){
+  const l = Array.isArray(o.dispos) ? o.dispos : [];
+  const par = new Map();
+  /* Le matin d'abord : l'ordre alphabétique mettrait
+     « apresmidi » devant, ce qui se lit de travers. */
+  const rang = x => String(x).split(':')[1] === 'matin' ? 0 : 1;
+  [...l].sort((a,b) => String(a).slice(0,10).localeCompare(String(b).slice(0,10)) || rang(a) - rang(b))
+    .forEach(x => {
+      const [d, p] = String(x).split(':');
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+      if(!par.has(d)) par.set(d, []);
+      const lib = p === 'apresmidi' ? 'après-midi' : 'matin';
+      if(par.get(d).indexOf(lib) === -1) par.get(d).push(lib);
+    });
+  return [...par.entries()].map(([d, p]) => {
+    const t = new Date(d + 'T12:00:00');
+    const j = isNaN(t.getTime()) ? '' : JOURS_CT[t.getDay()];
+    return {jour: (j ? j.charAt(0).toUpperCase() + j.slice(1) + ' ' : '') + frdate(d), parts: p};
+  });
+}
 
 const nomMed = m => [m.prenom, m.nom].filter(x => String(x||'').trim()).join(' ').trim() || 'Sans nom';
 
@@ -5686,9 +5852,9 @@ function vueOrientation(){
   const diffusables = vivier.filter(m => m.diffusion === 'Oui');
   const communes = new Set(vivier.map(m => (m.commune||'').trim()).filter(Boolean));
   const orientes = ori.filter(estOriente).length;
-  const rdv = ori.filter(aRendezVous).length;
   const attente = ori.filter(enAttenteMed).length;
-  const informes = rel.filter(r => r.info && r.info !== 'À informer').length;
+  const partenaires = rel.filter(r => r.demarche === 'Oui').length;
+  const signalants = new Set(ori.map(o => cleRelais(o.relais)).filter(Boolean)).size;
   const sansAccord = ori.filter(o => (o.accord || 'À recueillir') === 'À recueillir'
     && o.statut !== 'Sans suite').length;
 
@@ -5699,23 +5865,132 @@ function vueOrientation(){
     <div class="compteur"><div class="n">${med.length}</div><div class="l">médecins sondés</div></div>
     <div class="compteur"><div class="n" style="color:var(--stable)">${vivier.length}</div><div class="l">acceptent de recevoir</div></div>
     <div class="compteur"><div class="n">${communes.size}</div><div class="l">commune${communes.size>1?'s':''} couverte${communes.size>1?'s':''}</div></div>
-    <div class="compteur"><div class="n">${ori.length}</div><div class="l">remontées reçues des relais</div></div>
+    <div class="compteur"><div class="n">${ori.length}</div><div class="l">patients signalés par les relais</div></div>
     <div class="compteur"><div class="n" style="color:var(--stable)">${orientes}</div><div class="l">patients orientés vers un médecin</div></div>
-    <div class="compteur"><div class="n" style="color:var(--stable)">${rdv}</div><div class="l">rendez-vous fixés ou honorés</div></div>
     ${attente ? `<div class="compteur"><div class="n" style="color:var(--ambre)">${attente}</div><div class="l">patients sans médecin à ce jour</div></div>` : ''}
     ${sansAccord ? `<div class="compteur"><div class="n" style="color:var(--ambre)">${sansAccord}</div><div class="l">accords patients à recueillir</div></div>` : ''}
-    <div class="compteur"><div class="n">${informes}&thinsp;/&thinsp;${rel.length}</div><div class="l">relais informés du circuit</div></div>
+    <div class="compteur"><div class="n" style="color:var(--stable)">${partenaires}</div><div class="l">structures entrées dans la démarche</div></div>
+    <div class="compteur"><div class="n">${signalants}</div><div class="l">structures ayant signalé un patient</div></div>
   </div>
 
   <div class="filtres">
     <button class="${feuilletOri==='medecins'?'on':''}" onclick="allerFeuilletOri('medecins')">Médecins volontaires <span style="opacity:.6">${med.length}</span></button>
-    <button class="${feuilletOri==='orientes'?'on':''}" onclick="allerFeuilletOri('orientes')">Patients orientés <span style="opacity:.6">${ori.length}</span></button>
-    <button class="${feuilletOri==='relais'?'on':''}" onclick="allerFeuilletOri('relais')">Pharmacies et structures relais <span style="opacity:.6">${rel.length}</span></button>
+    <button class="${feuilletOri==='recueil'?'on':''}" onclick="allerFeuilletOri('recueil')">Recueillir un patient</button>
+    <button class="${feuilletOri==='patients'?'on':''}" onclick="allerFeuilletOri('patients')">Patients signalés <span style="opacity:.6">${ori.length}</span></button>
+    <button class="${feuilletOri==='relais'?'on':''}" onclick="allerFeuilletOri('relais')">Pharmacies et structures <span style="opacity:.6">${rel.length}</span></button>
   </div>`;
 
-  if(feuilletOri === 'orientes') return h + feuilletOrientes(ori, vivier);
+  if(feuilletOri === 'recueil')  return h + feuilletRecueil(rel, vivier);
+  if(feuilletOri === 'patients') return h + feuilletPatients(ori, vivier);
   if(feuilletOri === 'relais')   return h + feuilletRelais(rel, ori, diffusables.length);
   return h + feuilletMedecins(med, vivier, diffusables, ori);
+}
+
+/* --- recueillir un patient ------------------------------
+   Ce feuillet se remplit pendant l'appel, pas après : une
+   pharmacie au téléphone, quelqu'un devant elle, et trente
+   secondes pour noter. Le formulaire est à même la page —
+   pas de fenêtre à ouvrir — et la structure qui appelle est
+   le seul champ dont on ne se passe pas : c'est elle qui
+   fait entrer la pharmacie dans la liste des relais. */
+const cleRelais = s => String(s||'').trim().toLowerCase();
+
+function feuilletRecueil(rel, vivier){
+  const opts = (l, sel) => l.map(x => `<option ${x===sel?'selected':''}>${esc(x)}</option>`).join('');
+  const connues = [...new Set((rel||[]).map(r => (r.structure||'').trim()).filter(Boolean))]
+    .sort((a,b) => a.localeCompare(b,'fr'));
+
+  return `<div class="note protection">
+    <strong>On ne note aucun nom de patient.</strong> Des initiales et un âge suffisent à suivre le dossier ; le nom, la date de naissance et le téléphone restent chez la structure qui a la personne en face d'elle. Demandez-lui d'informer le patient et de recueillir son accord avant que la moindre coordonnée circule.
+    <div class="pp">
+      <span><span class="k">Ce qu'on demande à la structure</span>Initiales et âge, commune, ce dont la personne a besoin, et sous quel délai.</span>
+      <span><span class="k">Ce qu'on lui rend</span>Le nom et le numéro d'un généraliste volontaire — à elle de le remettre au patient.</span>
+    </div>
+  </div>
+
+  <div class="carte">
+    <h2>Recueillir un patient signalé</h2>
+    <p class="sous-f" style="margin:0 0 14px">Une ligne par personne signalée. Si la structure appelle pour trois patients, faites trois saisies : c'est ce qui permet de compter les personnes, et pas seulement les appels.</p>
+    <div class="form">
+      <label><span class="k">Date</span><input type="date" id="rc-date" value="${aujourdhui()}"></label>
+      <label><span class="k">Heure de l'appel</span><input type="time" id="rc-heure" value="${maintenant()}"></label>
+      <label class="large"><span class="k">Structure qui signale *</span>
+        <input id="rc-relais" list="rc-relais-l" placeholder="Pharmacie de la Paix, CMSI de Billère…" autocomplete="off">
+        <datalist id="rc-relais-l">${connues.map(s => `<option value="${esc(s)}"></option>`).join('')}</datalist></label>
+      <label><span class="k">Type de structure</span><select id="rc-provenance">${opts(ORI_PROVENANCES,'Pharmacie')}</select></label>
+      <label><span class="k">Interlocuteur au bout du fil</span><input id="rc-qui" placeholder="Prénom, fonction"></label>
+      <label class="large"><span class="k">Référence patient — initiales et âge, jamais le nom *</span>
+        <input id="rc-ref" placeholder="M. D., 62 ans"></label>
+      <label><span class="k">Commune où se trouve le patient</span><input id="rc-commune" placeholder="Pau, Billère…"></label>
+      <label><span class="k">Situation du patient</span><select id="rc-situation">${opts(ORI_SITUATIONS,'')}</select></label>
+      <label><span class="k">Motif de la demande</span><select id="rc-motif">${opts(ORI_MOTIFS,'')}</select></label>
+      <label><span class="k">Délai souhaitable</span><select id="rc-delai">${opts(ORI_DELAIS,'')}</select></label>
+      <label class="large"><span class="k">Ce qu'il faut savoir pour orienter (sans élément identifiant)</span>
+        <textarea id="rc-detail" placeholder="Traitement chronique à renouveler, gêne respiratoire persistante depuis l'évacuation…"></textarea></label>
+      <label><span class="k">Accord du patient pour être orienté et rappelé</span>
+        <select id="rc-accord">${opts(ORI_ACCORDS,'À recueillir')}</select></label>
+      <label><span class="k">Orienté vers, si c'est déjà décidé</span>
+        <select id="rc-medecin"><option></option>${vivier.map(m => `<option>${esc(nomMed(m))}</option>`).join('')}</select></label>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="enregistrerRecueil()">Enregistrer ce patient</button>
+      <button class="btn sec" onclick="allerFeuilletOri('patients')">Voir les patients signalés</button>
+      <span class="aide" style="color:var(--texte-2);font-size:13px">La structure qui signale entre d'elle-même dans la liste des relais si elle n'y est pas encore.</span>
+    </div>
+  </div>
+
+  ${!vivier.length ? `<div class="note"><strong style="color:var(--ambre)">Aucun médecin volontaire n'est encore recensé.</strong> Vous pouvez recueillir les demandes — elles ne pourront pas être fléchées tant que le vivier est vide. Ouvrez le recensement depuis le feuillet <a href="#" onclick="allerFeuilletOri('medecins');return false;">Médecins volontaires</a>.</div>` : ''}`;
+}
+
+/* La structure qui signale entre d'elle-même au registre des
+   relais : c'est elle qui a fait remonter l'information, elle a
+   donc sa place dans la liste, avec le compte de ses appels.
+   Si elle y est déjà, on ne touche à rien d'autre que la marque
+   « a signalé des patients ». */
+function assurerRelais(nom, provenance, commune){
+  const n = String(nom||'').trim();
+  if(!n) return;
+  etat.relais = etat.relais || [];
+  const dejaLa = etat.relais.find(r => cleRelais(r.structure) === cleRelais(n));
+  if(dejaLa){
+    if(!dejaLa.info || dejaLa.info === 'À informer') dejaLa.info = 'A signalé des patients';
+    return;
+  }
+  const type = RELAIS_TYPES.indexOf(provenance) >= 0 ? provenance : '';
+  etat.relais.unshift({
+    id: uid(), date: aujourdhui(), structure: n, type: type, commune: String(commune||'').trim(),
+    adresse:'', interlocuteur:'', tel:'', mail:'',
+    info:'A signalé des patients', infoLe:'', canal:'Téléphone',
+    liste:'Non', demarche:'À solliciter', par: moi === 'Anonyme' ? '' : moi,
+    note:"Entrée automatiquement au registre en signalant un patient.",
+    auteur: moi, quand: new Date().toISOString()
+  });
+}
+
+async function enregistrerRecueil(){
+  const v = id => (document.getElementById(id)?.value || '').trim();
+  const relais = v('rc-relais'), ref = v('rc-ref');
+  if(!relais){ toast("Indiquez la structure qui signale"); document.getElementById('rc-relais')?.focus(); return; }
+  if(!ref){ toast("Indiquez une référence patient — initiales et âge"); document.getElementById('rc-ref')?.focus(); return; }
+
+  const medecin = v('rc-medecin');
+  etat.orientes = etat.orientes || [];
+  etat.orientes.unshift({
+    id: uid(), date: v('rc-date') || aujourdhui(), heure: v('rc-heure'),
+    ref: ref, provenance: v('rc-provenance'), relais: relais, interlocuteur: v('rc-qui'),
+    commune: v('rc-commune'), situation: v('rc-situation'), motif: v('rc-motif'),
+    detail: v('rc-detail'), delai: v('rc-delai'), accord: v('rc-accord'),
+    medecin: medecin, circuit:'', rdvle:'',
+    par: moi === 'Anonyme' ? '' : moi,
+    statut: medecin ? 'Orienté' : 'À orienter',
+    note:'', auteur: moi, quand: new Date().toISOString()
+  });
+  assurerRelais(relais, v('rc-provenance'), v('rc-commune'));
+
+  await sauver();
+  feuilletOri = 'patients';
+  rendre(); window.scrollTo(0,0);
+  toast(medecin ? `Patient enregistré et orienté vers ${medecin}` : "Patient enregistré — reste à lui trouver un médecin");
 }
 
 /* --- le vivier ------------------------------------------
@@ -5730,31 +6005,55 @@ function feuilletMedecins(med, vivier, diffusables, ori){
     || nomMed(a).localeCompare(nomMed(b), 'fr'));
   const aVerifier = vivier.filter(m => (m.diffusion || 'À vérifier') === 'À vérifier').length;
   const sansTel = vivier.filter(m => !String(m.tel||'').trim() && !String(m.rdv||'').trim()).length;
+  const parFormulaire = med.filter(m => m.source === 'formulaire').length;
 
-  let h = `<div class="note">Un médecin n'entre dans le fléchage que si l'on sait <strong>par quel numéro prendre rendez-vous</strong>, <strong>ce qu'il accepte de prendre</strong> et <strong>combien de patients</strong>. Sa réponse est un service rendu, pas une obligation : les conditions qu'il pose se notent et se respectent. <strong>${diffusables.length}</strong> médecin${diffusables.length>1?'s ont':' a'} accepté que ses coordonnées soient transmises aux pharmacies et aux structures — ce sont les seul${diffusables.length>1?'s':''} dont le nom peut sortir du cockpit.${aVerifier ? ` <strong style="color:var(--ambre)">${aVerifier}</strong> accord${aVerifier>1?'s de diffusion restent à vérifier':' de diffusion reste à vérifier'}.` : ''}${sansTel ? ` <strong style="color:var(--ambre)">${sansTel}</strong> volontaire${sansTel>1?'s sont injoignables':' est injoignable'} faute de numéro.` : ''}</div>
+  let h = carteFormulaireConsult();
+  h += `<div class="note">Un médecin n'entre dans le fléchage que si l'on sait <strong>par quel numéro prendre rendez-vous</strong>, <strong>ce qu'il accepte de prendre</strong> et <strong>combien de patients</strong>. Sa réponse est un service rendu, pas une obligation : les conditions qu'il pose se notent et se respectent. <strong>${diffusables.length}</strong> médecin${diffusables.length>1?'s ont':' a'} accepté que ses coordonnées soient transmises aux pharmacies et aux structures — ce sont les seul${diffusables.length>1?'s':''} dont le nom peut sortir du cockpit.${aVerifier ? ` <strong style="color:var(--ambre)">${aVerifier}</strong> accord${aVerifier>1?'s de diffusion restent à vérifier':' de diffusion reste à vérifier'}.` : ''}${sansTel ? ` <strong style="color:var(--ambre)">${sansTel}</strong> volontaire${sansTel>1?'s sont injoignables':' est injoignable'} faute de numéro.` : ''}</div>
   <div class="barre-h">
-    <span class="cpt-h">${med.length} médecin${med.length>1?'s':''} au registre</span>
+    <span class="cpt-h">${med.length} médecin${med.length>1?'s':''} au registre${parFormulaire ? ` · ${parFormulaire} par le formulaire` : ''}</span>
     <button class="btn sec" onclick="exporterCSV('medecins')">Excel</button>
     <button class="btn sec" onclick="imprimer()">PDF</button>
+    <button class="btn sec" onclick="ouvrirAjout('medecins','manuel')">Reporter une réponse</button>
     <button class="btn" onclick="ouvrirAjout('medecins')">Ajouter un médecin</button>
   </div>`;
 
-  if(!med.length) return h + `<div class="carte"><p class="vide">Aucun médecin sondé. Le vivier se constitue en appelant les généralistes du territoire un par un : qui accepte de recevoir des patients évacués, pour quels motifs, combien et à quel délai.</p></div>`;
+  if(!med.length) return h + `<div class="carte"><p class="vide">Aucun médecin sondé. Le vivier se remplit de trois façons : par le formulaire en ligne une fois le recensement ouvert, en appelant les généralistes du territoire un par un, ou en reportant une réponse arrivée autrement.</p></div>`;
+
+  /* Les réponses arrivées par le formulaire se filtrent à part :
+     ce sont celles qu'il reste à confirmer au téléphone. */
+  if(parFormulaire){
+    const nb = r => r === 'Formulaire' ? parFormulaire
+      : r === 'Tout' ? med.length
+      : med.filter(m => (m.statut || 'À solliciter') === r).length;
+    const filtres = ['Tout','Formulaire'].concat(MED_STATUTS.filter(s => nb(s)));
+    h += `<div class="filtres">${filtres.map(r =>
+      `<button class="${filtreMed===r?'on':''}" onclick="filtrerMed('${r}')">${r === 'Formulaire' ? 'Réponses au formulaire' : esc(r)}${r!=='Tout'?` <span style="opacity:.6">${nb(r)}</span>`:''}</button>`).join('')}</div>`;
+  }
+  const vus = filtreMed === 'Tout' || !parFormulaire ? tri
+    : filtreMed === 'Formulaire' ? tri.filter(m => m.source === 'formulaire')
+    : tri.filter(m => (m.statut || 'À solliciter') === filtreMed);
+  if(!vus.length) return h + `<div class="carte"><p class="vide">Aucun médecin dans ce filtre.</p></div>`;
 
   h += `<div class="stocks">`;
-  tri.forEach(o => {
+  vus.forEach(o => {
     const st = o.statut || 'À solliciter';
     const cl = MED_OK.indexOf(st) >= 0 ? 'confirme' : st === 'Indisponible' ? 'ecarte' : '';
     const recus = ori.filter(x => x.medecin === nomMed(o)).length;
+    const cren = creneauxGroupes(o);
     h += `<div class="stock ${cl}">
       <div>
-        <div class="nom">${esc(nomMed(o))}</div>
+        <div class="nom">${esc(nomMed(o))}${o.source === 'formulaire'
+          ? `<span class="src-f">Formulaire</span>${o.aVerifier ? `<span class="src-f neuf">À confirmer</span>` : ''}`
+          : o.source === 'saisie' ? `<span class="src-f saisie">Saisie à la main</span>` : ''}</div>
         <div style="font-size:13px;color:var(--texte-2);margin-top:2px">${[o.structure, o.commune].filter(Boolean).map(esc).join(' · ') || 'Structure et commune à préciser'}</div>
         <div style="margin-top:6px"><span class="etiq ${MED_ET[st] || 'e-attente'}">${esc(st)}</span></div>
       </div>
       ${o.motifs ? `<div class="bl"><span class="k">Accepte de prendre</span>${esc(o.motifs)}</div>` : `<div class="obs">Ce qu'il ou elle accepte de prendre reste à préciser.</div>`}
       ${o.capacite ? `<div class="bl"><span class="k">Nombre de patients</span>${esc(o.capacite)}</div>` : ''}
-      ${o.creneaux ? `<div class="bl"><span class="k">Créneaux réservés</span><span class="horaires">${esc(o.creneaux)}</span></div>` : ''}
+      ${cren.length
+        ? `<div class="bl"><span class="k">Créneaux cochés sur le calendrier</span>
+             <span class="agenda-l">${cren.map(c => `<span><b>${esc(c.jour)}</b> ${esc(c.parts.join(' et '))}</span>`).join('')}</span></div>`
+        : o.creneaux ? `<div class="bl"><span class="k">Créneaux proposés</span><span class="horaires">${esc(o.creneaux)}</span></div>` : ''}
       ${o.delai ? `<div class="bl"><span class="k">Délai de rendez-vous</span>${esc(o.delai)}</div>` : ''}
       ${o.rdv ? `<div class="bl"><span class="k">Prise de rendez-vous</span>${esc(o.rdv)}</div>` : ''}
       ${o.mt && o.mt !== 'À préciser' ? `<div class="bl"><span class="k">Médecin traitant si besoin</span>${esc(o.mt)}</div>` : ''}
@@ -5781,30 +6080,21 @@ function feuilletMedecins(med, vivier, diffusables, ori){
    Une ligne par demande reçue, de la remontée de la pharmacie
    au rendez-vous obtenu. Ce qui n'a pas encore de médecin
    remonte en tête : c'est ce qui reste à faire. */
-function feuilletOrientes(ori, vivier){
+function feuilletPatients(ori, vivier){
   const attente = ori.filter(enAttenteMed);
   const sansAccord = ori.filter(o => (o.accord || 'À recueillir') === 'À recueillir'
     && o.statut !== 'Sans suite').length;
 
-  let h = `<div class="note protection">
-    <strong>Ce registre ne contient aucune donnée nominative de patient.</strong> Des initiales et un âge suffisent à suivre un dossier ; le nom, la date de naissance, le téléphone et le détail clinique restent chez la pharmacie ou la structure qui reçoit la personne. La CPTS Pau Béarn <strong>aiguille</strong> — elle indique un médecin, elle ne transporte pas de dossier médical.
-    <div class="pp">
-      <span><span class="k">Ce qu'on écrit ici</span>Initiales, âge, commune, motif, structure qui signale, médecin vers qui l'on flèche.</span>
-      <span><span class="k">Ce qu'on n'écrit jamais</span>Nom, prénom, date de naissance, adresse, téléphone, numéro de sécurité sociale, diagnostic nominatif.</span>
-      <span><span class="k">Avant d'orienter</span>La structure qui reçoit le patient l'informe et recueille son accord. Sans accord, aucune coordonnée ne circule.</span>
-      <span><span class="k">Si des coordonnées doivent circuler</span>Par messagerie sécurisée de santé entre professionnels, jamais par ce cockpit, ni par mail ordinaire ou WhatsApp.</span>
-    </div>
-  </div>
-  <div class="note">Chaque appel d'une pharmacie ou d'une structure se consigne ici, <strong>même si le patient n'a pas encore de médecin</strong> : c'est ce registre qui dit combien de personnes le dispositif a absorbées et combien attendent encore.${!vivier.length ? ` <strong style="color:var(--ambre)">Aucun médecin volontaire n'est encore recensé :</strong> les demandes peuvent être enregistrées, elles ne pourront pas être fléchées.` : ''}${sansAccord ? ` <strong style="color:var(--ambre)">${sansAccord}</strong> demande${sansAccord>1?'s dont l\'accord du patient reste à recueillir' : ' dont l\'accord du patient reste à recueillir'}.` : ''}</div>
+  let h = `<div class="note">Chaque personne signalée par une pharmacie ou une structure a sa ligne, <strong>même sans médecin à ce jour</strong> : c'est ce registre qui dit combien de personnes le dispositif a absorbées et combien attendent encore. Le médecin et le statut se choisissent <strong>directement sur la ligne</strong> — pas besoin d'ouvrir la fiche. Le registre est pseudonymisé : ni nom, ni téléphone, ni détail clinique.${!vivier.length ? ` <strong style="color:var(--ambre)">Aucun médecin volontaire n'est encore recensé :</strong> les demandes peuvent être enregistrées, elles ne pourront pas être fléchées.` : ''}${sansAccord ? ` <strong style="color:var(--ambre)">${sansAccord}</strong> demande${sansAccord>1?'s dont l\'accord du patient reste à recueillir' : ' dont l\'accord du patient reste à recueillir'}.` : ''}</div>
   <div class="barre-h">
-    <span class="cpt-h">${ori.length} demande${ori.length>1?'s':''}${attente.length ? ` · ${attente.length} sans médecin` : ''}</span>
+    <span class="cpt-h">${ori.length} patient${ori.length>1?'s':''} signalé${ori.length>1?'s':''}${attente.length ? ` · ${attente.length} sans médecin` : ''}</span>
     <button class="btn sec" onclick="exporterCSV('orientes')">Excel</button>
     <button class="btn sec" onclick="imprimer()">PDF</button>
     ${ori.length ? `<button class="btn sec" onclick="anonymiserOrientes()">Anonymiser le registre</button>` : ''}
-    <button class="btn" onclick="ouvrirAjout('orientes')">Enregistrer une demande</button>
+    <button class="btn" onclick="allerFeuilletOri('recueil')">Recueillir un patient</button>
   </div>`;
 
-  if(!ori.length) return h + `<div class="carte"><p class="vide">Aucune demande enregistrée. La première remontée d'une pharmacie ou d'une structure de soins non programmés ouvre le suivi.</p></div>`;
+  if(!ori.length) return h + `<div class="carte"><p class="vide">Aucun patient signalé. Le suivi s'ouvre au premier appel d'une pharmacie ou d'une structure de soins non programmés — la saisie se fait dans <a href="#" onclick="allerFeuilletOri('recueil');return false;">Recueillir un patient</a>.</p></div>`;
 
   const lignes = chrono('orientes', ori);
   const manuel = estManuel('orientes');
@@ -5817,7 +6107,8 @@ function feuilletOrientes(ori, vivier){
     }
     const st = o.statut || 'À orienter';
     const quand = manuel ? [frdate(o.date), o.heure].filter(Boolean).join(' à ') : o.heure;
-    const chips = [[o.motif,"Motif"],[o.provenance,"Signalé par"],[o.relais,"Structure"],
+    const chips = [[o.relais,"Structure qui signale"],[o.interlocuteur,"Interlocuteur"],
+                   [o.provenance,"Type"],[o.motif,"Motif"],
                    [o.commune,"Commune"],[o.situation,"Situation"],[o.delai,"Délai souhaitable"]]
       .filter(x => x[0]).map(x => `<span><span class="k">${x[1]}</span>${esc(x[0])}</span>`).join('');
     const pied = [o.par ? 'Orientation par ' + o.par : (o.auteur ? 'Saisi par ' + o.auteur : ''),
@@ -5838,9 +6129,22 @@ function feuilletOrientes(ori, vivier){
       <div class="ti">${esc(o.ref) || 'Référence non précisée'}</div>
       ${chips ? `<div class="chips">${chips}</div>` : ''}
       ${o.detail ? `<div class="bloc"><span class="k">Ce qu'il faut savoir pour orienter</span><div class="v">${esc(o.detail)}</div></div>` : ''}
-      ${estOriente(o)
-        ? `<div class="bloc"><span class="k">Orienté vers</span><div class="v">${esc(o.medecin)}${o.rdvle ? ` — rendez-vous le ${frdateL(o.rdvle)}` : ''}${o.circuit ? `\n${esc(o.circuit)}` : ''}</div></div>`
-        : st === 'Sans suite' ? '' : `<div class="bloc"><span class="k">Fléchage</span><div class="v">Aucun médecin désigné à ce jour.</div></div>`}
+      <div class="flechage">
+        <label><span class="k">Orienté vers</span>
+          <select onchange="orienterPatient('${o.id}', this.value)">
+            <option value="">— aucun médecin désigné —</option>
+            ${vivier.map(m => `<option ${nomMed(m) === o.medecin ? 'selected' : ''}>${esc(nomMed(m))}</option>`).join('')}
+            ${o.medecin && !vivier.some(m => nomMed(m) === o.medecin)
+              ? `<option selected>${esc(o.medecin)}</option>` : ''}
+          </select></label>
+        <label><span class="k">Où en est-on</span>
+          <select onchange="majPatient('${o.id}','statut', this.value)">
+            ${ORI_STATUTS.map(s => `<option ${s === st ? 'selected' : ''}>${esc(s)}</option>`).join('')}
+          </select></label>
+        <label><span class="k">Rendez-vous fixé le</span>
+          <input type="date" value="${esc(o.rdvle||'')}" onchange="majPatient('${o.id}','rdvle', this.value)"></label>
+      </div>
+      ${estOriente(o) && o.circuit ? `<div class="bloc"><span class="k">Circuit suivi</span><div class="v">${esc(o.circuit)}</div></div>` : ''}
       ${(o.accord || 'À recueillir') === 'À recueillir' && st !== 'Sans suite'
         ? `<div class="bloc"><span class="k">Accord du patient</span><div class="v">À recueillir par la structure qui le reçoit avant que ses coordonnées ne circulent.</div></div>`
         : o.accord === 'Non' ? `<div class="bloc"><span class="k">Accord du patient</span><div class="v">Refusé — aucune coordonnée ne doit circuler. Lui remettre le nom et le numéro du médecin, à lui d'appeler.</div></div>` : ''}
@@ -5849,6 +6153,27 @@ function feuilletOrientes(ori, vivier){
     </article>`;
   });
   return h;
+}
+
+/* Orienter depuis la ligne : c'est le geste le plus fréquent du
+   feuillet — un médecin se libère, on lui adresse la personne qui
+   attend depuis le plus longtemps. Il ne mérite pas d'ouvrir une
+   fenêtre. Désigner un médecin fait passer la ligne à « Orienté »
+   si elle attendait encore ; l'enlever la ramène à « À orienter ». */
+async function orienterPatient(id, medecin){
+  const o = (etat.orientes||[]).find(x => x.id === id); if(!o) return;
+  o.medecin = medecin;
+  if(medecin && (!o.statut || o.statut === 'À orienter')) o.statut = 'Orienté';
+  if(!medecin && o.statut === 'Orienté') o.statut = 'À orienter';
+  o.modifiePar = moi;
+  await sauver(); rendre();
+  toast(medecin ? `Patient orienté vers ${medecin}` : "Médecin retiré de la ligne");
+}
+async function majPatient(id, champ, valeur){
+  const o = (etat.orientes||[]).find(x => x.id === id); if(!o) return;
+  o[champ] = valeur;
+  o.modifiePar = moi;
+  await sauver(); rendre();
 }
 
 /* Une fois la crise passée, le registre n'a plus à porter de
@@ -5876,37 +6201,46 @@ async function confirmerAnonymisation(){
 }
 
 /* --- les relais -----------------------------------------
-   Les points d'entrée. Tant qu'une pharmacie n'est pas
-   informée, elle continue d'envoyer ses patients au hasard :
-   c'est la colonne « informé » qui mesure la portée réelle
-   du dispositif. */
+   Les points d'entrée. Deux choses s'y mesurent, et ce ne sont
+   pas les mêmes : une pharmacie informée du circuit, et une
+   pharmacie qui accepte d'entrer dans la démarche — repérer les
+   personnes évacuées au comptoir, les signaler, leur remettre le
+   nom d'un médecin. La seconde seule fait vivre le dispositif.
+   Celles qui ont déjà signalé un patient y entrent d'elles-mêmes,
+   à la saisie : leurs appels remontent depuis le recueil. */
 function feuilletRelais(rel, ori, diffusables){
-  const ordre = {'A signalé des patients':0, 'Informé':1, 'À informer':2, 'Sans réponse':3};
-  const tri = [...rel].sort((a,b) => (ordre[a.info] ?? 2) - (ordre[b.info] ?? 2)
+  const ordre = {'Oui':0, 'En attente de réponse':1, 'À solliciter':2, 'Non':3};
+  const tri = [...rel].sort((a,b) => (ordre[a.demarche] ?? 2) - (ordre[b.demarche] ?? 2)
     || (a.structure||'').localeCompare(b.structure||'', 'fr'));
-  const aInformer = rel.filter(r => !r.info || r.info === 'À informer').length;
-  const cle = s => String(s||'').trim().toLowerCase();
+  const aSolliciter = rel.filter(r => !r.demarche || r.demarche === 'À solliciter').length;
+  const partenaires = rel.filter(r => r.demarche === 'Oui').length;
+  const appels = o => ori.filter(x => cleRelais(x.relais) === cleRelais(o.structure));
 
-  let h = `<div class="note">Ces structures reçoivent les patients avant nous : c'est par elles que le fléchage passe. Leur transmettre la liste des <strong>${diffusables}</strong> médecin${diffusables>1?'s':''} ayant accepté la diffusion de leurs coordonnées, et leur rappeler de <strong>signaler chaque patient orienté</strong> pour que le dispositif reste mesurable.${aInformer ? ` <strong style="color:var(--ambre)">${aInformer}</strong> structure${aInformer>1?'s restent à informer':' reste à informer'}.` : ''}</div>
+  let h = `<div class="note">Ces structures reçoivent les patients avant nous : c'est par elles que le fléchage passe. <strong>${partenaires}</strong> ${partenaires>1?'ont accepté':'a accepté'} d'entrer dans la démarche. Leur transmettre la liste des <strong>${diffusables}</strong> médecin${diffusables>1?'s':''} ayant accepté la diffusion de leurs coordonnées, et leur rappeler de <strong>signaler chaque personne orientée</strong> — c'est ce qui permet de compter.${aSolliciter ? ` <strong style="color:var(--ambre)">${aSolliciter}</strong> structure${aSolliciter>1?'s restent à solliciter':' reste à solliciter'}.` : ''}</div>
   <div class="barre-h">
-    <span class="cpt-h">${rel.length} structure${rel.length>1?'s':''}</span>
+    <span class="cpt-h">${rel.length} structure${rel.length>1?'s':''}${partenaires ? ` · ${partenaires} dans la démarche` : ''}</span>
     <button class="btn sec" onclick="exporterCSV('relais')">Excel</button>
     <button class="btn sec" onclick="imprimer()">PDF</button>
     <button class="btn" onclick="ouvrirAjout('relais')">Ajouter une structure</button>
   </div>`;
 
-  if(!rel.length) return h + `<div class="carte"><p class="vide">Aucune structure relais enregistrée. Commencer par celles qui ont déjà appelé — le CMSI de Billère et les pharmacies qui l'ont sollicité.</p></div>`;
+  if(!rel.length) return h + `<div class="carte"><p class="vide">Aucune structure enregistrée. Commencer par celles qui ont déjà appelé — le CMSI de Billère et les pharmacies qui l'ont sollicité. Toute structure qui signale un patient depuis le feuillet <a href="#" onclick="allerFeuilletOri('recueil');return false;">Recueillir un patient</a> entre ici d'elle-même.</p></div>`;
 
   h += `<div class="stocks">`;
   tri.forEach(o => {
+    const dem = o.demarche || 'À solliciter';
     const info = o.info || 'À informer';
-    const cl = info === 'À informer' ? '' : info === 'Sans réponse' ? 'ecarte' : 'confirme';
-    const signales = ori.filter(x => cle(x.relais) === cle(o.structure)).length;
+    const cl = dem === 'Oui' ? 'confirme' : dem === 'Non' ? 'ecarte' : '';
+    const siens = appels(o);
+    const dernier = siens.map(x => x.date).filter(Boolean).sort().pop();
     h += `<div class="stock ${cl}">
       <div>
         <div class="nom">${esc(o.structure)}</div>
         <div style="font-size:13px;color:var(--texte-2);margin-top:2px">${[o.type, o.commune].filter(Boolean).map(esc).join(' · ') || 'Type et commune à préciser'}</div>
-        <div style="margin-top:6px"><span class="etiq ${info === 'À informer' ? 'e-attente' : info === 'Sans réponse' ? 'e-fini' : 'e-cours'}">${esc(info)}</span></div>
+        <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+          <span class="etiq ${dem === 'Oui' ? 'e-cours' : dem === 'Non' ? 'e-fini' : 'e-attente'}">${dem === 'Oui' ? 'Dans la démarche' : dem === 'Non' ? "N'y entre pas" : dem}</span>
+          <span class="etiq ${info === 'À informer' ? 'e-attente' : info === 'Sans réponse' ? 'e-fini' : 'e-lancer'}">${esc(info)}</span>
+        </div>
       </div>
       ${o.interlocuteur ? `<div class="bl"><span class="k">Interlocuteur</span>${esc(o.interlocuteur)}</div>` : `<div class="obs">Interlocuteur à nommer.</div>`}
       ${o.infoLe ? `<div class="bl"><span class="k">Informée le</span>${frdateL(o.infoLe)}${o.canal ? ' · ' + esc(o.canal) : ''}</div>` : ''}
@@ -5914,7 +6248,10 @@ function feuilletRelais(rel, ori, diffusables){
         ? `<div class="bl"><span class="k">Liste des médecins</span>Transmise</div>`
         : o.liste === 'Sans objet' ? '' : `<div class="obs">Liste des médecins volontaires pas encore transmise.</div>`}
       ${o.note ? `<div class="obs">${esc(o.note)}</div>` : ''}
-      ${signales ? `<div class="oriente">${signales} patient${signales>1?'s':''} signalé${signales>1?'s':''} par cette structure</div>` : ''}
+      ${siens.length
+        ? `<div class="oriente">${siens.length} patient${siens.length>1?'s':''} signalé${siens.length>1?'s':''}${dernier ? `, le dernier le ${frdateL(dernier)}` : ''}
+             <button class="retirer" style="margin-left:6px" onclick="allerFeuilletOri('patients')">Voir</button></div>`
+        : ''}
       <div class="liens">
         ${o.tel ? `<a class="tel" href="tel:${esc(String(o.tel).replace(/[^0-9+]/g,''))}">Appeler ${esc(o.tel)}</a>` : ''}
         ${o.adresse ? `<a class="adr" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.adresse)}" target="_blank" rel="noopener">${esc(o.adresse)}</a>` : ''}

@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Accueil des patients évacués — CPTS Pau Béarn</title>
+<meta name="description" content="Se déclarer volontaire pour recevoir en consultation les personnes évacuées des zones incendiées, auprès de la CPTS Pau Béarn.">
+<meta name="theme-color" content="#062B63">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --encre:#062B63;
+  --encre-2:#0B4FA8;
+  --cobalt-clair:#E8F0FB;
+  --surface:#F3F6FB;
+  --carte:#FFFFFF;
+  --trait:#D8E1EF;
+  --texte:#122238;
+  --texte-2:#5A6B84;
+  --ambre:#E8A33D;
+  --braise:#C2482F;
+  --stable:#2F7D62;
+  --display:'Archivo',system-ui,sans-serif;
+  --corps:'Source Sans 3',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--corps);background:var(--surface);color:var(--texte);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+
+.bandeau{background:var(--encre);color:#fff;padding:20px 22px}
+.bandeau .in{max-width:880px;margin:0 auto}
+.bandeau .nom{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.02em}
+.bandeau .sous{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#7FA3D4;margin-top:6px}
+
+.page{max-width:880px;margin:0 auto;padding:26px 22px 60px}
+h1{font-family:var(--display);font-weight:700;font-size:27px;letter-spacing:-.01em;margin:0 0 6px}
+.chapo{color:var(--texte-2);margin:0 0 22px;max-width:66ch}
+.carte{background:var(--carte);border:1px solid var(--trait);border-radius:10px;padding:20px;margin-bottom:16px}
+h2{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.02em;margin:0 0 4px;display:flex;align-items:center;gap:9px}
+h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-radius:2px;display:block;flex:0 0 3px}
+.sous-h{font-size:13px;color:var(--texte-2);margin:0 0 15px}
+
+.form{display:grid;gap:13px}
+@media(min-width:720px){.form{grid-template-columns:1fr 1fr}.form .large{grid-column:1/-1}}
+label{display:block}
+label .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:4px}
+label .k i{font-style:normal;color:var(--braise)}
+input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--trait);border-radius:6px;background:#fff}
+textarea{min-height:74px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-offset:1px;border-color:var(--ambre)}
+input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4F2}
+.aide{font-size:12.5px;color:var(--texte-2);margin-top:4px}
+.leurre{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+/* Les types de renfort : des cases à cocher rangées en colonnes,
+   assez grandes pour être cochées d'un doigt. */
+.choix{display:grid;gap:9px;grid-template-columns:1fr}
+@media(min-width:720px){.choix{grid-template-columns:1fr 1fr}}
+.choix .c{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--trait);border-radius:8px;cursor:pointer;background:#fff}
+.choix .c:hover{border-color:var(--encre-2)}
+.choix .c input{width:19px;height:19px;flex:0 0 19px;margin:1px 0 0;accent-color:var(--encre-2)}
+.choix .c span{font-size:14px;line-height:1.4}
+
+.cond{background:var(--cobalt-clair);border-radius:8px;padding:14px 16px;margin-bottom:14px}
+.cond ol{margin:0;padding-left:19px;font-size:13.5px}
+.cond li{margin-bottom:6px;text-align:justify}
+.coche{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--trait);border-radius:8px;margin-bottom:9px;cursor:pointer;background:#fff}
+.coche:hover{border-color:var(--encre-2)}
+.coche.faux{border-color:var(--braise);background:#FDF4F2}
+.coche input{width:19px;height:19px;flex:0 0 19px;margin:1px 0 0;accent-color:var(--encre-2)}
+.coche span{font-size:14px;line-height:1.45}
+
+.btn{background:var(--encre);color:#fff;border:0;border-radius:7px;padding:12px 22px;font-family:var(--display);font-weight:600;font-size:15px;cursor:pointer;min-height:48px}
+.btn:hover{background:var(--encre-2)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.sec{background:#fff;color:var(--encre);border:1px solid var(--trait)}
+.btn.sec:hover{border-color:var(--encre)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+
+/* ---------- téléphone ----------
+   C'est le cas d'usage principal : le professionnel se recense
+   depuis son cabinet, entre deux patients, sur son téléphone.
+   Champs à 16 px — en dessous, iOS zoome sur le champ actif et
+   la page part de travers — et cibles tactiles confortables. */
+@media(max-width:640px){
+  .page{padding:20px 15px 48px}
+  h1{font-size:23px}
+  .carte{padding:16px 15px;border-radius:9px}
+  input,select,textarea{font-size:16px;padding:12px 13px;border-radius:7px}
+  textarea{min-height:88px}
+  select{min-height:48px}
+  .coche,.choix .c{padding:13px 14px;gap:13px}
+  .coche input,.choix .c input{width:24px;height:24px;flex:0 0 24px}
+  .coche span,.choix .c span{font-size:14.5px}
+  .btn{width:100%;padding:14px 20px;min-height:52px}
+  .actions{flex-direction:column;align-items:stretch;gap:12px}
+  .actions .aide{text-align:center}
+  .cond ol{padding-left:17px}
+  .cond li{text-align:left}
+  .acte ol li,.acte .ctx,.acte .cachet,.note{text-align:left}
+}
+
+.alerte{border-radius:8px;padding:12px 14px;font-size:14px;margin-bottom:16px}
+.alerte.rouge{background:#FDF0EC;border:1px solid #E8C3B8;color:#8C2F1B}
+.alerte.ambre{background:#FCF3E4;border:1px solid #E9D3A6;color:#8A5D12}
+.alerte.bleue{background:var(--cobalt-clair);border:1px solid #C3D6F0;color:var(--encre)}
+.note{font-size:12.5px;color:var(--texte-2);margin-top:26px;padding-top:14px;border-top:1px solid var(--trait);text-align:justify}
+
+/* ---------- récapitulatif remis au professionnel ---------- */
+.acte{background:#fff;border:1px solid var(--trait);border-radius:10px;padding:26px;color:#101820;font-size:13.5px;line-height:1.5}
+.acte .ent{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:2px solid var(--encre);padding-bottom:9px;margin-bottom:16px}
+.acte .ent .org{font-family:var(--display);font-weight:700;font-size:15px;color:var(--encre)}
+.acte .ent .sub{font-size:11px;color:var(--texte-2);margin-top:2px}
+.acte .ent .d{text-align:right}
+.acte .ent .ref{font-family:var(--mono);font-size:11.5px;color:var(--encre)}
+.acte .ttl{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;margin:0;color:var(--encre);text-transform:uppercase}
+.acte .ss{font-size:12.5px;color:var(--texte-2);margin:3px 0 14px}
+.acte .ctx{font-size:12.5px;background:var(--cobalt-clair);border-left:3px solid var(--encre-2);border-radius:0 6px 6px 0;padding:11px 13px;margin-bottom:16px;text-align:justify}
+.acte h3{font-family:var(--display);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--encre-2);margin:16px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--trait)}
+.acte .l{display:flex;gap:10px;align-items:baseline;padding:3px 0}
+.acte .l .e{flex:0 0 185px;font-size:12px;color:var(--texte-2)}
+.acte .l .v{flex:1;border-bottom:1px dotted #B9C4D4;min-height:19px;padding:0 3px}
+.acte ul{margin:4px 0 0;padding-left:20px;font-size:12.5px}
+.acte ol{margin:0;padding-left:20px;font-size:12.5px}
+.acte ol li,.acte ul li{margin-bottom:5px;text-align:justify}
+.acte .cachet{border:1px solid var(--stable);background:#F1F8F5;border-radius:7px;padding:11px 13px;font-size:12.5px;margin-top:10px}
+.acte .cachet b{color:#1E5C46}
+.acte .pied{font-size:11px;color:var(--texte-2);border-top:1px solid var(--trait);margin-top:16px;padding-top:8px;text-align:justify}
+@media(max-width:640px){.acte{padding:17px 15px}.acte .l{flex-direction:column;gap:2px}.acte .l .e{flex:none}}
+
+.recu{background:#F1F8F5;border:1px solid #BEDCCE;border-radius:10px;padding:20px 22px;margin-bottom:18px}
+.recu .t{font-family:var(--display);font-weight:700;font-size:20px;color:#1E5C46;margin-bottom:6px}
+.recu .r{font-family:var(--mono);font-size:13px;color:var(--encre);margin-top:10px}
+
+/* ---------- le calendrier des créneaux ----------
+   Le cœur du formulaire. Un médecin entre deux patients ne
+   rédige pas ses disponibilités : il les coche. Trois semaines,
+   deux demi-journées par jour, une case par demi-journée. Les
+   jours passés restent visibles mais éteints — on ne fait pas
+   disparaître des colonnes sous les yeux de quelqu'un. */
+.agenda{display:flex;flex-direction:column;gap:14px}
+.sem{border:1px solid var(--trait);border-radius:9px;overflow:hidden;background:#fff}
+.sem-t{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:9px 12px;background:var(--surface);border-bottom:1px solid var(--trait)}
+.sem-t .n{font-family:var(--display);font-weight:600;font-size:13.5px;color:var(--encre)}
+.sem-t .a{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.sem-t .a button{background:#fff;border:1px solid var(--trait);border-radius:5px;
+  padding:5px 9px;font-size:11.5px;color:var(--encre-2);cursor:pointer;min-height:32px}
+.sem-t .a button:hover{border-color:var(--encre-2)}
+.grille{display:grid;grid-template-columns:52px repeat(7,1fr);gap:3px;padding:9px}
+.grille .lab{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--texte-2);display:flex;align-items:center}
+.grille .jr{text-align:center;font-size:11px;color:var(--texte-2);line-height:1.25;padding-bottom:2px}
+.grille .jr b{display:block;font-size:14px;color:var(--texte);font-weight:600}
+.grille .jr.we{color:#9AA8BC}
+.grille .jr.auj b{color:var(--encre-2)}
+.cr{border:1px solid var(--trait);border-radius:6px;background:#fff;min-height:40px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:15px;color:transparent;padding:0}
+.cr:hover{border-color:var(--encre-2);background:var(--cobalt-clair)}
+.cr.on{background:var(--encre-2);border-color:var(--encre-2);color:#fff}
+.cr.we{background:#FBFCFE}
+.cr.we.on{background:var(--encre-2)}
+.cr[disabled]{cursor:default;background:repeating-linear-gradient(135deg,#F7F9FC,#F7F9FC 4px,#EEF2F8 4px,#EEF2F8 8px);border-color:#E9EEF6}
+.cr[disabled]:hover{border-color:#E9EEF6}
+.cr:focus-visible{outline:2px solid var(--ambre);outline-offset:1px}
+.recap-cr{margin-top:12px;background:var(--cobalt-clair);border-radius:8px;padding:11px 13px;font-size:13px}
+.recap-cr .t{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--texte-2);margin-bottom:5px}
+.recap-cr ul{margin:0;padding-left:18px}
+.recap-cr li{margin-bottom:2px}
+.recap-cr.vide{background:#FCF3E4;color:#8A5D12}
+@media(max-width:640px){
+  .grille{grid-template-columns:38px repeat(7,1fr);gap:2px;padding:7px}
+  .grille .lab{font-size:8.5px;letter-spacing:.02em}
+  .grille .jr{font-size:10px}
+  .grille .jr b{font-size:13px}
+  .cr{min-height:44px;border-radius:5px}
+  .sem-t .a{margin-left:0;width:100%}
+  .sem-t .a button{flex:1;min-width:0}
+}
+
+/* La question « acceptez-vous ? » commande tout le reste : ce
+   qui suit ne s'affiche que si la réponse est oui. */
+.oupas{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+@media(max-width:640px){.oupas{grid-template-columns:1fr}}
+.oupas label{display:flex;gap:11px;align-items:flex-start;padding:14px 15px;border:1px solid var(--trait);
+  border-radius:8px;cursor:pointer;background:#fff}
+.oupas label:hover{border-color:var(--encre-2)}
+.oupas label.sel{border-color:var(--encre-2);background:var(--cobalt-clair);box-shadow:inset 0 0 0 1px var(--encre-2)}
+.oupas input{width:20px;height:20px;flex:0 0 20px;margin:1px 0 0;accent-color:var(--encre-2)}
+.oupas .t{font-family:var(--display);font-weight:600;font-size:15px;display:block}
+.oupas .s{font-size:12.5px;color:var(--texte-2);display:block;margin-top:2px}
+body.refus .si-oui{display:none}
+
+@media print{
+  @page{margin:14mm}
+  body{background:#fff;font-size:10.5pt}
+  .bandeau,.actions,.recu,.no-print{display:none!important}
+  .page{padding:0;max-width:none}
+  .acte{border:0;padding:0;font-size:10pt;line-height:1.42}
+  .acte .ttl{font-size:16pt}
+  .acte .ctx,.acte .cachet{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .acte ol,.acte ul,.acte .cachet{break-inside:avoid}
+  .acte h3{break-after:avoid}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="bandeau"><div class="in">
+  <div class="nom">CPTS Pau Béarn</div>
+  <div class="sous">Communauté professionnelle territoriale de santé — Pau et Béarn</div>
+</div></div>
+
+<main class="page" id="page">
+  <p class="chapo">Chargement…</p>
+</main>
+
+<script>
+/* =========================================================
+   RECENSEMENT DES GÉNÉRALISTES — CPTS Pau Béarn
+
+   Des personnes évacuées des zones incendiées de Gironde se
+   présentent au comptoir des pharmacies et dans les structures
+   de soins non programmés du territoire : ordonnances à
+   renouveler après un départ précipité, suites d'inhalation de
+   fumées. Elles n'ont pas de médecin traitant ici.
+
+   Ce formulaire demande une seule chose au généraliste :
+   accepte-t-il d'en recevoir, et quand. Le « quand » se coche
+   sur un calendrier de trois semaines plutôt qu'il ne se
+   rédige — c'est la différence entre une réponse en trente
+   secondes et une réponse jamais donnée.
+
+   Cette page n'a pas le code d'accès du cockpit : elle ne parle
+   qu'à la porte de recensement d'api.php, qui n'accepte qu'un
+   ajout et ne renvoie rien de l'état partagé.
+   ========================================================= */
+const API = 'api.php?consultations=1';
+
+/* Ces listes doublent celles du cockpit (index.html) : toute
+   modification là-bas doit être reportée ici. */
+const MOTIFS = ["Renouvellement d'ordonnance interrompue",
+  "Suites d'inhalation de fumées",
+  "Suivi d'une pathologie chronique le temps du séjour",
+  "Situation aiguë sans gravité",
+  "Certificat, document administratif de santé",
+  "Toute demande relevant de la médecine générale"];
+
+const CAPACITES = ['','1 patient par semaine','2 patients par semaine',
+  '3 à 5 patients par semaine','Plus de 5 patients par semaine',
+  'Autant que mon planning le permet','À préciser'];
+
+const DELAIS = ['','Dans les 48 heures','Sous une semaine',
+  'Selon mes créneaux cochés ci-dessus','À préciser'];
+
+const SEMAINES = 3;
+const JOURS_C = ['L','M','M','J','V','S','D'];
+const JOURS_L = ['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'];
+const JOURS_A = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août',
+  'septembre','octobre','novembre','décembre'];
+
+let envoiEnCours = false;
+let contexte = { ouverte: false, message: '', cadre: '' };
+let accepte = null;                 /* null tant que rien n'est coché */
+const creneaux = new Set();         /* « 2026-07-29:matin » */
+let semaines = [];                  /* les trois semaines affichées */
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const val = id => (document.getElementById(id)?.value || '').trim();
+const frdate = d => d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '';
+const frheure = d => d ? new Date(d).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '';
+const iso = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+
+/* Le calendrier part du lundi de la semaine en cours : un
+   médecin qui répond un jeudi doit pouvoir proposer le vendredi
+   sans changer de semaine. Les jours déjà passés restent à
+   l'écran, éteints. */
+function construireSemaines(){
+  const auj = new Date(); auj.setHours(0,0,0,0);
+  const lundi = new Date(auj);
+  lundi.setDate(auj.getDate() - ((auj.getDay() + 6) % 7));
+  semaines = [];
+  for(let s = 0; s < SEMAINES; s++){
+    const jours = [];
+    for(let j = 0; j < 7; j++){
+      const d = new Date(lundi);
+      d.setDate(lundi.getDate() + s * 7 + j);
+      jours.push({ cle: iso(d), num: d.getDate(), jour: j,
+        passe: d < auj, auj: d.getTime() === auj.getTime(), date: d });
+    }
+    semaines.push({ jours, debut: jours[0] });
+  }
+}
+
+async function demarrer(){
+  try{
+    const r = await fetch('api.php?consultations=etat', {headers:{'Accept':'application/json'}});
+    if(r.ok) contexte = await r.json();
+  }catch(e){
+    return afficher(`<div class="alerte rouge">Le service est momentanément injoignable. Réessayez dans quelques minutes, ou appelez la coordination de la CPTS Pau Béarn.</div>`);
+  }
+  contexte.ouverte ? formulaire() : ferme();
+}
+
+function afficher(html){
+  document.getElementById('page').innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+function ferme(){
+  afficher(`<h1>Accueil des patients évacués</h1>
+  <p class="chapo">La CPTS Pau Béarn ne sollicite pas de médecins généralistes à ce jour.</p>
+  <div class="carte">
+    <div class="alerte ambre">Le recensement n'est pas ouvert pour le moment.</div>
+    <p>La CPTS ne lance un recensement qu'au moment où elle est en mesure d'en faire quelque chose.
+    Constituer une liste de médecins volontaires sans avoir de patients à leur adresser ne rend service
+    à personne.</p>
+    ${contexte.message ? `<p><strong>${esc(contexte.message)}</strong></p>` : ''}
+    <p style="margin-bottom:0">Dès que le recensement sera ouvert, l'information passera par les canaux
+    habituels de la CPTS. Merci de votre disponibilité.</p>
+  </div>`);
+}
+
+/* --- Le formulaire -------------------------------------- */
+function formulaire(){
+  construireSemaines();
+  const opts = (liste, id) => `<select id="${id}">${liste.map(t => `<option>${esc(t)}</option>`).join('')}</select>`;
+
+  afficher(`<h1>Recevoir en consultation une personne évacuée</h1>
+  <p class="chapo">Des personnes évacuées des zones incendiées de Gironde sont revenues dans leur commune
+  ou ont été relogées en Béarn. Parties dans l'urgence, elles ont besoin de faire renouveler une
+  ordonnance, ou de faire suivre les suites d'une inhalation de fumées. Sans médecin traitant ici, elles
+  se présentent en pharmacie ou dans les structures de soins non programmés, qui ne sont pas faites pour
+  ce suivi. La CPTS Pau Béarn cherche des généralistes acceptant d'en recevoir quelques-unes.</p>
+
+  <div class="alerte bleue"><strong>Répondre ne vous engage qu'à ce que vous cochez.</strong> Pas de
+  patientèle supplémentaire, pas de médecin traitant imposé, pas de garde. Vous indiquez le nombre de
+  personnes que vous pouvez recevoir et les demi-journées qui vous arrangent — et vous restez libre de
+  revenir dessus en appelant la coordination.</div>
+
+  ${contexte.cadre ? `<div class="alerte ambre"><strong>Ce que la CPTS demande exactement :</strong> ${esc(contexte.cadre)}</div>` : ''}
+
+  <div class="carte">
+    <h2>1 · Qui vous êtes</h2>
+    <p class="sous-h">Le minimum pour que la coordination puisse vous rappeler et, si vous l'acceptez,
+    indiquer votre cabinet aux pharmacies du territoire.</p>
+    <div class="form">
+      <label><span class="k">Nom <i>*</i></span>
+        <input id="f-nom" autocomplete="family-name" placeholder="Ex. Durand"></label>
+      <label><span class="k">Prénom <i>*</i></span>
+        <input id="f-prenom" autocomplete="given-name" placeholder="Ex. Marie"></label>
+      <label><span class="k">Téléphone <i>*</i></span>
+        <input id="f-tel" type="tel" autocomplete="tel" inputmode="tel" placeholder="05 59 12 34 56">
+        <span class="aide">Le numéro par lequel la coordination vous rappellera.</span></label>
+      <label><span class="k">Courriel</span>
+        <input id="f-mail" type="email" autocomplete="email" placeholder="nom@exemple.fr"></label>
+      <label class="large"><span class="k">Cabinet, maison ou centre de santé</span>
+        <input id="f-structure" autocomplete="organization" placeholder="Ex. MSP de Jurançon"></label>
+      <label class="large"><span class="k">Adresse du cabinet <i>*</i></span>
+        <input id="f-adresse" autocomplete="street-address" placeholder="Ex. 12 rue des Écoles">
+        <span class="aide">C'est l'adresse que la pharmacie indiquera au patient.</span></label>
+      <label><span class="k">Commune</span>
+        <input id="f-commune" autocomplete="address-level2" placeholder="Ex. Pau"></label>
+      <label><span class="k">N° RPPS</span>
+        <input id="f-rpps" inputmode="numeric" placeholder="Ex. 10001234567">
+        <span class="aide">Non obligatoire.</span></label>
+    </div>
+  </div>
+
+  <div class="carte">
+    <h2>2 · Acceptez-vous de recevoir ces patients ?</h2>
+    <p class="sous-h">C'est la seule question à laquelle il faut répondre. Un « non » se consigne comme un
+    « oui » : cela évite qu'on vous rappelle une deuxième fois.</p>
+    <div class="oupas">
+      <label id="ou-oui" onclick="repondre(true)">
+        <input type="radio" name="accepte" id="a-oui">
+        <span><span class="t">Oui</span><span class="s">J'accepte d'en recevoir quelques-uns, dans les
+        conditions que je précise ci-dessous.</span></span></label>
+      <label id="ou-non" onclick="repondre(false)">
+        <input type="radio" name="accepte" id="a-non">
+        <span><span class="t">Non</span><span class="s">Pas dans la période actuelle. Ma réponse est
+        enregistrée, on ne me rappellera pas.</span></span></label>
+    </div>
+  </div>
+
+  <div class="si-oui">
+    <div class="carte">
+      <h2>3 · Ce que vous acceptez de prendre</h2>
+      <p class="sous-h">Cochez ce qui vous convient. Ce que vous ne cochez pas ne vous sera pas adressé.</p>
+      <div class="choix">
+        ${MOTIFS.map((t,i) => `<label class="c"><input type="checkbox" id="m-${i}"><span>${esc(t)}</span></label>`).join('')}
+      </div>
+    </div>
+
+    <div class="carte">
+      <h2>4 · Vos créneaux</h2>
+      <p class="sous-h">Cochez les demi-journées où vous pourriez recevoir une de ces personnes. Rien
+      n'est réservé : ces créneaux servent à la coordination pour savoir vers qui se tourner, et à quel
+      moment vous appeler. Si votre organisation ne rentre pas dans cette grille, écrivez-la en clair
+      juste en dessous.</p>
+      <div class="agenda" id="agenda">${semaines.map((s,i) => blocSemaine(s,i)).join('')}</div>
+      <div id="recap-cr"></div>
+      <div class="form" style="margin-top:14px">
+        <label><span class="k">Combien de patients pouvez-vous recevoir ?</span>
+          ${opts(CAPACITES, 'f-capacite')}</label>
+        <label><span class="k">Sous quel délai pouvez-vous en recevoir un ?</span>
+          ${opts(DELAIS, 'f-delai')}</label>
+        <label class="large"><span class="k">Autres précisions sur vos disponibilités</span>
+          <textarea id="f-precisions" placeholder="Ex. plutôt en fin de journée, jamais le mercredi, à partir de la semaine du 11 août, me joindre la veille…"></textarea></label>
+      </div>
+    </div>
+
+    <div class="carte">
+      <h2>5 · Comment prendre rendez-vous chez vous</h2>
+      <p class="sous-h">C'est ce que la pharmacie remettra au patient. Sans cette information, personne ne
+      peut vous être adressé.</p>
+      <div class="form">
+        <label class="large"><span class="k">Ligne directe, secrétariat ou lien de prise de rendez-vous</span>
+          <input id="f-rdv" placeholder="Ex. secrétariat au 05 59 00 00 00, ou mon lien Doctolib"></label>
+        <label class="large"><span class="k">Conditions que vous posez</span>
+          <textarea id="f-contraintes" placeholder="Ex. uniquement sur adressage de la pharmacie, avec l'ordonnance en cours, patient qui appelle lui-même…"></textarea></label>
+      </div>
+      <label class="coche" id="c-diffusion-l" style="margin-top:14px">
+        <input type="checkbox" id="c-diffusion" checked>
+        <span>J'accepte que mon nom, l'adresse de mon cabinet et mes coordonnées de prise de rendez-vous
+        soient communiqués aux pharmacies et aux structures de soins non programmés du territoire, aux
+        seules fins d'orienter ces patients. <strong>Sans cette case, aucun patient ne peut vous être
+        adressé autrement que par un appel de la coordination.</strong></span></label>
+    </div>
+
+    <div class="carte">
+      <h2>6 · Et si la situation se prolonge</h2>
+      <p class="sous-h">Question posée en dernier, et volontairement : elle ne conditionne rien de ce qui
+      précède. Répondre « non » ne retire rien à ce que vous venez d'accepter.</p>
+      <div class="form">
+        <label class="large"><span class="k">Si le séjour d'une de ces personnes se prolonge, accepteriez-vous d'en devenir le médecin traitant ?</span>
+          <select id="f-mt">
+            <option>À préciser</option>
+            <option>Au cas par cas</option>
+            <option>Oui</option>
+            <option>Non</option>
+          </select>
+          <span class="aide">Sans engagement : la question se reposera au moment venu, patient par patient.</span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="carte">
+    <h2>7 · Ce que votre réponse veut dire</h2>
+    <p class="sous-h">À lire avant de valider : c'est le cadre dans lequel la CPTS Pau Béarn recense.</p>
+    <div class="cond"><ol>
+      <li>Votre réponse vaut déclaration de disponibilité. Elle ne vaut ni engagement contractuel, ni
+      obligation de recevoir, ni transfert de patientèle, et ne crée aucune obligation à votre charge.</li>
+      <li>Vous ne recevrez que les motifs que vous avez cochés, dans la limite du nombre de patients que
+      vous avez indiqué. La coordination vous rappelle avant de vous adresser qui que ce soit.</li>
+      <li>Le patient reste libre de son médecin, et vous restez libre de refuser une demande, à tout
+      moment et sans avoir à vous justifier.</li>
+      <li>Vos coordonnées ne sont communiquées aux pharmacies et aux structures de soins non programmés
+      que si vous l'avez expressément accepté ci-dessus, et aux seules fins d'orienter ces patients.</li>
+      <li>Aucune donnée de santé de patient ne transite par ce formulaire ni par les outils de la CPTS :
+      la CPTS oriente vers un médecin, elle ne transmet pas de dossier médical.</li>
+    </ol></div>
+    <label class="coche" id="c-conditions-l">
+      <input type="checkbox" id="c-conditions">
+      <span>J'ai lu ce cadre, je le comprends, et je réponds dans ces conditions.</span></label>
+
+    <div class="leurre" aria-hidden="true">
+      <label>Ne pas remplir<input id="f-site" tabindex="-1" autocomplete="off"></label>
+    </div>
+
+    <div id="erreur"></div>
+    <div class="actions">
+      <button type="button" class="btn" id="valider" onclick="valider()">Valider ma réponse</button>
+      <span class="aide" style="margin:0">Vous obtiendrez ensuite votre récapitulatif à enregistrer en PDF.</span>
+    </div>
+  </div>
+
+  <p class="note">Les informations recueillies par ce formulaire sont utilisées par la seule CPTS Pau Béarn,
+  aux fins d'organiser l'accès aux soins des personnes évacuées dans le cadre du plan blanc régional /
+  ORSAN AMAVI. Elles ne sont ni cédées, ni utilisées à d'autres fins, et sont conservées le temps de la
+  mobilisation et de son retour d'expérience. Vous pouvez demander leur rectification ou leur suppression
+  auprès de la coordination de la CPTS Pau Béarn.</p>`);
+
+  majRecap();
+}
+
+/* Une semaine du calendrier : l'en-tête des sept jours, puis la
+   rangée des matins et celle des après-midis. */
+function blocSemaine(s, i){
+  const d = s.debut.date;
+  const titre = 'Semaine du ' + d.getDate() + (d.getDate() === 1 ? 'er' : '') + ' ' + MOIS[d.getMonth()];
+  const cellules = part => s.jours.map(j => {
+    const cle = j.cle + ':' + part;
+    const we = j.jour >= 5 ? ' we' : '';
+    const lib = JOURS_L[j.jour] + ' ' + j.num + ' ' + MOIS[j.date.getMonth()] +
+                ', ' + (part === 'matin' ? 'matin' : 'après-midi');
+    return j.passe
+      ? `<button type="button" class="cr${we}" disabled aria-label="${esc(lib)} — jour passé"></button>`
+      : `<button type="button" class="cr${we}" id="c-${cle}" role="checkbox" aria-checked="false"
+           aria-label="${esc(lib)}" onclick="basculer('${cle}')">✓</button>`;
+  }).join('');
+
+  return `<div class="sem">
+    <div class="sem-t">
+      <span class="n">${esc(titre)}</span>
+      <span class="a">
+        <button type="button" onclick="remplir(${i},'matin')">Tous les matins</button>
+        <button type="button" onclick="remplir(${i},'apresmidi')">Tous les après-midis</button>
+        <button type="button" onclick="viderSemaine(${i})">Effacer</button>
+      </span>
+    </div>
+    <div class="grille">
+      <div class="lab"></div>
+      ${s.jours.map(j => `<div class="jr${j.jour>=5?' we':''}${j.auj?' auj':''}">${JOURS_C[j.jour]}<b>${j.num}</b></div>`).join('')}
+      <div class="lab">Matin</div>
+      ${cellules('matin')}
+      <div class="lab">A.-m.</div>
+      ${cellules('apresmidi')}
+    </div>
+  </div>`;
+}
+
+function marquerCase(cle){
+  const b = document.getElementById('c-' + cle);
+  if(!b) return;
+  const on = creneaux.has(cle);
+  b.classList.toggle('on', on);
+  b.setAttribute('aria-checked', on ? 'true' : 'false');
+}
+
+function basculer(cle){
+  creneaux.has(cle) ? creneaux.delete(cle) : creneaux.add(cle);
+  marquerCase(cle); majRecap();
+}
+
+/* « Tous les matins » coche les cinq jours ouvrés de la semaine.
+   Un deuxième appui les décoche : c'est le même geste, il doit
+   pouvoir se défaire. */
+function remplir(i, part){
+  const ouvres = semaines[i].jours.filter(j => !j.passe && j.jour < 5);
+  const cles = ouvres.map(j => j.cle + ':' + part);
+  const tous = cles.length > 0 && cles.every(c => creneaux.has(c));
+  cles.forEach(c => { tous ? creneaux.delete(c) : creneaux.add(c); marquerCase(c); });
+  majRecap();
+}
+
+function viderSemaine(i){
+  semaines[i].jours.forEach(j => ['matin','apresmidi'].forEach(p => {
+    const c = j.cle + ':' + p;
+    if(creneaux.delete(c)) marquerCase(c);
+  }));
+  majRecap();
+}
+
+/* Ce qu'on a coché, relu en clair. Sans ce rappel, on ne sait
+   plus ce qu'on a dit trois écrans plus bas. */
+function creneauxLisibles(){
+  const par = new Map();
+  /* Le matin d'abord : trié à la lettre, « apresmidi » passerait
+     devant, et le médecin relirait ses créneaux à l'envers. */
+  const rang = x => x.split(':')[1] === 'matin' ? 0 : 1;
+  [...creneaux].sort((a,b) => a.slice(0,10).localeCompare(b.slice(0,10)) || rang(a) - rang(b))
+    .forEach(x => {
+      const [d, p] = x.split(':');
+      if(!par.has(d)) par.set(d, []);
+      par.get(d).push(p === 'apresmidi' ? 'après-midi' : 'matin');
+    });
+  return [...par.entries()].map(([d, parts]) => {
+    const t = new Date(d + 'T12:00:00');
+    const j = JOURS_A[(t.getDay() + 6) % 7];
+    return j + ' ' + String(t.getDate()).padStart(2,'0') + '/' + String(t.getMonth()+1).padStart(2,'0')
+      + ' ' + parts.join(' et ');
+  });
+}
+
+function majRecap(){
+  const z = document.getElementById('recap-cr');
+  if(!z) return;
+  const l = creneauxLisibles();
+  z.innerHTML = l.length
+    ? `<div class="recap-cr"><div class="t">${l.length} demi-journée${l.length>1?'s':''} cochée${l.length>1?'s':''}</div>
+        <ul>${l.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>`
+    : `<div class="recap-cr vide">Aucune demi-journée cochée pour le moment. Si aucune ne convient,
+        décrivez vos disponibilités en clair dans le champ ci-dessous — la coordination s'en accommodera.</div>`;
+}
+
+/* La réponse à la question 2 commande l'affichage : dire non
+   n'oblige pas à faire défiler quatre écrans de questions
+   devenues sans objet. */
+function repondre(oui){
+  accepte = oui;
+  document.getElementById('a-oui').checked = oui;
+  document.getElementById('a-non').checked = !oui;
+  document.getElementById('ou-oui').classList.toggle('sel', oui);
+  document.getElementById('ou-non').classList.toggle('sel', !oui);
+  document.body.classList.toggle('refus', !oui);
+  const b = document.getElementById('valider');
+  if(b) b.textContent = oui ? 'Valider ma réponse' : 'Enregistrer mon refus';
+}
+
+function marquer(id, faux){
+  const e = document.getElementById(id);
+  if(e) e.classList.toggle('faux', faux);
+}
+
+function motifsCoches(){
+  return MOTIFS.filter((t,i) => document.getElementById('m-'+i)?.checked);
+}
+
+async function valider(){
+  if(envoiEnCours) return;
+
+  const donnees = {
+    nom:         val('f-nom'),
+    prenom:      val('f-prenom'),
+    rpps:        val('f-rpps'),
+    tel:         val('f-tel'),
+    mail:        val('f-mail'),
+    structure:   val('f-structure'),
+    adresse:     val('f-adresse'),
+    commune:     val('f-commune'),
+    accepte:     accepte === true,
+    motifs:      accepte ? motifsCoches() : [],
+    dispos:      accepte ? [...creneaux].sort() : [],
+    precisions:  accepte ? val('f-precisions') : '',
+    capacite:    accepte ? val('f-capacite') : '',
+    delai:       accepte ? val('f-delai') : '',
+    rdv:         accepte ? val('f-rdv') : '',
+    contraintes: accepte ? val('f-contraintes') : '',
+    mt:          accepte ? val('f-mt') : '',
+    diffusion:   accepte ? !!document.getElementById('c-diffusion')?.checked : false,
+    note:        '',
+    site:        val('f-site'),
+    conditions:  document.getElementById('c-conditions').checked
+  };
+
+  const manques = [];
+  let premier = null;
+  const exiger = (id, rempli, quoi) => {
+    marquer(id, !rempli);
+    if(!rempli){ manques.push(quoi); premier = premier || id; }
+  };
+  exiger('f-nom',     donnees.nom,     'votre nom');
+  exiger('f-prenom',  donnees.prenom,  'votre prénom');
+  exiger('f-tel',     donnees.tel,     'un téléphone');
+  exiger('f-adresse', donnees.adresse, "l'adresse de votre cabinet");
+
+  if(accepte === null){
+    manques.push('votre réponse à la question « acceptez-vous ? »');
+    premier = premier || 'ou-oui';
+  }
+
+  document.getElementById('c-conditions-l').classList.toggle('faux', !donnees.conditions);
+  if(!donnees.conditions){
+    manques.push('votre acceptation du cadre');
+    premier = premier || 'c-conditions-l';
+  }
+
+  const z = document.getElementById('erreur');
+  if(manques.length){
+    z.innerHTML = `<div class="alerte rouge" style="margin:14px 0 0">Il manque ${manques.join(', ')
+      .replace(/,([^,]*)$/, ' et$1')}.</div>`;
+    const e = premier && document.getElementById(premier);
+    if(e && e.scrollIntoView) e.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  /* Accepter sans cocher un seul créneau ni rien écrire laisse la
+     coordination sans prise : on le signale une fois, puis on
+     laisse passer si la personne insiste. */
+  if(accepte && !donnees.dispos.length && !donnees.precisions && !z.dataset.relance){
+    z.dataset.relance = '1';
+    z.innerHTML = `<div class="alerte ambre" style="margin:14px 0 0">Vous n'avez coché aucune demi-journée
+      et rien précisé sur vos disponibilités. La coordination vous rappellera pour en convenir. Appuyez à
+      nouveau sur « Valider ma réponse » pour envoyer tel quel.</div>`;
+    return;
+  }
+  z.innerHTML = '';
+
+  const b = document.getElementById('valider');
+  const libelle = b.textContent;
+  envoiEnCours = true; b.disabled = true; b.textContent = 'Transmission…';
+
+  let r, c;
+  try{
+    r = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(donnees)
+    });
+    c = await r.json();
+  }catch(e){
+    envoiEnCours = false; b.disabled = false; b.textContent = libelle;
+    z.innerHTML = `<div class="alerte rouge" style="margin:14px 0 0">La transmission a échoué. Votre saisie
+      est toujours à l'écran : réessayez dans un instant.</div>`;
+    return;
+  }
+
+  if(!r.ok || !c || !c.ok){
+    envoiEnCours = false; b.disabled = false; b.textContent = libelle;
+    z.innerHTML = `<div class="alerte rouge" style="margin:14px 0 0">${esc((c && c.erreur) ||
+      "La transmission a échoué.")} Votre saisie est conservée à l'écran.</div>`;
+    return;
+  }
+
+  recapitulatif(donnees, c.ref, c.le || new Date().toISOString());
+}
+
+/* --- Le récapitulatif remis au médecin ------------------- */
+function recapitulatif(d, ref, quand){
+  const l = (e, v) => `<div class="l"><span class="e">${e}</span><span class="v">${esc(v||'—')}</span></div>`;
+  const nom = [d.prenom, d.nom].filter(Boolean).join(' ');
+  const cren = creneauxLisibles();
+
+  afficher(`<div class="recu no-print">
+    <div class="t">${d.accepte ? 'Votre réponse est enregistrée.' : 'Votre réponse est enregistrée.'}</div>
+    <p style="margin:0">${d.accepte
+      ? `La coordination de la CPTS Pau Béarn vous rappellera au ${esc(d.tel)} pour confirmer vos créneaux
+         avant de vous adresser qui que ce soit. Vous n'avez rien d'autre à faire.`
+      : `Votre refus est consigné : vous ne serez pas rappelé pour ce dispositif. Merci d'avoir pris le
+         temps de répondre — un « non » évite qu'on vous sollicite une deuxième fois.`}</p>
+    <div class="r">Référence de votre réponse : <strong>${esc(ref)}</strong></div>
+  </div>
+
+  <div class="actions no-print" style="margin:0 0 18px">
+    <button type="button" class="btn" onclick="window.print()">Enregistrer mon récapitulatif en PDF</button>
+    <span class="aide" style="margin:0">Choisissez ensuite « Enregistrer au format PDF ».
+      Sur iPhone, l'aperçu s'ouvre : appuyez sur le bouton de partage pour l'enregistrer ou l'envoyer.</span>
+  </div>
+
+  <div class="acte">
+    <div class="ent">
+      <div class="g">
+        <div class="org">CPTS Pau Béarn</div>
+        <div class="sub">Communauté professionnelle territoriale de santé — Pau et Béarn</div>
+      </div>
+      <div class="d">
+        <div class="ref">Réf. ${esc(ref)}</div>
+        <div class="sub">Établi le ${frdate(quand)}</div>
+      </div>
+    </div>
+
+    <h1 class="ttl">Accueil des personnes évacuées</h1>
+    <div class="ss">Récapitulatif de la réponse au recensement des médecins généralistes — exemplaire du praticien</div>
+
+    <div class="ctx"><b>Cadre du recensement.</b> Le présent récapitulatif est établi dans le cadre du plan
+    blanc régional et du dispositif ORSAN AMAVI activés par l'ARS Nouvelle-Aquitaine à la suite des feux de
+    forêt de Gironde et des Landes de juillet 2026. Des personnes évacuées, revenues sur le territoire ou
+    relogées en Béarn, se trouvent sans médecin traitant pour le renouvellement de leurs traitements et le
+    suivi des suites d'inhalation de fumées. La CPTS Pau Béarn intervient au seul titre de la coordination :
+    elle recense les médecins généralistes acceptant d'en recevoir et oriente les personnes vers eux. Ce
+    document constate une déclaration de disponibilité. Il ne vaut ni engagement contractuel, ni obligation
+    de recevoir, ni transfert de patientèle.</div>
+
+    <h3>1 · Médecin déclarant</h3>
+    ${l('Nom et prénom', nom)}
+    ${l('N° RPPS', d.rpps)}
+    ${l('Cabinet, maison ou centre de santé', d.structure)}
+    ${l('Adresse du cabinet', d.adresse)}
+    ${l('Commune', d.commune)}
+    ${l('Téléphone', d.tel)}
+    ${l('Courriel', d.mail)}
+
+    <h3>2 · Réponse au recensement</h3>
+    ${l('Accepte de recevoir des personnes évacuées', d.accepte ? 'Oui' : 'Non')}
+
+    ${d.accepte ? `
+    <h3>3 · Ce qui est accepté</h3>
+    ${d.motifs.length
+      ? `<ul>${d.motifs.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`
+      : `<div style="font-size:12.5px;color:#5A6B84">Aucun motif coché — à préciser lors du rappel de la coordination.</div>`}
+    ${l('Nombre de patients acceptés', d.capacite)}
+    ${l("Délai pour recevoir un patient", d.delai)}
+
+    <h3>4 · Créneaux déclarés</h3>
+    ${cren.length
+      ? `<ul>${cren.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`
+      : `<div style="font-size:12.5px;color:#5A6B84">Aucune demi-journée cochée.</div>`}
+    ${d.precisions ? l('Autres précisions', d.precisions) : ''}
+
+    <h3>5 · Prise de rendez-vous</h3>
+    ${l('Ligne directe, secrétariat ou lien', d.rdv)}
+    ${d.contraintes ? l('Conditions posées', d.contraintes) : ''}
+    ${l('Médecin traitant si le séjour se prolonge', d.mt)}
+    ` : ''}
+
+    <h3>${d.accepte ? '6' : '3'} · Ce à quoi cette déclaration engage — et n'engage pas</h3>
+    <ol>
+      <li>La déclaration vaut disponibilité annoncée. Elle ne vaut ni engagement contractuel, ni obligation
+      de recevoir, ni transfert de patientèle, et ne crée aucune obligation à la charge du médecin déclarant.</li>
+      <li>Seuls les motifs cochés sont adressés, dans la limite du nombre de patients indiqué. La
+      coordination de la CPTS Pau Béarn rappelle le médecin avant de lui adresser un patient.</li>
+      <li>Le patient reste libre du choix de son médecin. Le médecin reste libre de refuser une demande, à
+      tout moment et sans justification.</li>
+      <li>Aucune donnée de santé nominative de patient ne transite par les outils de la CPTS Pau Béarn :
+      celle-ci oriente vers un médecin, elle ne transmet pas de dossier médical.</li>
+      <li>Les coordonnées recueillies ne sont utilisées qu'aux fins d'organiser l'accès aux soins des
+      personnes évacuées. Leur rectification ou leur suppression peut être demandée à tout moment auprès de
+      la coordination de la CPTS Pau Béarn.</li>
+    </ol>
+
+    <h3>${d.accepte ? '7' : '4'} · Déclaration</h3>
+    <div class="cachet"><b>Déclaration recueillie par voie électronique</b> le ${frdate(quand)} à
+      ${frheure(quand)}, par ${esc(nom)}, médecin généraliste, qui a déclaré avoir pris connaissance du
+      cadre ci-dessus et répondre dans ces conditions.
+      ${d.accepte
+        ? (d.diffusion
+          ? " Le médecin a accepté que son nom, l'adresse de son cabinet et ses coordonnées de prise de rendez-vous soient communiqués aux pharmacies et aux structures de soins non programmés du territoire, aux seules fins d'orienter ces patients."
+          : " Le médecin n'a pas accepté la communication de ses coordonnées aux pharmacies et aux structures : aucune orientation ne se fera sans un appel préalable de la coordination.")
+        : " Le médecin a indiqué ne pas pouvoir recevoir de personnes évacuées dans la période actuelle."}
+      Aucune signature manuscrite n'est requise.</div>
+
+    <div class="pied">Document remis au médecin pour ses archives. Un exemplaire identique est conservé par
+    la CPTS Pau Béarn au titre de la traçabilité de sa mobilisation. Coordination du recensement :
+    CPTS Pau Béarn.</div>
+  </div>
+
+  <div class="actions no-print">
+    <button type="button" class="btn sec" onclick="location.reload()">Répondre pour un autre médecin</button>
+  </div>`);
+}
+
+demarrer();
+</script>
+</body>
+</html>
