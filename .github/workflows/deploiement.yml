@@ -27,6 +27,11 @@ on:
 jobs:
   deposer:
     runs-on: ubuntu-latest
+    # Les secrets passent par l'environnement du job : c'est la seule
+    # forme que « if: » sait relire à l'étape près.
+    env:
+      MDP_ALWAYSDATA: ${{ secrets.ALWAYSDATA_FTP_MOTDEPASSE }}
+      MDP_OVH: ${{ secrets.OVH_FTP_MOTDEPASSE }}
     steps:
       - name: Récupérer les fichiers
         uses: actions/checkout@v4
@@ -52,11 +57,11 @@ jobs:
       # les mises à jour de partir vers l'ancienne adresse, et plus
       # rien n'arrive nulle part.
       - name: Prévenir si le mot de passe AlwaysData manque
-        if: ${{ secrets.ALWAYSDATA_FTP_MOTDEPASSE == '' }}
+        if: env.MDP_ALWAYSDATA == ''
         run: echo "::warning::Secret ALWAYSDATA_FTP_MOTDEPASSE absent — dépôt AlwaysData sauté, seule l'ancienne adresse OVH est mise à jour."
 
       - name: Déposer sur AlwaysData
-        if: ${{ secrets.ALWAYSDATA_FTP_MOTDEPASSE != '' }}
+        if: env.MDP_ALWAYSDATA != ''
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ftp-cptspaubearn.alwaysdata.net
@@ -79,7 +84,7 @@ jobs:
       # c'est ce dernier qui compte désormais.
       - name: Déposer sur OVH (ancienne adresse)
         continue-on-error: true
-        if: ${{ secrets.OVH_FTP_MOTDEPASSE != '' }}
+        if: env.MDP_OVH != ''
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ftp.cluster129.hosting.ovh.net
