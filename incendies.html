@@ -2620,22 +2620,25 @@ let maquette = (() => {
 })();
 const enChantier = id => EN_CONSTRUCTION.indexOf(id) >= 0 && !maquette;
 
+/* Le compteur au bout de l'onglet ne sert que là où le nombre
+   dit vraiment quelque chose : ce qu'on a consigné, ce qu'on a
+   échangé avec l'ARS. Ailleurs, un chiffre n'apprend rien. */
 const ONGLETS = [
   {id:'cockpit',   nom:'Cockpit',            groupe:'Pilotage', cpt:null},
-  {id:'missions',  nom:'Missions & organigramme', groupe:'Pilotage', cpt:'missions'},
+  {id:'missions',  nom:'Missions & organigramme', groupe:'Pilotage', cpt:null},
   {id:'fil',       nom:'Fil d\'actualité',    groupe:'Suivi', cpt:null},
   {id:'veille',    nom:'Situation régionale', groupe:'Suivi', cpt:null},
-  {id:'appels',    nom:'Contact avec les CPTS', groupe:'Suivi', cpt:'cpts'},
-  {id:'rapports',  nom:'Rapports',           groupe:'Suivi', cpt:'situations'},
+  {id:'appels',    nom:'Contact avec les CPTS', groupe:'Suivi', cpt:null},
+  {id:'rapports',  nom:'Rapports',           groupe:'Suivi', cpt:null},
   {id:'courante',  nom:'Main courante',      groupe:'Traçabilité', cpt:'courante'},
-  {id:'terrain',   nom:'Remontées terrain',  groupe:'Traçabilité', cpt:'terrain'},
+  {id:'terrain',   nom:'Remontées terrain',  groupe:'Traçabilité', cpt:null},
   {id:'ars',       nom:'Échanges avec l\'ARS', groupe:'Traçabilité', cpt:'ars'},
-  {id:'materiel',  nom:'Collecte de matériel', groupe:'Actions', cpt:'dons'},
-  {id:'volontaires',nom:'Appel au renfort',  groupe:'Actions', cpt:'volontaires'},
-  {id:'orientation',nom:'Patients évacués',  groupe:'Actions', cpt:'medecins'},
-  {id:'offre',     nom:'Offre de soins du territoire', groupe:'Ressources', cpt:'offre'},
-  {id:'lignes',    nom:'Qui appeler',         groupe:'Ressources', cpt:'lignes'},
-  {id:'contacts',  nom:'Contacts de la crise', groupe:'Ressources', cpt:'contacts'}
+  {id:'materiel',  nom:'Collecte de matériel', groupe:'Actions', cpt:null},
+  {id:'volontaires',nom:'Appel au renfort',  groupe:'Actions', cpt:null},
+  {id:'orientation',nom:'Patients évacués',  groupe:'Actions', cpt:null},
+  {id:'offre',     nom:'Offre de soins du territoire', groupe:'Ressources', cpt:null},
+  {id:'lignes',    nom:'Qui appeler',         groupe:'Ressources', cpt:null},
+  {id:'contacts',  nom:'Contacts de la crise', groupe:'Ressources', cpt:null}
 ];
 
 function rendreMesMissions(){
