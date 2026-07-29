@@ -976,31 +976,85 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
   background:#FDF6E7;border-color:#EBD9B4}
 .note.ordre-manuel .btn{margin-left:auto;padding:6px 13px;font-size:13px}
 @media(max-width:600px){.note.ordre-manuel .btn{margin-left:0;width:100%}}
-/* Le cadre de protection des données du registre des patients :
-   ce qu'on écrit, ce qu'on n'écrit jamais, et par où les
-   coordonnées ont le droit de passer. */
-.note.protection{background:#F4F8F4;border-color:#CFE0D2}
-.note.protection .pp{display:grid;gap:9px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:11px}
-.note.protection .pp>span{background:var(--carte);border:1px solid var(--trait);border-radius:6px;padding:9px 11px;font-size:12.5px}
-.note.protection .pp .k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;
-  text-transform:uppercase;color:var(--texte-2);margin-bottom:3px}
+/* La consigne d'anonymat du registre des patients : une seule
+   ligne, lue d'un coup d'œil avant de saisir. */
+.note.protection{background:#F4F8F4;border-color:#CFE0D2;border-left:3px solid var(--stable);
+  border-radius:8px;padding:12px 15px;font-size:13.5px;line-height:1.45}
+.note.protection strong{color:var(--stable)}
 /* --- Le recueil d'un patient : la voie d'abord ------------
    Le formulaire se remplit debout, au comptoir ou au
    téléphone, sur un écran de téléphone tenu d'une main. Le
    premier écran ne pose qu'une question — la personne a-t-elle
    besoin d'un médecin, ou en a-t-elle déjà un — et tout ce qui
    suit en découle : on ne fait jamais défiler un champ inutile. */
-.voies{display:grid;gap:11px}
+.voies{display:grid;gap:12px}
 @media(min-width:760px){.voies{grid-template-columns:1fr 1fr}}
-.voies button{text-align:left;background:var(--cobalt-clair);border:1px solid var(--trait);
-  border-radius:10px;padding:16px;cursor:pointer;width:100%;min-height:62px}
-.voies button:hover{border-color:var(--encre-2)}
-.voies .t{display:block;font-family:var(--display);font-weight:700;font-size:17px;
-  color:var(--encre);line-height:1.2}
-.voies .d{display:block;font-size:13px;color:var(--texte-2);margin-top:5px;line-height:1.35}
-.retour-f{background:none;border:0;color:var(--texte-2);font-size:13.5px;cursor:pointer;
-  padding:8px 0;margin-bottom:4px;text-align:left}
-.retour-f:hover{color:var(--encre)}
+.voies button{position:relative;text-align:left;background:var(--cobalt-clair);
+  border:1px solid var(--trait);border-radius:12px;padding:20px 46px 20px 20px;cursor:pointer;
+  width:100%;min-height:96px;transition:border-color .12s,background .12s,transform .08s}
+.voies button:hover{border-color:var(--encre-2);background:#fff}
+.voies button:active{transform:scale(.99)}
+.voies button:focus-visible{outline:2px solid var(--ambre);outline-offset:2px}
+/* La flèche dit que le bouton ouvre la suite du formulaire, et
+   non qu'il enregistre quelque chose. */
+.voies button::after{content:"›";position:absolute;right:18px;top:50%;transform:translateY(-52%);
+  font-family:var(--display);font-size:26px;line-height:1;color:var(--encre-2);opacity:.45}
+.voies button:hover::after{opacity:1}
+.voies .t{display:block;font-family:var(--display);font-weight:700;font-size:19px;
+  color:var(--encre);line-height:1.15;letter-spacing:.01em}
+.voies .d{display:block;font-size:13.5px;color:var(--texte-2);margin-top:7px;line-height:1.4}
+.retour-f{display:inline-flex;align-items:center;gap:6px;background:var(--carte);
+  border:1px solid var(--trait);border-radius:20px;color:var(--texte-2);font-size:13px;
+  cursor:pointer;padding:8px 15px;margin-bottom:12px;min-height:40px;text-align:left}
+.retour-f:hover{color:var(--encre);border-color:var(--encre-2)}
+
+/* --- Le feuillet de recueil, tenu d'une main ------------------
+   Le formulaire se remplit debout, au téléphone, sur un écran
+   étroit : des champs qu'on atteint au pouce, des sections
+   qu'on repère du coin de l'œil en faisant défiler, et le
+   bouton d'enregistrement qui ne quitte jamais le bas de
+   l'écran une fois qu'on a commencé à saisir. */
+.recueil{border-radius:13px;padding:22px 24px;border-top:3px solid var(--encre);
+  box-shadow:0 1px 3px rgba(6,43,99,.06)}
+.recueil .tete-r{margin-bottom:20px}
+.recueil .tete-r .v{display:inline-block;font-family:var(--mono);font-size:10px;
+  letter-spacing:.11em;text-transform:uppercase;color:var(--encre-2);
+  background:var(--cobalt-clair);border-radius:20px;padding:4px 11px;margin-bottom:9px}
+.recueil .tete-r h2{font-size:19px;margin:0 0 6px}
+.recueil .tete-r h2::before{height:19px}
+.recueil .sous-f{margin:0;font-size:13.5px;color:var(--texte-2);line-height:1.45;max-width:66ch}
+.recueil .sous-t{margin-top:26px;padding-top:18px}
+/* Le premier intertitre suit l'en-tête de la carte : pas de
+   filet, il y aurait deux traits à trois lignes d'intervalle. */
+.recueil .tete-r + .sous-t{margin-top:18px;padding-top:0;border-top:0}
+.recueil .form label .k{font-size:10.5px;color:var(--texte-2)}
+.recueil .form input,.recueil .form select,.recueil .form textarea{
+  padding:10px 12px;border-radius:8px;min-height:44px;background:#fff}
+.recueil .form textarea{min-height:82px;line-height:1.45}
+.recueil .form input::placeholder,.recueil .form textarea::placeholder{color:#9AA8BC}
+.recueil .coche{border-radius:10px;padding:13px 15px}
+/* Enregistrer reste sous le pouce : la barre colle au bas de la
+   carte pendant qu'on fait défiler les champs. */
+.recueil .actions-r{position:sticky;bottom:0;z-index:2;gap:10px;margin:22px -24px -22px;
+  padding:14px 24px;background:var(--carte);border-top:1px solid var(--trait);
+  border-radius:0 0 13px 13px}
+.recueil .actions-r .btn{padding:12px 22px;font-size:15px;min-height:48px}
+@media(max-width:760px){
+  .recueil{padding:17px 15px;border-radius:12px}
+  .recueil .tete-r{margin-bottom:16px}
+  .recueil .tete-r h2{font-size:17.5px}
+  .recueil .tete-r h2::before{height:17px}
+  .recueil .sous-t{margin-top:22px;padding-top:15px}
+  .voies button{padding:17px 40px 17px 17px;min-height:84px}
+  .voies .t{font-size:18px}
+  /* 16px : en deçà, l'iPhone zoome à chaque champ touché et le
+     formulaire part de travers. */
+  .recueil .form input,.recueil .form select,.recueil .form textarea{font-size:16px;min-height:46px}
+  .recueil .actions-r{margin:20px -15px -17px;padding:12px 15px;border-radius:0 0 12px 12px;
+    box-shadow:0 -4px 12px rgba(6,43,99,.07)}
+  .recueil .actions-r .btn{flex:1 1 100%;width:100%}
+  .recueil .actions-r .btn.sec{order:2}
+}
 /* Les réponses les plus fréquentes en pastilles : au comptoir on
    ne tape pas, on touche. Le champ reste libre pour tout le reste. */
 .sugg{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
@@ -1950,6 +2004,7 @@ function fusionnerNouveautes(){
     });
   });
   reverserDiffusions();
+  consignerPatientsHerites();
   completerVeille();
   corrigerRelaisRenfort();
 }
@@ -2891,24 +2946,23 @@ const CHAMPS = {
           'statut','auteur']
   },
   /* Une ligne par patient signalé, de la remontée de la pharmacie
-     jusqu'au rendez-vous obtenu. Le registre porte désormais
-     l'identité de la personne : sans elle, aucun médecin ne peut
-     être appelé pour un patient nommé, et le signalant reste seul
-     à savoir de qui il parle. Ce qui l'encadre : l'accord du
+     jusqu'au rendez-vous obtenu. Le registre se tient en
+     consignes anonymisées : les initiales suffisent à rappeler
+     quelqu'un et à le nommer au médecin qui le prend, sans que
+     l'identité entre nulle part. Ce qui l'encadre : l'accord du
      patient à être contacté, et l'anonymisation du registre une
      fois la crise passée. */
   orientes: {
     titre:"Patients signalés et orientés",
-    chapo:"Chaque personne signalée et ce qu'elle est devenue. Une ligne par patient, depuis la remontée de la pharmacie ou de la structure de soins non programmés jusqu'au rendez-vous obtenu. Le registre porte l'identité de la personne parce qu'il faut pouvoir la rappeler et la nommer au médecin qui la prend : il ne sort pas du cockpit, ne contient aucun élément clinique au-delà du motif, et <strong>s'anonymise d'un geste</strong> une fois la crise passée.",
+    chapo:"Chaque personne signalée et ce qu'elle est devenue. Une ligne par patient, depuis la remontée de la pharmacie ou de la structure de soins non programmés jusqu'au rendez-vous obtenu. Le registre est tenu en consignes anonymisées : seules les initiales du patient y sont notées, avec le numéro qui permet de le rappeler, et aucun élément clinique au-delà du motif.",
     f:[
       {c:'heure', l:"Heure de la demande", t:'time', d:maintenant},
       {c:'voie', l:"Voie du recueil", t:'select', o:['','consulter','oriente']},
-      {c:'nom', l:"Nom du patient", t:'text'},
-      {c:'prenom', l:"Prénom du patient", t:'text'},
+      {c:'nom', l:"Initiales du patient", t:'text', ph:"D."},
+      {c:'prenom', l:"Initiale du prénom", t:'text', ph:"M."},
       {c:'age', l:"Âge", t:'text', ph:"62"},
       {c:'tel', l:"Téléphone du patient", t:'text', ph:"06 12 34 56 78"},
       {c:'adresse', l:"Adresse où se trouve le patient", t:'text', large:true},
-      {c:'ref', l:"Référence patient (reprise de l'identité)", t:'text', ph:"M. D., 62 ans"},
       {c:'provenance', l:"Qui signale", t:'select', o:ORI_PROVENANCES},
       {c:'relais', l:"Structure qui signale", t:'text', large:true, ph:"Pharmacie de la Paix, CMSI de Billère…"},
       {c:'decPrenom', l:"Prénom de la personne qui déclare", t:'text'},
@@ -2935,7 +2989,7 @@ const CHAMPS = {
       {c:'statut', l:"Statut", t:'select', o:ORI_STATUTS},
       {c:'note', l:"Observation", t:'textarea', large:true}
     ],
-    cols:['date','heure','voie','nom','prenom','age','tel','adresse','ref','provenance','relais',
+    cols:['date','heure','voie','nom','prenom','age','tel','adresse','provenance','relais',
           'decPrenom','decNom','profession','interlocuteur','commune','situation','motif','detail',
           'urgence','delai','accord','medecin','orienteLe','orienteH','orientePar','circuit',
           'rdvle','rdvh','confirme','par','statut','auteur']
@@ -7744,11 +7798,7 @@ const pastilles = (cible, liste, cls, val) => `<div class="sugg ${cls||''}">${li
 
 function feuilletRecueil(rel, vivier){
   const h = `<div class="note protection">
-    <strong>Ce registre porte le nom des personnes.</strong> Il faut pouvoir rappeler quelqu'un et le nommer au médecin qui le prend : c'est pourquoi l'identité est demandée. Elle ne sort pas du cockpit, aucun élément clinique n'y est noté au-delà du motif, et le registre <strong>s'anonymise d'un geste</strong> une fois la crise passée. Le formulaire n'est pas une régulation médicale : devant une urgence vitale, on appelle le 15.
-    <div class="pp">
-      <span><span class="k">Ce qu'on demande</span>Qui est la personne, ce dont elle a besoin, si c'est urgent, et qui la signale.</span>
-      <span><span class="k">Ce qu'on rend</span>Le nom et le numéro d'un généraliste volontaire — la personne est rappelée si elle a donné son accord.</span>
-    </div>
+    <strong>Consignes anonymisées</strong> — ne renseigner que les initiales du patient.
   </div>`;
 
   const alerteVivier = !vivier.length
@@ -7756,17 +7806,15 @@ function feuilletRecueil(rel, vivier){
 
   if(voieRecueil === 'choix') return h + `<button class="retour-f" onclick="choisirVoie('')">‹ Fermer le recueil — revenir à la liste</button>
 
-  <div class="carte">
-    <h2>De quoi cette personne a-t-elle besoin&nbsp;?</h2>
-    <p class="sous-f" style="margin:0 0 16px">C'est la seule question à trancher avant de saisir : la suite du formulaire en découle.</p>
+  <div class="carte recueil">
     <div class="voies">
       <button onclick="choisirVoie('consulter')">
-        <span class="t">Elle a besoin de consulter</span>
-        <span class="d">Pas de médecin ici, ou pas de rendez-vous. La CPTS lui en cherche un dans le vivier des généralistes volontaires.</span>
+        <span class="t">Consultation</span>
+        <span class="d">La personne cherche un médecin. La CPTS lui en trouve un dans le vivier des volontaires.</span>
       </button>
       <button onclick="choisirVoie('oriente')">
-        <span class="t">Elle est déjà orientée</span>
-        <span class="d">Un médecin la prend déjà en charge. Rien n'est à chercher : on enregistre la situation pour savoir ce que le territoire a absorbé.</span>
+        <span class="t">Orientation</span>
+        <span class="d">La personne a déjà été orientée vers un médecin. On enregistre la situation pour la tracer.</span>
       </button>
     </div>
   </div>
@@ -7908,10 +7956,12 @@ function blocSignature(id, libelle){
    mieux qu'un signalement perdu. */
 function blocPatient(){
   return `<div class="sous-t">Le patient
-    <span class="d">Le nom permet de le rappeler et de le nommer au médecin. Le numéro est ce par quoi on le joint une fois le médecin trouvé. L'adresse dit à quelle distance chercher.</span></div>
+    <span class="d">Seules les initiales sont notées. Le numéro est ce par quoi on le joint une fois le médecin trouvé ; l'adresse dit à quelle distance chercher.</span></div>
   <div class="form">
-    <label><span class="k">Nom *</span><input id="rc-nom" autocomplete="off"></label>
-    <label><span class="k">Prénom</span><input id="rc-prenom" autocomplete="off"></label>
+    <label><span class="k">Initiales *</span>
+      <input id="rc-nom" placeholder="D." autocomplete="off"></label>
+    <label><span class="k">Initiale du prénom</span>
+      <input id="rc-prenom" placeholder="M." autocomplete="off"></label>
     <label><span class="k">Âge</span><input id="rc-age" inputmode="numeric" placeholder="62"></label>
     <label><span class="k">Téléphone</span>
       <input id="rc-tel" type="tel" inputmode="tel" placeholder="06 12 34 56 78" autocomplete="off"></label>
@@ -7925,9 +7975,11 @@ function blocPatient(){
 function formulaireAConsulter(rel, vivier){
   return `<button class="retour-f" onclick="choisirVoie('choix')">‹ Ce n'est pas ça — revenir au choix</button>
 
-  <div class="carte">
-    <h2>Patient à faire consulter</h2>
-    <p class="sous-f" style="margin:0 0 4px">La demande entre au registre sans médecin : le fléchage se fait ensuite, depuis le feuillet des patients, quand un créneau se libère.</p>
+  <div class="carte recueil">
+    <div class="tete-r"><span class="v">Consultation</span>
+      <h2>Patient à faire consulter</h2>
+      <p class="sous-f">La demande entre au registre sans médecin : le fléchage se fait ensuite, depuis le feuillet des patients, quand un créneau se libère.</p>
+    </div>
 
     ${blocPatient()}
 
@@ -7958,7 +8010,7 @@ function formulaireAConsulter(rel, vivier){
 
     ${blocSignature('rc-par', 'Recueilli par')}
 
-    <div class="actions">
+    <div class="actions actions-r">
       <button class="btn" onclick="enregistrerRecueil()">Enregistrer ce patient</button>
       <button class="btn sec" onclick="choisirVoie('')">Annuler</button>
     </div>
@@ -7973,9 +8025,11 @@ function formulaireAConsulter(rel, vivier){
 function formulaireDejaOriente(rel, vivier){
   return `<button class="retour-f" onclick="choisirVoie('choix')">‹ Ce n'est pas ça — revenir au choix</button>
 
-  <div class="carte">
-    <h2>Patient déjà orienté</h2>
-    <p class="sous-f" style="margin:0 0 4px">Cette personne a déjà un médecin : la ligne entre au registre au statut « Orienté », et ne remonte pas dans ce qui attend un créneau.</p>
+  <div class="carte recueil">
+    <div class="tete-r"><span class="v">Orientation</span>
+      <h2>Patient déjà orienté</h2>
+      <p class="sous-f">Cette personne a déjà un médecin : la ligne entre au registre au statut « Orienté », et ne remonte pas dans ce qui attend un créneau.</p>
+    </div>
 
     ${blocPatient()}
 
@@ -8000,7 +8054,7 @@ function formulaireDejaOriente(rel, vivier){
 
     ${blocSignature('rc-par', 'Recueilli par')}
 
-    <div class="actions">
+    <div class="actions actions-r">
       <button class="btn" onclick="enregistrerRecueil()">Enregistrer ce patient</button>
       <button class="btn sec" onclick="choisirVoie('')">Annuler</button>
     </div>
@@ -8068,13 +8122,136 @@ function consignerRelaisEnCourante(r, quoi){
   });
 }
 
+/* --- ce que le registre des patients laisse en main courante ---
+   Règle du cockpit : toute information recueillie se consigne en
+   main courante, en plus de sa rubrique. Un patient signalé et un
+   patient orienté sont deux faits distincts de la journée, et
+   laissent donc deux entrées — la première ne bouge plus, la
+   seconde se réécrit si le médecin change ou si l'orientation est
+   retirée, pour qu'une même affectation ne se lise pas trois fois.
+   L'identifiant est dérivé de celui du patient : c'est ce qui
+   permet de retrouver l'entrée, de la réécrire, et de ne pas la
+   recréer une fois retirée à la main.
+
+   Le patient n'est pas décrit au-delà de ce qui fait comprendre
+   l'appel : sa référence, sa commune, son motif. Son numéro reste
+   au registre, qui est fait pour ça. */
+const idMCPatient = (o, quoi) => 'mcp-' + o.id + (quoi === 'signalement' ? '' : '-ori');
+
+function texteMCPatient(o, quoi, ancien){
+  const ref = refPatient(o) || 'Une personne évacuée';
+  const dec = nomDeclarant(o);
+  const med = String(o.medecin || '').trim()
+    || String(ancien || '').trim() || String(o.medecinRetire || '').trim();
+  const fiche = o.medecinId ? (etat.medecins || []).find(x => x.id === o.medecinId) : null;
+  const ou = fiche ? [fiche.structure, fiche.commune].filter(Boolean).join(', ') : '';
+
+  /* Les tournures s'écrivent sans accorder de participe sur le
+     patient : le registre porte des noms, et « signalée urgente »
+     sur un homme se lit mal. On dit le fait, pas la personne. */
+  if(quoi === 'signalement') return {
+    /* La source, c'est la structure qui a appelé : une entrée venue
+       du dehors remonte d'elle-même en « Remontées terrain ». Un
+       proche ou la personne elle-même n'en fait pas une. */
+    source: String(o.relais || '').trim(),
+    evenement: `Signalement d'une personne évacuée : ${ref}`
+      + (o.commune ? `, ${o.commune}` : '') + '.'
+      + (o.motif ? ` Motif : ${o.motif}.` : '')
+      + (o.urgence === 'Urgent' ? ' Demande urgente.' : '')
+      + (o.delai ? ` Délai souhaité : ${o.delai}.` : '')
+      + (o.relais ? ` Signalement transmis par ${o.relais}${dec ? ` (${dec})` : ''}.`
+                  : (dec ? ` Signalement transmis par ${dec}.`
+                         : " Aucune structure à l'origine du signalement : un proche ou la personne elle-même.")),
+    suite: med
+      ? `Orientation faite d'emblée vers ${med}${ou ? ` (${ou})` : ''}. Suivi au feuillet « Patients signalés / orientés » de l'onglet « Patients évacués ».`
+      : "Reste à trouver un médecin généraliste : feuillet « Patients signalés / orientés » de l'onglet « Patients évacués »."
+        + (o.accord === 'Oui' ? '' : " Accord d'être orienté et rappelé à recueillir.")
+  };
+
+  if(quoi === 'retrait') return {
+    source: '',
+    evenement: `Orientation retirée pour ${ref}`
+      + (med ? ` : la demande n'est plus adressée à ${med}` : '') + '.'
+      + (o.commune ? ` Commune : ${o.commune}.` : '')
+      + (o.motif ? ` Motif : ${o.motif}.` : ''),
+    suite: "La personne attend de nouveau un médecin — feuillet « Patients signalés / orientés »."
+  };
+
+  return {
+    source: '',
+    evenement: `Orientation de ${ref} vers ${med}${ou ? ` (${ou})` : ''}.`
+      + (o.commune ? ` Commune : ${o.commune}.` : '')
+      + (o.motif ? ` Motif : ${o.motif}.` : '')
+      + (o.urgence === 'Urgent' ? ' Demande urgente.' : '')
+      + (o.relais ? ` Signalement transmis par ${o.relais}.` : '')
+      + (ancien && ancien !== o.medecin ? ` En remplacement de ${ancien}.` : '')
+      + (o.horsVivier ? ' Médecin hors vivier des volontaires.' : ''),
+    suite: "Rendez-vous à obtenir, puis à consigner au registre des patients."
+      + (o.accord === 'Oui' ? " Accord recueilli pour être orienté et rappelé."
+                            : " Sans accord recueilli, aucune coordonnée ne circule : le nom et le numéro du médecin sont remis à la personne, à elle d'appeler.")
+  };
+}
+
+/* Réécrit l'entrée si elle existe déjà, la crée sinon. Une entrée
+   réécrite garde l'heure à laquelle le fait s'est produit — c'est
+   le fait qui est daté, pas la frappe. */
+function consignerPatientEnCourante(o, quoi, opts){
+  if(!o || !o.id) return;
+  const t = texteMCPatient(o, quoi, opts && opts.ancien);
+  const id = idMCPatient(o, quoi);
+  etat.courante = etat.courante || [];
+  etat.retires = (etat.retires || []).filter(x => x !== id);
+  const qui = String((opts && opts.qui) || '').trim()
+    || (quoi === 'signalement' ? (o.par || '') : (o.orientePar || o.par || ''))
+    || (moi === 'Anonyme' ? '' : moi);
+  const deja = etat.courante.find(x => x.id === id);
+  const ligne = {
+    id,
+    date: (opts && opts.date) || (deja && deja.date) || aujourdhui(),
+    heure: (opts && opts.heure) || (deja && deja.heure) || maintenant(),
+    source: t.source, evenement: t.evenement, suite: t.suite, qui,
+    auteur: (deja && deja.auteur) || (moi === 'Anonyme' ? '' : moi),
+    quand: (deja && deja.quand) || ''
+  };
+  if(deja) Object.assign(deja, ligne);
+  else etat.courante.unshift(ligne);
+}
+
+/* Les patients saisis avant que la main courante ne les reçoive
+   n'y figurent pas : on les y porte une fois, à l'ouverture du
+   cockpit, à la date et à l'heure de leur signalement. Une entrée
+   déjà là, ou retirée à la main, n'est pas recréée. */
+function consignerPatientsHerites(){
+  etat.courante = etat.courante || [];
+  etat.retires = etat.retires || [];
+  const vus = new Set(etat.courante.map(o => o.id));
+  (etat.orientes || []).forEach(o => {
+    if(!o || !o.id) return;
+    const idS = idMCPatient(o, 'signalement');
+    if(!vus.has(idS) && !etat.retires.includes(idS)){
+      consignerPatientEnCourante(o, 'signalement',
+        {date: o.date, heure: o.heure, qui: o.par});
+      vus.add(idS);
+    }
+    if(!estOriente(o)) return;
+    const idO = idMCPatient(o, 'orientation');
+    if(vus.has(idO) || etat.retires.includes(idO)) return;
+    /* Un patient orienté au moment même où il est signalé n'a pas
+       d'entrée à part : son signalement le dit déjà. */
+    if((o.orienteLe || o.date) === o.date && (o.orienteH || o.heure) === o.heure) return;
+    consignerPatientEnCourante(o, 'orientation',
+      {date: o.orienteLe || o.date, heure: o.orienteH || o.heure, qui: o.orientePar || o.par});
+    vus.add(idO);
+  });
+}
+
 async function enregistrerRecueil(){
   const v = id => (document.getElementById(id)?.value || '').trim();
   const manque = (id, message) => { toast(message); document.getElementById(id)?.focus(); };
   const deja = voieRecueil === 'oriente';
 
   const nom = v('rc-nom'), motif = v('rc-motif'), medecin = deja ? v('rc-medecin') : '';
-  if(!nom)   return manque('rc-nom', "Indiquez au moins le nom du patient");
+  if(!nom)   return manque('rc-nom', "Indiquez au moins les initiales du patient");
   if(!motif) return manque('rc-motif', "Indiquez le motif — touchez une proposition ou écrivez-le");
   if(deja && !medecin) return manque('rc-medecin', "Indiquez le médecin vers qui le patient est orienté");
 
@@ -8127,6 +8304,10 @@ async function enregistrerRecueil(){
     if(relaisNeuf) consignerRelaisEnCourante(apres, 'nouvelle');
     else if(apres && apres.demarche === 'Oui' && demarcheAvant !== 'Oui') consignerRelaisEnCourante(apres, 'demarche');
   }
+  /* Consigné en dernier pour se lire en tête de la main courante :
+     c'est la personne signalée qui compte, la structure qui entre
+     au recensement n'en est que la conséquence. */
+  consignerPatientEnCourante(fiche, 'signalement');
 
   await sauver();
   voieRecueil = '';
@@ -8664,8 +8845,10 @@ async function affecterMedecin(id, mid){
   }
   const par = (document.getElementById('or-par')?.value || '').trim()
     || (moi === 'Anonyme' ? '' : moi);
+  const ancien = String(o.medecin || '').trim();
 
   o.medecin = nom;
+  o.medecinRetire = '';
   /* On retient aussi l'identifiant : c'est par lui que l'agenda
      rattache le patient au créneau, et un nom peut se corriger. */
   o.medecinId = m ? m.id : '';
@@ -8676,17 +8859,30 @@ async function affecterMedecin(id, mid){
   if(!o.par) o.par = par;
   if(!o.statut || o.statut === 'À orienter') o.statut = 'Orienté';
   o.modifiePar = moi;
+  /* L'affectation est un fait de la journée au même titre que le
+     signalement : elle se consigne à l'heure où elle est faite. */
+  consignerPatientEnCourante(o, 'orientation',
+    {date: o.orienteLe, heure: o.orienteH, qui: par, ancien});
   await sauver(); fermer(); rendre();
-  toast(`${refPatient(o) || 'Patient'} orienté vers ${nom}`);
+  toast(`${refPatient(o) || 'Patient'} orienté vers ${nom} — consigné en main courante`);
 }
 
 async function retirerMedecin(id){
   const o = (etat.orientes||[]).find(x => x.id === id); if(!o) return;
+  const ancien = String(o.medecin || '').trim();
+  /* Le nom du médecin retiré reste sur la fiche : c'est lui que
+     l'entrée de main courante nomme, et il ne doit pas disparaître
+     à la réécriture. */
+  o.medecinRetire = ancien;
   o.medecin = ''; o.medecinId = ''; o.horsVivier = false;
   o.orienteLe = ''; o.orienteH = ''; o.orientePar = '';
   o.rdvle = ''; o.rdvpart = ''; o.rdvh = ''; o.confirme = '';
   if(o.statut === 'Orienté' || o.statut === 'Rendez-vous fixé') o.statut = 'À orienter';
   o.modifiePar = moi;
+  /* La main courante ne s'efface pas : l'entrée d'orientation
+     devient l'entrée du retrait, à l'heure où on l'a décidé. */
+  consignerPatientEnCourante(o, 'retrait',
+    {date: aujourdhui(), heure: maintenant(), ancien});
   await sauver(); fermer(); rendre();
   toast("Orientation retirée — le patient attend de nouveau un médecin");
 }
@@ -8720,6 +8916,15 @@ async function confirmerAnonymisation(){
     o.decNom = ''; o.decPrenom = ''; o.interlocuteur = '';
     o.detail = ''; o.note = '';
     o.anonymise = new Date().toISOString();
+    /* Les entrées de main courante nées du registre portent la même
+       identité : elles se réécrivent sur la référence anonymisée,
+       sans quoi l'anonymisation ne vaudrait rien. Seules celles qui
+       existent déjà sont réécrites — on n'en crée pas à ce moment. */
+    [['signalement','signalement'], ['orientation', estOriente(o) ? 'orientation' : 'retrait']]
+      .forEach(([cle, quoi]) => {
+        const id = idMCPatient(o, cle);
+        if((etat.courante || []).some(x => x.id === id)) consignerPatientEnCourante(o, quoi);
+      });
   });
   await sauver(); fermer(); rendre();
   toast("Registre anonymisé — les compteurs sont conservés");
