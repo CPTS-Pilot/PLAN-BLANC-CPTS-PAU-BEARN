@@ -941,6 +941,11 @@ input,select,textarea{
 }
 textarea{min-height:74px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-offset:1px;border-color:var(--ambre)}
+/* Le champ libre qui s'ouvre sous une liste fermée quand on y
+   choisit « Autre » ou « À préciser » : sans lui, la fiche
+   enregistre qu'il y avait quelque chose à dire sans dire quoi. */
+.precision{margin-top:6px;border-style:dashed}
+.precision[hidden]{display:none}
 .btn{
   background:var(--encre);color:#fff;border:0;border-radius:6px;padding:9px 18px;
   font-family:var(--display);font-weight:600;font-size:14px;cursor:pointer;
@@ -3095,6 +3100,64 @@ function champsVisibles(cfg, mode){
    colonne, ni valeur à enregistrer. */
 const champsSaisie = l => l.filter(f => f.c);
 
+/* ---------- les entrées d'échappement des listes fermées -------
+   « Autre », « Autre profession de santé », « À préciser » : ces
+   entrées disent qu'aucune des réponses proposées ne convient.
+   Les choisir sans pouvoir dire ce qu'il en est enregistre le
+   constat qu'il y avait quelque chose à préciser, et rien de la
+   précision — la ligne part telle quelle au tableau et à l'export.
+
+   Leur place dans la liste dit laquelle est laquelle. En tête,
+   c'est la valeur par défaut d'une fiche neuve : « on ne sait pas
+   encore », et il n'y a rien à saisir — ouvrir un champ sous
+   « Peut dormir sur place : à préciser » à chaque nouvelle fiche
+   n'aiderait personne. Ailleurs, c'est bien l'échappatoire, et un
+   champ libre s'ouvre dessous. Ce qu'on y écrit devient la valeur
+   enregistrée : c'est elle qu'on relit au tableau, pas l'étiquette
+   de la liste. */
+const estEchappe = v => /^(Autre|À préciser)/.test(String(v ?? '').trim());
+const echappesDe = liste => liste.filter((x, i) => i > 0 && estEchappe(x));
+
+/* Le champ libre lui-même, replié tant qu'on n'a pas choisi
+   l'entrée qui l'appelle. Une précision déjà enregistrée y revient
+   telle quelle, pour rester modifiable au lieu d'être à retaper. */
+const champPrecision = (id, echs, ouvert, v) => !echs.length ? '' :
+  `<input class="precision" id="${id}-p" data-ech="${esc(JSON.stringify(echs))}"` +
+  `${ouvert ? '' : ' hidden'} value="${esc(ouvert ? v : '')}" placeholder="Précisez">`;
+
+/* Ce qui vient d'être choisi ouvre ou referme le champ. Refermé,
+   il se vide : une précision restée là après qu'on a changé d'avis
+   s'enregistrerait à la place de la réponse choisie. */
+function bascPrecision(id){
+  const s = document.getElementById(id), p = document.getElementById(id + '-p');
+  if(!s || !p) return;
+  let echs = []; try{ echs = JSON.parse(p.dataset.ech || '[]'); }catch(e){}
+  const ouvrir = echs.indexOf(s.value) !== -1;
+  p.hidden = !ouvrir;
+  if(!ouvrir) p.value = ''; else p.focus();
+}
+
+/* La valeur retenue : la précision si elle a été saisie, sinon
+   l'entrée choisie dans la liste. */
+function valPrecisee(id){
+  const s = document.getElementById(id);
+  if(!s) return '';
+  const p = document.getElementById(id + '-p');
+  return (p && !p.hidden ? p.value.trim() : '') || String(s.value ?? '').trim();
+}
+
+/* Répartit une valeur déjà enregistrée entre la liste et son champ
+   libre. Absente de la liste, elle est soit une précision saisie
+   ici — elle retourne dans le champ libre, son entrée à nouveau
+   choisie — soit une réponse venue d'ailleurs, du formulaire en
+   ligne le plus souvent, qui s'ajoute en tête plutôt que de
+   disparaître à la première modification. */
+function repartir(val, valeurs, echs){
+  const hors = !!val && valeurs.indexOf(val) === -1;
+  const libre = hors && echs.length > 0;
+  return {libre, ajout: hors && !libre, sel: libre ? echs[echs.length - 1] : val};
+}
+
 
 function formulaire(k, o, mode){
   const cfg = CHAMPS[k];
@@ -3121,8 +3184,12 @@ function formulaire(k, o, mode){
       /* Certaines listes se construisent à la volée : les lieux de
          stockage déjà saisis, par exemple. */
       const opts = typeof f.o === 'function' ? f.o() : f.o;
-      const liste = opts.indexOf(val) === -1 && val ? [val, ...opts] : opts;
-      h += `<select id="${id}">${liste.map(x=>`<option ${x===val?'selected':''}>${esc(x)}</option>`).join('')}</select>`;
+      const echs = echappesDe(opts);
+      const r = repartir(val, opts, echs);
+      const liste = r.ajout ? [val, ...opts] : opts;
+      h += `<select id="${id}"${echs.length ? ` onchange="bascPrecision('${id}')"` : ''}>${
+        liste.map(x=>`<option ${x===r.sel?'selected':''}>${esc(x)}</option>`).join('')}</select>`;
+      h += champPrecision(id, echs, r.libre, val);
     }
     /* Un choix court se pose en pastilles plutôt qu'en liste
        déroulante : les réponses possibles se lisent sans ouvrir, et
@@ -3137,11 +3204,14 @@ function formulaire(k, o, mode){
     else if(f.t === 'choix'){
       const brut = typeof f.o === 'function' ? f.o() : f.o;
       const opts = brut.map(x => typeof x === 'string' ? {v:x, l:x} : x);
-      const liste = val && !opts.some(x => x.v === val) ? [{v:val, l:val}, ...opts] : opts;
-      h += `<input type="hidden" id="${id}" value="${esc(val)}">`
+      const echs = echappesDe(opts.map(x => x.v));
+      const r = repartir(val, opts.map(x => x.v), echs);
+      const liste = r.ajout ? [{v:val, l:val}, ...opts] : opts;
+      h += `<input type="hidden" id="${id}" value="${esc(r.sel)}">`
         +  `<div class="sugg">${liste.map(x =>
-             `<button type="button" class="${x.v===val?'on':''}" data-v="${esc(x.v)}" onclick="choisirSugg('${id}',this)">${esc(x.l)}</button>`
+             `<button type="button" class="${x.v===r.sel?'on':''}" data-v="${esc(x.v)}" onclick="choisirSugg('${id}',this)">${esc(x.l)}</button>`
            ).join('')}</div>`;
+      h += champPrecision(id, echs, r.libre, val);
     }
     /* Désigner quelqu'un ne doit obliger ni à choisir dans une liste
        fermée, ni à tout retaper : le champ propose les personnes déjà
@@ -3182,8 +3252,7 @@ async function enregistrer(k, id, mode){
   /* Seuls les champs affichés sont relus : sinon un champ masqué par
      le mode de saisie serait effacé à chaque enregistrement. */
   champsSaisie(champsVisibles(cfg, mode || (o.source === 'saisie' ? 'manuel' : ''))).forEach(f => {
-    const el = document.getElementById(`f-${k}-${f.c}`);
-    const v = el ? el.value.trim() : '';
+    const v = valPrecisee(`f-${k}-${f.c}`);
     if(f.req && !v && !manque) manque = f.l;
     o[f.c] = v;
   });
@@ -7813,6 +7882,10 @@ function choisirSugg(cible, btn){
   el.value = meme ? '' : val;
   Array.prototype.forEach.call(btn.parentNode.children,
     b => b.classList.toggle('on', b === btn && !meme));
+  /* Une pastille « Autre » appelle sa précision comme le ferait
+     une liste déroulante. Sur un champ libre à suggestions, il n'y
+     a pas de champ de précision et l'appel ne fait rien. */
+  bascPrecision(cible);
 }
 /* `val` allume d'emblée la pastille qui correspond à ce qui est déjà
    dans le champ : en modification, on voit ce qui avait été choisi. */
