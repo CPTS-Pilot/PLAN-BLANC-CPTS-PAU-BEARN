@@ -647,8 +647,7 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 /* Une entrée venue du dehors se reconnaît avant d'être lue : elle
    porte le nom de qui l'a communiquée en tête, et un liseré ambre
    à droite qui la distingue de tout ce que nous avons fait
-   nous-mêmes. C'est aussi elle qui remonte dans « Remontées
-   terrain ». */
+   nous-mêmes. */
 .ent-r .venu{display:inline-flex;align-items:baseline;gap:7px;background:#FCF3E4;color:#8A5D12;
   border-radius:20px;padding:4px 11px;font-size:12.5px;max-width:100%}
 .ent-r .venu .p{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;opacity:.75}
@@ -966,13 +965,28 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
    Un point de collecte tenu, c'est un fait daté et chiffré : la
    carte le donne d'un coup d'œil, le récapitulatif imprimable le
    détaille ligne à ligne. */
+/* Une collecte se lit en une ligne — le lieu, la date, ce qu'elle
+   a rapporté — et ne s'ouvre que si l'on veut le détail. Dépliée
+   d'office, une seule d'entre elles occupait tout l'écran et
+   repoussait les autres, et le registre avec. */
 .pcs{display:flex;flex-direction:column;gap:14px;margin-bottom:20px}
-.pc{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--ambre);border-radius:10px;padding:17px 18px}
+.pc{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--ambre);border-radius:10px;overflow:hidden}
 .pc.clos{border-top-color:var(--stable)}
-.pc .tete{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.pc .tete{display:flex;gap:12px;align-items:center;flex-wrap:wrap;width:100%;padding:15px 18px;
+  background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.pc .tete:hover{background:var(--cobalt-pale)}
+.pc .tete:focus-visible{outline:2px solid var(--encre-2);outline-offset:-2px}
 .pc .tete .id{flex:1;min-width:230px}
-.pc .tete .n{font-family:var(--display);font-weight:700;font-size:18px;line-height:1.2;color:var(--encre)}
-.pc .tete .s{font-size:13px;color:var(--texte-2);margin-top:3px}
+.pc .tete .n{display:block;font-family:var(--display);font-weight:700;font-size:18px;line-height:1.2;color:var(--encre)}
+.pc .tete .s{display:block;font-size:13px;color:var(--texte-2);margin-top:3px}
+.pc .tete .s strong{color:var(--encre);font-weight:700}
+.pc .tete .chev{font-size:11px;color:var(--texte-2)}
+/* Le détail reste dans la page même replié : c'est lui que le
+   bouton PDF imprime, et un écran plié ne doit pas produire un
+   document amputé. */
+.pc .corps{display:none;padding:0 18px 17px}
+.pc.ouvert .corps{display:block}
+@media print{.pc .corps{display:block}.pc .tete .chev{display:none}}
 .pc .chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:9px;margin-bottom:13px}
 .pc .chiffres div{background:var(--surface);border:1px solid var(--trait);border-radius:8px;padding:11px 12px}
 .pc .chiffres .v{font-family:var(--display);font-size:23px;font-weight:700;line-height:1;color:var(--encre)}
@@ -1860,10 +1874,7 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
     {id:'mc0b', date:'2026-07-26', heure:'', source:'', evenement:"Relais aux membres de la CPTS Pau Béarn, sur les groupes WhatsApp (environ 210 professionnels de santé), de l'appel à volontaires kinésithérapeutes de l'URPS MK Nouvelle-Aquitaine. Message d'Anne Latisnère, vice-présidente, validé par la vice-présidence, demandant de compléter le formulaire de l'URPS, qui sert aussi de canal de retour.", suite:"Le message ne précise pas que la CPTS Pau Béarn n'est pas opératrice du dispositif : préparer une réponse d'attente pour les professionnels des autres professions.", qui:'Anne Latisnère', auteur:'Anne Latisnère', quand:''},
     {id:'mc0a', date:'2026-07-25', heure:'', source:'', evenement:"Message n°1 diffusé aux membres de la CPTS Pau Béarn sur les groupes WhatsApp, environ 210 professionnels de santé destinataires : information sur le déclenchement du plan blanc régional / ORSAN AMAVI, rappel de la consigne de maintien de la prise en charge en ambulatoire, et annonce de besoins en renforts humains et matériels. Message d'Anne Latisnère, vice-présidente, validé par la vice-présidence.", suite:"Aucune demande précise ni canal de retour indiqué : le message ne fait rien remonter et crée une attente chez les adhérents. À recadrer dans le message suivant.", qui:'Anne Latisnère', auteur:'Anne Latisnère', quand:''}
   ],
-  terrain: [
-    {id:'tr2', date:'2026-07-28', heure:'', professionnel:"Pharmaciens d'officine du territoire", profession:"Pharmacien", commune:"Territoire de la CPTS Pau Béarn", sujet:"Plusieurs pharmaciens d'officine ont appelé la CPTS coup sur coup dans la matinée du 28/07 : ils reçoivent au comptoir des personnes évacuées des zones incendiées de Gironde, les unes revenues dans leur commune d'origine, les autres délocalisées en Béarn. Ces personnes n'ont pas de médecin traitant sur le territoire et demandent le renouvellement d'ordonnances interrompues par un départ précipité, ou une prise en soins pour des infections liées aux incendies. Le pharmacien peut dépanner dans les limites de la dispensation d'urgence, mais ne peut ni prolonger durablement un traitement ni ouvrir une prise en charge : sans médecin vers qui adresser, la personne repart sans solution. Même situation que celle remontée le matin même par le CMSI de Billère — la difficulté n'est donc pas isolée à une structure.", criticite:'Élevée', action:"Communiqué diffusé aux pharmaciens du territoire à 10h00 par Anne Latisnère et Eva Poulmarch : la situation est appelée à s'accroître et la CPTS constitue un vivier de médecins généralistes disponibles pour recevoir ces patients en consultation. Les pharmaciens sont invités à continuer de faire remonter les situations rencontrées au comptoir. Le circuit de fléchage vers les généralistes volontaires leur sera transmis dès l'ouverture du vivier.", transmis:'', statut:'En cours', auteur:'Eva Poulmarch', quand:''},
-    {id:'tr1', date:'2026-07-28', heure:'08:00', professionnel:'CMSI de Billère', profession:"Structure de soins non programmés", commune:'Billère', sujet:"Appel reçu à 8h00 par Anne Latisnère, vice-présidente : le CMSI de Billère reçoit des patients évacués des zones incendiées de Gironde, les uns revenus dans leur commune d'origine, les autres délocalisés ici. Partis de manière très précipitée, ils sont en demande de renouvellement d'ordonnances en cours et de prise en soins pour des infections liées aux incendies. N'ayant pas de médecin traitant sur le territoire, ils se tournent vers le CMSI. Or celui-ci est un acteur de soins non programmés : il n'est pas en mesure d'assumer ni d'assurer ce type de rôle, qui relève du suivi et non de l'urgence. La structure reçoit par ailleurs les appels de pharmaciens du territoire confrontés aux mêmes situations au comptoir. La continuité des soins est bousculée.", criticite:'Élevée', action:"Ouverture de l'action « Patients évacués » : sondage des médecins généralistes du territoire pour constituer un vivier de volontaires, information des pharmacies et des structures de soins non programmés — communiqué aux pharmaciens à 10h00, message à SOS Médecins Pau à 11h00 — et fléchage coordonné des patients vers ces médecins. Pilote : Anne Latisnère.", transmis:'', statut:'En cours', auteur:'Anne Latisnère', quand:''}
-  ], appels: [],
+  appels: [],
   materiel: [
     {id:'bm1', date:'2026-07-26', demandeur:"Centre d'accueil du parc des expositions de Bordeaux", nature:"Tensiomètres, thermomètres, lecteurs d'hémoglucotest (glycémie capillaire), saturomètres. Aucun besoin de consommables : le site est fourni en médicaments.", quantite:"10 appareils pour 500 patients à ce jour, beaucoup de casse — quantité cible à préciser", delai:"Au plus vite", lieu:"Parc des expositions de Bordeaux — nature de l'acheminement à arbitrer", contactPlace:"Médecin coordonnateur du site, et personne en charge de la logistique — numéros détenus par Anne Latisnère, à reporter ici", horaires:'', valide:'En attente', statut:'Identifié', auteur:'Anne Latisnère', quand:''}
   ],
@@ -2184,7 +2195,7 @@ function lancerSondage(){
    et qu'elle n'a pas été retirée à la main : ce qui a été saisi
    par le copil n'est jamais touché. C'est par là qu'arrivent les
    éléments consignés hors ligne, au téléphone notamment. */
-const SEEDS = ['missions','veille','ars','sources','rubriques','visios','lignes','offre','cpts','courante','terrain','materiel','stockage','points','contacts','referents','medecins','orientes','relais'];
+const SEEDS = ['missions','veille','ars','sources','rubriques','visios','lignes','offre','cpts','courante','materiel','stockage','points','contacts','referents','medecins','orientes','relais'];
 function fusionnerNouveautes(){
   etat.retires = etat.retires || [];
   SEEDS.forEach(k => {
@@ -2197,7 +2208,6 @@ function fusionnerNouveautes(){
   reverserDiffusions();
   consignerPatientsHerites();
   consignerCollecteHeritee();
-  consignerTerrainHerite();
   completerVeille();
   corrigerRelaisRenfort();
 }
@@ -2390,7 +2400,7 @@ function majBandeau(){
 /* =========================================================
    OUTILS
    ========================================================= */
-const ESPACES = {m1:'terrain', m2:'terrain', m3:'materiel', m4:'appels', m5:'courante', m6:'courante'};
+const ESPACES = {m1:'courante', m2:'courante', m3:'materiel', m4:'appels', m5:'courante', m6:'courante'};
 const espaceDe = m => m.espace || ESPACES[m.id] || 'courante';
 const nomEspace = id => (ONGLETS.find(o => o.id === id) || {}).nom || 'Main courante';
 const cleP = n => (n||'').trim().toLowerCase();
@@ -2676,7 +2686,6 @@ const ONGLETS = [
   {id:'appels',    nom:'Contact avec les CPTS', groupe:'Suivi', cpt:null},
   {id:'rapports',  nom:'Rapports',           groupe:'Suivi', cpt:null},
   {id:'courante',  nom:'Main courante',      groupe:'Traçabilité', cpt:'courante'},
-  {id:'terrain',   nom:'Remontées terrain',  groupe:'Traçabilité', cpt:null},
   {id:'ars',       nom:'Échanges avec l\'ARS', groupe:'Traçabilité', cpt:'ars'},
   {id:'materiel',  nom:'Collecte de matériel', groupe:'Actions', cpt:null},
   {id:'volontaires',nom:'Appel au renfort',  groupe:'Actions', cpt:null},
@@ -2932,7 +2941,7 @@ const CHAMPS = {
   },
   courante: {
     titre:"Main courante",
-    chapo:"Tout ce qui est reçu, décidé ou fait, horodaté au moment du fait. Une entrée répond à une question avant les autres : est-ce nous qui l'avons fait, ou est-ce quelqu'un du dehors qui nous l'a dit ? Dans le premier cas on nomme qui s'en est chargé ; dans le second on nomme qui a communiqué l'information, et l'entrée s'affiche d'elle-même dans « Remontées terrain ». Le nom du rédacteur s'ajoute tout seul. C'est cette page qui documentera le retour d'expérience et le futur plan SSE.",
+    chapo:"Tout ce qui est reçu, décidé ou fait, horodaté au moment du fait. C'est ici que tout se consigne, y compris ce qui remonte du terrain : une entrée répond à une question avant les autres — est-ce nous qui l'avons fait, ou est-ce quelqu'un du dehors qui nous l'a dit ? Dans le premier cas on nomme qui s'en est chargé ; dans le second on nomme qui a communiqué l'information, et l'entrée se signale d'elle-même comme venue du dehors. Le nom du rédacteur s'ajoute tout seul. C'est cette page qui documentera le retour d'expérience et le futur plan SSE.",
     /* Le formulaire pose la question de la provenance en deux temps
        séparés à l'écran, parce que c'est là que la main courante se
        trompait : « Coordination » avait été mis en source par défaut,
@@ -2951,31 +2960,11 @@ const CHAMPS = {
        sous:"À ne remplir que si l'information nous a été communiquée de l'extérieur. Une décision prise entre nous n'a pas de source — on laisse vide."},
       {c:'source', l:"Qui nous l'a communiquée", t:'text', large:true,
        ph:"Une pharmacie nommée, SOS Médecins, l'ARS, un établissement…", sugg:() => sourcesCourante(),
-       aide:"Renseignée, cette entrée s'affiche aussi dans l'onglet « Remontées terrain » — sans y être recopiée."},
+       aide:"Renseignée, l'entrée se lit comme venue du dehors : c'est une remontée de terrain, et elle se compte comme telle."},
       {t:'titre', l:"Ce que ça déclenche"},
       {c:'suite', l:"Suite donnée", t:'textarea', large:true, ph:"Facultatif — ce que ça déclenche, ou ce qui reste à faire."}
     ],
     cols:['date','heure','evenement','qui','source','suite','auteur']
-  },
-  terrain: {
-    titre:"Remontées de terrain",
-    chapo:"La seule page qui documente l'impact réel des incendies sur le territoire béarnais. C'est elle qui alimentera le bilan ACI et le dialogue de gestion de la CPTS Pau Béarn. Chaque remontée consignée ici s'inscrit aussi en main courante, sans y être recopiée : le professionnel qui l'a signalée y figure en source, et on la corrige ici.",
-    f:[
-      /* Une remontée s'horodate comme une entrée de main courante :
-         c'est le même fait, reçu à un moment précis. Sans heure, deux
-         remontées du même jour ne se départagent plus, et l'entrée
-         qu'elles posent en main courante remonte en fin de journée. */
-      {c:'heure', l:"Heure de la remontée", t:'time', d:maintenant},
-      {c:'professionnel', l:"Professionnel", t:'text', req:true},
-      {c:'profession', l:"Profession", t:'text'},
-      {c:'commune', l:"Commune", t:'text'},
-      {c:'sujet', l:"Situation rencontrée", t:'textarea', large:true, req:true},
-      {c:'criticite', l:"Criticité", t:'select', o:['Faible','Moyenne','Élevée']},
-      {c:'action', l:"Action menée", t:'textarea', large:true},
-      {c:'transmis', l:"Transmis à", t:'text'},
-      {c:'statut', l:"Statut", t:'select', o:['En cours','Clos','À suivre']}
-    ],
-    cols:['date','heure','professionnel','profession','commune','sujet','criticite','action','statut','auteur']
   },
   appels: {
     titre:"Appels aux CPTS des zones touchées",
@@ -3482,12 +3471,10 @@ async function enregistrer(k, id, mode){
     if(estManuel(k)) o.rang = Math.min(...etat[k].map(x => typeof x.rang === 'number' ? x.rang : 0)) - 1;
     etat[k].unshift(o);
   }
-  /* Un besoin en matériel identifié et une remontée de terrain sont
-     des faits de la journée : ils se consignent en main courante en
-     même temps qu'à leur registre. */
+  /* Un besoin en matériel identifié est un fait de la journée : il se
+     consigne en main courante en même temps qu'à son registre. */
   if(k === 'materiel') consignerBesoinEnCourante(o);
-  if(k === 'terrain')  consignerRemonteeEnCourante(o);
-  const enCourante = k === 'materiel' || k === 'terrain';
+  const enCourante = k === 'materiel';
   await sauver(); fermer(); rendre();
   toast(enCourante ? (existant ? "Modifié, et repris en main courante" : "Enregistré et consigné en main courante")
                    : (existant ? "Modifié" : "Enregistré"));
@@ -3504,7 +3491,7 @@ async function supprimer(k, id){
    la page, et on remonte le temps en descendant. Le tri se fait à
    l'affichage seulement — l'ordre de stockage n'est pas touché, et les
    lignes saisies sans heure se rangent en fin de journée. */
-const CHRONO = ['ars','courante','terrain','materiel','appels','orientes'];
+const CHRONO = ['ars','courante','materiel','appels','orientes'];
 
 /* L'heure est ramenée à HH:MM avant d'être comparée : une entrée saisie
    « 9h05 » ou « 9:05 » doit se ranger avant 14:01, pas après. Une entrée
@@ -3613,8 +3600,7 @@ const JOURNAL = {
   /* La provenance ne se lit pas au milieu des autres mentions : une
      entrée venue du dehors le dit en tête, à côté de l'heure, parce
      que c'est ce qui la distingue de tout ce que nous avons fait
-     nous-mêmes — et parce que c'est elle qui la fait remonter dans
-     « Remontées terrain ». */
+     nous-mêmes. */
   /* Pas de statut : une entrée de main courante ne se pilote pas,
      elle atteste. Ce qui reste à faire se dit dans la suite donnée,
      et ce qui se pilote a sa mission. Le liseré de la carte parle
@@ -3623,12 +3609,6 @@ const JOURNAL = {
   courante: {
     marque:'mc', titre:'evenement', venu:'source', personne:'qui',
     blocs:[{c:'suite', l:"Suite donnée"}]
-  },
-  terrain: {
-    titre:'sujet', etiq:['criticite','statut'],
-    chips:[{c:'professionnel', l:"Professionnel"},{c:'profession', l:"Profession"},
-           {c:'commune', l:"Commune"},{c:'transmis', l:"Transmis à"}],
-    blocs:[{c:'action', l:"Action menée"}]
   },
   ars: {
     titre:'objet', etiq:['sens','statut'],
@@ -3789,7 +3769,7 @@ function vueCockpit(){
     <div class="compteur"><div class="n">${etat.ars.filter(a=>a.statut==='À faire'||a.statut==='En attente').length}</div><div class="l">échanges ARS en attente</div></div>
     <div class="compteur"><div class="n">${etat.courante.length}</div><div class="l">entrées en main courante</div></div>
     <div class="compteur"><div class="n">${etat.appels.length}</div><div class="l">CPTS contactées</div></div>
-    <div class="compteur"><div class="n">${etat.terrain.length}</div><div class="l">remontées de terrain</div></div>
+    <div class="compteur"><div class="n">${venuesDuDehors().length}</div><div class="l">remontées venues du terrain</div></div>
     <div class="compteur"><div class="n">${etat.volontaires.length}</div><div class="l">professionnels volontaires au renfort</div></div>
   </div>`;
 
@@ -4815,8 +4795,6 @@ function evenements(){
     [o.sens,o.interlocuteur,o.statut].filter(Boolean).join(' · '), o.auteur));
   (etat.courante||[]).forEach(o => push(o,'Consigné',o.evenement,
     [o.qui ? 'Pris en charge par ' + o.qui : '', o.source, o.suite].filter(Boolean).join(' · '), o.auteur));
-  (etat.terrain||[]).forEach(o => push(o,'Terrain',o.sujet,
-    [o.professionnel,o.profession,o.commune,o.criticite].filter(Boolean).join(' · '), o.auteur));
   (etat.cpts||[]).forEach(c => (c.appels||[]).forEach(a =>
     push(a,'Appel CPTS', c.nom, [a.qui, a.dit].filter(Boolean).join(' · '), a.par)));
   (etat.materiel||[]).forEach(o => push(o,'Matériel',o.nature,
@@ -5211,6 +5189,7 @@ async function supprimerLigne(id){
    ========================================================= */
 let moduleMat = '';           /* '' = le palier */
 let donOuvert = null;
+let pointOuvert = null;       /* la collecte dépliée, s'il y en a une */
 let filtreDon = 'Tout';
 let filtreRenfort = 'Tout';
 
@@ -5226,7 +5205,7 @@ const RECEVEUR = {
   qualite: "Centre d'accueil des personnes évacuées, tenu par la Croix-Rouge française, la réserve citoyenne de Bordeaux Métropole et les communes"
 };
 
-function allerModuleMat(m){ moduleMat = m; donOuvert = null; rendre(); window.scrollTo(0,0); }
+function allerModuleMat(m){ moduleMat = m; donOuvert = null; pointOuvert = null; rendre(); window.scrollTo(0,0); }
 
 /* Un lien profond venu d'ailleurs — d'un autre onglet, d'une
    fiche, d'une entrée de main courante écrite quand les feuillets
@@ -5245,6 +5224,9 @@ function filtrerDon(r){ filtreDon = r; rendre(); }
    regardent dans le registre, qui est un autre module. */
 function verifierDepots(){ filtreDon = 'Formulaire'; allerModuleMat('dons'); }
 function ouvrirDon(id){ donOuvert = (donOuvert === id) ? null : id; rendre(); }
+/* Une seule collecte dépliée à la fois : deux ouvertes, et on
+   retombe dans l'écran qu'on cherchait à raccourcir. */
+function ouvrirPointCarte(id){ pointOuvert = (pointOuvert === id) ? null : id; rendre(); }
 
 /* --- Formulaire public de don ---------------------------
    don.html vit à côté du cockpit et écrit dans la même
@@ -5891,7 +5873,6 @@ function modulePointsCollecte(){
    beaucoup n'ont jamais été déposées. */
 function moduleDons(){
   return teteModuleMat('Matériel collecté')
-    + carteDernierPoint()
     + sectionCollectes()
     + sectionDonsDeclares();
 }
@@ -6474,16 +6455,28 @@ function sectionCollectes(){
   pts.forEach(p => {
     const s = synthesePoint(p);
     const clot = p.statut === 'Clôturé';
-    h += `<div class="pc ${clot?'clos':''}">
-      <div class="tete">
-        <div class="id">
-          <div class="n">${esc(p.lieu || 'Collecte')}${p.jeton && !clot ? `<span class="src-f terrain">Saisie sur place ouverte</span>` : ''}</div>
-          <div class="s">${[frdateL(p.date),
-             (p.debut || p.fin) ? (esc(p.debut||'—') + ' – ' + esc(p.fin||'—')) : '',
-             p.adresse ? esc(p.adresse) : ''].filter(Boolean).join(' · ')}</div>
-        </div>
+    const ouv = pointOuvert === p.id;
+    /* Replié, le bandeau dit ce qu'on vient chercher : où, quand,
+       et ce que la collecte a rapporté. Le reste — le détail par
+       matériel, les pièces, les boutons — n'apparaît qu'au clic. */
+    const resume = [
+      frdateL(p.date),
+      (p.debut || p.fin) ? (esc(p.debut||'—') + ' – ' + esc(p.fin||'—')) : '',
+      s.lignes ? `<strong>${s.unites} unité${s.unites>1?'s':''}</strong> de ${s.deposants.length} déposant${s.deposants.length>1?'s':''}` : 'aucun dépôt saisi',
+      clot && p.cloture ? 'clôturée à ' + esc(p.cloture) : ''
+    ].filter(Boolean).join(' · ');
+
+    h += `<div class="pc ${clot?'clos':''} ${ouv?'ouvert':''}">
+      <button class="tete" onclick="ouvrirPointCarte('${p.id}')" aria-expanded="${ouv}">
+        <span class="id">
+          <span class="n">${esc(p.lieu || 'Collecte')}${p.jeton && !clot ? `<span class="src-f terrain">Saisie sur place ouverte</span>` : ''}</span>
+          <span class="s">${resume}</span>
+        </span>
         <span class="etiq ${clot?'e-fini':'e-cours'}">${esc(p.statut || 'Ouvert')}</span>
-      </div>
+        <span class="chev">${ouv?'▲':'▼'}</span>
+      </button>
+      <div class="corps">
+      ${p.adresse ? `<div class="bl"><span class="k">Adresse</span>${esc(p.adresse)}</div>` : ''}
       <div class="chiffres">
         <div><div class="v">${s.lignes}</div><div class="l">lignes de dépôt</div></div>
         <div><div class="v">${s.deposants.length}</div><div class="l">déposants distincts</div></div>
@@ -6514,32 +6507,15 @@ function sectionCollectes(){
         ${clot ? '' : `<button class="btn sec" onclick="cloturerPoint('${p.id}')">Clôturer</button>`}
         <button class="btn sec" onclick="supprimerPoint('${p.id}')" style="margin-left:auto">Retirer</button>
       </div>
-    </div>`;
+    </div></div>`;
   });
   return h + `</div>`;
 }
 
-/* La dernière collecte clôturée, en tête de la carte : c'est le
-   résultat de la journée, il se lit avant tout le reste. Elle est
-   aussi dans la liste juste en dessous — ce qu'on veut d'elle
-   ici, c'est le chiffre et le récapitulatif, pas un renvoi. */
-function carteDernierPoint(){
-  const p = pointsTries().filter(x => x.statut === 'Clôturé')[0];
-  if(!p) return '';
-  const s = synthesePoint(p);
-  return `<div class="carte" style="border-left:4px solid var(--stable)">
-    <div class="ligne-f" style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px">
-      <div style="flex:1;min-width:240px">
-        <h2 style="margin-bottom:2px">${esc(p.lieu)} — clôturé${p.cloture ? ' à ' + esc(p.cloture) : ''}</h2>
-        <p style="font-size:13px;color:var(--texte-2);margin:0"><strong>${s.unites} unités</strong> déposées par <strong>${s.deposants.length} déposants</strong> en ${s.lignes} lignes, le ${frdateL(p.date)}${p.destination ? ' — destination : ' + esc(p.destination) : ''}.</p>
-      </div>
-      <span class="etiq e-fini">Collecte clôturée</span>
-    </div>
-    <div class="actions" style="margin-top:0">
-      <button class="btn sec" onclick="recapPoint('${p.id}')">Récapitulatif</button>
-    </div>
-  </div>`;
-}
+/* Le bandeau qui rappelait la dernière collecte clôturée a été
+   retiré : le premier bandeau de la liste dit maintenant la même
+   chose — lieu, date, unités, déposants — et s'ouvre sur le
+   détail au lieu de le doubler. */
 
 /* =========================================================
    LIEN DE SAISIE SUR PLACE
@@ -6791,8 +6767,8 @@ function texteMCPoint(p){
 }
 
 /* Un besoin nous est toujours exprimé par quelqu'un : la structure
-   demandeuse est la source, et l'entrée remonte d'elle-même en
-   « Remontées terrain ». Ce que la CPTS collecte ne va jamais
+   demandeuse est la source, et l'entrée se lit donc en main courante
+   comme venue du dehors. Ce que la CPTS collecte ne va jamais
    au-delà de ce qui est écrit là — la suite dit donc ce qui
    manque avant d'ouvrir quoi que ce soit aux adhérents. */
 function texteMCBesoin(b){
@@ -9127,7 +9103,7 @@ function texteMCPatient(o, quoi, ancien){
      sur un homme se lit mal. On dit le fait, pas la personne. */
   if(quoi === 'signalement') return {
     /* La source, c'est la structure qui a appelé : une entrée venue
-       du dehors remonte d'elle-même en « Remontées terrain ». Un
+       du dehors se lit comme une remontée de terrain. Un
        proche ou la personne elle-même n'en fait pas une. */
     source: String(o.relais || '').trim(),
     evenement: `Signalement d'une personne évacuée : ${ref}`
@@ -9990,7 +9966,7 @@ function feuilletRelais(rel, ori, diffusables){
   return h + `</div>`;
 }
 
-const DOSSIER = ['ars','courante','terrain','materiel','dons','stockage','renforts','volontaires','medecins','orientes','relais','lieux'];
+const DOSSIER = ['ars','courante','materiel','dons','stockage','renforts','volontaires','medecins','orientes','relais','lieux'];
 
 function tableauFige(k){
   const cfg = CHAMPS[k], lignes = chrono(k, etat[k]);
@@ -10052,7 +10028,6 @@ const RETENU_DE = id => RETENUS.find(x => x.id === id) || null;
    forme-là, et une nouvelle collection s'y ajoute en une ligne. */
 const SOURCES_RET = {
   courante: {l:"Main courante",           titre:o => o.evenement},
-  terrain:  {l:"Remontée terrain",        titre:o => o.sujet},
   ars:      {l:"Échange avec l'ARS",      titre:o => o.objet},
   visios:   {l:"Visio de crise de l'ARS", titre:o => o.instance || "Visio de crise de l'ARS"}
 };
@@ -10177,7 +10152,7 @@ function vueRapports(){
   return ch + `<h1>Rapports</h1>
   <p class="chapo">Ce que cette crise laisse derrière elle. Quatre documents tirés du même fonds : le point de situation qu'on arrête à une date, la matière du retour d'expérience, les projets de fiches pour le plan SSE, et le dossier de traçabilité complet. Aucun ne se rédige de zéro — ils se remplissent de ce qui est déjà consigné, et de ce que vous marquez d'une étoile au fil de l'eau.</p>
 
-  <div class="note">L'étoile ☆ est posée sur chaque entrée de la <a href="#" onclick="aller('courante');return false;">main courante</a>, des <a href="#" onclick="aller('terrain');return false;">remontées terrain</a>, des <a href="#" onclick="aller('ars');return false;">échanges avec l'ARS</a> et des visios de crise. Un clic, cinq secondes : on dit si l'entrée est un fait marquant, ce qui a marché, ce qui a manqué, ce qu'on changera, ou un point de doctrine. Les quatre rapports se remplissent seuls à partir de là.</p></div>
+  <div class="note">L'étoile ☆ est posée sur chaque entrée de la <a href="#" onclick="aller('courante');return false;">main courante</a>, des <a href="#" onclick="aller('ars');return false;">échanges avec l'ARS</a> et des visios de crise. Un clic, cinq secondes : on dit si l'entrée est un fait marquant, ce qui a marché, ce qui a manqué, ce qu'on changera, ou un point de doctrine. Les quatre rapports se remplissent seuls à partir de là.</p></div>
 
   <div class="rapports">
     ${carte('situations', "Points de situation",
@@ -10260,7 +10235,7 @@ function brouillonSituation(){
     {n: etat.missions.filter(m => m.statut === 'En cours').length, l:"missions en cours"},
     {n: etat.missions.filter(m => !m.pilote).length,               l:"missions sans pilote désigné"},
     {n: (etat.cpts || []).length,                                  l:"CPTS contactées"},
-    {n: (etat.terrain || []).length,                               l:"remontées de terrain"},
+    {n: venuesDuDehors().length,                                   l:"remontées de terrain"},
     {n: (etat.volontaires || []).length,                           l:"professionnels volontaires au renfort"},
     {n: (etat.medecins || []).length,                              l:"médecins généralistes volontaires"},
     {n: (etat.orientes || []).length,                              l:"patients évacués orientés"},
@@ -10516,7 +10491,7 @@ function vueRetex(){
     h += `<h2 style="margin-top:24px">${c.t} <span class="cpt-h">${l.length}</span></h2>
     <p class="sous-h">${c.s}</p><div class="carte">`;
     if(!l.length){
-      h += `<p class="vide">Rien de versé sous cette entrée. L'étoile ☆ d'une entrée de main courante ou d'une remontée terrain permet de l'y ranger.</p>`;
+      h += `<p class="vide">Rien de versé sous cette entrée. L'étoile ☆ d'une entrée de main courante permet de l'y ranger.</p>`;
     }else{
       h += `<ul class="fil">` + l.map(x => `<li>
         <div class="h">${frdate(x.date)}${x.heure ? '<br>' + esc(x.heure) : ''}</div>
@@ -10549,7 +10524,7 @@ function exporterRetexWord(){
     + bloc('marche', "1 · Ce qui a marché")
     + bloc('manque', "2 · Ce qui a manqué")
     + bloc('changer', "3 · Ce qu'on fera autrement")
-    + `<div class="pied">Extrait du cockpit de crise de la CPTS Pau Béarn. Chaque ligne renvoie à une entrée datée de la main courante, des remontées terrain, des échanges avec l'ARS ou des visios de crise, consultable au dossier de traçabilité.</div>`);
+    + `<div class="pied">Extrait du cockpit de crise de la CPTS Pau Béarn. Chaque ligne renvoie à une entrée datée de la main courante, des échanges avec l'ARS ou des visios de crise, consultable au dossier de traçabilité.</div>`);
 }
 
 /* --- Pour le plan SSE --------------------------------------
@@ -10763,107 +10738,30 @@ function vueCollection(k){
   const cfg = CHAMPS[k];
   const n = (etat[k] || []).length;
   const j = !!JOURNAL[k];
-  /* Le compteur dit aussi ce qui remonte de la main courante :
-     sinon il annonce deux entrées et la page en montre sept. */
-  const mc = k === 'terrain' ? signalesEnCourante().length : 0;
+  /* La main courante dit aussi combien de ses entrées viennent du
+     dehors : c'est le compte des remontées de terrain, et il n'a
+     plus de registre à lui. */
+  const dh = k === 'courante' ? venuesDuDehors().length : 0;
   return `<h1>${cfg.titre}</h1><p class="chapo">${cfg.chapo}</p>
-    <div class="barre-h"><span class="cpt-h">${n} ${j ? 'entrée' : 'ligne'}${n>1?'s':''}${j ? ' · de la plus récente à la plus ancienne' : ''}${mc ? ` · ${mc} signalé${mc>1?'s':''} en main courante` : ''}</span>
+    <div class="barre-h"><span class="cpt-h">${n} ${j ? 'entrée' : 'ligne'}${n>1?'s':''}${j ? ' · de la plus récente à la plus ancienne' : ''}${dh ? ` · ${dh} venue${dh>1?'s':''} du dehors` : ''}</span>
       <button class="btn sec" onclick="exporterCSV('${k}')">Excel</button>
       <button class="btn sec" onclick="imprimer()">PDF</button>
       <button class="btn" onclick="ouvrirAjout('${k}')">Ajouter</button></div>
     ${barreOrdre(k)}
-    ${j ? journal(k) : tableau(k)}
-    ${k === 'terrain' ? blocSignaleEnCourante() : ''}`;
+    ${j ? journal(k) : tableau(k)}`;
 }
 
-/* --- ce qu'une remontée laisse en main courante -------------
-   Règle du cockpit : toute information recueillie se consigne en
-   main courante, en plus de sa rubrique. Une remontée de terrain
-   en est une — reçue d'un professionnel, à une date, sur une
-   commune : elle y laisse son entrée sans qu'on ait à la recopier.
-   Le professionnel qui l'a signalée est porté en source, ce qui la
-   marque « venue du dehors » dans le journal. L'identifiant est
-   dérivé de celui de la remontée : la corriger réécrit l'entrée au
-   lieu d'en empiler une seconde, et une entrée retirée à la main ne
-   revient pas. */
-const idMCTerrain = o => 'mctr-' + o.id;
-
-function texteMCTerrain(o){
-  const situe = [o.profession, o.commune].filter(x => String(x || '').trim()).join(', ');
-  return {
-    date: o.date || '',
-    heure: o.heure || '',
-    source: String(o.professionnel || '').trim(),
-    evenement: "Remontée de terrain"
-      + (o.professionnel ? ` — ${o.professionnel}` : '')
-      + (situe ? ` (${situe})` : '') + ' : '
-      + (o.sujet || 'situation à préciser')
-      + (o.criticite ? `\nCriticité : ${o.criticite.toLowerCase()}.` : ''),
-    suite: [
-      o.action || "Aucune action consignée à ce stade.",
-      o.transmis ? `Transmis à ${o.transmis}.` : '',
-      o.statut ? `Statut : ${o.statut.toLowerCase()}.` : '',
-      "Suivi au registre « Remontées de terrain »."
-    ].filter(Boolean).join(' ')
-  };
-}
-
-function consignerRemonteeEnCourante(o){
-  if(!o || !o.id) return;
-  poserEnCourante(idMCTerrain(o), texteMCTerrain(o));
-}
-
-/* Les remontées saisies avant que la main courante ne les reçoive
-   n'y figurent pas : on les y porte une fois, à l'ouverture du
-   cockpit, à la date du fait. Celles de l'amorçage en sont exclues —
-   leur entrée y est déjà écrite à la main, et l'y remettre ferait
-   doublon. */
-function consignerTerrainHerite(){
-  etat.courante = etat.courante || [];
-  const vus = new Set(etat.courante.map(x => x.id));
-  const amorcees = new Set((etatInitial.terrain || []).map(x => x.id));
-  (etat.terrain || []).forEach(o => {
-    if(o && o.id && !amorcees.has(o.id) && !vus.has(idMCTerrain(o))) consignerRemonteeEnCourante(o);
-  });
-}
-
-/* --- ce que la main courante fait remonter ici -------------
-   Une information venue du dehors est une remontée de terrain,
-   qu'elle ait été saisie ici ou en main courante. Elle s'affiche
-   donc dans les deux endroits — mais elle n'est écrite qu'une
-   fois : rien n'est recopié, et on la modifie là où elle a été
-   consignée. Ce qui la distingue tient à un seul champ : sa
-   source. Une décision prise entre nous n'en a pas, et ne
-   remonte donc pas ici. Les entrées que les remontées ont
-   elles-mêmes posées en main courante sont écartées : elles sont
-   déjà dans le registre ci-dessus, et s'y afficheraient deux fois. */
-const signalesEnCourante = () =>
-  (etat.courante || []).filter(o => String(o.source || '').trim()
-                                 && String(o.id || '').indexOf('mctr-') !== 0);
-
-function blocSignaleEnCourante(){
-  const mc = antechrono(signalesEnCourante());
-  if(!mc.length) return '';
-  let h = `<div class="reg-jour" style="margin-top:30px"><span class="n">Signalé en main courante</span></div>
-  <div class="note">Ces entrées de la <a href="#" onclick="aller('courante');return false;">main courante</a> portent une source extérieure : elles remontent ici d'elles-mêmes, sans y être recopiées, et se modifient dans la main courante. Une situation qui mérite d'être suivie pour elle-même — avec sa criticité, sa commune et le professionnel concerné — se reprend en remontée à part entière ci-dessus.</div>`;
-  mc.forEach(o => {
-    const quand = [frdate(o.date), o.heure].filter(Boolean).join(' à ');
-    h += `<article class="ent-r mc dehors">
-      <div class="haut">
-        ${quand ? `<span class="hr">${esc(quand)}</span>` : ''}
-        <span class="venu"><span class="p">Venu du dehors</span>${esc(o.source)}</span>
-        <span class="outils">
-          <button title="Modifier en main courante" onclick="ouvrirEdition('courante','${o.id}')">✎</button>
-        </span>
-      </div>
-      <div class="ti">${esc(o.evenement) || '—'}</div>
-      ${o.qui ? `<div class="chips"><span><span class="k">Pris en charge par</span>${esc(o.qui)}</span></div>` : ''}
-      ${o.suite ? `<div class="bloc"><span class="k">Suite donnée</span><div class="v">${esc(o.suite)}</div></div>` : ''}
-      <div class="pied"><span>Consigné en main courante</span>${o.auteur ? `<span>Saisi par ${esc(o.auteur)}</span>` : ''}</div>
-    </article>`;
-  });
-  return h;
-}
+/* --- ce qu'une remontée de terrain est devenue --------------
+   Il n'y a plus de registre « Remontées terrain » : une remontée
+   est une entrée de main courante venue du dehors, et rien
+   d'autre. C'était déjà le cas dans les faits — la main courante
+   en portait trente et une quand le registre en comptait trois,
+   et l'une recopiait l'autre. Ce qui la reconnaît tient à un seul
+   champ, sa source : une décision prise entre nous n'en a pas.
+   C'est ce qui se compte pour le bilan ACI et le dialogue de
+   gestion. */
+const venuesDuDehors = () =>
+  (etat.courante || []).filter(o => String(o.source || '').trim());
 
 function majPrintHead(){
   const el = document.getElementById('printhead');
