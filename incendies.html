@@ -927,6 +927,20 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 
 /* ---------- bordereau de don ---------- */
 #modale.large{max-width:860px}
+/* Le bandeau d'un onglet qui n'est pas encore ouvert à l'équipe.
+   Hachuré, pour qu'on ne le confonde avec aucun autre message du
+   cockpit et qu'on ne l'oublie pas en route. */
+.chantier{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--ambre);border-radius:9px;
+  padding:12px 15px;margin-bottom:18px;font-size:13px;line-height:1.5;
+  background:repeating-linear-gradient(135deg,#FFFBEF,#FFFBEF 11px,#FDF4DC 11px,#FDF4DC 22px)}
+.chantier .p{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:#8A6A12;background:var(--carte);border:1px solid var(--ambre);border-radius:4px;
+  padding:4px 7px;white-space:nowrap}
+.chantier .t{color:var(--encre)}
+.chantier code{font-family:var(--mono);font-size:11.5px;background:var(--carte);
+  border:1px solid var(--trait);border-radius:3px;padding:1px 4px}
+@media(max-width:600px){.chantier{flex-direction:column;gap:8px}}
+
 /* --- Rapports ------------------------------------------
    Quatre cartes d'entrée : chacune dit ce qu'elle contient et où
    elle en est, et s'ouvre sur son écran. */
@@ -1479,7 +1493,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
     <div class="pied">
       <div id="identite">—</div>
       <button onclick="demanderIdentite()">Changer de nom</button>
-      <button onclick="ouvrirRapport('dossier')">Dossier PDF</button>
+      <button onclick="aller('dossier')">Dossier PDF</button>
       <button onclick="exporter()">Exporter</button>
       <button onclick="document.getElementById('fimport').click()">Importer</button>
       <input type="file" id="fimport" accept=".json" style="display:none" onchange="importer(event)">
@@ -2533,6 +2547,29 @@ function importer(ev){
 /* =========================================================
    NAVIGATION
    ========================================================= */
+/* --- Ce qui n'est pas encore ouvert à l'équipe --------------
+   Un onglet peut être terminé sans être en ligne : on le travaille
+   en maquette, et sa mise en service se décide à part. Sans
+   l'interrupteur, l'équipe ne voit rien — ni l'onglet, ni les
+   gestes qui l'alimentent ailleurs dans le cockpit. Ce qui aurait
+   déjà été saisi reste enregistré et ressort intact le jour de
+   l'ouverture : on ne cache que l'affichage.
+
+   S'ouvre en ajoutant ?maquette=1 à l'adresse, se referme avec
+   ?maquette=0. Le choix tient sur l'appareil et non sur le
+   serveur : deux personnes n'ont donc pas à voir la même chose, et
+   personne n'ouvre le chantier à toute l'équipe par mégarde. */
+const EN_CONSTRUCTION = ['rapports'];
+let maquette = (() => {
+  try{
+    const p = new URLSearchParams(location.search).get('maquette');
+    if(p === '1' || p === 'oui'){ localStorage.setItem('cpts64_maquette', 'on'); return true; }
+    if(p === '0' || p === 'non'){ localStorage.removeItem('cpts64_maquette'); return false; }
+    return localStorage.getItem('cpts64_maquette') === 'on';
+  }catch(e){ return false; }
+})();
+const enChantier = id => EN_CONSTRUCTION.indexOf(id) >= 0 && !maquette;
+
 const ONGLETS = [
   {id:'cockpit',   nom:'Cockpit',            groupe:'Pilotage', cpt:null},
   {id:'missions',  nom:'Missions & organigramme', groupe:'Pilotage', cpt:'missions'},
@@ -2564,14 +2601,14 @@ function rendreMesMissions(){
 
 function rendreNav(){
   let h = '', g = '';
-  ONGLETS.forEach(o => {
+  ONGLETS.filter(o => !enChantier(o.id)).forEach(o => {
     if(o.groupe !== g){ g = o.groupe; h += `<div class="groupe">${g}</div>`; }
     const n = o.cpt ? (etat[o.cpt] || []).length : '';
     h += `<button class="${onglet===o.id?'actif':''}" onclick="aller('${o.id}')">${o.nom}${n!==''?`<span class="cpt">${n}</span>`:''}</button>`;
   });
   document.getElementById('nav').innerHTML = h;
 }
-function aller(id){ onglet = id; rapport = ''; rendre(); window.scrollTo(0,0); }
+function aller(id){ onglet = enChantier(id) ? 'cockpit' : id; rapport = ''; rendre(); window.scrollTo(0,0); }
 
 /* =========================================================
    COLLECTIONS
@@ -4317,7 +4354,7 @@ function carteVisio(v, deplie){
 
     h += `<div class="bas-v">
       <button class="btn${vide ? '' : ' sec'}" onclick="ouvrirSaisieVisio('${v.id}')">${vide ? 'Consigner le compte rendu' : 'Modifier'}</button>
-      <button class="btn sec" onclick="ouvrirRetenu('visios','${v.id}')">${v.retenu && v.retenu.genre ? 'Modifier ce qu\'on en retient' : 'Retenir pour les rapports'}</button>
+      ${enChantier('rapports') ? '' : `<button class="btn sec" onclick="ouvrirRetenu('visios','${v.id}')">${v.retenu && v.retenu.genre ? 'Modifier ce qu\'on en retient' : 'Retenir pour les rapports'}</button>`}
       <button class="retirer sup" onclick="supprimerVisio('${v.id}')">Retirer</button>
     </div></div>`;
   }
@@ -9644,7 +9681,10 @@ let rapport = '';
 let brouillonSit = null;
 let genreChoisi = '';
 
-function ouvrirRapport(id){ onglet = 'rapports'; rapport = id; rendre(); window.scrollTo(0,0); }
+function ouvrirRapport(id){
+  if(enChantier('rapports')) return aller('cockpit');
+  onglet = 'rapports'; rapport = id; rendre(); window.scrollTo(0,0);
+}
 
 /* --- Le geste : une étoile, cinq sorties ------------------
    Deux étoiles séparées — une pour le point de situation, une pour
@@ -9689,6 +9729,7 @@ function marquesRetenues(genres){
 }
 
 function boutonRetenu(k, o){
+  if(enChantier('rapports')) return '';
   const on = !!(o.retenu && o.retenu.genre);
   const g = on ? RETENU_DE(o.retenu.genre) : null;
   return `<button class="ret-b${on ? ' on' : ''}" title="${on
@@ -9697,6 +9738,7 @@ function boutonRetenu(k, o){
 }
 
 function marqueRetenue(o){
+  if(enChantier('rapports')) return '';
   const r = o && o.retenu;
   if(!r || !r.genre) return '';
   const g = RETENU_DE(r.genre);
@@ -9756,12 +9798,24 @@ async function retirerRetenu(k, id){
 }
 
 /* --- La page d'entrée -------------------------------------- */
+/* Le bandeau de chantier. Il n'est pas décoratif : cet onglet écrit
+   en main courante et dans un état partagé par toute l'équipe, et
+   personne d'autre ne le voit pour l'instant. Ce qui s'y fait doit
+   donc se savoir. */
+function bandeauChantier(){
+  return `<div class="chantier">
+    <span class="p">En construction</span>
+    <span class="t">Cet onglet est ouvert en maquette, sur cet appareil seulement — le reste de l'équipe ne le voit pas, et les étoiles de marquage n'apparaissent nulle part ailleurs dans le cockpit. Ce qui est enregistré ici l'est pour de bon et part sur le serveur : un point de situation arrêté s'inscrit en main courante comme n'importe quelle autre entrée. Pour refermer le chantier sur cet appareil, ajouter <code>?maquette=0</code> à l'adresse.</span>
+  </div>`;
+}
+
 function vueRapports(){
-  if(rapport === 'situations') return vueSituations();
-  if(rapport === 'retex')      return vueRetex();
-  if(rapport === 'sse')        return vueSSE();
+  const ch = bandeauChantier();
+  if(rapport === 'situations') return ch + vueSituations();
+  if(rapport === 'retex')      return ch + vueRetex();
+  if(rapport === 'sse')        return ch + vueSSE();
   if(rapport === 'dossier')
-    return `<button class="retour-r" onclick="aller('rapports')">← Tous les rapports</button>` + vueDossier();
+    return ch + `<button class="retour-r" onclick="aller('rapports')">← Tous les rapports</button>` + vueDossier();
 
   const sit = situationsTriees();
   const der = sit[0] || null;
@@ -9772,7 +9826,7 @@ function vueRapports(){
   const carte = (id, nom, d, e, vierge) => `<button class="rapp${vierge ? ' vierge' : ''}" onclick="ouvrirRapport('${id}')">
     <div class="n">${nom}</div><div class="d">${d}</div><div class="e">${e}</div></button>`;
 
-  return `<h1>Rapports</h1>
+  return ch + `<h1>Rapports</h1>
   <p class="chapo">Ce que cette crise laisse derrière elle. Quatre documents tirés du même fonds : le point de situation qu'on arrête à une date, la matière du retour d'expérience, les projets de fiches pour le plan SSE, et le dossier de traçabilité complet. Aucun ne se rédige de zéro — ils se remplissent de ce qui est déjà consigné, et de ce que vous marquez d'une étoile au fil de l'eau.</p>
 
   <div class="note">L'étoile ☆ est posée sur chaque entrée de la <a href="#" onclick="aller('courante');return false;">main courante</a>, des <a href="#" onclick="aller('terrain');return false;">remontées terrain</a>, des <a href="#" onclick="aller('ars');return false;">échanges avec l'ARS</a> et des visios de crise. Un clic, cinq secondes : on dit si l'entrée est un fait marquant, ce qui a marché, ce qui a manqué, ce qu'on changera, ou un point de doctrine. Les quatre rapports se remplissent seuls à partir de là.</p></div>
@@ -10418,6 +10472,9 @@ function majPrintHead(){
 }
 
 function rendre(){
+  /* Une session ouverte sur un onglet remis en chantier ne doit pas
+     rester bloquée dessus : elle retombe sur le cockpit. */
+  if(enChantier(onglet)) onglet = 'cockpit';
   normaliserPersonnes();
   rendreNav();
   rendreMesMissions();
