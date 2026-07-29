@@ -591,6 +591,10 @@ if (isset($_GET['consultations'])) {
     $nom     = txt($in['nom'] ?? '', 80);
     $prenom  = txt($in['prenom'] ?? '', 80);
     $tel     = txt($in['tel'] ?? '', 40);
+    /* Un cabinet donne souvent deux lignes : le standard, puis le
+       portable quand le standard ne répond pas. Le second numéro se
+       range derrière le premier, jamais à sa place. */
+    $tel2    = txt($in['tel2'] ?? '', 40);
     $adresse = txt($in['adresse'] ?? '', 200);
     $mail    = txt($in['mail'] ?? '', 120);
     if ($mail !== '' && !filter_var($mail, FILTER_VALIDATE_EMAIL)) $mail = '';
@@ -710,6 +714,7 @@ if (isset($_GET['consultations'])) {
             'commune'    => txt($in['commune'] ?? '', 80),
             'adresse'    => $adresse,
             'tel'        => $tel,
+            'tel2'       => $tel2,
             'mail'       => $mail,
             'rdv'        => txt($in['rdv'] ?? '', 200),
             /* Séparés par un point médian, jamais par une virgule :

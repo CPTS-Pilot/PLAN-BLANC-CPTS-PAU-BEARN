@@ -416,9 +416,12 @@ function formulaire(){
         <input id="f-nom" autocomplete="family-name" placeholder="Ex. Durand"></label>
       <label><span class="k">Prénom <i>*</i></span>
         <input id="f-prenom" autocomplete="given-name" placeholder="Ex. Marie"></label>
-      <label><span class="k">Téléphone <i>*</i></span>
+      <label><span class="k">Téléphone principal <i>*</i></span>
         <input id="f-tel" type="tel" autocomplete="tel" inputmode="tel" placeholder="05 59 12 34 56">
         <span class="aide">Le numéro par lequel la coordination vous rappellera.</span></label>
+      <label><span class="k">Téléphone en second recours</span>
+        <input id="f-tel2" type="tel" inputmode="tel" placeholder="06 12 34 56 78">
+        <span class="aide">Si le premier ne répond pas — ligne directe, portable. Non obligatoire.</span></label>
       <label><span class="k">Courriel</span>
         <input id="f-mail" type="email" autocomplete="email" placeholder="nom@exemple.fr"></label>
       <label class="large"><span class="k">Cabinet, maison ou centre de santé</span>
@@ -790,6 +793,7 @@ async function valider(){
     prenom:      val('f-prenom'),
     rpps:        val('f-rpps'),
     tel:         val('f-tel'),
+    tel2:        val('f-tel2'),
     mail:        val('f-mail'),
     structure:   val('f-structure'),
     adresse:     val('f-adresse'),
@@ -932,7 +936,8 @@ function recapitulatif(d, ref, quand){
     ${l('Cabinet, maison ou centre de santé', d.structure)}
     ${l('Adresse du cabinet', d.adresse)}
     ${l('Commune', d.commune)}
-    ${l('Téléphone', d.tel)}
+    ${l('Téléphone principal', d.tel)}
+    ${d.tel2 ? l('Téléphone en second recours', d.tel2) : ''}
     ${l('Courriel', d.mail)}
 
     <h3>2 · Réponse au recensement</h3>

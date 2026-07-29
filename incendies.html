@@ -185,8 +185,8 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .fiche li{margin-bottom:5px}
 .fiche .stop{background:#FBEDE9;border-left:3px solid var(--braise);border-radius:0 7px 7px 0;padding:10px 13px;margin-top:5px}
 .mission .barre{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px dashed var(--trait);align-items:center}
-.mission .sup-m{margin-left:auto;background:none;border:0;color:var(--texte-2);opacity:.45;cursor:pointer;font-size:18px;padding:4px 8px}
-.mission .sup-m:hover{opacity:1;color:var(--braise)}
+.mission .sup-m,.miss-c .sup-m{margin-left:auto;background:none;border:0;color:var(--texte-2);opacity:.45;cursor:pointer;font-size:18px;padding:4px 8px}
+.mission .sup-m:hover,.miss-c .sup-m:hover{opacity:1;color:var(--braise)}
 .espace{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:12px;border-top:1px dashed var(--trait);flex-wrap:wrap}
 .espace .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2)}
 .mesmissions{padding:12px 14px;border-top:1px solid rgba(255,255,255,.09)}
@@ -267,6 +267,128 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .renforts .rplus:hover{border-color:var(--encre-2);color:var(--encre-2)}
 .renforts-m{margin-top:12px}
 .renforts-m .k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:4px}
+
+/* =========================================================
+   MISSIONS ET ORGANIGRAMME — les deux feuillets
+
+   La même liste se lit par personne ou par mission, jamais les
+   deux sur le même écran. « Par personne » est le feuillet
+   d'arrivée : en crise, la première question est qui est là.
+   ========================================================= */
+
+/* Ce qui manque, avant de descendre dans le détail. */
+.miss-trous{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 22px}
+.miss-trou{flex:1 1 186px;background:var(--carte);border:1px solid var(--trait);
+  border-left:3px solid var(--texte-2);border-radius:9px;padding:11px 13px}
+.miss-trou.alerte{border-left-color:var(--braise)}
+.miss-trou.veille{border-left-color:var(--ambre)}
+.miss-trou .n{font-family:var(--display);font-weight:700;font-size:26px;line-height:1;
+  color:var(--encre);font-variant-numeric:tabular-nums}
+.miss-trou.alerte .n{color:var(--braise)}
+.miss-trou .l{font-size:12.5px;color:var(--texte-2);margin-top:4px;line-height:1.3}
+.miss-trou .l button{background:none;border:0;padding:0;color:var(--encre-2);
+  font-family:inherit;font-size:12.5px;cursor:pointer;text-decoration:underline}
+
+.miss-lunettes{display:flex;background:var(--surface);border:1px solid var(--trait);
+  border-radius:9px;padding:4px;width:max-content;max-width:100%;margin:0 0 20px}
+.miss-lunettes button{background:none;border:0;border-radius:6px;padding:9px 17px;
+  font-size:14px;color:var(--texte-2);font-weight:600;min-height:40px;cursor:pointer}
+.miss-lunettes button.on{background:var(--carte);color:var(--encre);box-shadow:0 1px 3px rgba(6,43,99,.13)}
+
+/* La carte d'une personne, réduite à l'os : son nom, et ce
+   qu'elle porte. Le rôle passe en filet de couleur à gauche
+   de chaque mission — plein pour le pilote, gris pour l'appui. */
+.miss-gens{display:grid;gap:13px;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));margin-bottom:22px}
+.miss-pers{background:var(--carte);border:1px solid var(--trait);border-radius:11px;
+  padding:16px 17px 14px;display:flex;flex-direction:column}
+.miss-pers .nom{font-family:var(--display);font-weight:700;font-size:25px;line-height:1.08;
+  letter-spacing:-.02em;color:var(--encre)}
+.miss-pers .prof{font-size:12.5px;color:var(--texte-2);margin-top:4px;line-height:1.3}
+.miss-pers .lignes{margin-top:14px;display:grid;gap:10px}
+.miss-pers .lg{padding:0 0 0 12px;border:0;border-left:3px solid var(--encre-2);
+  background:none;text-align:left;font-family:inherit;width:100%;cursor:pointer}
+.miss-pers .lg.appui{border-left-color:var(--trait)}
+.miss-pers .lg .role{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--encre-2)}
+.miss-pers .lg.appui .role{color:var(--texte-2)}
+.miss-pers .lg .t{display:block;font-size:14.5px;line-height:1.3;margin-top:2px;color:var(--texte)}
+.miss-pers .lg:hover .t{color:var(--encre-2)}
+.miss-pers .tel{margin-top:auto;padding-top:14px}
+.miss-pers .tel a{display:inline-flex;align-items:center;gap:7px;text-decoration:none;
+  color:var(--encre-2);font-size:14px;padding:7px 10px;background:var(--cobalt-clair);
+  border-radius:7px;min-height:40px;margin-right:6px}
+.miss-pers .tel a:active{background:#D6E5F9}
+.miss-pers .manquant{background:none;border:0;padding:0;color:var(--braise);
+  font-family:inherit;font-size:13px;font-style:italic;cursor:pointer;text-decoration:underline}
+.miss-pers .modif{background:none;border:0;padding:0;color:var(--texte-2);font-family:inherit;
+  font-size:12px;cursor:pointer;display:block;margin-top:7px}
+.miss-pers .modif:hover{color:var(--encre-2)}
+.miss-neuf{background:none;border:2px dashed var(--trait);border-radius:11px;padding:20px 17px;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;
+  cursor:pointer;font-family:inherit;text-align:left;min-height:150px;color:var(--texte-2)}
+.miss-neuf:hover{border-color:var(--encre-2);background:var(--cobalt-clair)}
+.miss-neuf .plus{font-family:var(--display);font-size:28px;line-height:1;color:var(--encre-2)}
+.miss-neuf .t{font-family:var(--display);font-weight:700;font-size:18px;color:var(--encre)}
+.miss-neuf .d{font-size:13px;line-height:1.4}
+
+/* Les missions que personne ne porte ne sont pas quelqu'un :
+   elles descendent en bande sous les noms, au lieu de se faire
+   passer pour un membre de l'équipe. */
+.apourvoir{border:1px solid var(--braise);border-left-width:4px;border-radius:9px;
+  padding:15px 17px;background:var(--carte);margin-bottom:24px}
+.apourvoir .tt{font-family:var(--display);font-weight:700;font-size:17px;color:var(--braise);margin-bottom:3px}
+.apourvoir .ss{font-size:13px;color:var(--texte-2);margin-bottom:11px}
+.apourvoir ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.apourvoir li{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.apourvoir li .t{flex:1;min-width:190px;background:none;border:0;padding:0;text-align:left;
+  font-family:inherit;font-size:14.5px;line-height:1.3;color:var(--texte);cursor:pointer}
+.apourvoir li .t:hover{color:var(--encre-2)}
+.apourvoir li .designer{background:none;border:1px solid var(--trait);border-radius:6px;
+  color:var(--braise);font-family:inherit;font-size:12.5px;padding:5px 10px;cursor:pointer;min-height:32px}
+.apourvoir li .designer:hover{border-color:var(--braise);background:var(--braise);color:#fff}
+
+/* La carte d'une mission, groupée sous son statut. Le liseré de
+   gauche dit l'état ; la prochaine action tient le centre. */
+.miss-grp{margin-bottom:28px}
+.miss-grp > h3{font-family:var(--mono);font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--texte-2);margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--trait);
+  display:flex;align-items:baseline;gap:9px;font-weight:400}
+.miss-grp > h3 .c{font-family:var(--corps);letter-spacing:0;text-transform:none;font-size:12.5px}
+.miss-pile{display:grid;gap:12px}
+.miss-c{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--trait);
+  border-radius:10px;padding:16px 18px;display:grid;gap:12px}
+.miss-c.st-cours{border-left-color:var(--stable)}
+.miss-c.st-lancer{border-left-color:var(--encre-2)}
+.miss-c.st-attente{border-left-color:var(--ambre)}
+.miss-c.st-bloque{border-left-color:var(--braise)}
+.miss-c.st-fini{opacity:.66}
+.miss-c .haut{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.miss-c .titre{font-family:var(--display);font-weight:600;font-size:16.5px;line-height:1.25;
+  color:var(--encre);flex:1;min-width:220px}
+.miss-c .detail{font-size:14px;color:var(--texte-2);line-height:1.4}
+.miss-prochaine{background:var(--cobalt-clair);border:0;border-radius:8px;padding:11px 13px;
+  text-align:left;width:100%;font-family:inherit;cursor:pointer;display:block}
+.miss-prochaine .k{color:var(--encre-2)}
+.miss-prochaine p{margin:4px 0 0;font-size:14px;line-height:1.45;color:var(--texte)}
+.miss-prochaine:hover{background:#D8E7FA}
+.miss-prochaine.vide{background:var(--surface);border:1px dashed var(--trait)}
+.miss-prochaine.vide p{color:var(--texte-2);font-style:italic}
+.miss-prochaine.vide:hover{border-color:var(--encre-2);background:var(--cobalt-clair)}
+.miss-eq{display:flex;flex-wrap:wrap;gap:10px 26px;align-items:flex-start}
+.miss-eq > div{min-width:148px}
+.miss-eq .qn{display:inline-block;margin-top:3px;font-size:14.5px;font-family:var(--display);
+  font-weight:600;color:var(--texte)}
+.miss-eq .qn.manque{color:var(--braise);background:none;border:0;padding:0;cursor:pointer;
+  border-bottom:1px dashed currentColor}
+.miss-eq .qn.absent{color:var(--texte-2);font-weight:400;font-family:var(--corps)}
+.miss-eq .renf{font-size:13.5px;line-height:1.35;margin-top:3px}
+.miss-eq .renf em{display:block;font-style:normal;font-size:12.5px;color:var(--texte-2)}
+.miss-c .barre-m{display:flex;flex-wrap:wrap;gap:8px;align-items:center;
+  padding-top:11px;border-top:1px dashed var(--trait)}
+.miss-c .barre-m .sup-m{margin-left:auto}
+@media(max-width:620px){
+  .miss-c .barre-m .sup-m{margin-left:0}
+}
 .renforts-m .renforts{margin-left:0}
 .legende{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--texte-2);margin:-12px 0 18px}
 .legende span{display:flex;align-items:center;gap:6px}
@@ -680,9 +802,25 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .stock .bl{font-size:13.5px;line-height:1.45}
 .stock .horaires{white-space:pre-line;font-size:13.5px;line-height:1.45}
 .stock .obs{font-size:12.5px;background:#FCF3E4;color:#8A5D12;border-radius:6px;padding:8px 10px}
+/* Ce que le médecin a dit en plus ne peut pas se lire comme une
+   ligne de plus : c'est ce qui fait rappeler, ou ne pas rappeler.
+   Il se signale — pastille, gras, filet de braise — et se voit
+   avant le reste de la fiche. */
+.stock .precise{display:flex;gap:9px;align-items:flex-start;background:#FBEDE9;
+  border-left:3px solid var(--braise);border-radius:0 7px 7px 0;padding:9px 11px;
+  font-size:13.5px;line-height:1.45;font-weight:600;color:#8A2A1A;white-space:pre-line}
+.stock .precise .ic{flex:none;width:19px;height:19px;border-radius:50%;background:var(--braise);
+  color:#fff;font-family:var(--display);font-weight:700;font-size:13px;line-height:19px;
+  text-align:center;margin-top:1px}
+.stock .precise .k{color:var(--braise);opacity:.85;font-weight:400}
 .stock .liens{display:flex;flex-direction:column;gap:6px;margin-top:auto}
 .stock .liens a{display:inline-flex;align-items:center;min-height:44px;padding:9px 13px;border-radius:8px;text-decoration:none;font-size:14px}
 .stock .liens a.tel{background:var(--encre-2);color:#fff;font-weight:600;font-family:var(--display)}
+/* Le second numéro se compose après le premier : il se voit, mais
+   en creux — jamais deux boutons pleins qui se disputent le doigt. */
+.stock .liens a.tel.second{background:var(--carte);color:var(--encre-2);border:1px solid var(--encre-2)}
+.stock .liens a.tel{flex-direction:column;align-items:flex-start;justify-content:center}
+.stock .liens a.tel small{font-family:var(--corps);font-weight:400;font-size:11px;opacity:.85;line-height:1.2}
 .stock .liens a.adr{background:var(--cobalt-clair);color:var(--encre-2);font-size:13px}
 .stock .oriente{font-family:var(--mono);font-size:11px;color:var(--stable)}
 /* La tête de fiche : le nom, où il exerce, sa réponse. Les deux
@@ -1107,10 +1245,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 @media print{
   @page{margin:14mm}
   body{background:#fff;font-size:10.5pt}
-  .rail,.bandeau,.filtres,.feuillets,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.pt .b,.guide,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve,.ref .b,.ref.neuf,.tamis,.retour-f,.voies,.sugg{display:none!important}
+  .rail,.bandeau,.filtres,.feuillets,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.pt .b,.guide,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve,.ref .b,.ref.neuf,.tamis,.retour-f,.voies,.sugg,.miss-lunettes,.miss-neuf,.miss-c .barre-m,.miss-pers .modif,.apourvoir li .designer{display:none!important}
   td.act,th:last-child{display:none!important}
   .contenu{padding:0;max-width:none}
-  .carte,.tw,.mission,.pers,.ligne,.pt,.visio,.ent-r{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
+  .carte,.tw,.mission,.pers,.ligne,.pt,.visio,.ent-r,.miss-pers,.miss-c,.apourvoir{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
+  .miss-pers .manquant,.miss-eq .qn.manque{text-decoration:none;color:#555}
   .visio .tete .chev{display:none}
   .reg-jour{break-after:avoid}
   .entete-print{display:block!important;border-bottom:2px solid #062B63;padding-bottom:8px;margin-bottom:16px}
@@ -1453,6 +1592,7 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
      public s'anime, les réponses tombent dans le registre. */
   consultations: { ouverte:false, message:'', cadre:"Il s'agit de consultations ponctuelles au cabinet, aux horaires que vous choisissez : renouvellement d'ordonnance interrompue par un départ précipité, suites d'inhalation de fumées. Répondre ne vous engage ni à devenir médecin traitant, ni à recevoir plus de patients que vous ne l'avez indiqué." },
   courante: [
+    {id:'mc36', date:'2026-07-29', heure:'', source:'', evenement:"Deux corrections au feuillet « Médecins volontaires », tirées de la saisie au téléphone. Les précisions notées sur une fiche ne se lisaient plus que comme une ligne parmi les autres, en bas de carte : elles remontent en tête, juste sous le nom, dans un encadré à filet rouge avec une pastille d'alerte, et s'écrivent en gras. C'est là que se trouve ce qui fait rappeler ou ne pas rappeler un cabinet — « ne prend que le matin », « rappeler avant d'adresser », « uniquement ses propres patients » — et cela ne doit plus se manquer d'un coup d'œil. Second point : un cabinet donne souvent deux lignes, le standard et le portable. La fiche accepte désormais un second numéro, dit tel quel — « en second recours » — avec la possibilité de préciser à qui il correspond. Le principal reste le bouton bleu plein, à composer en premier ; le second se pose dessous, en bouton creux, et compose lui aussi d'un doigt. Les deux numéros suivent partout : bulle de la carte, écran d'orientation d'un patient, écran de confirmation d'un créneau, export Excel.", suite:"Le formulaire en ligne des généralistes pose lui aussi la question du second numéro, sans l'exiger, et le récapitulatif remis au médecin le porte. Les fiches déjà saisies ne bougent pas : le second numéro s'ajoute par le bouton « Modifier », au fil des rappels.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc35', date:'2026-07-29', heure:'', source:'', evenement:"Reprise du feuillet « Patients signalés / orientés », après une première saisie réelle. Le formulaire de signalement ne demandait pas le numéro de téléphone du patient : il le demande désormais, juste sous l'âge. C'était le manque le plus gênant — une fois le médecin trouvé, on n'avait personne à rappeler et il fallait attendre que la pharmacie rappelle d'elle-même. Le numéro n'est pas obligatoire : un signalement sans numéro vaut mieux qu'un signalement perdu. Il s'ajoute aussi aux lignes déjà saisies par le crayon de modification, part à l'export Excel, entre dans la recherche, et disparaît avec le reste à l'anonymisation du registre. Le registre lui-même ne se lit plus en bandes pleine largeur mais en cartes : trois par ligne sur ordinateur, deux en tablette, une seule sur téléphone. Chaque carte porte en tête le nom, la commune et l'heure, puis le motif dans son propre encadré, en gros — c'est ce pour quoi on décroche. Une personne signalée urgente et sans médecin porte un bandeau rouge pleine largeur en tête de carte : dans une liste de trente, c'est la seule chose qui doit sauter aux yeux. Le numéro s'affiche en bouton bleu qui compose l'appel d'un doigt, et une carte sans numéro le dit.", suite:"La recherche avancée du registre est repliée : ne restent visibles que le champ de recherche et le tri, sur une seule ligne. Période, statut, urgence et voie dorment derrière un bouton « Affiner » qui compte les filtres posés — un registre tronqué ne doit jamais passer pour un registre complet. Corrigé au passage : le pied de chaque ligne écrivait « Orientation par » le nom de la personne qui avait saisi le signalement, alors qu'à ce moment-là rien n'est encore orienté. Il écrit maintenant « Saisie par », et n'ajoute « Orientation par » qu'une fois un médecin désigné, au nom de la personne qui l'a désigné — ce n'est pas toujours la même.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc34', date:'2026-07-29', heure:'', source:'', evenement:"L'onglet « Appels CPTS » quitte les Actions pour le Suivi, et prend le nom de « Contact avec les CPTS ». Il se lit maintenant juste sous « Situation régionale », dont il est le prolongement : appeler une CPTS voisine n'est pas une action que la CPTS Pau Béarn conduit pour elle-même, c'est la manière dont on sait ce qui se passe là-bas. Rien ne change dans l'écran : les mêmes fiches, les mêmes numéros, le même journal d'appels, le même export.", suite:"Les Actions ne portent plus que ce que la CPTS mène en propre : la collecte, l'appel au renfort, les patients évacués.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc33', date:'2026-07-29', heure:'', source:'', evenement:"Mise en carte des médecins généralistes dans l'onglet « Patients évacués ». Une adresse portée sur une fiche devient un point sur une carte, sans rien à faire de plus : le cockpit la situe tout seul auprès de la Base Adresse Nationale, garde le point avec la fiche et ne le recalcule que si l'adresse change. Deux cartes en découlent. Dans le feuillet « Médecins volontaires », la cartographie du registre entier, un point par cabinet coloré selon la réponse du médecin — vert pour ceux qui acceptent, ambre pour ceux qui ont été sollicités sans réponse ferme, bleu pour ceux qui restent à solliciter, gris pour ceux qui ont dit non : ce sont les trous entre les points qui disent les communes à couvrir. Dans le feuillet « Patients signalés / orientés », au-dessus de la liste, la cartographie des seuls médecins volontaires du territoire : quand une pharmacie appelle, on voit qui est le plus près de la personne avant de décrocher. Toucher un point ouvre le nom du médecin, sa réponse, son numéro qui compose et l'itinéraire ; depuis une fiche du registre, « Situer sur la carte » fait l'inverse. Une adresse que le service ne retrouve pas est signalée sur sa fiche et sous la carte, à corriger ; un médecin dont on n'a que la commune est posé sur le bourg, en point pâle.", suite:"Seules les adresses professionnelles des médecins sont transmises au service d'adresses — aucune donnée de patient ne sort du cockpit. Les deux services employés sont publics et sans compte à ouvrir : la Base Adresse Nationale pour situer, OpenStreetMap pour le fond de carte. Sur un poste hors ligne ou derrière un réseau qui les filtre, la carte le dit et s'efface : la liste, les adresses et le lien « Itinéraire » continuent de fonctionner comme avant. À l'usage, vérifier les adresses signalées non retrouvées — c'est le plus souvent une rue mal orthographiée ou une commune manquante.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
@@ -2066,30 +2206,61 @@ function coord(nom){
   normaliserPersonnes();
   return etat.personnes[cleP(nom)] || {};
 }
+/* Un seul carnet pour tout le monde. La case « cellule de crise »
+   remplace le bloc des référents, qui tenait sa propre liste de
+   noms et de numéros en tête de l'onglet : la même personne y
+   figurait deux fois, avec deux téléphones à saisir. */
 function editerContact(nom){
-  const c = coord(nom);
-  document.getElementById('modale').innerHTML = `<h3>Contact de ${esc(nom)}</h3>
-    <p style="color:var(--texte-2);margin:0 0 14px">Renseigné une fois, utilisable par tout le monde en un clic depuis l'organigramme.</p>
-    <label><span class="k">Téléphone</span><input id="ct-tel" type="tel" value="${esc(c.tel||'')}" placeholder="06 12 34 56 78"></label>
-    <label style="margin-top:12px"><span class="k">Mail</span><input id="ct-mail" type="email" value="${esc(c.mail||'')}" placeholder="prenom.nom@exemple.fr"></label>
-    <div class="actions"><button class="btn" onclick="validerContact('${esc(nom).replace(/'/g,"\\'")}')">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  const neuf = !nom;
+  const c = neuf ? {} : coord(nom);
+  const r = neuf ? null : referentDe(nom);
+  const nEsc = esc(nom || '').replace(/'/g, "\\'");
+  document.getElementById('modale').innerHTML = `<h3>${neuf ? "Ajouter quelqu'un" : 'Fiche de ' + esc(nom)}</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px">Renseignée une fois, utilisable par tout le monde en un clic depuis l'organigramme.</p>
+    ${neuf ? `<label style="margin-bottom:12px"><span class="k">Prénom et nom *</span>
+      <input id="ct-nom" placeholder="Prénom et nom"></label>` : ''}
+    <label style="margin-bottom:12px"><span class="k">Profession et rôle</span>
+      <input id="ct-prof" value="${esc((r && r.profession) || c.profession || '')}" placeholder="Ex. infirmière — vice-présidente"></label>
+    <label style="margin-bottom:12px"><span class="k">Téléphone</span>
+      <input id="ct-tel" type="tel" value="${esc(c.tel || (r && r.tel) || '')}" placeholder="06 12 34 56 78"></label>
+    <label style="margin-bottom:12px"><span class="k">Mail</span>
+      <input id="ct-mail" type="email" value="${esc(c.mail || '')}" placeholder="prenom.nom@exemple.fr"></label>
+    <label class="coche"><input type="checkbox" id="ct-cellule" ${r ? 'checked' : ''}>
+      <span>Fait partie de la cellule de crise<span class="d">Apparaît en tête de l'organigramme, avec sa profession.</span></span></label>
+    <div class="actions"><button class="btn" onclick="validerContact('${nEsc}')">Enregistrer</button>
+      <button class="btn sec" onclick="fermer()">Annuler</button></div>`;
   document.getElementById('rideau').classList.add('on');
+  setTimeout(()=>{ const i = document.getElementById(neuf ? 'ct-nom' : 'ct-prof'); if(i) i.focus(); }, 60);
 }
 async function validerContact(nom){
   normaliserPersonnes();
-  etat.personnes[cleP(nom)] = {
-    nom: nom,
-    tel: document.getElementById('ct-tel').value.trim(),
-    mail: document.getElementById('ct-mail').value.trim()
+  const champ = document.getElementById('ct-nom');
+  const n = champ ? champ.value.trim() : nom;
+  if(!n){ toast("Le nom est obligatoire"); return; }
+  const prof = document.getElementById('ct-prof').value.trim();
+  const tel  = document.getElementById('ct-tel').value.trim();
+  etat.personnes[cleP(n)] = {
+    nom: n, tel: tel,
+    mail: document.getElementById('ct-mail').value.trim(),
+    profession: prof
   };
+  /* L'appartenance à la cellule de crise se coche ici : c'est la
+     seule chose que le registre des référents retient encore. */
+  etat.referents = etat.referents || [];
+  const dedans = document.getElementById('ct-cellule').checked;
+  const r = etat.referents.find(x => cleP(x.nom) === cleP(n));
+  if(dedans && r) Object.assign(r, {nom:n, profession:prof, tel:tel, modifiePar:moi});
+  else if(dedans) etat.referents.push({id:uid(), nom:n, profession:prof, tel:tel,
+                                       auteur:moi, quand:new Date().toISOString()});
+  else if(r){ noterRetrait(r.id); etat.referents = etat.referents.filter(x => x !== r); }
   /* Ce carnet a déjà été perdu une fois : on force son envoi au lieu
      de s'en remettre à la détection de changement, et on dit ce qui
      s'est réellement passé plutôt qu'un « enregistré » de principe. */
   empreinte.personnes = null;
   const issue = await sauver();
   fermer(); rendre();
-  toast(issue === 'ok' ? "Contact enregistré et partagé avec le copil"
-                       : "Contact conservé sur cet appareil — le serveur n'a pas répondu");
+  toast(issue === 'ok' ? "Fiche enregistrée et partagée avec le copil"
+                       : "Fiche conservée sur cet appareil — le serveur n'a pas répondu");
 }
 
 /* Toute personne dont le nom figure déjà dans le cockpit : l'équipe de
@@ -2108,6 +2279,8 @@ function nomsMissionnes(){
     if(t && t !== 'Anonyme') v.set(cleP(t), t);
   });
   (etat.referents||[]).forEach(r => ajouter(r.nom));
+  normaliserPersonnes();
+  Object.values(etat.personnes||{}).forEach(p => ajouter(p.nom));
   etat.missions.forEach(m => {
     ajouter(m.pilote); ajouter(m.suppleant);
     (Array.isArray(m.renforts) ? m.renforts : []).forEach(r => ajouter(r.nom));
@@ -2665,8 +2838,8 @@ const CHAMPS = {
   medecins: {
     titre:"Médecins généralistes volontaires",
     chapo:"Qui accepte de recevoir en consultation des patients évacués sans médecin traitant sur le territoire : pour quels motifs, combien, à quel délai et à quelles conditions. C'est ce vivier qui est transmis aux pharmacies et aux structures de soins non programmés — et il ne s'y transmet que les médecins qui l'ont accepté.",
-    /* La saisie au cockpit tient en neuf champs : on la remplit
-       le téléphone à l'oreille, pendant que le médecin parle. Tout
+    /* La saisie au cockpit tient en une poignée de champs : on la
+       remplit le téléphone à l'oreille, pendant qu'il parle. Tout
        ce qui se demande par le formulaire en ligne — motifs,
        capacité, créneaux, conditions, accord de diffusion — reste
        défini plus bas, marqué « hors:true » : ces champs ne sont
@@ -2682,9 +2855,18 @@ const CHAMPS = {
       {c:'adresse', l:"Adresse", t:'text', large:true, ph:"12 rue Carnot"},
       {c:'commune', l:"Commune", t:'text', ph:"Pau"},
       {t:'titre', l:"Comment le joindre", sous:"Par quelle voie une pharmacie doit demander un rendez-vous."},
-      {c:'tel', l:"Téléphone", t:'text', ph:"05 59 00 00 00"},
+      {c:'tel', l:"Téléphone principal", t:'text', ph:"05 59 00 00 00",
+       aide:"Le numéro qu'on compose en premier."},
       {c:'rdv', l:"Modalité d'appel", t:'choix', o:['Secrétariat','Ligne directe','Autre'],
        aide:"Retouchez la pastille pour ne rien indiquer."},
+      /* Un cabinet donne souvent deux lignes : le standard, et le
+         portable quand le standard ne répond pas. Le second numéro
+         n'est pas un doublon du premier — il se compose après lui,
+         et la fiche le dit. */
+      {c:'tel2', l:"Téléphone en second recours", t:'text', ph:"06 12 34 56 78",
+       aide:"À composer si le numéro principal ne répond pas."},
+      {c:'tel2Libelle', l:"À qui correspond ce second numéro", t:'text',
+       ph:"Portable du médecin, ligne directe…"},
       {t:'titre', l:"Sa réponse"},
       {c:'statut', l:"Volontaire pour recevoir des patients évacués", t:'choix',
        o:[{v:'Volontaire', l:'Oui'}, {v:'Indisponible', l:'Non'}], d:() => 'Volontaire'},
@@ -2704,8 +2886,9 @@ const CHAMPS = {
       {c:'par', l:"Sondé par", t:'text', hors:true},
       {c:'origine', l:"Provenance de la réponse", t:'select', o:VOL_ORIGINES, hors:true}
     ],
-    cols:['date','heure','nom','prenom','rpps','structure','commune','adresse','tel','mail','rdv','motifs',
-          'capacite','creneaux','delai','conditions','mt','diffusion','par','origine','statut','auteur']
+    cols:['date','heure','nom','prenom','rpps','structure','commune','adresse','tel','tel2','tel2Libelle',
+          'mail','rdv','motifs','capacite','creneaux','delai','conditions','mt','diffusion','par','origine',
+          'statut','auteur']
   },
   /* Une ligne par patient signalé, de la remontée de la pharmacie
      jusqu'au rendez-vous obtenu. Le registre porte désormais
@@ -3253,8 +3436,8 @@ function vueCockpit(){
       <span class="etiq ${classeStatut(m.statut)}">${esc(m.statut)}</span></div>
       <div class="meta">
         <div><span class="k">Pilote</span>${esc(m.pilote) || '<em style="color:var(--braise)">à désigner</em>'}</div>
-        <div><span class="k">Mandat ARS</span>${esc(m.mandat)}</div>
         <div><span class="k">Suppléant</span>${esc(m.suppleant) || '—'}</div>
+        <div style="flex:1 1 100%"><span class="k">Prochaine action</span>${esc(m.prochaine) || '<em style="color:var(--texte-2)">à écrire</em>'}</div>
       </div></div>`;
   });
 
@@ -3309,162 +3492,117 @@ async function retirerConsigne(type, i){
    du pilote, chacune avec ce qu'elle prend en charge. */
 function renfortsDe(m){ return Array.isArray(m.renforts) ? m.renforts : []; }
 
-function organigramme(){
+function referentDe(nom){
+  return (etat.referents || []).find(r => cleP(r.nom) === cleP(nom)) || null;
+}
+
+/* L'équipe telle qu'elle se déduit des missions. Les référents de
+   la gestion de crise y figurent au même titre, même sans mission :
+   ils n'ont plus de bloc à part, ni de carnet d'adresses parallèle.
+   Ceux qu'on a saisis sans rien leur confier encore y sont aussi. */
+function equipeDeCrise(){
   const gens = new Map();
+  const inscrire = n => {
+    const t = (n || '').trim();
+    if(!t || t === 'Anonyme') return null;
+    if(!gens.has(cleP(t))) gens.set(cleP(t), {nom:t, pilote:[], appui:[]});
+    return gens.get(cleP(t));
+  };
   const ajoute = (nom, m, role, mention) => {
-    const n = (nom || '').trim();
-    if(!n) return;
-    const cle = cleP(n);
-    if(!gens.has(cle)) gens.set(cle, {nom:n, pilote:[], appui:[]});
-    gens.get(cle)[role].push({t:m.titre, esp:espaceDe(m), mid:m.id, mention:mention||''});
+    const g = inscrire(nom);
+    if(g) g[role].push({mid:m.id, titre:m.titre, mention:mention || ''});
   };
   etat.missions.forEach(m => {
     ajoute(m.pilote, m, 'pilote');
     ajoute(m.suppleant, m, 'appui', 'Suppléant');
     renfortsDe(m).forEach(r => ajoute(r.nom, m, 'appui', r.role || 'Renfort'));
   });
+  (etat.referents || []).forEach(r => inscrire(r.nom));
+  normaliserPersonnes();
+  Object.values(etat.personnes || {}).forEach(p => inscrire(p.nom));
 
-  const liste = [...gens.values()].sort((a,b) =>
-    b.pilote.length - a.pilote.length || a.nom.localeCompare(b.nom, 'fr'));
-  const vacantes = etat.missions.filter(m => !(m.pilote || '').trim());
+  /* La cellule de crise d'abord, puis ceux qui pilotent le plus. */
+  return [...gens.values()]
+    .map(p => Object.assign(p, {ref: referentDe(p.nom)}))
+    .sort((a,b) => (b.ref ? 1 : 0) - (a.ref ? 1 : 0)
+                || b.pilote.length - a.pilote.length
+                || a.nom.localeCompare(b.nom, 'fr'));
+}
 
-  if(!liste.length && !vacantes.length) return '';
-
-  let h = `<div class="legende">
-    <span><i style="background:var(--cobalt-clair)"></i> Pilote de la mission</span>
-    <span><i style="background:#F4F6FA;border:1px solid var(--trait)"></i> En appui</span>
-    <span><i style="background:var(--braise)"></i> Mission sans pilote</span>
-  </div><div class="orga">`;
+/* Le feuillet d'arrivée : le nom, et ce que la personne porte.
+   Rien d'autre. Le statut, la prochaine action et les renforts se
+   lisent dans « Par mission » — la même liste n'est jamais
+   affichée deux fois sur le même écran. */
+function vuePersonnes(){
+  const liste = equipeDeCrise();
+  let h = `<div class="miss-gens">`;
 
   liste.forEach(p => {
-    const tot = p.pilote.length + p.appui.length;
     const c = coord(p.nom);
     const nEsc = esc(p.nom).replace(/'/g, "\\'");
+    const prof = [p.ref ? p.ref.profession : c.profession, p.ref ? 'Cellule de crise' : '']
+      .map(x => (x || '').trim()).filter(Boolean).join(' · ');
     let contact = '';
-    if(c.tel) contact += `<a href="tel:${esc(c.tel.replace(/\s/g,''))}">📞 ${esc(c.tel)}</a>`;
+    if(c.tel)  contact += `<a href="tel:${esc(String(c.tel).replace(/\s/g,''))}">📞 ${esc(c.tel)}</a>`;
     if(c.mail) contact += `<a href="mailto:${esc(c.mail)}">✉️ ${esc(c.mail)}</a>`;
-    if(!contact) contact = `<span class="abs">Aucun contact renseigné</span>`;
-    h += `<div class="pers">
-      <div class="qui">${p.pilote.length ? 'Pilote' : 'Appui'}</div>
+
+    h += `<div class="miss-pers">
       <div class="nom">${esc(p.nom)}</div>
-      <div class="compte">${tot} mission${tot>1?'s':''}${p.pilote.length&&p.appui.length?` · ${p.pilote.length} pilotée${p.pilote.length>1?'s':''}, ${p.appui.length} en appui`:''}</div>
-      <div class="coord">${contact}
-        <button class="modif" onclick="editerContact('${nEsc}')">${c.tel||c.mail?'Modifier le contact':'Ajouter un contact'}</button>
+      ${prof ? `<div class="prof">${esc(prof)}</div>` : ''}
+      <div class="lignes">
+        ${p.pilote.map(o => ligneQuoi(o, 'Pilote')).join('')}
+        ${p.appui.map(o => ligneQuoi(o, o.mention || 'Appui')).join('')}
+        ${p.pilote.length || p.appui.length ? ''
+          : `<div class="prof" style="margin:0">Aucune mission confiée pour l'instant.</div>`}
       </div>
-      ${p.pilote.map(o=>ligneMission(o.mid, 'Pilote') + blocRenforts(o.mid)).join('')}
-      ${p.appui.map(o=>ligneMission(o.mid, o.mention || 'Appui')).join('')}
-      <button class="confier" onclick="nouvelleMission('${nEsc}')">+ Confier une mission à ${esc(p.nom.split(' ')[0])}</button>
+      <div class="tel">
+        ${contact || `<button class="manquant" onclick="editerContact('${nEsc}')">Numéro à renseigner</button>`}
+        <button class="modif" onclick="editerContact('${nEsc}')">Modifier la fiche</button>
+      </div>
     </div>`;
   });
 
-  if(vacantes.length){
-    h += `<div class="pers vacant">
-      <div class="qui">Personne n'est dessus</div>
-      <div class="nom">À pourvoir</div>
-      <div class="compte">${vacantes.length} mission${vacantes.length>1?'s':''} sans pilote désigné</div>
-      ${vacantes.map(m=>`<div class="mrow">
-        <button class="chip vac" onclick="voirFiche('${m.id}')"><span class="r">Sans pilote · fiche mission</span>${esc(m.titre)}</button>
-        <button class="crayon-m" title="Modifier la mission" onclick="modifierMission('${m.id}')">✎</button></div>
-        <button class="rplus" style="margin:0 0 10px 12px" onclick="modifierMission('${m.id}')">Désigner un pilote</button>`).join('')}
-    </div>`;
-  }
-
-  /* Dernière carte de la grille : créer une mission sans quitter
-     l'organigramme. Elle se range ensuite sur la carte du pilote. */
-  h += `<button class="neuve" onclick="nouvelleMission('')">
+  h += `<button class="miss-neuf" onclick="editerContact('')">
     <span class="plus">+</span>
-    <span class="t">Créer une mission</span>
-    <span class="d">Un intitulé, un pilote. La carte se range toute seule dans l'organigramme.</span>
+    <span class="t">Ajouter quelqu'un</span>
+    <span class="d">Un nom, un numéro. On lui confie une mission ensuite.</span>
+  </button></div>`;
+
+  return h + bandeAPourvoir();
+}
+
+/* Une mission sous un nom : le rôle en surtitre, l'intitulé en
+   dessous, et le filet de gauche qui dit s'il pilote ou s'il épaule. */
+function ligneQuoi(o, role){
+  return `<button class="lg${role === 'Pilote' ? '' : ' appui'}" onclick="voirFiche('${o.mid}')">
+    <span class="role">${esc(role)}</span>
+    <span class="t">${esc(o.titre)}</span>
   </button>`;
-
-  return h + `</div>`;
 }
 
-/* =========================================================
-   RÉFÉRENTS DE LA GESTION DE CRISE
-
-   L'équipe qui tient la crise, en tête de l'onglet : nom,
-   profession, numéro. On les appelle, on ne les cherche pas.
-   ========================================================= */
-function blocReferents(){
-  etat.referents = etat.referents || [];
-  return `<h2 style="margin-top:0">Référents de la gestion de crise</h2>
-    <div class="refs">` +
-    etat.referents.map(r => `<div class="ref">
-      <div class="nom">${esc(r.nom)}</div>
-      ${r.profession ? `<div class="prof">${esc(r.profession)}</div>` : ''}
-      ${r.tel ? `<a href="tel:${esc(String(r.tel).replace(/\s/g,''))}">📞 ${esc(r.tel)}</a>`
-              : `<span class="abs">Numéro à renseigner</span>`}
-      <div class="b">
-        <button class="modif" onclick="editerReferent('${r.id}')">Modifier</button>
-        <button class="rx" title="Retirer ce référent" onclick="retirerReferent('${r.id}')">×</button>
-      </div></div>`).join('') +
-    `<button class="ref neuf" onclick="editerReferent('')">
-      <span class="plus">+</span><span class="t">Ajouter un référent</span></button></div>`;
-}
-
-function editerReferent(id){
-  const r = id ? (etat.referents || []).find(x => x.id === id) : null;
-  document.getElementById('modale').innerHTML = `<h3>${r ? 'Modifier le référent' : 'Ajouter un référent'}</h3>
-    <p style="color:var(--texte-2);margin:0 0 14px">Les personnes qui tiennent la gestion de crise pour la CPTS Pau Béarn.</p>
-    <label style="margin-bottom:10px"><span class="k">Prénom et nom *</span>
-      <input id="rf-r-nom" value="${esc(r ? r.nom : '')}" placeholder="Prénom et nom"></label>
-    <label style="margin-bottom:10px"><span class="k">Profession et rôle</span>
-      <input id="rf-r-prof" value="${esc(r ? r.profession : '')}" placeholder="Ex. infirmière — vice-présidente"></label>
-    <label style="margin-bottom:10px"><span class="k">Téléphone</span>
-      <input id="rf-r-tel" type="tel" value="${esc(r ? r.tel : '')}" placeholder="06 12 34 56 78"
-        onkeydown="if(event.key==='Enter')validerReferent('${id}')"></label>
-    <div class="actions"><button class="btn" onclick="validerReferent('${id}')">Enregistrer</button>
-      <button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
-  setTimeout(()=>{ const i = document.getElementById('rf-r-nom'); if(i) i.focus(); }, 60);
-}
-
-async function validerReferent(id){
-  const nom = document.getElementById('rf-r-nom').value.trim();
-  if(!nom){ toast("Le nom est obligatoire"); return; }
-  const v = {
-    nom: nom,
-    profession: document.getElementById('rf-r-prof').value.trim(),
-    tel: document.getElementById('rf-r-tel').value.trim()
-  };
-  etat.referents = etat.referents || [];
-  const r = id ? etat.referents.find(x => x.id === id) : null;
-  if(r){ Object.assign(r, v); r.modifiePar = moi; }
-  else etat.referents.push(Object.assign({id:uid()}, v, {auteur:moi, quand:new Date().toISOString()}));
-  const issue = await sauver();
-  fermer(); rendre();
-  toast(issue === 'ok' ? "Référent enregistré et partagé avec le copil"
-                       : "Référent conservé sur cet appareil — le serveur n'a pas répondu");
-}
-
-async function retirerReferent(id){
-  const r = (etat.referents || []).find(x => x.id === id); if(!r) return;
-  document.getElementById('modale').innerHTML = `<h3>Retirer ce référent&nbsp;?</h3>
-    <p style="color:var(--texte-2)">${esc(r.nom)} ne figurera plus parmi les référents de la gestion de crise.</p>
-    <div class="actions"><button class="btn" onclick="confirmerRetraitReferent('${id}')">Retirer</button>
-      <button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
-}
-async function confirmerRetraitReferent(id){
-  noterRetrait(id);
-  etat.referents = (etat.referents || []).filter(x => x.id !== id);
-  await sauver(); fermer(); rendre(); toast("Référent retiré");
-}
-
-/* La pastille ouvre la fiche mission, le crayon la modifie :
-   deux boutons côte à côte, jamais l'un dans l'autre. */
-function ligneMission(mid, role){
-  const m = etat.missions.find(x => x.id === mid); if(!m) return '';
-  return `<div class="mrow">
-    <button class="chip${role === 'Pilote' ? '' : ' appui'}" onclick="voirFiche('${mid}')">
-      <span class="r">${esc(role)} · fiche mission</span>${esc(m.titre)}</button>
-    <button class="crayon-m" title="Modifier la mission" onclick="modifierMission('${mid}')">✎</button>
+/* Ce que personne ne porte n'est pas quelqu'un : la bande descend
+   sous les noms au lieu de se présenter comme une carte d'équipe. */
+function bandeAPourvoir(){
+  const v = etat.missions.filter(m => !(m.pilote || '').trim());
+  if(!v.length) return '';
+  return `<div class="apourvoir">
+    <div class="tt">${v.length} mission${v.length > 1 ? 's' : ''} que personne ne porte</div>
+    <div class="ss">Une mission sans nom en face ne se fait pas.</div>
+    <ul>${v.map(m => `<li>
+      <button class="t" onclick="voirFiche('${m.id}')">${esc(m.titre)}</button>
+      <span class="etiq ${classeStatut(m.statut)}">${esc(m.statut)}</span>
+      <button class="designer" onclick="modifierMission('${m.id}')">Désigner un pilote</button>
+    </li>`).join('')}</ul>
   </div>`;
 }
 
-/* Les renforts s'ajoutent là où on les cherche : sous la mission,
-   sur la carte du pilote comme dans la répartition détaillée. */
+/* Les référents de la gestion de crise n'ont plus de bloc à eux
+   ni de carnet séparé : ils apparaissent sur la grille des
+   personnes, en tête, avec la mention « Cellule de crise ». Leur
+   appartenance se coche depuis leur fiche — voir editerContact. */
+
+/* Les renforts s'ajoutent là où on les cherche : sous la mission
+   qu'ils épaulent, dans le feuillet « Par mission ». */
 function blocRenforts(mid){
   const m = etat.missions.find(x => x.id === mid);
   if(!m) return '';
@@ -3509,38 +3647,133 @@ async function retirerRenfort(mid, i){
   await sauver(); rendre();
 }
 
+/* Les statuts dans l'ordre où ils se lisent : ce qui tourne
+   d'abord, ce qui est clos en dernier. */
+const ORDRE_STATUT = ['En cours','À lancer','En attente','Bloqué','Terminé'];
+const LISERE_STATUT = {'En cours':'st-cours','À lancer':'st-lancer','En attente':'st-attente',
+                       'Bloqué':'st-bloque','Terminé':'st-fini'};
+
+/* « Par personne » est le feuillet d'arrivée : en crise, la
+   première question posée à cet onglet est qui est là. */
+let feuilletMissions = 'personne';
+function allerFeuilletMissions(f){ feuilletMissions = f; rendre(); window.scrollTo(0,0); }
+
 function vueMissions(){
+  const sansPilote = etat.missions.filter(m => !(m.pilote || '').trim()).length;
+  const sansSuppl  = etat.missions.filter(m => m.statut === 'En cours' && !(m.suppleant || '').trim()).length;
+  const nbGens     = equipeDeCrise().length;
+
   let h = `<h1>Missions et organigramme</h1>
-  <p class="chapo">Qui porte quoi, et qui prend le relais. Le visuel se construit tout seul à partir des noms saisis plus bas.</p>
-  ${blocReferents()}
-  ${organigramme()}
-  <h2>Répartition détaillée</h2>
-  <div class="actions" style="margin:0 0 14px"><button class="btn" onclick="nouvelleMission()">Créer une mission</button></div>
-  <div class="note">Une mission dont le mandat n'est pas écrit engage la CPTS Pau Béarn sur sa seule initiative. Le préciser protège la structure et clarifie le discours auprès des adhérents.</div>`;
-  etat.missions.forEach(m => {
-    h += `<div class="mission">
-      <div class="haut"><div class="titre">${esc(m.titre)}</div>
-      <select onchange="majMission('${m.id}','statut',this.value)" style="width:auto">
-        ${['À lancer','En cours','En attente','Bloqué','Terminé'].map(s=>`<option ${s===m.statut?'selected':''}>${s}</option>`).join('')}
-      </select></div>
-      <div style="color:var(--texte-2);font-size:14px;margin-top:5px">${esc(m.detail)}</div>
-      <div class="meta">
-        <div style="flex:1;min-width:160px"><span class="k">Pilote</span>
-          <input value="${esc(m.pilote)}" placeholder="à désigner" onchange="majMission('${m.id}','pilote',this.value)"></div>
-        <div style="flex:1;min-width:160px"><span class="k">Suppléant</span>
-          <input value="${esc(m.suppleant)}" placeholder="indispensable en août" onchange="majMission('${m.id}','suppleant',this.value)"></div>
-        <div style="flex:1;min-width:160px"><span class="k">Mandat ARS</span>
-          <input value="${esc(m.mandat)}" onchange="majMission('${m.id}','mandat',this.value)"></div>
-      </div>
-      <div class="renforts-m"><span class="k">Renforts</span>${blocRenforts(m.id)}</div>
-      <div class="barre">
-        <button class="btn sec" onclick="voirFiche('${m.id}')">Fiche mission</button>
-        <button class="btn sec" onclick="aller('${espaceDe(m)}')">Ouvrir « ${esc(nomEspace(espaceDe(m)))} »</button>
-        <button class="sup-m" title="Supprimer la mission" onclick="supprimerMission('${m.id}')">×</button>
-      </div>
-    </div>`;
+  <p class="chapo">Qui porte quoi, et ce qui doit être fait ensuite. La même liste se lit par personne ou par mission.</p>
+
+  <div class="miss-trous">
+    <div class="miss-trou${sansPilote ? ' alerte' : ''}"><div class="n">${sansPilote}</div>
+      <div class="l">mission${sansPilote > 1 ? 's' : ''} sans pilote${sansPilote
+        ? ` — <button onclick="allerFeuilletMissions('personne')">les pourvoir</button>` : ''}</div></div>
+    <div class="miss-trou${sansSuppl ? ' veille' : ''}"><div class="n">${sansSuppl}</div>
+      <div class="l">mission${sansSuppl > 1 ? 's' : ''} en cours sans suppléant</div></div>
+    <div class="miss-trou"><div class="n">${nbGens}</div>
+      <div class="l">personne${nbGens > 1 ? 's' : ''} engagée${nbGens > 1 ? 's' : ''} sur la crise</div></div>
+    <div class="miss-trou"><div class="n">${etat.missions.length}</div>
+      <div class="l">mission${etat.missions.length > 1 ? 's' : ''} ouverte${etat.missions.length > 1 ? 's' : ''}</div></div>
+  </div>
+
+  <div class="miss-lunettes" role="group" aria-label="Angle de lecture">
+    <button class="${feuilletMissions === 'personne' ? 'on' : ''}"
+      onclick="allerFeuilletMissions('personne')">Par personne</button>
+    <button class="${feuilletMissions === 'mission' ? 'on' : ''}"
+      onclick="allerFeuilletMissions('mission')">Par mission</button>
+  </div>`;
+
+  return h + (feuilletMissions === 'personne' ? vuePersonnes() : vueParMission());
+}
+
+/* Les missions groupées par statut. « Terminé » ferme la page,
+   « En cours » l'ouvre : on ne cherche pas ce qui tourne. */
+function vueParMission(){
+  let h = `<div class="actions" style="margin:0 0 18px">
+    <button class="btn" onclick="nouvelleMission()">Créer une mission</button></div>`;
+
+  ORDRE_STATUT.forEach(s => {
+    const lot = etat.missions.filter(m => m.statut === s);
+    if(!lot.length) return;
+    h += `<div class="miss-grp"><h3>${esc(s)}
+      <span class="c">${lot.length} mission${lot.length > 1 ? 's' : ''}</span></h3>
+      <div class="miss-pile">${lot.map(carteMission).join('')}</div></div>`;
   });
+
+  /* Un statut saisi hors liste ne doit pas faire disparaître la
+     mission de la page. */
+  const orphelines = etat.missions.filter(m => ORDRE_STATUT.indexOf(m.statut) === -1);
+  if(orphelines.length){
+    h += `<div class="miss-grp"><h3>Sans statut <span class="c">${orphelines.length}</span></h3>
+      <div class="miss-pile">${orphelines.map(carteMission).join('')}</div></div>`;
+  }
   return h;
+}
+
+function carteMission(m){
+  const esp = espaceDe(m);
+  const pil = (m.pilote || '').trim();
+  const sup = (m.suppleant || '').trim();
+  /* Le suppléant ne manque qu'une fois le pilote désigné : tant que
+     personne ne porte la mission, l'alerte porte sur le pilote. */
+  const champSup = sup ? `<span class="qn">${esc(sup)}</span>`
+    : pil ? `<button class="qn manque" onclick="modifierMission('${m.id}')">à désigner</button>`
+          : `<span class="qn absent">—</span>`;
+
+  return `<div class="miss-c ${LISERE_STATUT[m.statut] || 'st-lancer'}">
+    <div class="haut">
+      <div class="titre">${esc(m.titre)}</div>
+      <select onchange="majMission('${m.id}','statut',this.value)" style="width:auto">
+        ${ORDRE_STATUT.map(s => `<option ${s === m.statut ? 'selected' : ''}>${esc(s)}</option>`).join('')}
+      </select>
+    </div>
+    ${m.detail ? `<div class="detail">${esc(m.detail)}</div>` : ''}
+
+    <button class="miss-prochaine${m.prochaine ? '' : ' vide'}" onclick="modifierProchaine('${m.id}')">
+      <span class="k">Prochaine action</span>
+      <p>${esc(m.prochaine) || "Rien d'écrit. Une mission sans prochaine action ne bouge pas — cliquer pour la renseigner."}</p>
+      ${m.echeance ? `<p style="font-size:12.5px;color:var(--texte-2)">Échéance ${frdateL(m.echeance)}</p>` : ''}
+    </button>
+
+    <div class="miss-eq">
+      <div><span class="k">Pilote</span>${pil ? `<span class="qn">${esc(pil)}</span>`
+        : `<button class="qn manque" onclick="modifierMission('${m.id}')">à désigner</button>`}</div>
+      <div><span class="k">Suppléant</span>${champSup}</div>
+      <div style="flex:1 1 240px"><span class="k">Renforts</span>${blocRenforts(m.id)}</div>
+    </div>
+
+    <div class="barre-m">
+      <button class="btn sec" onclick="voirFiche('${m.id}')">Fiche mission</button>
+      <button class="btn sec" onclick="aller('${esp}')">Ouvrir « ${esc(nomEspace(esp))} »</button>
+      <button class="btn sec" onclick="modifierMission('${m.id}')">Modifier</button>
+      <button class="sup-m" title="Supprimer la mission" onclick="supprimerMission('${m.id}')">×</button>
+    </div>
+  </div>`;
+}
+
+/* La prochaine action se corrige là où elle se lit, sans passer
+   par la fiche mission ni par un formulaire complet. */
+function modifierProchaine(id){
+  const m = etat.missions.find(x => x.id === id); if(!m) return;
+  document.getElementById('modale').innerHTML = `<h3>Prochaine action</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px">Ce qui doit être fait ensuite sur « ${esc(m.titre)} ». C'est ce que lit le copil, et ce qui dit si la mission avance.</p>
+    <label><span class="k">Prochaine action</span>
+      <textarea id="pa-txt" style="min-height:110px" placeholder="Ex. rappeler la délégation départementale pour obtenir le circuit de retrait des FFP2">${esc(m.prochaine || '')}</textarea></label>
+    <label style="margin-top:12px"><span class="k">Échéance — facultatif</span>
+      <input id="pa-ech" type="date" value="${esc(m.echeance || '')}"></label>
+    <div class="actions"><button class="btn" onclick="validerProchaine('${id}')">Enregistrer</button>
+      <button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  document.getElementById('rideau').classList.add('on');
+  setTimeout(()=>{ const i = document.getElementById('pa-txt'); if(i) i.focus(); }, 60);
+}
+async function validerProchaine(id){
+  const m = etat.missions.find(x => x.id === id); if(!m) return;
+  m.prochaine = document.getElementById('pa-txt').value.trim();
+  m.echeance  = document.getElementById('pa-ech').value;
+  m.modifiePar = moi;
+  await sauver(); fermer(); rendre(); toast("Prochaine action enregistrée");
 }
 function lignes(t){ return String(t||'').split('\n').map(x=>x.trim()).filter(Boolean); }
 
@@ -3612,13 +3845,12 @@ function nouvelleMission(pilote){
     .map(o => `<option value="${o.id}">${o.nom}</option>`).join('');
   document.getElementById('modale').innerHTML = `
     <h3>${pilote ? `Confier une mission à ${esc(pilote)}` : 'Créer une mission'}</h3>
-    <p style="color:var(--texte-2);margin:0 0 14px">Ce que la CPTS entreprend, et qui le porte. Le mandat et la fiche mission se complètent après.</p>
+    <p style="color:var(--texte-2);margin:0 0 14px">Ce que la CPTS entreprend, et qui le porte. La prochaine action et la fiche mission se complètent après.</p>
     <label style="margin-bottom:10px"><span class="k">Intitulé *</span><input id="nm-titre" placeholder="Ex. Logistique de la collecte à la Foire Expo"></label>
     <label style="margin-bottom:10px"><span class="k">En une phrase</span><textarea id="nm-detail" style="min-height:56px"></textarea></label>
     <span class="k">Pilote</span>
     ${choixPilote('nm-pilote', pilote)}
     <label style="margin-bottom:10px"><input id="nm-pilote" value="${esc(pilote)}" placeholder="Prénom et nom, ou à désigner plus tard"></label>
-    <label style="margin-bottom:10px"><span class="k">Mandat ARS</span><input id="nm-mandat" value="Non"></label>
     <label style="margin-bottom:10px"><span class="k">Où consigner</span><select id="nm-espace">${opts}</select></label>
     <div class="actions"><button class="btn" onclick="validerMission()">${pilote ? 'Confier la mission' : 'Créer la mission'}</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
   document.getElementById('rideau').classList.add('on');
@@ -3640,7 +3872,8 @@ function modifierMission(id){
     <label style="margin-bottom:10px"><span class="k">Suppléant</span><input id="em-suppleant" value="${esc(m.suppleant)}" placeholder="indispensable en août"></label>
     <label style="margin-bottom:10px"><span class="k">Statut</span><select id="em-statut">${
       ['À lancer','En cours','En attente','Bloqué','Terminé'].map(s=>`<option ${s===m.statut?'selected':''}>${esc(s)}</option>`).join('')}</select></label>
-    <label style="margin-bottom:10px"><span class="k">Mandat ARS</span><input id="em-mandat" value="${esc(m.mandat)}"></label>
+    <label style="margin-bottom:10px"><span class="k">Prochaine action</span>
+      <textarea id="em-prochaine" style="min-height:70px" placeholder="Ce qui doit être fait ensuite">${esc(m.prochaine || '')}</textarea></label>
     <div class="actions"><button class="btn" onclick="validerModifMission('${id}')">Enregistrer</button>
       <button class="btn sec" onclick="fermer()">Annuler</button>
       <button class="btn sec" onclick="voirFiche('${id}')">Fiche mission</button>
@@ -3654,7 +3887,7 @@ async function validerModifMission(id){
   if(!t){ toast("L'intitulé est obligatoire"); return; }
   m.titre = t; m.detail = g('detail');
   m.pilote = g('pilote'); m.suppleant = g('suppleant');
-  m.statut = document.getElementById('em-statut').value; m.mandat = g('mandat');
+  m.statut = document.getElementById('em-statut').value; m.prochaine = g('prochaine');
   m.modifiePar = moi;
   await sauver(); fermer(); rendre(); toast("Mission mise à jour");
 }
@@ -3666,7 +3899,7 @@ async function validerMission(){
     id:uid(), titre:t,
     detail:document.getElementById('nm-detail').value.trim(),
     pilote:p, suppleant:'', renforts:[],
-    mandat:document.getElementById('nm-mandat').value.trim() || 'Non',
+    prochaine:'', echeance:'',
     statut:'À lancer', espace:document.getElementById('nm-espace').value,
     fiche:{but:'', faire:'', avec:'', pour:'', limite:''}, creePar:moi
   });
@@ -6673,6 +6906,7 @@ function pointsMedecins(med){
       id: m.id, nom: nomMed(m), statut: m.statut || 'À solliciter',
       lieu: [m.structure, m.commune].filter(Boolean).join(' · '),
       adresse: m.adresse || '', commune: m.commune || '', tel: m.tel || '',
+      tel2: m.tel2 || '', tel2Libelle: m.tel2Libelle || '',
       lat: bon ? lat : null, lon: bon ? lon : null,
       approx: m.geoPrecision === 'municipality' || m.geoPrecision === 'locality',
       cle, echec: !!cle && m.geoEchec === cle,
@@ -6966,6 +7200,7 @@ function bullecarte(p){
     ${p.lieu ? `<div class="l">${esc(p.lieu)}</div>` : ''}
     <div class="l">${esc(p.statut)}${p.approx ? " — situé à la commune, l'adresse exacte n'a pas été retrouvée" : ''}</div>
     ${p.tel ? `<a href="tel:${esc(String(p.tel).replace(/[^0-9+]/g,''))}">Appeler ${esc(p.tel)}</a>` : ''}
+    ${p.tel2 ? `<a href="tel:${esc(String(p.tel2).replace(/[^0-9+]/g,''))}">En second recours — ${esc(p.tel2)}</a>` : ''}
     ${p.adresse ? `<a href="${esc(lienCarte(p.adresse, p.commune))}" target="_blank" rel="noopener">Itinéraire</a>` : ''}
     <button onclick="ouvrirEdition('medecins','${p.id}')">Ouvrir la fiche</button>
   </div>`;
@@ -7406,6 +7641,7 @@ function ouvrirConfirmation(cle){
 
   const msg = messageConfirmation(s, o);
   const tel = String(s.m.tel || '').trim();
+  const tel2 = String(s.m.tel2 || '').trim();
   const mail = String(s.m.mail || '').trim();
   const sujet = `CPTS Pau Béarn — patient adressé le ${frdateL(s.d)}${s.h ? ' à ' + hFr(s.h) : ''}`;
   const lienMail = mail
@@ -7418,8 +7654,9 @@ function ouvrirConfirmation(cle){
     <div class="contact-med">
       <div class="nm">${esc(nomMed(s.m))}</div>
       <div class="s">${[s.m.structure, s.m.commune].filter(Boolean).map(esc).join(' · ') || ''}</div>
-      ${tel || mail ? `<div class="voies">
-        ${tel ? `<a class="voie tel" href="tel:${esc(tel.replace(/[^0-9+]/g,''))}"><span class="k">Téléphone</span>${esc(tel)}</a>` : ''}
+      ${tel || tel2 || mail ? `<div class="voies">
+        ${tel ? `<a class="voie tel" href="tel:${esc(tel.replace(/[^0-9+]/g,''))}"><span class="k">Téléphone${tel2 ? ' principal' : ''}</span>${esc(tel)}</a>` : ''}
+        ${tel2 ? `<a class="voie tel" href="tel:${esc(tel2.replace(/[^0-9+]/g,''))}"><span class="k">En second recours${s.m.tel2Libelle ? ' — ' + esc(s.m.tel2Libelle) : ''}</span>${esc(tel2)}</a>` : ''}
         ${mail ? `<a class="voie mail" href="${esc(lienMail)}"><span class="k">Courriel</span>${esc(mail)}</a>` : ''}
         ${s.m.rdv ? `<span class="voie"><span class="k">Prise de rendez-vous</span>${esc(s.m.rdv)}</span>` : ''}
       </div>` : `<div class="alerte-med">Ce médecin n'a ni téléphone ni courriel au registre. Complétez sa fiche avant de pouvoir le prévenir — sinon ce créneau ne sert à rien.</div>`}
@@ -7979,9 +8216,17 @@ function feuilletMedecins(med, vivier, diffusables, ori){
     const situe = o.geoCle && o.geoCle === cleGeo(o) && nombreOuNul(o.lat) !== null;
     /* Le vivier se consulte au téléphone, debout, pendant l'appel :
        le numéro compose, l'adresse ouvre l'application de cartes du
-       téléphone. Rien à recopier à la main. */
+       téléphone. Rien à recopier à la main.
+
+       Deux numéros quand le cabinet en a donné deux : le principal
+       en plein, le second en creux et dit tel quel — « en second
+       recours ». On ne doit jamais hésiter sur lequel composer en
+       premier. */
     const liens = [
-      o.tel ? `<a class="tel" href="tel:${esc(String(o.tel).replace(/[^0-9+]/g,''))}">Appeler ${esc(o.tel)}</a>` : '',
+      o.tel ? `<a class="tel" href="tel:${esc(String(o.tel).replace(/[^0-9+]/g,''))}">Appeler ${esc(o.tel)}${
+        o.tel2 ? `<small>Numéro principal</small>` : ''}</a>` : '',
+      o.tel2 ? `<a class="tel second" href="tel:${esc(String(o.tel2).replace(/[^0-9+]/g,''))}">Appeler ${esc(o.tel2)}<small>En second recours${
+        o.tel2Libelle ? ' — ' + esc(o.tel2Libelle) : ''}</small></a>` : '',
       o.adresse ? `<a class="adr" href="${esc(lienCarte(o.adresse, o.commune))}" target="_blank" rel="noopener">Itinéraire — ${esc(o.adresse)}${o.commune && String(o.adresse).toLowerCase().indexOf(String(o.commune).toLowerCase()) < 0 ? ', ' + esc(o.commune) : ''}</a>` : ''
     ].filter(Boolean).join('');
 
@@ -7993,6 +8238,7 @@ function feuilletMedecins(med, vivier, diffusables, ori){
         ${lieu ? `<div class="lieu-m">${lieu}</div>` : ''}
         <div class="etiq-m"><span class="etiq ${MED_ET[st] || 'e-attente'}">${esc(st)}</span></div>
       </div>
+      ${o.note ? `<div class="precise"><span class="ic" aria-hidden="true">!</span><div><span class="k">Précisions</span>${esc(o.note)}</div></div>` : ''}
       ${o.motifs ? `<div class="bl"><span class="k">Accepte de prendre</span><span class="borne">${esc(o.motifs)}</span></div>` : ''}
       ${o.capacite ? `<div class="bl"><span class="k">Nombre de patients</span>${esc(o.capacite)}</div>` : ''}
       ${cren.length
@@ -8005,7 +8251,6 @@ function feuilletMedecins(med, vivier, diffusables, ori){
       ${o.conditions ? `<div class="obs">Conditions posées : ${esc(o.conditions)}</div>` : ''}
       ${o.diffusion === 'Oui' ? `<div class="bl"><span class="k">Diffusion de ses coordonnées</span>Acceptée</div>` : ''}
       ${o.diffusion === 'Non' ? `<div class="obs">Refuse que ses coordonnées soient diffusées : orienter uniquement par la CPTS.</div>` : ''}
-      ${o.note ? `<div class="bl"><span class="k">Précisions</span>${esc(o.note)}</div>` : ''}
       ${recus ? `<div class="oriente">${recus} patient${recus>1?'s':''} orienté${recus>1?'s':''} vers ce médecin</div>` : ''}
       ${o.geoEchec && o.geoEchec === cleGeo(o) ? `<div class="obs">Adresse non retrouvée sur la carte : ce cabinet n'y figure pas. Vérifier l'orthographe de la rue et de la commune.</div>` : ''}
       ${liens ? `<div class="liens">${liens}</div>` : ''}
@@ -8385,7 +8630,8 @@ function ouvrirOrientation(id){
            <button onclick="affecterMedecin('${o.id}','${m.id}')">
              <span class="r">${esc(nomMed(m))}${km !== null ? `<span class="km">${esc(fmtKm(km))}</span>` : ''}${
                nomMed(m) === o.medecin ? `<span class="deja">déjà affecté</span>` : ''}</span>
-             <span class="d">${[m.structure, m.commune, m.delai, m.tel].filter(Boolean).map(esc).join(' · ') || 'Coordonnées à compléter'}</span>
+             <span class="d">${[m.structure, m.commune, m.delai, m.tel,
+               m.tel2 ? m.tel2 + ' en 2nd recours' : ''].filter(Boolean).map(esc).join(' · ') || 'Coordonnées à compléter'}</span>
            </button>`).join('')}</div>
          ${classe ? `<p class="sous-f" style="margin:8px 0 0;font-size:12px">Distances à vol d'oiseau, de commune à cabinet : elles classent, elles ne disent pas le temps de route.</p>` : ''}`
       : `<p class="vide">Aucun médecin n'a encore accepté de recevoir. Vous pouvez tout de même saisir un nom ci-dessous.</p>`}
@@ -8583,14 +8829,15 @@ function vueDossier(){
     <button class="btn sec" onclick="exporterTout()">Tout en Excel</button>
     <button class="btn" onclick="imprimer()">Imprimer ou enregistrer en PDF</button>
   </div>
-  <div class="carte"><h2>Organisation</h2>${organigramme() || '<p class="vide">Aucun pilote désigné.</p>'}</div>
+  <div class="carte"><h2>Organisation</h2>${vuePersonnes() || '<p class="vide">Aucun pilote désigné.</p>'}</div>
   <div class="carte"><h2>Fiches mission</h2>` +
   etat.missions.map(m => {
     const f = m.fiche || {};
     const li = lignes(f.faire);
     return `<div style="margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--trait)">
       <div style="font-family:var(--display);font-weight:700;font-size:15px">${esc(m.titre)}</div>
-      <div style="font-size:13px;color:var(--texte-2);margin:3px 0 7px">Pilote : ${esc(m.pilote)||'à désigner'} · Suppléant : ${esc(m.suppleant)||'—'} · Mandat ARS : ${esc(m.mandat)} · ${esc(m.statut)}</div>
+      <div style="font-size:13px;color:var(--texte-2);margin:3px 0 7px">Pilote : ${esc(m.pilote)||'à désigner'} · Suppléant : ${esc(m.suppleant)||'—'} · ${esc(m.statut)}</div>
+      ${m.prochaine?`<div style="font-size:13.5px;margin-bottom:5px"><strong>Prochaine action :</strong> ${esc(m.prochaine)}</div>`:''}
       ${f.but?`<div style="font-size:13.5px"><em>${esc(f.but)}</em></div>`:''}
       ${li.length?`<ul style="margin:6px 0 0;padding-left:19px;font-size:13.5px">${li.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
       ${f.limite?`<div style="font-size:13px;color:var(--braise);margin-top:6px">Ce qu'on ne fait pas : ${esc(f.limite)}</div>`:''}
