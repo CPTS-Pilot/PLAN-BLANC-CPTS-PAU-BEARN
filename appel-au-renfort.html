@@ -16,46 +16,71 @@
   --encre:#062B63;
   --encre-2:#0B4FA8;
   --cobalt-clair:#E8F0FB;
-  --surface:#F3F6FB;
+  --cobalt-pale:#F5F9FD;
+  --surface:#EEF3FA;
   --carte:#FFFFFF;
   --trait:#D8E1EF;
+  --trait-2:#E6ECF6;
   --texte:#122238;
   --texte-2:#5A6B84;
   --ambre:#E8A33D;
   --braise:#C2482F;
   --stable:#2F7D62;
+  --ombre:0 1px 2px rgba(6,43,99,.05), 0 10px 26px -14px rgba(6,43,99,.22);
+  --halo:0 0 0 3px rgba(11,79,168,.16);
   --display:'Archivo',system-ui,sans-serif;
   --corps:'Source Sans 3',system-ui,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,monospace;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
-body{font-family:var(--corps);background:var(--surface);color:var(--texte);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{font-family:var(--corps);background:var(--surface);color:var(--texte);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+/* Un halo froid qui descend du bandeau : la page respire au lieu
+   de poser des cartes blanches sur un aplat gris. */
+body::before{content:"";position:fixed;left:0;right:0;top:0;height:440px;pointer-events:none;z-index:0;
+  background:radial-gradient(115% 100% at 50% 0,#DBE7F7 0%,rgba(238,243,250,0) 72%)}
 button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+::placeholder{color:#9AA8BC}
 
-.bandeau{background:var(--encre);color:#fff;padding:20px 22px}
-.bandeau .in{max-width:880px;margin:0 auto}
+.bandeau{position:relative;z-index:1;color:#fff;padding:18px 22px;
+  background:linear-gradient(135deg,#04204A 0%,#062B63 46%,#0B4FA8 190%);
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.16)}
+.bandeau .in{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .bandeau .nom{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.02em}
-.bandeau .sous{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#7FA3D4;margin-top:6px}
+.bandeau .sous{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#8FB0DC;margin-top:5px}
+.bandeau .chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:#CFDFF6;
+  border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.08);border-radius:999px;padding:6px 12px}
 
-.page{max-width:880px;margin:0 auto;padding:26px 22px 60px}
-h1{font-family:var(--display);font-weight:700;font-size:27px;letter-spacing:-.01em;margin:0 0 6px}
-.chapo{color:var(--texte-2);margin:0 0 22px;max-width:66ch}
-.carte{background:var(--carte);border:1px solid var(--trait);border-radius:10px;padding:20px;margin-bottom:16px}
-h2{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.02em;margin:0 0 4px;display:flex;align-items:center;gap:9px}
-h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-radius:2px;display:block;flex:0 0 3px}
-.sous-h{font-size:13px;color:var(--texte-2);margin:0 0 15px}
+.page{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:30px 22px 64px}
+.sur-titre{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--encre-2);
+  margin:0 0 9px;display:flex;align-items:center;gap:10px}
+.sur-titre::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#C6D5EA,rgba(198,213,234,0))}
+h1{font-family:var(--display);font-weight:700;font-size:31px;line-height:1.15;letter-spacing:-.02em;margin:0 0 8px;color:var(--encre)}
+.chapo{color:var(--texte-2);margin:0 0 22px;max-width:66ch;font-size:15.5px}
+.carte{background:var(--carte);border:1px solid var(--trait-2);border-radius:14px;padding:22px 24px;margin-bottom:14px;box-shadow:var(--ombre)}
+h2{font-family:var(--display);font-weight:600;font-size:16.5px;letter-spacing:-.005em;margin:0 0 5px;display:flex;align-items:center;gap:11px;color:var(--encre)}
+h2 .n{flex:0 0 27px;width:27px;height:27px;border-radius:9px;background:linear-gradient(180deg,var(--encre-2),var(--encre));
+  color:#fff;font-family:var(--mono);font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px -2px rgba(6,43,99,.45)}
+.sous-h{font-size:13.5px;color:var(--texte-2);margin:0 0 16px;padding-left:38px}
 
-.form{display:grid;gap:13px}
+.form{display:grid;gap:14px}
 @media(min-width:720px){.form{grid-template-columns:1fr 1fr}.form .large{grid-column:1/-1}}
 label{display:block}
-label .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:4px}
+label .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:5px}
 label .k i{font-style:normal;color:var(--braise)}
-input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--trait);border-radius:6px;background:#fff}
-textarea{min-height:74px;resize:vertical}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-offset:1px;border-color:var(--ambre)}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--trait);border-radius:8px;background:#fff;
+  transition:border-color .15s,box-shadow .15s}
+input:hover,select:hover,textarea:hover{border-color:#BCCCE4}
+textarea{min-height:78px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--encre-2);box-shadow:var(--halo)}
 input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4F2}
-.aide{font-size:12.5px;color:var(--texte-2);margin-top:4px}
+/* Les listes déroulantes reçoivent leur propre chevron : celui du
+   navigateur casse l'unité de l'ensemble d'un écran à l'autre. */
+select{appearance:none;-webkit-appearance:none;padding-right:34px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%235A6B84' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center}
+.aide{font-size:12.5px;color:var(--texte-2);margin-top:5px}
 /* Le champ libre qui s'ouvre sous une liste quand aucune de ses
    entrées ne convient : « Autre — à préciser ». */
 .autre{margin-top:7px}
@@ -63,29 +88,45 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
 .leurre{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
 /* Les types de renfort : des cases à cocher rangées en colonnes,
-   assez grandes pour être cochées d'un doigt. */
-.choix{display:grid;gap:9px;grid-template-columns:1fr}
+   assez grandes pour être cochées d'un doigt. Cochée, la case
+   devient une carte bleue : d'un coup d'œil on voit ce qu'on a
+   retenu sans relire les neuf lignes. */
+.choix{display:grid;gap:10px;grid-template-columns:1fr}
 @media(min-width:720px){.choix{grid-template-columns:1fr 1fr}}
-.choix .c{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--trait);border-radius:8px;cursor:pointer;background:#fff}
-.choix .c:hover{border-color:var(--encre-2)}
+.choix .c{display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border:1px solid var(--trait);border-radius:10px;cursor:pointer;background:#fff;
+  transition:border-color .15s,background .15s,box-shadow .15s}
+.choix .c:hover{border-color:#B4C8E6;background:var(--cobalt-pale)}
+.choix .c:has(input:checked){border-color:var(--encre-2);background:var(--cobalt-clair);box-shadow:inset 0 0 0 1px var(--encre-2)}
+.choix .c:focus-within{box-shadow:var(--halo)}
 .choix .c input{width:19px;height:19px;flex:0 0 19px;margin:1px 0 0;accent-color:var(--encre-2)}
 .choix .c span{font-size:14px;line-height:1.4}
 
-.cond{background:var(--cobalt-clair);border-radius:8px;padding:14px 16px;margin-bottom:14px}
-.cond ol{margin:0;padding-left:19px;font-size:13.5px}
-.cond li{margin-bottom:6px;text-align:justify}
-.coche{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--trait);border-radius:8px;margin-bottom:9px;cursor:pointer;background:#fff}
-.coche:hover{border-color:var(--encre-2)}
+.cond{background:linear-gradient(180deg,var(--cobalt-pale),var(--cobalt-clair));border:1px solid #D5E2F4;border-radius:12px;padding:17px 19px;margin-bottom:15px}
+.cond ol{margin:0;padding:0;list-style:none;counter-reset:cd}
+.cond li{counter-increment:cd;position:relative;padding-left:32px;margin-bottom:11px;font-size:13.5px;text-align:justify}
+.cond li:last-child{margin-bottom:0}
+.cond li::before{content:counter(cd);position:absolute;left:0;top:1px;width:21px;height:21px;border-radius:7px;
+  background:#fff;border:1px solid #C4D6EF;color:var(--encre-2);font-family:var(--mono);font-size:11px;
+  display:flex;align-items:center;justify-content:center}
+.coche{display:flex;gap:11px;align-items:flex-start;padding:13px 15px;border:1px solid var(--trait);border-radius:10px;margin-bottom:10px;cursor:pointer;background:#fff;
+  transition:border-color .15s,background .15s,box-shadow .15s}
+.coche:hover{border-color:#B4C8E6;background:var(--cobalt-pale)}
+.coche:has(input:checked){border-color:var(--encre-2);background:var(--cobalt-clair);box-shadow:inset 0 0 0 1px var(--encre-2)}
+.coche:focus-within{box-shadow:var(--halo)}
 .coche.faux{border-color:var(--braise);background:#FDF4F2}
 .coche input{width:19px;height:19px;flex:0 0 19px;margin:1px 0 0;accent-color:var(--encre-2)}
 .coche span{font-size:14px;line-height:1.45}
 
-.btn{background:var(--encre);color:#fff;border:0;border-radius:7px;padding:12px 22px;font-family:var(--display);font-weight:600;font-size:15px;cursor:pointer;min-height:48px}
-.btn:hover{background:var(--encre-2)}
-.btn:disabled{opacity:.55;cursor:default}
-.btn.sec{background:#fff;color:var(--encre);border:1px solid var(--trait)}
-.btn.sec:hover{border-color:var(--encre)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.btn{background:linear-gradient(180deg,var(--encre-2),var(--encre));color:#fff;border:0;border-radius:9px;padding:13px 24px;
+  font-family:var(--display);font-weight:600;font-size:15px;cursor:pointer;min-height:48px;
+  box-shadow:0 1px 2px rgba(6,43,99,.24),0 8px 18px -10px rgba(6,43,99,.6);transition:.15s}
+.btn:hover{filter:brightness(1.12);transform:translateY(-1px);box-shadow:0 2px 4px rgba(6,43,99,.24),0 12px 22px -10px rgba(6,43,99,.6)}
+.btn:active{transform:translateY(0)}
+.btn:focus-visible{outline:0;box-shadow:0 0 0 3px rgba(11,79,168,.35)}
+.btn:disabled{opacity:.55;cursor:default;transform:none;filter:none}
+.btn.sec{background:#fff;color:var(--encre);border:1px solid var(--trait);box-shadow:var(--ombre)}
+.btn.sec:hover{border-color:var(--encre-2);filter:none}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;align-items:center}
 
 /* ---------- téléphone ----------
    C'est le cas d'usage principal : le professionnel se recense
@@ -93,12 +134,15 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
    Champs à 16 px — en dessous, iOS zoome sur le champ actif et
    la page part de travers — et cibles tactiles confortables. */
 @media(max-width:640px){
-  .page{padding:20px 15px 48px}
-  h1{font-size:23px}
-  .carte{padding:16px 15px;border-radius:9px}
-  input,select,textarea{font-size:16px;padding:12px 13px;border-radius:7px}
+  .page{padding:22px 15px 48px}
+  h1{font-size:25px}
+  .chapo{font-size:15px}
+  .carte{padding:17px 16px;border-radius:12px}
+  .sous-h{padding-left:0}
+  input,select,textarea{font-size:16px;padding:12px 13px;border-radius:8px}
   textarea{min-height:88px}
-  select{min-height:48px}
+  select{min-height:48px;background-position:right 13px center}
+  .cond{padding:15px 16px}
   .coche,.choix .c{padding:13px 14px;gap:13px}
   .coche input,.choix .c input{width:24px;height:24px;flex:0 0 24px}
   .coche span,.choix .c span{font-size:14.5px}
@@ -110,19 +154,20 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
   .acte ol li,.acte .ctx,.acte .cachet,.note{text-align:left}
 }
 
-.alerte{border-radius:8px;padding:12px 14px;font-size:14px;margin-bottom:16px}
-.alerte.rouge{background:#FDF0EC;border:1px solid #E8C3B8;color:#8C2F1B}
-.alerte.ambre{background:#FCF3E4;border:1px solid #E9D3A6;color:#8A5D12}
-.alerte.bleue{background:var(--cobalt-clair);border:1px solid #C3D6F0;color:var(--encre)}
-.note{font-size:12.5px;color:var(--texte-2);margin-top:26px;padding-top:14px;border-top:1px solid var(--trait);text-align:justify}
+.alerte{border-radius:10px;padding:13px 16px;font-size:14px;margin-bottom:16px;border:1px solid;border-left-width:4px}
+.alerte.rouge{background:#FDF0EC;border-color:#E8C3B8;border-left-color:var(--braise);color:#8C2F1B}
+.alerte.ambre{background:#FCF3E4;border-color:#E9D3A6;border-left-color:var(--ambre);color:#8A5D12}
+.alerte.bleue{background:var(--cobalt-clair);border-color:#C3D6F0;border-left-color:var(--encre-2);color:var(--encre)}
+.note{font-size:12.5px;color:var(--texte-2);margin-top:28px;padding-top:15px;border-top:1px solid var(--trait);text-align:justify}
 
 /* ---------- récapitulatif remis au professionnel ---------- */
-.acte{background:#fff;border:1px solid var(--trait);border-radius:10px;padding:26px;color:#101820;font-size:13.5px;line-height:1.5}
+.acte{background:#fff;border:1px solid var(--trait-2);border-radius:14px;padding:28px 30px;color:#101820;font-size:13.5px;line-height:1.5;box-shadow:var(--ombre)}
 .acte .ent{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:2px solid var(--encre);padding-bottom:9px;margin-bottom:16px}
 .acte .ent .org{font-family:var(--display);font-weight:700;font-size:15px;color:var(--encre)}
 .acte .ent .sub{font-size:11px;color:var(--texte-2);margin-top:2px}
 .acte .ent .d{text-align:right}
-.acte .ent .ref{font-family:var(--mono);font-size:11.5px;color:var(--encre)}
+.acte .ent .ref{font-family:var(--mono);font-size:11.5px;color:var(--encre);background:var(--cobalt-clair);
+  border:1px solid #CFDFF3;border-radius:6px;padding:3px 8px;display:inline-block}
 .acte .ttl{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;margin:0;color:var(--encre);text-transform:uppercase}
 .acte .ss{font-size:12.5px;color:var(--texte-2);margin:3px 0 14px}
 .acte .ctx{font-size:12.5px;background:var(--cobalt-clair);border-left:3px solid var(--encre-2);border-radius:0 6px 6px 0;padding:11px 13px;margin-bottom:16px;text-align:justify}
@@ -138,16 +183,33 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
 .acte .pied{font-size:11px;color:var(--texte-2);border-top:1px solid var(--trait);margin-top:16px;padding-top:8px;text-align:justify}
 @media(max-width:640px){.acte{padding:17px 15px}.acte .l{flex-direction:column;gap:2px}.acte .l .e{flex:none}}
 
-.recu{background:#F1F8F5;border:1px solid #BEDCCE;border-radius:10px;padding:20px 22px;margin-bottom:18px}
-.recu .t{font-family:var(--display);font-weight:700;font-size:20px;color:#1E5C46;margin-bottom:6px}
-.recu .r{font-family:var(--mono);font-size:13px;color:var(--encre);margin-top:10px}
+.recu{background:linear-gradient(180deg,#F6FCF9,#EDF7F2);border:1px solid #BEDCCE;border-left:4px solid var(--stable);
+  border-radius:12px;padding:21px 23px;margin-bottom:18px;box-shadow:var(--ombre)}
+.recu .t{font-family:var(--display);font-weight:700;font-size:21px;color:#1E5C46;margin-bottom:7px;display:flex;align-items:center;gap:10px}
+.recu .t::before{content:"✓";flex:0 0 26px;width:26px;height:26px;border-radius:50%;background:var(--stable);color:#fff;
+  font-size:15px;display:flex;align-items:center;justify-content:center}
+.recu .r{font-family:var(--mono);font-size:13px;color:var(--encre);margin-top:12px;background:#fff;
+  border:1px solid #CFE4D8;border-radius:8px;padding:8px 11px;display:inline-block}
+
+/* L'écran se pose au lieu d'apparaître d'un bloc : à la validation,
+   la page change entièrement de contenu et le glissement dit que
+   c'est bien la suite, pas un rechargement. */
+@keyframes monte{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.page>*{animation:monte .4s cubic-bezier(.22,.7,.3,1) both}
+.page>*:nth-child(2){animation-delay:.05s}
+.page>*:nth-child(3){animation-delay:.09s}
+.page>*:nth-child(4){animation-delay:.13s}
+.page>*:nth-child(n+5){animation-delay:.17s}
 
 @media print{
+  body::before{display:none}
   @page{margin:14mm}
   body{background:#fff;font-size:10.5pt}
   .bandeau,.actions,.recu,.no-print{display:none!important}
   .page{padding:0;max-width:none}
-  .acte{border:0;padding:0;font-size:10pt;line-height:1.42}
+  .page>*{animation:none}
+  .acte{border:0;padding:0;font-size:10pt;line-height:1.42;box-shadow:none}
+  .acte .ent .ref{background:none;border:0;padding:0}
   .acte .ttl{font-size:16pt}
   .acte .ctx,.acte .cachet{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .acte ol,.acte ul,.acte .cachet{break-inside:avoid}
@@ -158,8 +220,11 @@ input.faux,textarea.faux,select.faux{border-color:var(--braise);background:#FDF4
 </head>
 <body>
 <div class="bandeau"><div class="in">
-  <div class="nom">CPTS Pau Béarn</div>
-  <div class="sous">Communauté professionnelle territoriale de santé — Pau et Béarn</div>
+  <div>
+    <div class="nom">CPTS Pau Béarn</div>
+    <div class="sous">Communauté professionnelle territoriale de santé — Pau et Béarn</div>
+  </div>
+  <div class="chip">Plan blanc régional · ORSAN AMAVI</div>
 </div></div>
 
 <main class="page" id="page">
@@ -248,7 +313,8 @@ function afficher(html){
 }
 
 function ferme(){
-  afficher(`<h1>Appel au renfort</h1>
+  afficher(`<p class="sur-titre">Recensement — professionnels de santé</p>
+  <h1>Appel au renfort</h1>
   <p class="chapo">La CPTS Pau Béarn ne recense pas de professionnels volontaires à ce jour.</p>
   <div class="carte">
     <div class="alerte ambre">Aucun renfort n'est sollicité pour le moment.</div>
@@ -264,7 +330,8 @@ function ferme(){
 /* --- Le formulaire -------------------------------------- */
 function formulaire(){
   const opts = (liste, id) => `<select id="${id}">${liste.map(t => `<option>${esc(t)}</option>`).join('')}</select>`;
-  afficher(`<h1>Se déclarer volontaire au renfort</h1>
+  afficher(`<p class="sur-titre">Recensement — professionnels de santé</p>
+  <h1>Se déclarer volontaire au renfort</h1>
   <p class="chapo">La CPTS Pau Béarn recense les professionnels de santé du territoire prêts à venir en
   renfort — sur les zones touchées, dans les hubs de santé, ou auprès de la population accueillie ici.
   Vous remplissez ce formulaire une fois, vous recevez votre récapitulatif, et c'est l'ARS qui vous
@@ -277,7 +344,7 @@ function formulaire(){
   ${contexte.cadre ? `<div class="alerte ambre"><strong>Ce que l'on sait à ce jour :</strong> ${esc(contexte.cadre)}</div>` : ''}
 
   <div class="carte">
-    <h2>1 · Qui vous êtes</h2>
+    <h2><span class="n">1</span>Qui vous êtes</h2>
     <p class="sous-h">Le minimum pour pouvoir vous rappeler et savoir ce que vous pouvez faire.</p>
     <div class="form">
       <label><span class="k">Nom <i>*</i></span>
@@ -307,7 +374,7 @@ function formulaire(){
   </div>
 
   <div class="carte">
-    <h2>2 · Le renfort que vous envisagez</h2>
+    <h2><span class="n">2</span>Le renfort que vous envisagez</h2>
     <p class="sous-h">Le type exact de renfort qui sera demandé n'est pas encore arrêté. Cochez tout ce
     qui vous paraît envisageable : cocher n'engage pas, cela permet seulement de savoir vers qui se
     tourner le moment venu.</p>
@@ -322,17 +389,18 @@ function formulaire(){
   </div>
 
   <div class="carte">
-    <h2>3 · Jusqu'où vous pouvez vous déplacer</h2>
+    <h2><span class="n">3</span>Jusqu'où vous pouvez vous déplacer</h2>
     <p class="sous-h">Les créneaux et les modalités se verront au téléphone. Ici, une seule question : le rayon
     que vous acceptez.</p>
     <div class="form">
       <label class="large"><span class="k">Jusqu'où pouvez-vous vous déplacer ?</span>
-        ${opts(ZONES, 'f-zone')}</label>
+        ${opts(ZONES, 'f-zone')}
+        <input id="f-zone-autre" class="autre" hidden placeholder="Précisez jusqu'où vous pouvez vous déplacer"></label>
     </div>
   </div>
 
   <div class="carte">
-    <h2>4 · Ce que votre inscription veut dire</h2>
+    <h2><span class="n">4</span>Ce que votre inscription veut dire</h2>
     <p class="sous-h">À lire avant de valider : c'est le cadre dans lequel la CPTS Pau Béarn recense.</p>
     <div class="cond"><ol>
       <li>Votre inscription vaut déclaration de disponibilité. Elle ne vaut ni affectation, ni réquisition,
@@ -373,18 +441,19 @@ function formulaire(){
   mobilisation et de son retour d'expérience. Vous pouvez demander leur rectification ou leur suppression
   auprès de la coordination de la CPTS Pau Béarn.</p>`);
 
-  ['f-profession','f-exercice'].forEach(id => {
+  ['f-profession','f-exercice','f-zone'].forEach(id => {
     const s = document.getElementById(id);
     if(s) s.addEventListener('change', () => bascule(id));
   });
 }
 
-/* Les deux listes fermées ne couvrent pas tout le monde : choisir
-   « Autre » ouvre un champ libre juste dessous, et c'est ce qu'on
-   y écrit qui part au registre. Sans cela, tous les cas
-   particuliers se rangent sous « Autre » et on ne sait plus qui
-   fait quoi au moment de rappeler. */
-const estAutre = v => /^Autre/.test(v || '');
+/* Les listes fermées ne couvrent pas tout le monde : choisir
+   « Autre » ou « À préciser » ouvre un champ libre juste dessous,
+   et c'est ce qu'on y écrit qui part au registre. Sans cela, tous
+   les cas particuliers se rangent sous la même étiquette et on ne
+   sait plus qui fait quoi au moment de rappeler — « à préciser »
+   arrivait au cockpit sans jamais rien préciser. */
+const estAutre = v => /^(Autre|À préciser)/.test(v || '');
 
 function bascule(id){
   const s = document.getElementById(id), i = document.getElementById(id + '-autre');
@@ -421,7 +490,7 @@ async function valider(){
     structure:  val('f-structure'),
     renforts:   typesCoches(),
     experience: val('f-experience'),
-    zone:       val('f-zone'),
+    zone:       choix('f-zone'),
     site:       val('f-site'),
     conditions: document.getElementById('c-conditions').checked,
     transmission: document.getElementById('c-transmission').checked
@@ -550,7 +619,7 @@ function recapitulatif(d, ref, quand){
     <h3>2 · Renfort envisagé</h3>
     ${d.renforts.length
       ? `<ul>${d.renforts.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`
-      : `<div style="font-size:12.5px;color:#5A6B84">Aucun type de renfort coché — à préciser lors du rappel de la coordination.</div>`}
+      : `<div style="font-size:12.5px;color:#5A6B84">Aucun type de renfort coché — à préciser lors du rappel de vérification.</div>`}
     ${d.experience ? l('Expérience utile déclarée', d.experience) : ''}
 
     <h3>3 · Déplacement déclaré</h3>
