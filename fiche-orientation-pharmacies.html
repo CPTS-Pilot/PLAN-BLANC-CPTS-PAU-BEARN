@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Marche à suivre — une personne évacuée sans médecin se présente</title>
+<meta name="description" content="Marche à suivre pour les pharmacies et les structures de soins non programmés du territoire : que faire quand une personne évacuée des zones incendiées se présente sans médecin traitant sur place.">
+<meta name="theme-color" content="#062B63">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* La même encre que les formulaires de la CPTS : la fiche arrive
+   par mail chez des gens qui ont déjà vu le reste, elle doit se
+   reconnaître au premier coup d'œil. */
+:root{
+  --encre:#062B63;
+  --encre-2:#0B4FA8;
+  --cobalt-clair:#E8F0FB;
+  --surface:#F3F6FB;
+  --carte:#FFFFFF;
+  --trait:#D8E1EF;
+  --texte:#122238;
+  --texte-2:#5A6B84;
+  --ambre:#E8A33D;
+  --braise:#C2482F;
+  --stable:#2F7D62;
+  --display:'Archivo',system-ui,sans-serif;
+  --corps:'Source Sans 3',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--corps);background:var(--surface);color:var(--texte);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+.bandeau{background:var(--encre);color:#fff;padding:20px 22px}
+.bandeau .in{max-width:900px;margin:0 auto}
+.bandeau .nom{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.02em}
+.bandeau .sous{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#7FA3D4;margin-top:6px}
+
+.page{max-width:900px;margin:0 auto;padding:26px 22px 60px}
+h1{font-family:var(--display);font-weight:700;font-size:27px;letter-spacing:-.01em;margin:0 0 8px}
+.chapo{color:var(--texte-2);margin:0 0 22px;max-width:72ch}
+
+.carte{background:var(--carte);border:1px solid var(--trait);border-radius:13px;padding:20px 24px;
+  margin-bottom:14px;box-shadow:0 1px 2px rgba(9,35,71,.04),0 6px 18px -12px rgba(9,35,71,.14)}
+h2{font-family:var(--display);font-weight:700;font-size:16.5px;letter-spacing:-.005em;margin:0 0 6px;
+  display:flex;align-items:center;gap:11px;color:var(--encre)}
+h2 .num{flex:0 0 26px;height:26px;border-radius:50%;background:var(--encre);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600}
+.sous-h{font-size:13.5px;color:var(--texte-2);margin:0 0 14px;line-height:1.45}
+h3{font-family:var(--display);font-weight:600;font-size:13.5px;color:var(--encre);margin:16px 0 7px;
+  letter-spacing:-.002em}
+h3:first-of-type{margin-top:0}
+
+p{margin:0 0 10px}
+p:last-child{margin-bottom:0}
+strong{font-weight:600}
+.disc{font-size:13px;color:var(--texte-2)}
+
+ul,ol{margin:0 0 10px;padding-left:20px}
+li{margin-bottom:6px}
+li:last-child{margin-bottom:0}
+
+/* Les gestes du comptoir : numérotés, larges, lisibles à bout de
+   bras — la fiche sera punaisée derrière le comptoir. */
+.gestes{list-style:none;margin:0;padding:0;counter-reset:g}
+.gestes>li{counter-increment:g;position:relative;padding:0 0 0 42px;margin-bottom:16px}
+.gestes>li:last-child{margin-bottom:0}
+.gestes>li::before{content:counter(g);position:absolute;left:0;top:0;width:29px;height:29px;
+  border-radius:50%;background:var(--encre-2);color:#fff;font-family:var(--display);font-weight:600;
+  font-size:14px;display:flex;align-items:center;justify-content:center}
+.gestes .t{font-family:var(--display);font-weight:600;font-size:15.5px;color:var(--encre);
+  display:block;margin:3px 0 4px;line-height:1.3}
+
+/* Ce qui ne passe pas par ce circuit passe en tête, en rouge :
+   c'est la seule chose qui doit être lue même par quelqu'un qui
+   ne lira pas la fiche. */
+.stop{background:#FDF4F2;border:1.5px solid #E9C3B9;border-radius:13px;padding:18px 22px;margin-bottom:14px}
+.stop h2{color:var(--braise)}
+.stop h2 .num{background:var(--braise);font-size:15px}
+.stop .l{display:flex;gap:12px;align-items:baseline;padding:8px 0;border-top:1px solid #EFD8D1}
+.stop .l:first-of-type{border-top:0;padding-top:2px}
+.stop .n{flex:0 0 96px;font-family:var(--mono);font-weight:500;font-size:17px;color:var(--braise);
+  letter-spacing:.01em}
+.stop .q{font-size:14px;line-height:1.4}
+
+/* Le numéro à composer : c'est la ligne qu'on vient chercher. */
+.appel{background:var(--encre);color:#fff;border-radius:13px;padding:20px 24px;margin-bottom:14px}
+.appel .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:#7FA3D4;margin-bottom:8px}
+.appel .n{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.01em;line-height:1.15;
+  display:block;color:#fff;text-decoration:none}
+.appel .d{font-size:13.5px;color:#C6D9F2;margin-top:8px;line-height:1.45}
+.appel a{color:#fff}
+
+/* Ce qu'on demandera au téléphone : quatre paquets de champs,
+   pour que la personne au comptoir ait tout sous la main avant
+   de décrocher plutôt que de rappeler trois fois. */
+.paquets{display:grid;gap:12px}
+@media(min-width:700px){.paquets{grid-template-columns:1fr 1fr}}
+.paq{border:1px solid var(--trait);border-radius:10px;padding:13px 15px;background:#FCFDFF}
+.paq .t{font-family:var(--display);font-weight:600;font-size:13.5px;color:var(--encre);margin-bottom:7px}
+.paq ul{margin:0;padding-left:17px;font-size:13.5px}
+.paq li{margin-bottom:4px}
+.paq .o{color:var(--texte-2);font-size:12.5px;font-style:italic}
+
+.motifs{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+@media(min-width:700px){.motifs{grid-template-columns:1fr 1fr}}
+.motifs li{position:relative;padding-left:22px;font-size:14px;line-height:1.4;margin:0}
+.motifs li::before{content:"";position:absolute;left:6px;top:8px;width:5px;height:5px;border-radius:50%;
+  background:var(--encre-2)}
+
+.cadre{background:var(--cobalt-clair);border-radius:10px;padding:15px 18px}
+.cadre ol{margin:0;padding-left:19px;font-size:13.5px}
+.cadre li{margin-bottom:7px}
+
+.note{background:#FDF9F1;border:1px solid #EDDFC4;border-radius:10px;padding:13px 16px;font-size:13.5px;
+  line-height:1.45;margin:14px 0 0}
+
+.aremplir{background:#FFF4CE;border-bottom:2px solid var(--ambre);padding:0 4px;font-weight:600;
+  color:#7A5A10;white-space:nowrap}
+
+.pied{margin-top:22px;padding-top:16px;border-top:1px solid var(--trait);font-size:12.5px;
+  color:var(--texte-2);line-height:1.5}
+.pied .v{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;
+  color:#8FA0B8;margin-top:6px}
+
+.imprimer{position:fixed;right:18px;bottom:18px;background:var(--encre);color:#fff;border:0;
+  border-radius:9px;padding:13px 20px;font-family:var(--display);font-weight:600;font-size:14.5px;
+  cursor:pointer;box-shadow:0 4px 16px -4px rgba(6,43,99,.55);min-height:46px}
+.imprimer:hover{background:var(--encre-2)}
+
+/* La fiche sera imprimée et punaisée : deux pages A4, sans ombres,
+   sans bouton, et aucun bloc coupé en deux par un saut de page. */
+@media print{
+  @page{size:A4;margin:11mm}
+  body{background:#fff;font-size:10.5pt;line-height:1.38}
+  .imprimer{display:none}
+  .bandeau{padding:0 0 8pt;background:#fff;color:var(--encre);border-bottom:2pt solid var(--encre)}
+  .bandeau .sous{color:var(--texte-2)}
+  .page{padding:10pt 0 0;max-width:none}
+  h1{font-size:17pt;margin-bottom:5pt}
+  .chapo{margin-bottom:10pt;font-size:9.5pt}
+  .carte,.stop,.appel{box-shadow:none;margin-bottom:8pt;padding:10pt 12pt;break-inside:avoid;
+    page-break-inside:avoid}
+  .appel{background:#fff;color:var(--encre);border:2pt solid var(--encre)}
+  .appel .k,.appel .d{color:var(--texte-2)}
+  .appel .n,.appel a{color:var(--encre)}
+  .appel .n{font-size:22pt}
+  h2{font-size:12pt}
+  h3{font-size:10pt;margin:10pt 0 4pt}
+  .gestes>li{margin-bottom:9pt}
+  .paq{background:#fff}
+  .saut{break-before:page;page-break-before:always}
+}
+</style>
+</head>
+<body>
+
+<div class="bandeau"><div class="in">
+  <div class="nom">CPTS Pau Béarn — cellule de crise</div>
+  <div class="sous">Incendies de Gironde · Orientation des personnes évacuées</div>
+</div></div>
+
+<div class="page">
+
+<h1>Une personne évacuée se présente chez vous, sans médecin ici</h1>
+<p class="chapo">Marche à suivre pour les pharmacies, les structures de soins non programmés et tous
+les points de contact du territoire. La CPTS Pau Béarn tient à jour une liste de médecins généralistes
+du Béarn qui ont accepté de recevoir ces personnes en consultation. Vous n'avez pas à leur chercher un
+médecin vous-même : vous nous signalez la personne, nous cherchons, nous rappelons.</p>
+
+<div class="stop">
+  <h2><span class="num">!</span>D'abord : ce qui ne passe pas par ce circuit</h2>
+  <p class="sous-h">Ce dispositif n'est ni une régulation médicale, ni une permanence des soins.
+  Il ne remplace aucun des numéros ci-dessous, et il ne fonctionne pas en urgence.</p>
+  <div class="l"><span class="n">15</span><span class="q"><strong>Urgence vitale ou doute sur la
+    gravité</strong> — détresse respiratoire, douleur thoracique, malaise, brûlure, altération de la
+    conscience. On appelle le 15, on ne signale pas.</span></div>
+  <div class="l"><span class="n">114</span><span class="q">Même urgence, <strong>par SMS</strong>, pour
+    les personnes sourdes, malentendantes, aphasiques ou dysphasiques.</span></div>
+  <div class="l"><span class="n">116 117</span><span class="q"><strong>Cabinets fermés</strong> — soir,
+    nuit, week-end, jour férié. Le service d'accès aux soins oriente vers un médecin de garde.</span></div>
+  <div class="l"><span class="n">3624</span><span class="q">SOS Médecins — consultation ou visite non
+    programmée, y compris la nuit et le week-end.</span></div>
+  <div class="l"><span class="n">Sans RDV</span><span class="q"><strong>Petite urgence en journée</strong>
+    — plaie, suture, entorse, brûlure légère, fièvre persistante : CMSI de Billère, centre médical de
+    soins immédiats, 18 route de Bayonne à Billère, du lundi au vendredi, sans dépassement
+    d'honoraires.</span></div>
+</div>
+
+<div class="carte">
+  <h2><span class="num">1</span>Qui relève de ce circuit</h2>
+  <p class="sous-h">Une personne évacuée des zones incendiées de Gironde, revenue dans sa commune ou
+  relogée en Béarn — chez un proche, en location, en hébergement collectif — <strong>qui n'a pas de
+  médecin traitant joignable sur place</strong>, ou dont le médecin ne peut pas la recevoir dans les
+  délais.</p>
+  <h3>Pour quels motifs</h3>
+  <ul class="motifs">
+    <li>Renouvellement d'ordonnance interrompue</li>
+    <li>Suites d'inhalation de fumées</li>
+    <li>Suivi d'une pathologie chronique le temps du séjour</li>
+    <li>Situation aiguë sans gravité</li>
+    <li>Certificat, document administratif de santé</li>
+    <li>Toute demande relevant de la médecine générale</li>
+  </ul>
+  <p class="note">Une personne qui <strong>a déjà trouvé un médecin</strong> ici : signalez-la quand
+  même, en une minute. Nous n'avons rien à chercher pour elle, mais c'est ce qui nous permet de savoir
+  combien de situations le territoire absorbe réellement — et de le dire à l'ARS.</p>
+</div>
+
+<div class="carte">
+  <h2><span class="num">2</span>Au comptoir, trois gestes</h2>
+  <ol class="gestes">
+    <li>
+      <span class="t">Poser la question qui tranche</span>
+      « Avez-vous un médecin qui peut vous recevoir ici ? » C'est la seule chose à savoir avant
+      d'appeler. Si la réponse est non, la suite vous concerne.
+    </li>
+    <li>
+      <span class="t">Demander son accord, à voix haute</span>
+      Dites-lui exactement ceci : <em>« Je transmets votre nom et votre numéro à la coordination de
+      la CPTS. Elle cherche un médecin généraliste qui accepte de vous recevoir, et elle vous
+      rappelle. »</em> S'il refuse, on n'enregistre rien de ses coordonnées : nous vous donnerons le
+      nom et le numéro d'un médecin volontaire, et c'est lui qui appellera.
+    </li>
+    <li>
+      <span class="t">Appeler la coordination</span>
+      Une personne = un appel. Si trois personnes se présentent dans la journée, ce sont trois
+      signalements : c'est ce qui permet de compter des personnes et non des coups de téléphone.
+      Vous pouvez appeler une fois pour les trois, mais dites-le.
+    </li>
+  </ol>
+</div>
+
+<div class="appel">
+  <div class="k">Coordination CPTS Pau Béarn — signalement d'un patient</div>
+  <span class="n"><span class="aremplir">00 00 00 00 00</span></span>
+  <div class="d"><span class="aremplir">Jours et horaires d'appel à compléter</span> ·
+  Hors de ces horaires, laissez un message avec votre nom, celui de votre structure et un numéro :
+  la coordination rappelle. En cas de doute clinique, le 15 reste le 15.</div>
+</div>
+
+<div class="carte">
+  <h2><span class="num">3</span>Ce qu'on vous demandera au téléphone</h2>
+  <p class="sous-h">Rien de plus que ceci. Un signalement incomplet vaut mieux qu'un signalement
+  perdu : appelez même s'il vous manque des éléments.</p>
+  <div class="paquets">
+    <div class="paq">
+      <div class="t">La personne</div>
+      <ul>
+        <li>Nom <span class="o">— seul élément obligatoire</span></li>
+        <li>Prénom, âge</li>
+        <li><strong>Téléphone</strong> <span class="o">— c'est par lui qu'on la rappelle une fois le
+          médecin trouvé</span></li>
+        <li>Commune</li>
+        <li>Où elle se trouve <span class="o">— chez un proche, hébergement collectif, adresse</span></li>
+      </ul>
+    </div>
+    <div class="paq">
+      <div class="t">Ce dont elle a besoin</div>
+      <ul>
+        <li>Le motif, en une ligne</li>
+        <li>Précisions utiles <span class="o">— traitement à renouveler, gêne respiratoire depuis
+          l'évacuation, difficulté à se déplacer…</span></li>
+        <li>Urgent ou non urgent, <strong>tel que vous le voyez</strong></li>
+        <li>Sa situation <span class="o">— revenue dans sa commune, relogée, hébergement collectif</span></li>
+        <li>Délai souhaitable <span class="o">— sous 48 h, dans la semaine, non urgent</span></li>
+      </ul>
+    </div>
+    <div class="paq">
+      <div class="t">Qui signale</div>
+      <ul>
+        <li>Vos prénom, nom et profession</li>
+        <li>Le nom de votre structure</li>
+        <li>Sa commune, son adresse</li>
+        <li>Son téléphone et son courriel <span class="o">— c'est par là qu'on vous transmet la liste
+          des médecins volontaires</span></li>
+      </ul>
+    </div>
+    <div class="paq">
+      <div class="t">L'accord</div>
+      <ul>
+        <li>La personne accepte-t-elle d'être contactée par la coordination ?</li>
+        <li class="o">Si non : la demande est enregistrée, mais aucune coordonnée ne circule. Nous vous
+          rappelons avec le nom et le numéro d'un médecin, à remettre à la personne.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="carte">
+  <h2><span class="num">4</span>Ce que nous faisons ensuite</h2>
+  <ul>
+    <li>Nous cherchons dans le vivier des généralistes du territoire qui ont accepté de recevoir ces
+      patients, avec leurs motifs et leurs créneaux, et nous regardons <strong>lequel est le plus
+      proche de la personne</strong>.</li>
+    <li><strong>Nous appelons le médecin avant de lui adresser qui que ce soit.</strong> Aucun patient
+      n'arrive chez lui sans qu'il l'ait accepté.</li>
+    <li>Nous rappelons la personne — ou vous, si elle n'a pas donné son accord — avec le nom,
+      l'adresse et le numéro du cabinet, et la marche à suivre pour prendre rendez-vous.</li>
+    <li>Nous tenons le suivi jusqu'au rendez-vous obtenu. Si rien ne se débloque, nous vous
+      rappelons : vous ne restez pas sans nouvelle d'un patient que vous nous avez confié.</li>
+  </ul>
+  <p class="note">Le délai dépend du vivier disponible au moment de l'appel. <strong>Nous ne garantissons
+  pas de rendez-vous</strong>, et nous ne prenons pas le rendez-vous à la place de la personne : nous
+  fléchons vers un médecin qui a dit oui.</p>
+</div>
+
+<div class="carte">
+  <h2><span class="num">5</span>Si vous avez déjà reçu la liste des médecins volontaires</h2>
+  <p>Certaines structures reçoivent directement la liste des généralistes ayant accepté que leurs
+  coordonnées soient communiquées. Si c'est votre cas, vous pouvez remettre un nom et un numéro à la
+  personne au comptoir, sans passer par nous.</p>
+  <p><strong>Deux règles, dans ce cas :</strong></p>
+  <ul>
+    <li>Ne communiquez <strong>que</strong> les médecins figurant sur la liste que la CPTS vous a
+      transmise. Elle ne contient que ceux qui ont expressément accepté que leurs coordonnées
+      circulent. Un généraliste que vous connaissez par ailleurs n'est pas sur cette liste tant qu'il
+      n'a pas répondu.</li>
+    <li><strong>Signalez-nous quand même la personne.</strong> Sans cela, ni le médecin ni nous ne
+      savons combien de patients partent vers lui — et c'est ainsi qu'un cabinet se retrouve saturé
+      sans que personne l'ait vu venir.</li>
+  </ul>
+</div>
+
+<div class="carte">
+  <h2><span class="num">6</span>Les règles à ne pas franchir</h2>
+  <p class="sous-h">Elles tiennent en cinq points. Elles ne sont pas négociables, et elles protègent
+  autant la personne au comptoir que vous.</p>
+  <div class="cadre"><ol>
+    <li><strong>La personne est informée et donne son accord au comptoir</strong>, avant que quoi que
+      ce soit ne soit transmis. Sans son accord, aucune de ses coordonnées ne circule.</li>
+    <li>Ses coordonnées se transmettent <strong>par téléphone à la coordination, ou par messagerie
+      sécurisée de santé</strong>. Jamais par courriel ordinaire, SMS ou messagerie grand public. Si
+      elle appelle elle-même, rien n'a à transiter par vous.</li>
+    <li><strong>Aucun élément médical ne circule</strong> au-delà du motif en une ligne. La CPTS
+      oriente vers un médecin : elle ne transmet aucune ordonnance, aucun compte rendu, aucun dossier.</li>
+    <li><strong>Aucune coordonnée de médecin n'est diffusée sans son accord.</strong></li>
+    <li>La personne <strong>reste libre de son médecin</strong>, et le médecin reste libre de refuser
+      une demande, à tout moment et sans avoir à se justifier.</li>
+  </ol></div>
+  <p class="note">Le registre tenu par la CPTS porte le nom des personnes signalées — il faut bien
+  pouvoir les rappeler et les nommer au médecin qui les prend. Il ne sort pas de la cellule de crise,
+  il ne contient aucun élément clinique au-delà du motif, et il est <strong>anonymisé une fois la
+  crise passée</strong>.</p>
+</div>
+
+<div class="pied">
+  <p><strong>CPTS Pau Béarn — cellule de crise incendies.</strong>
+  Action « Patients évacués — accès à un médecin généraliste », pilotée par Anne Latisnère,
+  vice-présidente, avec Eva Poulmarch, coordinatrice.
+  Une question sur ce circuit, un cas qui n'entre dans aucune case, ou vous souhaitez recevoir la
+  liste des médecins volontaires : <span class="aremplir">contact à compléter</span>.</p>
+  <p>Cette fiche peut être affichée au comptoir et transmise à vos équipes, y compris aux préparateurs
+  et au personnel d'accueil : ce sont eux qui reçoivent ces personnes en premier.</p>
+  <div class="v">Fiche établie le 29 juillet 2026 · valable tant que le dispositif est ouvert</div>
+</div>
+
+</div>
+
+<button class="imprimer" onclick="window.print()">Imprimer cette fiche</button>
+
+</body>
+</html>
