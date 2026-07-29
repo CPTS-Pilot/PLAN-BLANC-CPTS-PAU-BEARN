@@ -2051,6 +2051,10 @@ function appliquerDistant(d){
   const carnetLocal = etat.personnes;
 
   for(const k in etatInitial){ if(src[k] !== undefined) etat[k] = src[k]; }
+  /* Ce qui vient d'arriver du serveur, avant qu'on y ajoute quoi que
+     ce soit : c'est à cette copie-là qu'on se compare plus bas. */
+  const recu = {};
+  RUBRIQUES.forEach(k => { recu[k] = empreinteDe(k); });
   fusionnerNouveautes();
   normaliserPersonnes();
 
@@ -2060,6 +2064,14 @@ function appliquerDistant(d){
   /* Ce que le serveur ignore encore doit repartir : on marque la
      rubrique comme à envoyer plutôt que comme synchronisée. */
   if(aDeposer.length) empreinte.personnes = null;
+  /* Même règle pour ce que l'ouverture du cockpit vient d'écrire de
+     lui-même : entrées de main courante posées après coup pour un
+     besoin, une collecte ou une remontée déjà saisis, fiches de
+     l'amorçage, champs comblés. Sans ça, marquerSynchronise() les
+     déclarait déjà partagées alors qu'elles n'avaient jamais quitté
+     ce navigateur : elles s'affichaient ici, chez personne d'autre,
+     et disparaissaient avec la copie locale. */
+  RUBRIQUES.forEach(k => { if(empreinteDe(k) !== recu[k]) empreinte[k] = null; });
 }
 
 /* Renvoie 'ok', 'code' (code d'accès à fournir) ou 'absent'
@@ -4768,14 +4780,17 @@ async function validerPointSituation(){
   r.etat = v;
   r.maj = horodate();
   r.par = moi;
-  if(mc) consignerPointEnCourante(r, '');
+  if(mc) consignerPointSituationEnCourante(r, '');
   await sauver(); fermer(); rendre();
   toast(mc ? "Point mis à jour, et consigné en main courante" : "Point mis à jour");
 }
 /* Même règle que pour le reste du cockpit : ce qui est écrit ici se
    retrouve dans la main courante, qui garde la trace de l'état
-   précédent du point. */
-function consignerPointEnCourante(r, motif){
+   précédent du point. Le nom dit « point de situation » en toutes
+   lettres : un point de collecte a sa propre entrée, écrite plus
+   bas, et deux fonctions du même nom dans la même page se seraient
+   mangées l'une l'autre — c'est ce qui est arrivé. */
+function consignerPointSituationEnCourante(r, motif){
   etat.courante = etat.courante || [];
   etat.courante.unshift({
     id: uid(),
@@ -7137,10 +7152,14 @@ function editerRenfort(){
       <textarea id="re-message" placeholder="Ex. Un appel au renfort sera peut-être lancé en fin de semaine.">${esc(c.message||'')}</textarea></label>
     <label style="margin-bottom:12px"><span class="k">Cadre annoncé appel ouvert</span>
       <textarea id="re-cadre" placeholder="Ce qu'on sait du renfort attendu — et ce qu'on ne sait pas encore.">${esc(c.cadre||'')}</textarea></label>
-    <div class="actions"><button class="btn" onclick="validerRenfort()">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+    <div class="actions"><button class="btn" onclick="validerTextesRenfort()">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
   document.getElementById('rideau').classList.add('on');
 }
-async function validerRenfort(){
+/* Nommée « textes » et non « renfort » tout court : ajouter un
+   renfort à une mission porte déjà ce nom, plus haut dans la page,
+   et la seconde déclaration effaçait la première — le bouton
+   « Ajouter » d'une mission ne faisait plus rien. */
+async function validerTextesRenfort(){
   etat.renfort = etat.renfort || {ouverte:false};
   etat.renfort.message = document.getElementById('re-message').value.trim();
   etat.renfort.cadre = document.getElementById('re-cadre').value.trim();
