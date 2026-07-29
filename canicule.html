@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Plan canicule — Cockpit de crise CPTS Pau Béarn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Cockpit de crise — Plan canicule.
+   Même charpente que le cockpit des incendies, dont il reprend la
+   mécanique éprouvée : code d'accès partagé, état relu au serveur,
+   enregistrement rubrique par rubrique. Il s'en distingue par la
+   couleur — l'ambre plutôt que la braise — pour qu'on ne confonde
+   jamais les deux à l'écran, et surtout par ses données : elles
+   vivent dans un fichier séparé (api.php?crise=canicule) et ne se
+   mélangent jamais à celles de la Gironde. */
+:root{
+  --encre:#062B63;
+  --encre-2:#0B4FA8;
+  --surface:#F6F4F0;
+  --carte:#FFFFFF;
+  --trait:#E3DCD0;
+  --texte:#1F1B14;
+  --texte-2:#6B6357;
+  --ambre:#E8A33D;
+  --ambre-fonce:#B87516;
+  --braise:#C2482F;
+  --stable:#2F7D62;
+  --rail:250px;
+  --display:'Archivo',system-ui,sans-serif;
+  --corps:'Source Sans 3',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--corps);background:var(--surface);color:var(--texte);
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+
+.shell{display:flex;min-height:100vh}
+.rail{
+  width:var(--rail);flex:0 0 var(--rail);
+  background:#3A2A10;color:#E4D3B4;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  display:flex;flex-direction:column;
+}
+.marque{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.09)}
+.marque .nom{font-family:var(--display);font-weight:700;font-size:15px;color:#fff;line-height:1.2}
+.marque .sous{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#C8A464;margin-top:6px}
+.marque .crise{
+  display:flex;align-items:center;gap:6px;margin-top:10px;
+  background:var(--ambre);color:#3B2A08;text-decoration:none;
+  border-radius:5px;padding:6px 9px;font-size:12.5px;font-weight:600;
+}
+.marque .crise::after{content:'⇄';margin-left:auto;opacity:.7;font-size:13px}
+.marque .crise:hover{filter:brightness(1.07)}
+
+.nav{padding:10px 8px;flex:1}
+.nav button{
+  display:flex;align-items:center;gap:10px;width:100%;
+  background:none;border:0;text-align:left;cursor:pointer;
+  padding:9px 10px;border-radius:6px;color:#D9C4A0;font-size:14px;
+}
+.nav button:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav button.actif{background:var(--ambre-fonce);color:#fff;font-weight:600}
+.nav button .cpt{margin-left:auto;font-family:var(--mono);font-size:11px;color:#C8A464}
+.nav button.actif .cpt{color:#F6E6C8}
+.nav .groupe{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:#A88B58;padding:16px 10px 6px}
+
+.pied{padding:12px 14px;border-top:1px solid rgba(255,255,255,.09);font-size:12px;color:#C8A464}
+.pied button{background:none;border:1px solid rgba(255,255,255,.2);color:#E4D3B4;border-radius:5px;padding:5px 9px;font-size:11.5px;cursor:pointer;margin:3px 3px 0 0}
+.pied button:hover{border-color:#fff;color:#fff}
+.pied .version{font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:#9B7F4E;margin-top:9px}
+
+.zone{flex:1;min-width:0;display:flex;flex-direction:column}
+.bandeau{background:var(--ambre-fonce);color:#fff;padding:14px 26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.bandeau .pastille{
+  font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  background:var(--braise);padding:4px 9px;border-radius:3px;white-space:nowrap;
+}
+.bandeau .phrase{font-size:14.5px;flex:1;min-width:200px}
+.bandeau .crayon{background:none;border:1px solid rgba(255,255,255,.35);color:#F6E6C8;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:13px;min-height:34px}
+.bandeau .crayon:hover{border-color:#fff;color:#fff}
+
+.page{padding:26px;max-width:1080px;width:100%}
+h1{font-family:var(--display);font-weight:700;font-size:24px;margin:0 0 6px;color:var(--encre)}
+.chapo{color:var(--texte-2);margin:0 0 22px;max-width:720px}
+h2{font-family:var(--display);font-weight:600;font-size:17px;margin:28px 0 12px;color:var(--encre)}
+
+.carte{background:var(--carte);border:1px solid var(--trait);border-radius:9px;padding:18px;margin-bottom:14px}
+.carte.vide{color:var(--texte-2);text-align:center;padding:30px 18px}
+
+.tuiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:20px}
+.tuile{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--ambre);border-radius:9px;padding:15px}
+.tuile .val{font-family:var(--display);font-weight:700;font-size:26px;color:var(--encre);line-height:1.1}
+.tuile .lib{font-size:13px;color:var(--texte-2);margin-top:5px}
+
+label{display:block;font-size:13px;font-weight:600;color:var(--texte-2);margin:12px 0 4px}
+input[type=text],input[type=date],input[type=time],select,textarea{
+  width:100%;border:1px solid var(--trait);border-radius:6px;padding:9px 10px;background:#fff;
+}
+textarea{min-height:96px;resize:vertical;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-offset:-1px;border-color:var(--ambre)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.duo{grid-template-columns:1fr}}
+
+.btn{
+  background:var(--ambre-fonce);color:#fff;border:0;border-radius:6px;
+  padding:9px 16px;font-weight:600;cursor:pointer;min-height:38px;
+}
+.btn:hover{filter:brightness(1.08)}
+.btn.sobre{background:none;color:var(--encre-2);border:1px solid var(--trait)}
+.btn.sobre:hover{border-color:var(--encre-2);filter:none}
+.barre-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+
+.entree{background:var(--carte);border:1px solid var(--trait);border-radius:9px;padding:15px 17px;margin-bottom:11px}
+.entree .quand{font-family:var(--mono);font-size:11.5px;color:var(--texte-2);letter-spacing:.03em}
+.entree .quoi{margin:7px 0 0;white-space:pre-wrap}
+.entree .suite{margin:9px 0 0;padding-left:11px;border-left:3px solid var(--ambre);color:var(--texte-2);font-size:14px;white-space:pre-wrap}
+.entree .bas{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.entree .par{font-size:12.5px;color:var(--texte-2)}
+.entree .lien{background:none;border:0;color:var(--encre-2);cursor:pointer;font-size:12.5px;padding:0;text-decoration:underline}
+
+.etat{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;border-radius:3px;padding:3px 7px}
+.etat.encours{background:#FDF0DA;color:#8A5A0C}
+.etat.clos{background:#E4F0EA;color:var(--stable)}
+
+.voile{position:fixed;inset:0;background:rgba(20,16,8,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
+.boite{background:#fff;border-radius:11px;padding:24px;max-width:440px;width:100%}
+.boite h3{font-family:var(--display);margin:0 0 8px;font-size:18px;color:var(--encre)}
+.boite p{color:var(--texte-2);margin:0 0 14px;font-size:14px}
+
+#toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%);
+  background:var(--encre);color:#fff;padding:10px 18px;border-radius:7px;
+  font-size:14px;z-index:80;opacity:0;pointer-events:none;transition:opacity .2s;
+}
+#toast.vu{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="rail">
+    <div class="marque">
+      <div class="nom">CPTS Pau Béarn</div>
+      <div class="sous">Cockpit de crise</div>
+      <a class="crise" href="index.html" title="Changer de cockpit de crise">
+        <span>Plan canicule</span>
+      </a>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="pied">
+      <div id="identite">—</div>
+      <button onclick="demanderIdentite()">Changer de nom</button>
+      <button onclick="relire()">Actualiser</button>
+      <!-- Horodatage remplacé au déploiement par GitHub Actions. Sert à
+           vérifier d'un coup d'œil que le navigateur affiche bien la
+           dernière version en ligne, et non une copie en cache. -->
+      <div class="version">Version du poste de travail</div>
+    </div>
+  </aside>
+
+  <div class="zone">
+    <div class="bandeau">
+      <span class="pastille" id="niveau">Vigilance à renseigner</span>
+      <span class="phrase" id="phrase">—</span>
+      <button class="crayon" onclick="modifierBandeau()">Modifier</button>
+    </div>
+    <div id="vue"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* =========================================================
+   Données du cockpit canicule.
+
+   Une rubrique = une clé, enregistrée séparément au serveur.
+   Deux personnes qui travaillent sur deux onglets différents ne
+   s'écrasent donc pas. C'est la règle du cockpit des incendies,
+   reprise telle quelle.
+   ========================================================= */
+const CLE = 'cpts_pau_bearn_canicule_2026';
+const API = 'api.php?crise=canicule';
+
+const etatInitial = {
+  situation: {
+    niveau: "Vigilance à renseigner",
+    phrase: "Épisode caniculaire — situation à qualifier.",
+    maj: '', par: ''
+  },
+  courante: []
+};
+
+let etat = JSON.parse(JSON.stringify(etatInitial));
+let versionServeur = 0;
+let codeAcces = '';
+let dernierNom = '';
+let onglet = 'cockpit';
+let enLigne = false;
+
+/* --- Rendu ---------------------------------------------- */
+const ONGLETS = [
+  {id:'cockpit',  nom:'Cockpit'},
+  {id:'courante', nom:'Main courante', compte: () => etat.courante.length}
+];
+
+const ech = s => String(s == null ? '' : s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+function toast(m){
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('vu');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('vu'), 2600);
+}
+
+function dessinerNav(){
+  document.getElementById('nav').innerHTML = ONGLETS.map(o => {
+    const n = o.compte ? o.compte() : null;
+    return `<button class="${o.id === onglet ? 'actif' : ''}" onclick="aller('${o.id}')">`
+      + `<span>${ech(o.nom)}</span>`
+      + (n ? `<span class="cpt">${n}</span>` : '')
+      + `</button>`;
+  }).join('');
+}
+
+function dessinerBandeau(){
+  document.getElementById('niveau').textContent = etat.situation.niveau || '—';
+  document.getElementById('phrase').textContent = etat.situation.phrase || '—';
+}
+
+function aller(id){ onglet = id; dessiner(); }
+
+function dessiner(){
+  dessinerNav();
+  dessinerBandeau();
+  document.getElementById('vue').innerHTML = onglet === 'courante' ? vueCourante() : vueCockpit();
+}
+
+function vueCockpit(){
+  const c = etat.courante;
+  const ouvertes = c.filter(e => e.statut !== 'Clos').length;
+  const dernier = c.length ? `${c[0].date || '—'}${c[0].heure ? ' à ' + c[0].heure : ''}` : '—';
+  return `<div class="page">
+    <h1>Cockpit</h1>
+    <p class="chapo">Suivi de l'épisode caniculaire sur le territoire de la CPTS Pau Béarn. Ce cockpit est distinct de celui des incendies de Gironde : il a ses propres données.</p>
+
+    <div class="tuiles">
+      <div class="tuile"><div class="val">${c.length}</div><div class="lib">Entrées à la main courante</div></div>
+      <div class="tuile"><div class="val">${ouvertes}</div><div class="lib">Suites encore ouvertes</div></div>
+      <div class="tuile"><div class="val" style="font-size:17px;line-height:1.35">${ech(dernier)}</div><div class="lib">Dernière entrée</div></div>
+    </div>
+
+    <h2>Situation</h2>
+    <div class="carte">
+      <p style="margin:0 0 6px"><strong>${ech(etat.situation.niveau || '—')}</strong></p>
+      <p style="margin:0;color:var(--texte-2)">${ech(etat.situation.phrase || '—')}</p>
+      ${etat.situation.maj ? `<p style="margin:10px 0 0;font-family:var(--mono);font-size:11.5px;color:var(--texte-2)">Mise à jour le ${ech(etat.situation.maj)}${etat.situation.par ? ' par ' + ech(etat.situation.par) : ''}</p>` : ''}
+      <div class="barre-actions"><button class="btn sobre" onclick="modifierBandeau()">Modifier la situation</button></div>
+    </div>
+
+    <h2>Ce cockpit est à construire</h2>
+    <div class="carte">
+      <p style="margin:0 0 8px">La charpente est en place : accès, enregistrement partagé, main courante. Les rubriques métier de la canicule restent à définir avec la vice-présidence.</p>
+      <p style="margin:0;color:var(--texte-2)">En attendant, tout ce qui arrive se consigne à la main courante — c'est elle qui fera mémoire quand les rubriques seront ouvertes.</p>
+      <div class="barre-actions"><button class="btn" onclick="aller('courante')">Ouvrir la main courante</button></div>
+    </div>
+  </div>`;
+}
+
+function vueCourante(){
+  const lignes = etat.courante.length ? etat.courante.map(e => `
+    <div class="entree">
+      <div class="quand">${ech(e.date || '—')}${e.heure ? ' — ' + ech(e.heure) : ''}${e.source ? ' — ' + ech(e.source) : ''}</div>
+      <p class="quoi">${ech(e.evenement)}</p>
+      ${e.suite ? `<p class="suite">${ech(e.suite)}</p>` : ''}
+      <div class="bas">
+        <span class="etat ${e.statut === 'Clos' ? 'clos' : 'encours'}">${ech(e.statut || 'En cours')}</span>
+        ${e.auteur ? `<span class="par">${ech(e.auteur)}</span>` : ''}
+        <button class="lien" onclick="modifierEntree('${e.id}')">Modifier</button>
+        <button class="lien" onclick="retirerEntree('${e.id}')">Retirer</button>
+      </div>
+    </div>`).join('')
+    : `<div class="carte vide">Aucune entrée pour l'instant. La première consigne ce qui vient d'arriver.</div>`;
+
+  return `<div class="page">
+    <h1>Main courante</h1>
+    <p class="chapo">Tout ce qui arrive au fil de l'eau sur l'épisode caniculaire : appel reçu, décision prise, message envoyé, information transmise. On consigne au moment où ça arrive, pas le soir.</p>
+    <div class="barre-actions" style="margin:0 0 18px"><button class="btn" onclick="modifierEntree()">Consigner une entrée</button></div>
+    ${lignes}
+  </div>`;
+}
+
+/* --- Saisie --------------------------------------------- */
+function boite(html){
+  const v = document.createElement('div');
+  v.className = 'voile';
+  v.innerHTML = `<div class="boite">${html}</div>`;
+  v.addEventListener('click', e => { if(e.target === v) v.remove(); });
+  document.body.appendChild(v);
+  const p = v.querySelector('input,textarea,select');
+  if(p) p.focus();
+  return v;
+}
+function fermerBoite(el){ const v = el.closest('.voile'); if(v) v.remove(); }
+
+function auJour(){
+  const d = new Date();
+  const p = n => String(n).padStart(2, '0');
+  return {date: `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`, heure: `${p(d.getHours())}:${p(d.getMinutes())}`};
+}
+
+function modifierBandeau(){
+  const s = etat.situation;
+  const v = boite(`
+    <h3>Situation</h3>
+    <p>La phrase que tout le monde lit en haut du cockpit.</p>
+    <label for="b-niv">Niveau affiché</label>
+    <input type="text" id="b-niv" value="${ech(s.niveau)}" placeholder="Vigilance orange canicule">
+    <label for="b-phr">Phrase de situation</label>
+    <textarea id="b-phr" placeholder="Ce que fait la CPTS, en une phrase.">${ech(s.phrase)}</textarea>
+    <div class="barre-actions">
+      <button class="btn" onclick="validerBandeau(this)">Enregistrer</button>
+      <button class="btn sobre" onclick="fermerBoite(this)">Annuler</button>
+    </div>`);
+  return v;
+}
+function validerBandeau(el){
+  const j = auJour();
+  etat.situation.niveau = document.getElementById('b-niv').value.trim();
+  etat.situation.phrase = document.getElementById('b-phr').value.trim();
+  etat.situation.maj = `${j.date} à ${j.heure}`;
+  etat.situation.par = dernierNom;
+  fermerBoite(el);
+  enregistrer(['situation']);
+}
+
+function modifierEntree(id){
+  const e = id ? etat.courante.find(x => x.id === id) : null;
+  const j = auJour();
+  boite(`
+    <h3>${e ? 'Modifier l\'entrée' : 'Consigner une entrée'}</h3>
+    <div class="duo">
+      <div><label for="e-date">Date</label><input type="date" id="e-date" value="${ech(e ? e.date : j.date)}"></div>
+      <div><label for="e-heure">Heure</label><input type="time" id="e-heure" value="${ech(e ? e.heure : j.heure)}"></div>
+    </div>
+    <label for="e-src">D'où vient l'information</label>
+    <input type="text" id="e-src" value="${ech(e ? e.source : '')}" placeholder="Pharmacie, EHPAD, ARS, adhérent…">
+    <label for="e-evt">Ce qui s'est passé</label>
+    <textarea id="e-evt" placeholder="Ce qui a été dit, fait ou décidé. En clair, pour quelqu'un qui n'était pas là.">${ech(e ? e.evenement : '')}</textarea>
+    <label for="e-suite">Suite à donner</label>
+    <textarea id="e-suite" style="min-height:70px" placeholder="Ce qu'il reste à faire, et par qui.">${ech(e ? e.suite : '')}</textarea>
+    <label for="e-statut">Statut</label>
+    <select id="e-statut">
+      <option${e && e.statut === 'En cours' ? ' selected' : ''}>En cours</option>
+      <option${e && e.statut === 'Clos' ? ' selected' : ''}>Clos</option>
+    </select>
+    <div class="barre-actions">
+      <button class="btn" onclick="validerEntree(this,'${id || ''}')">Enregistrer</button>
+      <button class="btn sobre" onclick="fermerBoite(this)">Annuler</button>
+    </div>`);
+}
+
+function validerEntree(el, id){
+  const evenement = document.getElementById('e-evt').value.trim();
+  if(!evenement){ toast("Décrivez ce qui s'est passé"); return; }
+  const fiche = {
+    id: id || 'mc' + Date.now().toString(36),
+    date:   document.getElementById('e-date').value,
+    heure:  document.getElementById('e-heure').value,
+    source: document.getElementById('e-src').value.trim(),
+    evenement,
+    suite:  document.getElementById('e-suite').value.trim(),
+    statut: document.getElementById('e-statut').value,
+    auteur: dernierNom
+  };
+  const i = etat.courante.findIndex(x => x.id === fiche.id);
+  if(i >= 0) etat.courante[i] = fiche; else etat.courante.unshift(fiche);
+  trierCourante();
+  fermerBoite(el);
+  enregistrer(['courante']);
+}
+
+function retirerEntree(id){
+  const e = etat.courante.find(x => x.id === id);
+  if(!e) return;
+  if(!confirm("Retirer cette entrée de la main courante ?")) return;
+  etat.courante = etat.courante.filter(x => x.id !== id);
+  enregistrer(['courante']);
+}
+
+/* La plus récente en tête : c'est l'ordre dans lequel on relit une
+   main courante quand on prend son tour. */
+function trierCourante(){
+  etat.courante.sort((a, b) =>
+    (b.date + (b.heure || '')).localeCompare(a.date + (a.heure || '')));
+}
+
+/* --- Serveur -------------------------------------------- */
+async function appelApi(methode, corps){
+  const opts = {method: methode, headers: {'X-Code-Acces': codeAcces}};
+  if(corps){
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(corps);
+  }
+  const r = await fetch(API, opts);
+  let d = null;
+  try{ d = await r.json(); }catch(e){}
+  return {ok: r.ok, statut: r.status, corps: d};
+}
+
+function appliquerDistant(d){
+  versionServeur = (d && d.version) || 0;
+  const src = (d && d.donnees) || {};
+  for(const k in etatInitial){ if(src[k] !== undefined) etat[k] = src[k]; }
+  trierCourante();
+  garderEnLocal();
+}
+
+/* Chaque écriture ne porte que sur les rubriques touchées, et
+   emporte le numéro de version relu. Si le serveur en a un plus
+   récent, il refuse : on récupère alors son état et on redemande
+   la saisie plutôt que d'écraser le travail d'un autre poste. */
+async function enregistrer(rubriques){
+  trierCourante();
+  garderEnLocal();
+  dessiner();
+  if(!enLigne) return;
+
+  const donnees = {};
+  rubriques.forEach(r => donnees[r] = etat[r]);
+  try{
+    const r = await appelApi('POST', {version: versionServeur, par: dernierNom, donnees});
+    if(r.statut === 409){
+      appliquerDistant(r.corps);
+      dessiner();
+      toast("Le cockpit a changé entre-temps — vérifiez votre saisie");
+      return;
+    }
+    if(r.statut === 401){ enLigne = false; demanderCode(); return; }
+    if(!r.ok){ toast("Enregistrement impossible — la saisie reste sur ce poste"); return; }
+    versionServeur = r.corps.version;
+    toast("Enregistré");
+  }catch(e){
+    toast("Serveur injoignable — la saisie reste sur ce poste");
+  }
+}
+
+async function relire(){
+  if(!enLigne){ toast("Hors ligne — saisie conservée sur ce poste"); return; }
+  const r = await appelApi('GET');
+  if(r.statut === 401){ enLigne = false; demanderCode(); return; }
+  if(!r.ok){ toast("Serveur injoignable"); return; }
+  appliquerDistant(r.corps);
+  dessiner();
+  toast("À jour");
+}
+
+function garderEnLocal(){
+  try{ localStorage.setItem(CLE, JSON.stringify(etat)); }catch(e){}
+}
+function relireLocal(){
+  try{
+    const b = localStorage.getItem(CLE);
+    if(b) etat = Object.assign(JSON.parse(JSON.stringify(etatInitial)), JSON.parse(b));
+  }catch(e){}
+}
+
+/* --- Entrée --------------------------------------------- */
+function demanderCode(){
+  boite(`
+    <h3>Code d'accès</h3>
+    <p>Le cockpit est réservé au copil. Le code est demandé une fois par appareil.</p>
+    <label for="c-code">Code</label>
+    <input type="password" id="c-code" autocomplete="current-password">
+    <div class="barre-actions"><button class="btn" onclick="validerCode(this)">Entrer</button></div>`);
+  const i = document.getElementById('c-code');
+  i.addEventListener('keydown', e => { if(e.key === 'Enter') validerCode(i); });
+}
+
+async function validerCode(el){
+  const v = document.getElementById('c-code').value.trim();
+  if(!v){ toast("Saisissez le code d'accès"); return; }
+  codeAcces = v;
+  const r = await appelApi('GET');
+  if(r.statut === 401){ toast("Code refusé"); return; }
+  try{ localStorage.setItem('cpts64_code', v); }catch(e){}
+  fermerBoite(el);
+  if(r.ok){ enLigne = true; appliquerDistant(r.corps); }
+  dessiner();
+  if(!dernierNom) demanderIdentite();
+}
+
+function demanderIdentite(){
+  boite(`
+    <h3>Qui êtes-vous ?</h3>
+    <p>Votre nom accompagne ce que vous consignez, pour qu'on sache à qui s'adresser.</p>
+    <label for="i-nom">Nom et prénom</label>
+    <input type="text" id="i-nom" value="${ech(dernierNom)}">
+    <div class="barre-actions"><button class="btn" onclick="validerIdentite(this)">Valider</button></div>`);
+}
+function validerIdentite(el){
+  const n = document.getElementById('i-nom').value.trim();
+  if(!n){ toast("Indiquez votre nom"); return; }
+  dernierNom = n;
+  try{ localStorage.setItem('cpts64_identite', n); }catch(e){}
+  document.getElementById('identite').textContent = n;
+  fermerBoite(el);
+}
+
+async function demarrer(){
+  relireLocal();
+  trierCourante();
+  try{ dernierNom = localStorage.getItem('cpts64_identite') || ''; }catch(e){}
+  if(dernierNom) document.getElementById('identite').textContent = dernierNom;
+  try{ codeAcces = localStorage.getItem('cpts64_code') || ''; }catch(e){}
+
+  dessiner();
+
+  try{
+    const r = await appelApi('GET');
+    if(r.statut === 401){ demanderCode(); }
+    else if(r.ok){ enLigne = true; appliquerDistant(r.corps); dessiner(); if(!dernierNom) demanderIdentite(); }
+  }catch(e){ /* pas d'hébergement en face : on reste sur le poste */ }
+
+  /* Relève régulière : un poste laissé ouvert ne doit pas afficher
+     une situation d'il y a une heure. */
+  setInterval(async () => {
+    if(!enLigne || document.querySelector('.voile')) return;
+    try{
+      const r = await appelApi('GET');
+      if(r.ok && r.corps && r.corps.version !== versionServeur){
+        appliquerDistant(r.corps);
+        dessiner();
+      }
+    }catch(e){}
+  }, 15000);
+}
+
+demarrer();
+</script>
+</body>
+</html>

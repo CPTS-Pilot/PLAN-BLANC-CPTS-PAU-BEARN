@@ -38,8 +38,25 @@ const CODE_ACCES = 'bearn2026';
 const GARDE = "<?php exit; ?>\n";
 
 const DOSSIER = __DIR__ . '/donnees';
-const FICHIER = DOSSIER . '/etat.php';
-const JOURNAL = DOSSIER . '/journal.php';
+
+/* --- Cloisonnement des crises ---------------------------
+   Depuis fin juillet 2026, la CPTS conduit deux crises de front :
+   les incendies de Gironde et l'épisode caniculaire sur son propre
+   territoire. Un cockpit par crise, sous la même adresse, et
+   surtout : aucune donnée en commun. Le paramètre ?crise= choisit
+   le jeu de fichiers ; sans lui, on sert l'état historique des
+   incendies, tel qu'il était nommé avant l'arrivée du second
+   cockpit — rien à migrer.
+
+   La liste est fermée : un nom inconnu retombe sur les incendies
+   plutôt que de créer un fichier à la demande. */
+$crises = ['canicule' => '-canicule'];
+$demandee = (string) ($_GET['crise'] ?? '');
+$suffixe = $crises[$demandee] ?? '';
+
+define('FICHIER', DOSSIER . '/etat' . $suffixe . '.php');
+define('JOURNAL', DOSSIER . '/journal' . $suffixe . '.php');
+define('SUFFIXE_CRISE', $suffixe);
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
@@ -784,7 +801,9 @@ if (CODE_ACCES !== '') {
    qu'un lien s'ouvre dans un onglet du navigateur.
    ========================================================= */
 
-const PIECES    = DOSSIER . '/pieces';
+/* Les pièces suivent le même cloisonnement que l'état : celles
+   d'une crise ne se listent ni ne s'ouvrent depuis l'autre. */
+define('PIECES', DOSSIER . '/pieces' . SUFFIXE_CRISE);
 const PIECE_MAX = 4000000;   /* octets, une fois décodé */
 
 /* Liste fermée : rien d'exécutable ne peut entrer. Le contenu

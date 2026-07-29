@@ -36,17 +36,23 @@ jobs:
       - name: Récupérer les fichiers
         uses: actions/checkout@v4
 
-      # Rien ne distingue deux versions de index.html à l'œil nu. On y
+      # Rien ne distingue deux versions d'un cockpit à l'œil nu. On y
       # inscrit donc la date du dépôt, lisible en bas du rail : elle
       # permet de vérifier en une seconde si le navigateur affiche la
       # dernière version ou une copie restée en cache.
       # Le grep final fait échouer l'étape si le repère a disparu de la
       # page, plutôt que de déposer une version muette.
+      #
+      # Depuis fin juillet 2026, deux cockpits portent ce repère —
+      # incendies et canicule. index.html n'est plus qu'un portail de
+      # choix : il n'a pas de rail, donc pas d'horodatage.
       - name: Horodater la version déposée
         run: |
           horodatage="$(TZ=Europe/Paris date '+%d/%m/%Y à %Hh%M')"
-          sed -i "s|<div class=\"version\">[^<]*</div>|<div class=\"version\">Version du ${horodatage}</div>|" index.html
-          grep -o '<div class="version">[^<]*</div>' index.html
+          for page in incendies.html canicule.html; do
+            sed -i "s|<div class=\"version\">[^<]*</div>|<div class=\"version\">Version du ${horodatage}</div>|" "$page"
+            grep -o '<div class="version">[^<]*</div>' "$page"
+          done
 
       # Destination principale. En FTPS : le mot de passe ne circule
       # pas en clair, contrairement au FTP simple imposé par OVH.
