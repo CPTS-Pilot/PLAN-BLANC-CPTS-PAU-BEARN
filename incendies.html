@@ -1338,6 +1338,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .carto .tete-c{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px}
 .carto .tete-c .t{font-family:var(--display);font-weight:700;font-size:16px;color:var(--encre);line-height:1.2}
 .carto .tete-c .s{font-size:12.5px;color:var(--texte-2);flex:1 1 220px;line-height:1.35;margin:0}
+/* Une carte qui se passe de phrase d'explication garde ses boutons
+   à droite : l'écart tient la place que le texte occupait. */
+.carto .tete-c .ecart{flex:1 1 auto}
 .carto .tete-c .plier{background:none;border:1px solid var(--trait);border-radius:7px;color:var(--texte-2);
   font-family:inherit;font-size:12.5px;padding:7px 12px;cursor:pointer;min-height:36px}
 .carto .tete-c .plier:hover{border-color:var(--encre-2);color:var(--encre-2)}
@@ -1358,9 +1361,15 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .carto .legende i{width:11px;height:11px;border-radius:50%;display:inline-block;
   border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.22)}
 .carto .legende i.approx{opacity:.45}
-/* L'anneau de la légende reprend la forme du cabinet sur la carte :
-   creux, quand la personne signalée est un disque plein. */
-.carto .legende i.creux{border-color:transparent;box-shadow:none}
+/* La légende reprend la forme du cabinet sur la carte : une maison,
+   quand la personne signalée est un disque plein. */
+.carto .legende i.maison{width:15px;height:15px;border:none;border-radius:0;box-shadow:none;
+  display:inline-flex;align-items:center}
+/* Le repère du cabinet est une image, pas une pastille : la boîte que
+   Leaflet lui donne ne doit ni fond ni cadre, juste une ombre portée
+   qui le décolle du fond de carte. */
+.carto-maison{background:none;border:none;line-height:0;
+  filter:drop-shadow(0 1px 2px rgba(11,30,58,.4))}
 .carto .manquants{padding:11px 16px;border-top:1px solid var(--trait);font-size:12.5px;
   color:#8A5D12;background:#FCF3E4;line-height:1.45}
 .carto .source{padding:9px 16px;border-top:1px solid var(--trait);font-size:11px;color:var(--texte-2);line-height:1.4}
@@ -6919,11 +6928,22 @@ const CARTO_TEINTES = {
 };
 
 /* Côté patients, la couleur ne dit pas un statut administratif
-   mais où en est la personne : rouge tant qu'elle est signalée
-   urgente sans médecin, ambre tant qu'elle attend, vert dès
+   mais où en est la personne : orange tant qu'elle n'est affectée
+   à personne, rouge quand cette attente est urgente, vert dès
    qu'un médecin lui est désigné, gris quand la demande est
-   close sans suite. */
-const CARTO_PAT = {attente:'#E8A33D', urgent:'#C2482F', oriente:'#2F7D62', clos:'#9AA8BC'};
+   close sans suite. Vert et orange se lisent d'un coup d'œil :
+   qui est pris, qui reste à prendre. */
+const CARTO_PAT = {attente:'#E2761B', urgent:'#C2482F', oriente:'#2F7D62', clos:'#9AA8BC'};
+
+/* Le cabinet volontaire ne se pose pas en pastille mais en petite
+   maison bleue : sur la carte des patients, les deux populations
+   se distinguent à la forme, pas à la nuance. */
+const CARTO_CABINET = '#0B4FA8';
+const maisonSVG = (teinte, t) => `<svg viewBox="0 0 24 24" width="${t}" height="${t}" aria-hidden="true">
+  <path d="M12 2.6 2.4 10.6h2.3v10.8h14.6V10.6h2.3z" fill="${teinte}" stroke="#fff"
+    stroke-width="1.6" stroke-linejoin="round"></path>
+  <rect x="10.1" y="14.2" width="3.8" height="7.2" fill="#fff" opacity=".92"></rect>
+</svg>`;
 const etatCarto = o => o.statut === 'Sans suite' ? 'clos'
   : estOriente(o) ? 'oriente'
   : o.urgence === 'Urgent' ? 'urgent' : 'attente';
@@ -7212,7 +7232,7 @@ function dessinerCarte(hote){
   /* Les points ne se redessinent que s'ils ont changé : le reste
      du temps, le re-rendu de la page ne touche pas à la carte. */
   const signe = pts.map(p =>
-    [p.id, p.lat, p.lon, p.statut, p.approx, p.forme, p.creux, p.couleur, p.medecin].join(':')).join('|');
+    [p.id, p.lat, p.lon, p.statut, p.approx, p.forme, p.maison, p.couleur, p.medecin].join(':')).join('|');
   if(signe !== carte._signe){
     carte._couche.clearLayers();
     carte._reperes = {};
@@ -7220,14 +7240,20 @@ function dessinerCarte(hote){
       const teinte = p.couleur || CARTO_TEINTES[p.statut] || '#0B4FA8';
       /* Deux formes, pour que les deux populations ne se confondent
          pas quand elles partagent la même carte : la personne
-         signalée est un disque plein, le cabinet un anneau. */
-      const style = p.forme === 'med' && p.creux
-        ? {radius:8, weight:3, color:teinte, fillColor:teinte, fillOpacity:.12}
-        : {radius:9, weight:3, color:'#fff', fillColor:teinte,
-           /* Un point posé sur la commune faute d'adresse exacte se
-              montre pâle : il dit « quelque part par ici », pas « là ». */
-           fillOpacity: p.approx ? .42 : .95};
-      const r = L.circleMarker([p.lat, p.lon], style).addTo(carte._couche);
+         signalée est un disque plein, le cabinet une maison. */
+      let r;
+      if(p.maison){
+        r = L.marker([p.lat, p.lon], {
+          icon: L.divIcon({className:'carto-maison', html:maisonSVG(teinte, 26),
+            iconSize:[26,26], iconAnchor:[13,25], popupAnchor:[0,-23]}),
+          title: p.nom
+        }).addTo(carte._couche);
+      }else{
+        r = L.circleMarker([p.lat, p.lon], {radius:9, weight:3, color:'#fff', fillColor:teinte,
+          /* Un point posé sur la commune faute d'adresse exacte se
+             montre pâle : il dit « quelque part par ici », pas « là ». */
+          fillOpacity: p.approx ? .42 : .95}).addTo(carte._couche);
+      }
       r.bindPopup(bullecarte(p));
       carte._reperes[p.id] = r;
     });
@@ -7303,26 +7329,26 @@ function blocCarte(idc, pts, o){
   /* La légende ne montre que ce qui est effectivement posé : une
      carte où personne n'a encore été orienté n'a pas à porter une
      pastille verte qui ne correspond à rien. La forme compte
-     autant que la teinte — le vert d'une personne orientée et
-     celui d'un cabinet volontaire sont le même vert, et seuls le
-     disque et l'anneau les distinguent. */
-  const forme = p => (p.couleur || CARTO_TEINTES[p.statut] || '#0B4FA8') + (p.creux ? '|anneau' : '|disque');
+     autant que la teinte : une personne est un disque, un cabinet
+     une maison, et la légende ne montre l'un ou l'autre que si la
+     carte le porte vraiment. */
+  const forme = p => (p.couleur || CARTO_TEINTES[p.statut] || '#0B4FA8') + (p.maison ? '|maison' : '|disque');
   const cles = new Set(situes.map(forme));
-  const legende = (o.legende || []).filter(x => cles.has(forme({couleur:x.c, creux:x.creux})));
+  const legende = (o.legende || []).filter(x => cles.has(forme({couleur:x.c, maison:x.maison})));
 
   return `<div class="carto">
     <div class="tete-c">
       <div class="t">${esc(o.titre)}</div>
-      <p class="s">${o.sous}</p>
+      ${o.sous ? `<p class="s">${o.sous}</p>` : '<span class="ecart"></span>'}
       ${o.outil || ''}
       <button class="plier" onclick="plierCarte('${idc}')">${plie ? 'Afficher la carte' : 'Replier'}</button>
     </div>
     ${corps}
     ${plie || !situes.length ? '' : `<div class="legende">
       <span><strong>${vedettes.filter(p => p.lat !== null).length}</strong> ${esc(o.compte)}</span>
-      ${legende.map(x => `<span><i class="${x.creux ? 'creux' : ''}" style="${x.creux
-        ? `background:transparent;box-shadow:0 0 0 1px ${x.c} inset,0 0 0 3px ${x.c} inset`
-        : `background:${x.c}`}"></i>${esc(x.l)}</span>`).join('')}
+      ${legende.map(x => `<span>${x.maison
+        ? `<i class="maison">${maisonSVG(x.c, 15)}</i>`
+        : `<i style="background:${x.c}"></i>`}${esc(x.l)}</span>`).join('')}
       ${vedettes.some(p => p.lat !== null && p.approx) ? `<span><i class="approx" style="background:#0B4FA8"></i>Situé à la commune seulement</span>` : ''}
     </div>`}
     ${plie || !o.alerte ? '' : `<div class="manquants">${o.alerte}</div>`}
@@ -8576,18 +8602,18 @@ function barreTamis(ori, vus){
    appel, le formulaire prend toute la place et la liste attend.
    Deux écrans qui se répondaient en devenaient un. */
 /* La carte des personnes signalées : une par point, posée sur sa
-   commune. La couleur dit où elle en est — ambre tant qu'elle
-   attend un médecin, rouge si elle a été signalée urgente et
-   attend encore, verte dès qu'un médecin lui est désigné, grise
-   si la demande est close sans suite.
+   commune. La couleur dit où elle en est — orange tant qu'aucun
+   médecin ne lui est affecté, rouge si cette attente a été
+   signalée urgente, verte dès qu'un médecin la prend, grise si la
+   demande est close sans suite.
 
    Les cabinets volontaires viennent en surimpression sur demande,
-   en anneaux : c'est ce qui répond à « qui est le plus près de
-   cette personne ». Sans eux, la carte reste ce qu'elle est —
-   l'état du registre étalé sur le territoire. */
+   en petites maisons bleues : c'est ce qui répond à « qui est le
+   plus près de cette personne ». Sans eux, la carte reste ce
+   qu'elle est — l'état du registre étalé sur le territoire. */
 function carteDesPatients(ori, vivier){
   const ptsMed = pointsMedecins(vivier)
-    .map(p => Object.assign({}, p, {creux:true, second:true}));
+    .map(p => Object.assign({}, p, {maison:true, second:true, couleur:CARTO_CABINET}));
   const pts = pointsPatients(ori, ptsMed);
   const tous = medSurCartePat ? pts.concat(ptsMed.filter(p => p.lat !== null)) : pts;
   const situables = ptsMed.filter(p => p.lat !== null).length;
@@ -8600,13 +8626,13 @@ function carteDesPatients(ori, vivier){
   return blocCarte('carte-patients', tous, {
     court:true, outil,
     titre:"Cartographie des patients signalés",
-    sous:"Une personne, un point, posé sur sa commune. La couleur dit si elle attend encore un médecin ou si elle en a un. Touchez un point : le cabinet volontaire le plus proche s'y affiche, avec de quoi l'affecter.",
+    sous:"",
     compte:'personnes situées',
     legende:[{c:CARTO_PAT.urgent,  l:'Signalée urgente, sans médecin'},
-             {c:CARTO_PAT.attente, l:'En attente d\'un médecin'},
+             {c:CARTO_PAT.attente, l:'Sans médecin affecté'},
              {c:CARTO_PAT.oriente, l:'Orientée vers un médecin'},
              {c:CARTO_PAT.clos,    l:'Sans suite'},
-             {c:CARTO_TEINTES['Volontaire'], l:'Cabinet volontaire', creux:true}],
+             {c:CARTO_CABINET, l:'Cabinet volontaire', maison:true}],
     alerte: alertePatients(pts),
     source:"Une personne est posée sur sa commune, jamais à son adresse : seul le nom de la commune sort du cockpit, ni identité ni rue.",
     videSansPoint:"Aucune commune renseignée pour l'instant. La commune saisie au recueil pose la personne sur la carte, toute seule.",
