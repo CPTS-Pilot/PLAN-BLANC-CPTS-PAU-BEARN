@@ -8244,6 +8244,9 @@ function texteMCPatient(o, quoi, ancien){
     || String(ancien || '').trim() || String(o.medecinRetire || '').trim();
   const fiche = o.medecinId ? (etat.medecins || []).find(x => x.id === o.medecinId) : null;
   const ou = fiche ? [fiche.structure, fiche.commune].filter(Boolean).join(', ') : '';
+  /* Le médecin d'avant est gardé sur la fiche : l'entrée se réécrit
+     à l'anonymisation, et il ne doit pas s'y perdre. */
+  const prec = String(ancien || '').trim() || String(o.medecinPrecedent || '').trim();
 
   /* Les tournures s'écrivent sans accorder de participe sur le
      patient : le registre porte des noms, et « signalée urgente »
@@ -8283,7 +8286,7 @@ function texteMCPatient(o, quoi, ancien){
       + (o.motif ? ` Motif : ${o.motif}.` : '')
       + (o.urgence === 'Urgent' ? ' Demande urgente.' : '')
       + (o.relais ? ` Signalement transmis par ${o.relais}.` : '')
-      + (ancien && ancien !== o.medecin ? ` En remplacement de ${ancien}.` : '')
+      + (prec && prec !== o.medecin ? ` En remplacement de ${prec}.` : '')
       + (o.horsVivier ? ' Médecin hors vivier des volontaires.' : ''),
     suite: "Rendez-vous à obtenir, puis à consigner au registre des patients."
       + (o.accord === 'Oui' ? " Accord recueilli pour être orienté et rappelé."
@@ -8308,7 +8311,11 @@ function consignerPatientEnCourante(o, quoi, opts){
     id,
     date: (opts && opts.date) || (deja && deja.date) || aujourdhui(),
     heure: (opts && opts.heure) || (deja && deja.heure) || maintenant(),
-    source: t.source, evenement: t.evenement, suite: t.suite, qui,
+    source: t.source, evenement: t.evenement, qui,
+    /* L'anonymisation ne réécrit que ce qui nomme le patient : la
+       suite donnée reste celle qui avait été consignée, sans quoi
+       une entrée d'hier se relirait à l'état d'aujourd'hui. */
+    suite: (opts && opts.garderSuite && deja) ? deja.suite : t.suite,
     auteur: (deja && deja.auteur) || (moi === 'Anonyme' ? '' : moi),
     quand: (deja && deja.quand) || ''
   };
@@ -8944,9 +8951,10 @@ async function affecterMedecin(id, mid){
   }
   const par = (document.getElementById('or-par')?.value || '').trim()
     || (moi === 'Anonyme' ? '' : moi);
-  const ancien = String(o.medecin || '').trim();
+  const ancien = String(o.medecin || o.medecinRetire || '').trim();
 
   o.medecin = nom;
+  o.medecinPrecedent = ancien === nom ? '' : ancien;
   o.medecinRetire = '';
   /* On retient aussi l'identifiant : c'est par lui que l'agenda
      rattache le patient au créneau, et un nom peut se corriger. */
@@ -9022,7 +9030,8 @@ async function confirmerAnonymisation(){
     [['signalement','signalement'], ['orientation', estOriente(o) ? 'orientation' : 'retrait']]
       .forEach(([cle, quoi]) => {
         const id = idMCPatient(o, cle);
-        if((etat.courante || []).some(x => x.id === id)) consignerPatientEnCourante(o, quoi);
+        if((etat.courante || []).some(x => x.id === id))
+          consignerPatientEnCourante(o, quoi, {garderSuite: true});
       });
   });
   await sauver(); fermer(); rendre();
