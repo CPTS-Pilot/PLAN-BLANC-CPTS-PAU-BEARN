@@ -798,6 +798,38 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
    dans la liste s'efface au lieu de se proposer deux fois. */
 .sugg button.pris{opacity:.4;pointer-events:none;text-decoration:line-through}
 
+/* L'aperçu. Ce qu'on fabrique ici n'est pas un formulaire de
+   saisie, c'est une page que quelqu'un lira sur son téléphone :
+   on la montre pendant qu'on l'écrit, plutôt que de la découvrir
+   après l'avoir diffusée. Sur un écran large elle se tient à
+   côté et suit le défilement ; sur un téléphone elle se pose en
+   bas, juste avant le bouton qui crée l'appel — le dernier coup
+   d'œil avant de publier. */
+.camp-grille{display:grid;gap:20px;align-items:start}
+@media(min-width:800px){
+  .camp-grille{grid-template-columns:minmax(0,1fr) 288px}
+  .camp-grille .apercu{position:sticky;top:0}
+}
+.apercu{background:var(--surface);border:1px solid var(--trait);border-radius:12px;padding:13px}
+.apercu .ap-t{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--texte-2);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.apercu .ap-t::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--stable);flex:0 0 6px}
+.ap-ecran{background:#fff;border:1px solid var(--trait);border-radius:10px;padding:15px 14px;
+  box-shadow:0 1px 10px rgba(6,43,99,.06)}
+.ap-ecran .ap-h{font-family:var(--display);font-weight:700;font-size:15.5px;line-height:1.25;color:var(--encre)}
+.ap-ecran .ap-h.gris{color:var(--texte-2);font-weight:400;font-style:italic}
+.ap-ecran .ap-c{font-size:12px;line-height:1.45;background:#FCF3E4;border:1px solid #E9D3A6;
+  color:#8A5D12;border-radius:6px;padding:8px 9px;margin-top:10px;white-space:pre-line}
+.ap-ecran .ap-k{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--texte-2);margin:14px 0 7px}
+.ap-ecran .ap-i{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--trait);
+  border-radius:7px;padding:8px 9px;margin-bottom:6px;font-size:12.5px;line-height:1.35}
+.ap-ecran .ap-i .b{width:14px;height:14px;border:1.5px solid var(--encre-2);border-radius:3px;flex:0 0 14px;margin-top:1px}
+.ap-ecran .ap-i .p{display:block;color:var(--texte-2);font-size:11.5px;margin-top:2px}
+.ap-ecran .ap-vide{font-size:12px;color:var(--texte-2);font-style:italic;line-height:1.45}
+.ap-ecran .ap-n{font-size:11.5px;color:var(--texte-2);line-height:1.4;margin-top:10px;
+  border-top:1px dashed var(--trait);padding-top:8px}
+
 /* Accepter le hors-liste est une décision, pas une option : elle
    se pose comme une carte à cocher, et se voit quand elle est
    prise. */
@@ -1784,6 +1816,7 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
      public s'anime, les réponses tombent dans le registre. */
   consultations: { ouverte:false, message:'', cadre:"Il s'agit de consultations ponctuelles au cabinet, aux horaires que vous choisissez : renouvellement d'ordonnance interrompue par un départ précipité, suites d'inhalation de fumées. Répondre ne vous engage ni à devenir médecin traitant, ni à recevoir plus de patients que vous ne l'avez indiqué." },
   courante: [
+    {id:'mc40', date:'2026-07-29', heure:'19:30', source:'', evenement:"Une remontée de terrain s'horodate désormais à l'heure, et non plus au seul jour. Le formulaire ouvre sur « Heure de la remontée », préremplie à l'heure courante comme en main courante : deux remontées reçues le même jour se départagent, et le journal les range dans l'ordre où elles sont arrivées. L'heure suit jusqu'à l'entrée que la remontée pose d'elle-même en main courante — corriger l'une corrige l'autre, sans recopie. Les trois remontées déjà déposées ont été datées sur le serveur : le CMSI de Billère à 8h00, heure que la remontée écrivait déjà dans son propre texte, et celle de Mohammed Ouldd Chaiba à 17h15, heure à laquelle le cockpit l'a enregistrée. La remontée des pharmaciens d'officine reste sans heure : son texte ne dit que « coup sur coup dans la matinée », et une heure inventée dans un registre destiné au RETEX vaut moins que pas d'heure du tout — elle se complète d'un clic sur le crayon.", suite:"Au pied de chaque carte de journal — main courante, remontées, échanges avec l'ARS — s'ajoute la date et l'heure de saisie : « Saisi par Eva Poulmarch le 29/07 à 17:15 ». Ce n'est pas l'heure du fait, c'est celle de son écriture, et c'est ce qu'un dossier de traçabilité doit pouvoir attester quand l'heure du fait n'a pas été notée. Question posée et non tranchée : faut-il garder l'onglet « Remontées terrain », ou la main courante suffit-elle ?", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc39', date:'2026-07-29', heure:'', source:'', evenement:"L'onglet « Collecte de matériel » sépare enfin trois choses qu'il empilait : les lieux où l'on peut déposer, les collectes qu'on a réellement tenues, et les dons que des structures ont annoncés. La carte « Points de collecte » n'est plus qu'un recensement — nom du lieu, adresse, horaires d'accès, personne qui détient les clés, et un bouton pour en ajouter un. Les permanences tenues, qui y vivaient dans un second feuillet, rejoignent « Matériel collecté », où elles s'appellent désormais des collectes réalisées : on en enregistre une avec son lieu, son créneau, son heure de clôture effective, sa destination, on y consigne les dépôts ligne à ligne, on y joint le récapitulatif signé sur place, et le document imprimable se recalcule à chaque ouverture. Sous elles, à part et sans se confondre avec elles, le registre des dons déclarés — la pharmacie de la Paix, la pharmacie Berlioz, les cabinets — qui recense ce qui a été annoncé, non ce qui a été déposé.", suite:"Nouveauté principale : chaque collecte ouverte fabrique un lien de saisie sur place, à remettre à la personne qui tient la table. Elle y note un déposant après l'autre — prénom, nom, profession, le matériel appuyé sur une pastille et sa quantité — et chaque envoi arrive directement dans la collecte ; le récapitulatif se met à jour à la seconde, sans ressaisie le soir venu. Le lien ne donne accès à rien d'autre du cockpit, ne demande aucun code, cesse de répondre dès que la collecte est clôturée, et se révoque d'un bouton s'il a trop circulé. À l'usage : ne le transmettre qu'à qui tient effectivement la table, et clôturer la collecte en partant.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc38', date:'2026-07-29', heure:'', source:'', evenement:"La collecte de matériel ne se mène plus d'un bloc mais par appels aux dons, et n'importe qui de l'équipe peut en lancer un sans passer par la coordination. Constat de départ : la campagne du 27/07 portait sur cinq dispositifs de mesure demandés par le centre d'accueil de Bordeaux ; elle est close, le besoin suivant sera tout aussi précis et tout aussi différent, et il n'y avait qu'un seul formulaire, qu'un seul interrupteur et qu'une seule ligne de texte à réécrire pour dire ce qu'on demandait. Désormais, dans « Collecte de matériel », carte « Formulaire de dons en ligne », un bouton « Créer un appel aux dons » ouvre une fenêtre où se posent l'intitulé, le motif — pour nous, pas pour le donateur —, le texte affiché en tête du formulaire, le lieu de dépôt, et surtout la liste du matériel demandé, un article par ligne avec sa précision. C'est cette liste qui fabrique le formulaire : le professionnel ne décrit plus ce qu'il a, il coche dans ce qu'on lui demande et dit combien. Une case, décochée par défaut, autorise les propositions hors liste ; sans elle le formulaire dit qu'on ne collecte rien d'autre. Chaque appel a son propre lien, ses propres dates d'ouverture et de clôture, et son propre compte de déclarations. Un appel clos se relance d'un bouton, qui recopie la liste dans un appel neuf à corriger.", suite:"Un appel se crée fermé : rien ne sort tant qu'on ne le lance pas, et le lancement pose la même question que les autres formulaires publics — ouverture officielle, qui se consigne ici avec la liste annoncée, ou essai, qui ne laisse aucune trace. La collecte du 27/07 est reprise telle quelle comme premier appel, avec ses cinq dispositifs, pour que ce qui a été demandé ce jour-là reste lisible. Au registre, chaque déclaration porte le nom de l'appel auquel elle répond, se filtre par lui et sort avec lui à l'export Excel. Un lien d'appel clos retrouvé dans un vieux message ne bascule pas sur l'appel en cours : il dit qu'il est clos et renvoie vers ce qui est ouvert — sans quoi on donnerait pour autre chose que ce qu'on a lu. Un appel qui a reçu des déclarations ne se supprime pas.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc37', date:'2026-07-29', heure:'', source:'', evenement:"Un onglet « Rapports » s'ouvre dans le Suivi. Le cockpit savait déjà tout, mais il ne le disait nulle part en une page : le Cockpit montre l'instant sans garder le chemin parcouru, et le dossier de traçabilité met tout bout à bout, ce qui est exhaustif et illisible. L'onglet porte quatre documents tirés du même fonds. « Points de situation » : le rapport détaillé qu'on arrête à une date — situation, consignes, chiffres, état de chaque mission avec sa prochaine action, faits marquants de la période, ce qui reste en suspens. Une fois arrêté il se fige et ne se recalcule plus : il restera ce que la CPTS savait ce jour-là, y compris si elle se trompait, ce qui est précisément ce qu'un retour d'expérience cherche. « Matière pour le RETEX » : ce qui a marché, ce qui a manqué, ce qu'on fera autrement — les trois seules choses qu'aucun compteur ne retrouvera. « Pour le plan SSE » : les dix fiches mission, dont la trame but / ce qu'on fait / avec qui / pour qui / ce qu'on ne fait pas est déjà celle d'une fiche de plan, et sept fiches réflexes rangées par déclencheur et non par action — pour qu'elles servent aussi à la canicule, où il n'y aura ni collecte ni patients évacués. Deux de ces déclencheurs n'ont aucun onglet dans le cockpit, le déclenchement du plan blanc et la demande de position d'un adhérent ou de la presse : ils se sont joués à l'instinct et rien n'en a été gardé.", suite:"Tout cela se remplit seul, sauf une chose : une étoile est posée sur chaque entrée de la main courante, des remontées terrain, des échanges avec l'ARS et des visios de crise. Un clic dit ce que l'entrée doit devenir — fait marquant, ce qui a marché, ce qui a manqué, à changer, ou point de doctrine — et les quatre rapports vont la chercher là où elle est écrite, sans jamais la recopier. Une seule étoile et non une par rapport : deux gestes séparés et plus personne n'en ferait aucun. Chaque document sort en PDF par l'impression, et en Word sans aucune bibliothèque à charger, donc depuis n'importe quel poste qui n'a que son navigateur. Le dossier de traçabilité rejoint les Rapports, sa place étant parmi eux plutôt que dans un bouton de pied de page. La mission « Traçabilité » pose comme limite qu'on ne rédige pas de fiches réflexes pendant la crise : rien ici n'en rédige, on ramasse la matière tant qu'elle est chaude pour que la rédaction se fasse à froid en septembre.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
@@ -1828,8 +1861,8 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
     {id:'mc0a', date:'2026-07-25', heure:'', source:'', evenement:"Message n°1 diffusé aux membres de la CPTS Pau Béarn sur les groupes WhatsApp, environ 210 professionnels de santé destinataires : information sur le déclenchement du plan blanc régional / ORSAN AMAVI, rappel de la consigne de maintien de la prise en charge en ambulatoire, et annonce de besoins en renforts humains et matériels. Message d'Anne Latisnère, vice-présidente, validé par la vice-présidence.", suite:"Aucune demande précise ni canal de retour indiqué : le message ne fait rien remonter et crée une attente chez les adhérents. À recadrer dans le message suivant.", qui:'Anne Latisnère', auteur:'Anne Latisnère', quand:''}
   ],
   terrain: [
-    {id:'tr2', date:'2026-07-28', professionnel:"Pharmaciens d'officine du territoire", profession:"Pharmacien", commune:"Territoire de la CPTS Pau Béarn", sujet:"Plusieurs pharmaciens d'officine ont appelé la CPTS coup sur coup dans la matinée du 28/07 : ils reçoivent au comptoir des personnes évacuées des zones incendiées de Gironde, les unes revenues dans leur commune d'origine, les autres délocalisées en Béarn. Ces personnes n'ont pas de médecin traitant sur le territoire et demandent le renouvellement d'ordonnances interrompues par un départ précipité, ou une prise en soins pour des infections liées aux incendies. Le pharmacien peut dépanner dans les limites de la dispensation d'urgence, mais ne peut ni prolonger durablement un traitement ni ouvrir une prise en charge : sans médecin vers qui adresser, la personne repart sans solution. Même situation que celle remontée le matin même par le CMSI de Billère — la difficulté n'est donc pas isolée à une structure.", criticite:'Élevée', action:"Communiqué diffusé aux pharmaciens du territoire à 10h00 par Anne Latisnère et Eva Poulmarch : la situation est appelée à s'accroître et la CPTS constitue un vivier de médecins généralistes disponibles pour recevoir ces patients en consultation. Les pharmaciens sont invités à continuer de faire remonter les situations rencontrées au comptoir. Le circuit de fléchage vers les généralistes volontaires leur sera transmis dès l'ouverture du vivier.", transmis:'', statut:'En cours', auteur:'Eva Poulmarch', quand:''},
-    {id:'tr1', date:'2026-07-28', professionnel:'CMSI de Billère', profession:"Structure de soins non programmés", commune:'Billère', sujet:"Appel reçu à 8h00 par Anne Latisnère, vice-présidente : le CMSI de Billère reçoit des patients évacués des zones incendiées de Gironde, les uns revenus dans leur commune d'origine, les autres délocalisés ici. Partis de manière très précipitée, ils sont en demande de renouvellement d'ordonnances en cours et de prise en soins pour des infections liées aux incendies. N'ayant pas de médecin traitant sur le territoire, ils se tournent vers le CMSI. Or celui-ci est un acteur de soins non programmés : il n'est pas en mesure d'assumer ni d'assurer ce type de rôle, qui relève du suivi et non de l'urgence. La structure reçoit par ailleurs les appels de pharmaciens du territoire confrontés aux mêmes situations au comptoir. La continuité des soins est bousculée.", criticite:'Élevée', action:"Ouverture de l'action « Patients évacués » : sondage des médecins généralistes du territoire pour constituer un vivier de volontaires, information des pharmacies et des structures de soins non programmés — communiqué aux pharmaciens à 10h00, message à SOS Médecins Pau à 11h00 — et fléchage coordonné des patients vers ces médecins. Pilote : Anne Latisnère.", transmis:'', statut:'En cours', auteur:'Anne Latisnère', quand:''}
+    {id:'tr2', date:'2026-07-28', heure:'', professionnel:"Pharmaciens d'officine du territoire", profession:"Pharmacien", commune:"Territoire de la CPTS Pau Béarn", sujet:"Plusieurs pharmaciens d'officine ont appelé la CPTS coup sur coup dans la matinée du 28/07 : ils reçoivent au comptoir des personnes évacuées des zones incendiées de Gironde, les unes revenues dans leur commune d'origine, les autres délocalisées en Béarn. Ces personnes n'ont pas de médecin traitant sur le territoire et demandent le renouvellement d'ordonnances interrompues par un départ précipité, ou une prise en soins pour des infections liées aux incendies. Le pharmacien peut dépanner dans les limites de la dispensation d'urgence, mais ne peut ni prolonger durablement un traitement ni ouvrir une prise en charge : sans médecin vers qui adresser, la personne repart sans solution. Même situation que celle remontée le matin même par le CMSI de Billère — la difficulté n'est donc pas isolée à une structure.", criticite:'Élevée', action:"Communiqué diffusé aux pharmaciens du territoire à 10h00 par Anne Latisnère et Eva Poulmarch : la situation est appelée à s'accroître et la CPTS constitue un vivier de médecins généralistes disponibles pour recevoir ces patients en consultation. Les pharmaciens sont invités à continuer de faire remonter les situations rencontrées au comptoir. Le circuit de fléchage vers les généralistes volontaires leur sera transmis dès l'ouverture du vivier.", transmis:'', statut:'En cours', auteur:'Eva Poulmarch', quand:''},
+    {id:'tr1', date:'2026-07-28', heure:'08:00', professionnel:'CMSI de Billère', profession:"Structure de soins non programmés", commune:'Billère', sujet:"Appel reçu à 8h00 par Anne Latisnère, vice-présidente : le CMSI de Billère reçoit des patients évacués des zones incendiées de Gironde, les uns revenus dans leur commune d'origine, les autres délocalisés ici. Partis de manière très précipitée, ils sont en demande de renouvellement d'ordonnances en cours et de prise en soins pour des infections liées aux incendies. N'ayant pas de médecin traitant sur le territoire, ils se tournent vers le CMSI. Or celui-ci est un acteur de soins non programmés : il n'est pas en mesure d'assumer ni d'assurer ce type de rôle, qui relève du suivi et non de l'urgence. La structure reçoit par ailleurs les appels de pharmaciens du territoire confrontés aux mêmes situations au comptoir. La continuité des soins est bousculée.", criticite:'Élevée', action:"Ouverture de l'action « Patients évacués » : sondage des médecins généralistes du territoire pour constituer un vivier de volontaires, information des pharmacies et des structures de soins non programmés — communiqué aux pharmaciens à 10h00, message à SOS Médecins Pau à 11h00 — et fléchage coordonné des patients vers ces médecins. Pilote : Anne Latisnère.", transmis:'', statut:'En cours', auteur:'Anne Latisnère', quand:''}
   ], appels: [],
   materiel: [
     {id:'bm1', date:'2026-07-26', demandeur:"Centre d'accueil du parc des expositions de Bordeaux", nature:"Tensiomètres, thermomètres, lecteurs d'hémoglucotest (glycémie capillaire), saturomètres. Aucun besoin de consommables : le site est fourni en médicaments.", quantite:"10 appareils pour 500 patients à ce jour, beaucoup de casse — quantité cible à préciser", delai:"Au plus vite", lieu:"Parc des expositions de Bordeaux — nature de l'acheminement à arbitrer", contactPlace:"Médecin coordonnateur du site, et personne en charge de la logistique — numéros détenus par Anne Latisnère, à reporter ici", horaires:'', valide:'En attente', statut:'Identifié', auteur:'Anne Latisnère', quand:''}
@@ -2916,6 +2949,11 @@ const CHAMPS = {
     titre:"Remontées de terrain",
     chapo:"La seule page qui documente l'impact réel des incendies sur le territoire béarnais. C'est elle qui alimentera le bilan ACI et le dialogue de gestion de la CPTS Pau Béarn. Chaque remontée consignée ici s'inscrit aussi en main courante, sans y être recopiée : le professionnel qui l'a signalée y figure en source, et on la corrige ici.",
     f:[
+      /* Une remontée s'horodate comme une entrée de main courante :
+         c'est le même fait, reçu à un moment précis. Sans heure, deux
+         remontées du même jour ne se départagent plus, et l'entrée
+         qu'elles posent en main courante remonte en fin de journée. */
+      {c:'heure', l:"Heure de la remontée", t:'time', d:maintenant},
       {c:'professionnel', l:"Professionnel", t:'text', req:true},
       {c:'profession', l:"Profession", t:'text'},
       {c:'commune', l:"Commune", t:'text'},
@@ -2925,7 +2963,7 @@ const CHAMPS = {
       {c:'transmis', l:"Transmis à", t:'text'},
       {c:'statut', l:"Statut", t:'select', o:['En cours','Clos','À suivre']}
     ],
-    cols:['date','professionnel','profession','commune','sujet','criticite','action','statut','auteur']
+    cols:['date','heure','professionnel','profession','commune','sujet','criticite','action','statut','auteur']
   },
   appels: {
     titre:"Appels aux CPTS des zones touchées",
@@ -3617,6 +3655,17 @@ function initialesDe(nom){
   return (m.slice(0,2).map(x => x[0]).join('') || '?').toUpperCase();
 }
 
+/* L'horodatage que le cockpit pose lui-même à l'enregistrement, en
+   clair : « 29/07 à 17:15 ». Les entrées de l'amorçage n'en ont pas
+   — elles ont été écrites à la main, pas saisies. */
+function horodateSaisie(iso){
+  if(!iso) return '';
+  const t = new Date(iso);
+  if(isNaN(t.getTime())) return '';
+  const p = n => String(n).padStart(2,'0');
+  return `${p(t.getDate())}/${p(t.getMonth()+1)} à ${p(t.getHours())}:${p(t.getMinutes())}`;
+}
+
 function frdateJour(d){
   if(!d) return "Date non précisée";
   const t = new Date(d + 'T12:00:00');
@@ -3656,7 +3705,16 @@ function journal(k){
     const lien = cfg.lien && o[cfg.lien]
       ? `<a class="lien" href="${esc(o[cfg.lien])}" target="_blank" rel="noopener">${esc(cfg.lienL || 'Ouvrir')} ↗</a>` : '';
 
-    const pied = [o.auteur ? 'Saisi par ' + o.auteur : '', o.modifiePar ? 'Modifié par ' + o.modifiePar : '',
+    /* Une entrée sans heure de fait n'est pas pour autant sans
+       repère : le cockpit horodate chaque enregistrement, et ce
+       repère-là se lit au pied de la carte. Il ne dit pas quand la
+       chose est arrivée — il dit quand elle a été écrite, ce qui est
+       exactement ce qu'un dossier de traçabilité doit pouvoir
+       attester. */
+    const saisiLe = horodateSaisie(o.quand);
+    const pied = [o.auteur ? 'Saisi par ' + o.auteur + (saisiLe ? ' le ' + saisiLe : '')
+                           : (saisiLe ? 'Saisi le ' + saisiLe : ''),
+                  o.modifiePar ? 'Modifié par ' + o.modifiePar : '',
                   o.echeance ? 'Échéance ' + frdateL(o.echeance) : '']
       .filter(Boolean).map(x => `<span>${esc(x)}</span>`).join('');
 
@@ -5464,6 +5522,33 @@ function majArticleSaisie(i, champ, v){
   if(!articlesSaisie[i]) return;
   articlesSaisie[i][champ] = v;
   if(champ === 'nom'){ majCompteArticles(); majSuggestions(); }
+  majApercu();
+}
+
+/* L'aperçu se redessine à chaque frappe : c'est la page du
+   professionnel, telle qu'elle sera, avec ce qui a été écrit
+   jusqu'ici. Un intitulé vide s'y montre en gris — on voit alors
+   ce qui manque plutôt qu'un blanc. */
+function majApercu(){
+  const z = document.getElementById('ap-ecran');
+  if(!z) return;
+  const g = ch => ((document.getElementById('ca-' + ch) || {}).value || '').trim();
+  const titre = g('titre'), cadre = g('cadre'), depot = g('depot');
+  const hl = !!(document.getElementById('ca-horsliste') || {}).checked;
+  const arts = articlesSaisie.filter(a => (a.nom||'').trim());
+  z.innerHTML =
+      `<div class="ap-h${titre ? '' : ' gris'}">${titre ? esc(titre) : "Intitulé de l'appel"}</div>`
+    + (cadre ? `<div class="ap-c">${esc(cadre)}</div>` : '')
+    + `<div class="ap-k">${arts.length ? 'Ce que vous pouvez donner' : 'Matériel proposé'}</div>`
+    + (arts.length
+        ? arts.map(a => `<div class="ap-i"><span class="b"></span><span>${esc(a.nom.trim())}${
+            a.precision && a.precision.trim() ? `<span class="p">${esc(a.precision.trim())}</span>` : ''}</span></div>`).join('')
+        : `<div class="ap-vide">Aucun matériel nommé : le professionnel devra décrire lui-même ce qu'il propose, ligne par ligne.</div>`)
+    + (arts.length
+        ? (hl ? `<div class="ap-n">Un bouton « Je peux donner autre chose que cette liste » s'ajoute sous les cases.</div>`
+              : `<div class="ap-n">« La CPTS ne collecte rien au-delà de cette liste. »</div>`)
+        : '')
+    + (depot ? `<div class="ap-n">Dépôt et enlèvement : ${esc(depot)}</div>` : '');
 }
 
 /* Ce que la liste vaut, dit en une ligne sous elle : c'est le
@@ -5491,7 +5576,7 @@ function redessinerArticles(){
   z.innerHTML = articlesSaisie.length
     ? articlesSaisie.map(articleSaisieHTML).join('')
     : `<div class="art-vide">Aucun matériel pour l'instant.<br>Touchez une désignation courante ci-dessous, ou ajoutez la vôtre.</div>`;
-  majCompteArticles(); majSuggestions();
+  majCompteArticles(); majSuggestions(); majApercu();
 }
 function ajouterArticleSaisie(nom){
   articlesSaisie.push({nom: nom || '', precision:''});
@@ -5513,39 +5598,48 @@ function editerCampagne(id){
   const m = document.getElementById('modale');
   m.classList.add('large');
   m.innerHTML = `<h3>${c ? "Modifier l'appel aux dons" : "Créer un appel aux dons"}</h3>
-  <p style="color:var(--texte-2);margin:0 0 4px;font-size:13.5px;line-height:1.5">Un appel, c'est une liste de matériel précise, ouverte le temps qu'il faut puis close. C'est cette liste qui fabrique le formulaire : le professionnel cochera dedans, sur son téléphone, au lieu de décrire lui-même ce qu'il a.</p>
+  <p style="color:var(--texte-2);margin:0 0 4px;font-size:13.5px;line-height:1.5">La liste que vous posez ici fabrique le formulaire : le professionnel cochera dedans, sur son téléphone, au lieu de décrire lui-même ce qu'il a.</p>
   <datalist id="mat-suggeres">${MAT_SUGGERES.map(x => `<option value="${esc(x)}">`).join('')}</datalist>
 
-  <div class="form">
-    <div class="sous-t">1 · L'appel<span class="d">Le titre de la page que verra le professionnel. Nommez le matériel, et pour qui.</span></div>
-    <label class="large"><span class="k">Intitulé *</span>
-      <input id="ca-titre" value="${g('titre')}" placeholder="Ex. Oxygénothérapie pour les EHPAD évacués"></label>
-  </div>
+  <div class="camp-grille">
+    <div>
+      <div class="form">
+        <div class="sous-t">1 · L'appel<span class="d">Le titre de la page que verra le professionnel. Nommez le matériel, et pour qui.</span></div>
+        <label class="large"><span class="k">Intitulé *</span>
+          <input id="ca-titre" value="${g('titre')}" oninput="majApercu()" placeholder="Ex. Oxygénothérapie pour les EHPAD évacués"></label>
+      </div>
 
-  <div class="sous-t">2 · Le matériel demandé<span class="d">Une ligne par matériel. C'est ce qui deviendra les cases à cocher du formulaire.</span></div>
-  <div class="arts-saisie" id="articles-camp"></div>
-  <div class="sugg" id="sugg-mat" style="margin-top:10px">${MAT_SUGGERES.map(x =>
-    `<button type="button" data-nom="${esc(x)}" onclick="ajouterArticleSaisie('${esc(x).replace(/'/g,"\\'")}')">+ ${esc(x)}</button>`).join('')}</div>
-  <button type="button" class="art-plus" onclick="ajouterArticleSaisie()">＋ Ajouter un autre matériel</button>
-  <div class="art-cpt" id="cpt-art"></div>
+      <div class="sous-t">2 · Le matériel demandé<span class="d">Une ligne par matériel. C'est ce qui deviendra les cases à cocher du formulaire.</span></div>
+      <div class="arts-saisie" id="articles-camp"></div>
+      <div class="sugg" id="sugg-mat" style="margin-top:10px">${MAT_SUGGERES.map(x =>
+        `<button type="button" data-nom="${esc(x)}" onclick="ajouterArticleSaisie('${esc(x).replace(/'/g,"\\'")}')">+ ${esc(x)}</button>`).join('')}</div>
+      <button type="button" class="art-plus" onclick="ajouterArticleSaisie()">＋ Ajouter un autre matériel</button>
+      <div class="art-cpt" id="cpt-art"></div>
 
-  <label class="bascule${c && c.horsListe ? ' on' : ''}">
-    <input type="checkbox" id="ca-horsliste" ${c && c.horsListe ? 'checked' : ''}
-      onchange="this.parentNode.classList.toggle('on', this.checked)">
-    <span class="t">Accepter aussi ce qui sort de cette liste
-      <span class="d">Sans cette case, le formulaire ne propose que la liste ci-dessus et annonce qu'on ne collecte rien d'autre — la position à tenir quand le besoin est précis.</span></span>
-  </label>
+      <label class="bascule${c && c.horsListe ? ' on' : ''}">
+        <input type="checkbox" id="ca-horsliste" ${c && c.horsListe ? 'checked' : ''}
+          onchange="this.parentNode.classList.toggle('on', this.checked); majApercu()">
+        <span class="t">Accepter aussi ce qui sort de cette liste
+          <span class="d">Sans cette case, le formulaire ne propose que la liste ci-dessus et annonce qu'on ne collecte rien d'autre — la position à tenir quand le besoin est précis.</span></span>
+      </label>
 
-  <div class="form">
-    <div class="sous-t">3 · Ce que lira le professionnel<span class="d">Deux textes affichés sur son téléphone, en tête du formulaire puis au moment où il donne ses disponibilités.</span></div>
-    <label class="large"><span class="k">En tête du formulaire</span>
-      <textarea id="ca-cadre" placeholder="Ex. Le centre d'accueil de Mimizan manque de concentrateurs d'oxygène. Rien d'autre n'est collecté sur cet appel.">${g('cadre')}</textarea></label>
-    <label class="large"><span class="k">Dépôt et enlèvement</span>
-      <textarea id="ca-depot" placeholder="Ex. Dépôt à la Foire Expo de Pau, samedi 17h-19h, ou enlèvement au cabinet sur appel.">${g('depot')}</textarea></label>
+      <div class="form">
+        <div class="sous-t">3 · Ce que lira le professionnel<span class="d">Deux textes affichés sur son téléphone, en tête du formulaire puis au moment où il donne ses disponibilités.</span></div>
+        <label class="large"><span class="k">En tête du formulaire</span>
+          <textarea id="ca-cadre" oninput="majApercu()" placeholder="Ex. Le centre d'accueil de Mimizan manque de concentrateurs d'oxygène. Rien d'autre n'est collecté sur cet appel.">${g('cadre')}</textarea></label>
+        <label class="large"><span class="k">Dépôt et enlèvement</span>
+          <textarea id="ca-depot" oninput="majApercu()" placeholder="Ex. Dépôt à la Foire Expo de Pau, samedi 17h-19h, ou enlèvement au cabinet sur appel.">${g('depot')}</textarea></label>
 
-    <div class="sous-t">4 · Pour nous<span class="d">Ce qui reste dans le cockpit et part en main courante. Le donateur ne le voit pas.</span></div>
-    <label class="large"><span class="k">Pourquoi cet appel</span>
-      <textarea id="ca-motif" placeholder="Ex. Besoin exprimé le 29/07 par le centre d'accueil de Mimizan : 40 lits pour 12 concentrateurs.">${g('motif')}</textarea></label>
+        <div class="sous-t">4 · Pour nous<span class="d">Ce qui reste dans le cockpit et part en main courante. Le donateur ne le voit pas.</span></div>
+        <label class="large"><span class="k">Pourquoi cet appel</span>
+          <textarea id="ca-motif" placeholder="Ex. Besoin exprimé le 29/07 par le centre d'accueil de Mimizan : 40 lits pour 12 concentrateurs.">${g('motif')}</textarea></label>
+      </div>
+    </div>
+
+    <aside class="apercu">
+      <div class="ap-t">Ce que verra le professionnel</div>
+      <div class="ap-ecran" id="ap-ecran"></div>
+    </aside>
   </div>
 
   <div class="actions">
@@ -6636,7 +6730,11 @@ function poserEnCourante(id, t){
   const ligne = {
     id,
     date: t.date || (deja && deja.date) || aujourdhui(),
-    heure: deja ? deja.heure : (t.heure || ''),
+    /* L'heure vient de la fiche d'origine quand celle-ci en porte une
+       — corriger l'heure d'une remontée corrige son entrée de main
+       courante. Les fiches qui n'en portent pas laissent intacte
+       l'heure notée à la main dans la main courante. */
+    heure: t.heure || (deja ? deja.heure : ''),
     source: t.source || '', evenement: t.evenement, suite: t.suite,
     qui: t.qui || (deja && deja.qui) || (moi === 'Anonyme' ? '' : moi),
     auteur: (deja && deja.auteur) || (moi === 'Anonyme' ? '' : moi),
@@ -10675,6 +10773,7 @@ function texteMCTerrain(o){
   const situe = [o.profession, o.commune].filter(x => String(x || '').trim()).join(', ');
   return {
     date: o.date || '',
+    heure: o.heure || '',
     source: String(o.professionnel || '').trim(),
     evenement: "Remontée de terrain"
       + (o.professionnel ? ` — ${o.professionnel}` : '')
