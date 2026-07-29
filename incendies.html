@@ -7482,7 +7482,7 @@ function refPatient(o){
 const nomDeclarant = o => [String(o.decPrenom||'').trim(), String(o.decNom||'').trim()]
   .filter(Boolean).join(' ') || String(o.interlocuteur||'').trim();
 
-function choisirVoie(v){ voieRecueil = v; rendre(); window.scrollTo(0,0); }
+function choisirVoie(v){ voieRecueil = v; relaisCharge = null; rendre(); window.scrollTo(0,0); }
 
 /* Les pastilles de suggestion écrivent dans le champ libre qui
    les surmonte, sans repasser par un rendu complet : ce qui est
@@ -7561,12 +7561,93 @@ function blocDeclarant(rel){
       <input id="rc-dec-prof" list="rc-prof-l" placeholder="Pharmacien, infirmier, secrétaire…" autocomplete="off">
       <datalist id="rc-prof-l">${ORI_PROFESSIONS.map(p => `<option value="${esc(p)}"></option>`).join('')}</datalist></label>
     <label class="large"><span class="k">Structure — facultatif</span>
-      <input id="rc-relais" list="rc-relais-l" placeholder="Pharmacie de la Paix, CMSI de Billère…" autocomplete="off">
+      <input id="rc-relais" list="rc-relais-l" placeholder="Pharmacie de la Paix, CMSI de Billère…" autocomplete="off" oninput="majFicheRelais()" onchange="majFicheRelais()">
       <datalist id="rc-relais-l">${connues.map(r =>
         `<option value="${esc(r.structure)}">${esc([r.type, r.commune].filter(Boolean).join(' · '))}</option>`).join('')}</datalist></label>
     <label><span class="k">Type de structure</span>
       <select id="rc-provenance">${ORI_PROVENANCES.map(x => `<option ${x==='Pharmacie'?'selected':''}>${esc(x)}</option>`).join('')}</select></label>
+  </div>
+
+  ${ficheRelaisEnLigne()}`;
+}
+
+/* La fiche de la structure, remplie pendant le même appel.
+   La pharmacie est au bout du fil : c'est le seul moment où
+   son numéro, sa commune et son accord d'entrer dans la
+   démarche se demandent sans rappeler personne. Le bloc reste
+   replié tant qu'aucune structure n'est nommée, se remplit tout
+   seul quand elle est déjà recensée, et ce qui est saisi ici
+   part directement au feuillet « Structures qui orientent ». */
+let relaisCharge = null;
+function ficheRelaisEnLigne(){
+  relaisCharge = null;   /* le formulaire repart à blanc : la prochaine
+                            saisie recharge la fiche, même si c'est la même */
+  return `<div id="rc-fiche" style="display:none;margin-top:12px">
+    <div class="note" id="rc-fiche-mot" style="margin-bottom:10px"></div>
+    <div class="form">
+      <label><span class="k">Commune de la structure</span>
+        <input id="rc-rel-commune" placeholder="Pau, Billère…" autocomplete="off"></label>
+      <label><span class="k">Téléphone de la structure</span>
+        <input id="rc-rel-tel" type="tel" inputmode="tel" placeholder="05 59 27 71 91" autocomplete="off"></label>
+      <label class="large"><span class="k">Adresse</span>
+        <input id="rc-rel-adresse" placeholder="12 rue Carnot" autocomplete="off"></label>
+      <label class="large"><span class="k">Courriel</span>
+        <input id="rc-rel-mail" type="email" inputmode="email" placeholder="contact@pharmacie.fr" autocomplete="off"></label>
+      <label class="large"><span class="k">Entre-t-elle dans la démarche ?
+        <span class="d">Repérer les personnes évacuées au comptoir, les signaler, leur remettre le nom d'un médecin.</span></span>
+        <input type="hidden" id="rc-rel-demarche" value="">
+        ${pastilles('rc-rel-demarche', ['Oui','En attente de réponse','Non','À solliciter'])}</label>
+      <label class="large"><span class="k">Liste des médecins volontaires</span>
+        <input type="hidden" id="rc-rel-liste" value="">
+        ${pastilles('rc-rel-liste', ['Oui','Non','Sans objet'])}</label>
+    </div>
   </div>`;
+}
+
+/* Le nom saisi décide de ce que le bloc montre. Une structure
+   déjà recensée y revient avec ce qu'on sait d'elle — on ne
+   retape pas ce qui est au dossier, on complète les trous.
+   Les champs ne se rechargent qu'au changement de structure :
+   ce qu'on vient de corriger à la main ne s'efface pas à la
+   frappe suivante. */
+function majFicheRelais(){
+  const bloc = document.getElementById('rc-fiche');
+  const champ = document.getElementById('rc-relais');
+  if(!bloc || !champ) return;
+  const nom = champ.value.trim();
+  bloc.style.display = nom ? '' : 'none';
+  if(!nom){ relaisCharge = null; return; }
+
+  const cle = cleRelais(nom);
+  const ex = (etat.relais || []).find(r => cleRelais(r.structure) === cle);
+  if(relaisCharge === cle) return;
+  relaisCharge = cle;
+
+  const met = (id, val) => { const el = document.getElementById(id); if(el) el.value = val || ''; };
+  const pastille = (id, val) => {
+    met(id, val);
+    const g = document.getElementById(id)?.parentNode?.querySelector('.sugg');
+    if(g) Array.prototype.forEach.call(g.children, b => b.classList.toggle('on', b.dataset.v === val));
+  };
+  met('rc-rel-commune', ex?.commune);
+  met('rc-rel-adresse', ex?.adresse);
+  met('rc-rel-tel', ex?.tel);
+  met('rc-rel-mail', ex?.mail);
+  pastille('rc-rel-demarche', ex?.demarche && ex.demarche !== 'À solliciter' ? ex.demarche : '');
+  pastille('rc-rel-liste', ex?.liste && ex.liste !== 'Non' ? ex.liste : '');
+  const prov = document.getElementById('rc-provenance');
+  if(prov && ex?.type && ORI_PROVENANCES.indexOf(ex.type) >= 0) prov.value = ex.type;
+
+  const mot = document.getElementById('rc-fiche-mot');
+  if(!mot) return;
+  if(ex){
+    const trous = [!ex.tel && 'le téléphone', !ex.commune && 'la commune', !ex.adresse && "l'adresse",
+                   (!ex.demarche || ex.demarche === 'À solliciter') && "son entrée dans la démarche"].filter(Boolean);
+    mot.innerHTML = `<strong>${esc(ex.structure)}</strong> est déjà recensée. Ce qui est saisi ici <strong>complète sa fiche</strong>.`
+      + (trous.length ? ` Il y manque ${trous.join(', ')}${trous.length > 1 ? ' — la structure est au bout du fil, c\'est le moment' : ''}.` : ' Rien n\'y manque.');
+  } else {
+    mot.innerHTML = `<strong>${esc(nom)}</strong> n'est pas encore recensée : ce qui est saisi ici <strong>crée sa fiche</strong> dans « Structures qui orientent », et elle sera proposée d'elle-même au prochain signalement. Tout est facultatif — le téléphone est ce qui sert le plus, c'est par lui qu'on rappelle.`;
+  }
 }
 
 /* Qui saisit. Le nom de la session est déjà là — on n'a rien à
@@ -7692,25 +7773,61 @@ function formulaireDejaOriente(rel, vivier){
 /* La structure qui signale entre d'elle-même au registre des
    relais : c'est elle qui a fait remonter l'information, elle a
    donc sa place dans la liste, avec le compte de ses appels.
-   Si elle y est déjà, on ne touche à rien d'autre que la marque
-   « a signalé des patients ». */
-function assurerRelais(nom, provenance, commune){
+   Ce qui a été saisi pendant l'appel — commune, téléphone,
+   adresse, accord d'entrer dans la démarche — descend avec elle :
+   c'est une fiche de recensement complète qui se crée, pas une
+   ligne à reprendre après coup. Si la structure y est déjà, on
+   comble les trous sans écraser ce qui est au dossier ; seuls
+   la démarche et la liste des médecins, explicitement retouchées
+   pendant l'appel, priment sur ce qui y était noté. */
+function assurerRelais(nom, f){
   const n = String(nom||'').trim();
   if(!n) return;
+  const t = k => String(f?.[k] || '').trim();
   etat.relais = etat.relais || [];
   const dejaLa = etat.relais.find(r => cleRelais(r.structure) === cleRelais(n));
   if(dejaLa){
     if(!dejaLa.info || dejaLa.info === 'À informer') dejaLa.info = 'A signalé des patients';
+    ['type','commune','adresse','tel','mail','interlocuteur'].forEach(c => {
+      if(!String(dejaLa[c]||'').trim() && t(c)) dejaLa[c] = t(c);
+    });
+    if(t('demarche')) dejaLa.demarche = t('demarche');
+    if(t('liste'))    dejaLa.liste    = t('liste');
     return;
   }
-  const type = RELAIS_TYPES.indexOf(provenance) >= 0 ? provenance : '';
   etat.relais.unshift({
-    id: uid(), date: aujourdhui(), structure: n, type: type, commune: String(commune||'').trim(),
-    adresse:'', interlocuteur:'', tel:'', mail:'',
+    id: uid(), date: aujourdhui(), structure: n,
+    type: RELAIS_TYPES.indexOf(t('type')) >= 0 ? t('type') : '',
+    commune: t('commune'), adresse: t('adresse'),
+    interlocuteur: t('interlocuteur'), tel: t('tel'), mail: t('mail'),
     info:'A signalé des patients', infoLe:'', canal:'Téléphone',
-    liste:'Non', demarche:'À solliciter', par: moi === 'Anonyme' ? '' : moi,
-    note:"Entrée automatiquement au registre en signalant un patient.",
-    auteur: moi, quand: new Date().toISOString()
+    liste: t('liste') || 'Non', demarche: t('demarche') || 'À solliciter',
+    par: moi === 'Anonyme' ? '' : moi,
+    note:'', auteur: moi, quand: new Date().toISOString()
+  });
+}
+
+/* Une structure qui entre au recensement, ou qui accepte
+   d'entrer dans la démarche, est un fait de crise : il se
+   consigne en main courante comme le reste. Le patient n'y est
+   pas nommé — le registre est là pour ça. */
+function consignerRelaisEnCourante(r, quoi){
+  if(!r) return;
+  etat.courante = etat.courante || [];
+  const ou = [r.type, r.commune].filter(Boolean).join(', ');
+  const qui = `${r.structure}${ou ? ` (${ou})` : ''}`;
+  etat.courante.unshift({
+    id: uid(), date: aujourdhui(), heure: maintenant(), source: r.structure,
+    evenement: quoi === 'nouvelle'
+      ? `${qui} signale une personne évacuée et entre au recensement des structures qui orientent.`
+        + (r.interlocuteur ? ` Interlocuteur : ${r.interlocuteur}.` : '')
+        + (r.tel ? ` Téléphone : ${r.tel}.` : '')
+        + (r.demarche === 'Oui' ? " Elle accepte d'entrer dans la démarche d'orientation." : '')
+      : `${qui} entre dans la démarche d'orientation : repérer les personnes évacuées au comptoir, les signaler, leur remettre le nom d'un médecin volontaire.`,
+    suite: r.liste === 'Oui'
+      ? "Liste des médecins volontaires transmise. Lui rappeler de signaler chaque personne orientée — c'est ce qui permet de compter."
+      : "Lui transmettre la liste des médecins volontaires ayant accepté la diffusion de leurs coordonnées, et lui rappeler de signaler chaque personne orientée.",
+    qui: moi, auteur: moi, quand: ''
   });
 }
 
@@ -7757,14 +7874,30 @@ async function enregistrerRecueil(){
 
   etat.orientes = etat.orientes || [];
   etat.orientes.unshift(fiche);
-  if(relais) assurerRelais(relais, fiche.provenance, fiche.commune);
+  /* La personne au bout du fil tient lieu d'interlocuteur de la
+     structure : c'est elle qu'on rappelle. */
+  const avant = relais ? (etat.relais||[]).find(r => cleRelais(r.structure) === cleRelais(relais)) : null;
+  const relaisNeuf = !!relais && !avant;
+  const demarcheAvant = avant ? (avant.demarche || 'À solliciter') : '';
+  if(relais) assurerRelais(relais, {
+    type: fiche.provenance, commune: v('rc-rel-commune'), adresse: v('rc-rel-adresse'),
+    tel: v('rc-rel-tel'), mail: v('rc-rel-mail'),
+    demarche: v('rc-rel-demarche'), liste: v('rc-rel-liste'),
+    interlocuteur: fiche.interlocuteur
+  });
+  if(relais){
+    const apres = (etat.relais||[]).find(r => cleRelais(r.structure) === cleRelais(relais));
+    if(relaisNeuf) consignerRelaisEnCourante(apres, 'nouvelle');
+    else if(apres && apres.demarche === 'Oui' && demarcheAvant !== 'Oui') consignerRelaisEnCourante(apres, 'demarche');
+  }
 
   await sauver();
   voieRecueil = '';
   feuilletOri = 'patients';
   rendre(); window.scrollTo(0,0);
-  toast(deja ? `${fiche.ref} enregistré — déjà orienté vers ${medecin}`
-             : `${fiche.ref} enregistré — reste à lui trouver un médecin`);
+  toast((deja ? `${fiche.ref} enregistré — déjà orienté vers ${medecin}`
+              : `${fiche.ref} enregistré — reste à lui trouver un médecin`)
+        + (relaisNeuf ? `. ${relais} entre au recensement des structures` : ''));
 }
 
 /* --- le vivier ------------------------------------------
@@ -8358,6 +8491,12 @@ async function confirmerAnonymisation(){
    d'elle-même dans le formulaire de signalement, il n'y a plus
    qu'à toucher son nom. Celles qui signalent sans avoir été
    recensées y entrent d'elles-mêmes, à la saisie. */
+/* Les fiches créées à la volée portaient une observation qui
+   redisait l'évidence — la carte affiche déjà les patients
+   signalés. Elle n'est plus écrite, et les fiches d'avant ne
+   l'affichent plus. */
+const NOTE_RELAIS_AUTO = "Entrée automatiquement au registre en signalant un patient.";
+
 function feuilletRelais(rel, ori, diffusables){
   const ordre = {'Oui':0, 'En attente de réponse':1, 'À solliciter':2, 'Non':3};
   const tri = [...rel].sort((a,b) => (ordre[a.demarche] ?? 2) - (ordre[b.demarche] ?? 2)
@@ -8397,12 +8536,10 @@ function feuilletRelais(rel, ori, diffusables){
           <span class="etiq ${info === 'À informer' ? 'e-attente' : info === 'Sans réponse' ? 'e-fini' : 'e-lancer'}">${esc(info)}</span>
         </div>
       </div>
-      ${o.interlocuteur ? `<div class="bl"><span class="k">Interlocuteur</span>${esc(o.interlocuteur)}</div>` : `<div class="obs">Interlocuteur à nommer.</div>`}
+      ${o.interlocuteur ? `<div class="bl"><span class="k">Interlocuteur</span>${esc(o.interlocuteur)}</div>` : ''}
       ${o.infoLe ? `<div class="bl"><span class="k">Informée le</span>${frdateL(o.infoLe)}${o.canal ? ' · ' + esc(o.canal) : ''}</div>` : ''}
-      ${o.liste === 'Oui'
-        ? `<div class="bl"><span class="k">Liste des médecins</span>Transmise</div>`
-        : o.liste === 'Sans objet' ? '' : `<div class="obs">Liste des médecins volontaires pas encore transmise.</div>`}
-      ${o.note ? `<div class="obs">${esc(o.note)}</div>` : ''}
+      ${o.liste === 'Oui' ? `<div class="bl"><span class="k">Liste des médecins</span>Transmise</div>` : ''}
+      ${o.note && o.note !== NOTE_RELAIS_AUTO ? `<div class="obs">${esc(o.note)}</div>` : ''}
       ${siens.length
         ? `<div class="oriente">${siens.length} patient${siens.length>1?'s':''} signalé${siens.length>1?'s':''}${dernier ? `, le dernier le ${frdateL(dernier)}` : ''}
              <button class="retirer" style="margin-left:6px" onclick="allerFeuilletOri('patients')">Voir</button></div>`
