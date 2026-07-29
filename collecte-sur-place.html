@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>Saisie sur place — collecte de matériel — CPTS Pau Béarn</title>
+<meta name="description" content="Écran de saisie des dépôts pendant une collecte de matériel de la CPTS Pau Béarn.">
+<meta name="theme-color" content="#062B63">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --encre:#062B63;
+  --encre-2:#0B4FA8;
+  --cobalt-clair:#E8F0FB;
+  --cobalt-pale:#F5F9FD;
+  --surface:#EEF3FA;
+  --carte:#FFFFFF;
+  --trait:#D8E1EF;
+  --trait-2:#E6ECF6;
+  --texte:#122238;
+  --texte-2:#5A6B84;
+  --ambre:#E8A33D;
+  --braise:#C2482F;
+  --stable:#2F7D62;
+  --ombre:0 1px 2px rgba(6,43,99,.05), 0 10px 26px -14px rgba(6,43,99,.22);
+  --halo:0 0 0 3px rgba(11,79,168,.16);
+  --display:'Archivo',system-ui,sans-serif;
+  --corps:'Source Sans 3',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--corps);background:var(--surface);color:var(--texte);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;left:0;right:0;top:0;height:380px;pointer-events:none;z-index:0;
+  background:radial-gradient(115% 100% at 50% 0,#DBE7F7 0%,rgba(238,243,250,0) 72%)}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+::placeholder{color:#9AA8BC}
+
+.bandeau{position:relative;z-index:1;color:#fff;padding:15px 20px;
+  background:linear-gradient(135deg,#04204A 0%,#062B63 46%,#0B4FA8 190%);
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.16)}
+.bandeau .in{max-width:820px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.bandeau .nom{font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.02em}
+.bandeau .sous{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:#8FB0DC;margin-top:4px}
+.bandeau .chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:#CFDFF6;
+  border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.08);border-radius:999px;padding:6px 12px}
+
+.page{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:24px 18px 60px}
+.sur-titre{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--encre-2);
+  margin:0 0 8px;display:flex;align-items:center;gap:10px}
+.sur-titre::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#C6D5EA,rgba(198,213,234,0))}
+h1{font-family:var(--display);font-weight:700;font-size:28px;line-height:1.15;letter-spacing:-.02em;margin:0 0 6px;color:var(--encre)}
+.chapo{color:var(--texte-2);margin:0 0 18px;max-width:66ch;font-size:15px}
+.carte{background:var(--carte);border:1px solid var(--trait-2);border-radius:14px;padding:20px 22px;margin-bottom:14px;box-shadow:var(--ombre)}
+h2{font-family:var(--display);font-weight:600;font-size:16px;margin:0 0 4px;color:var(--encre);display:flex;align-items:center;gap:10px}
+h2 .n{flex:0 0 26px;width:26px;height:26px;border-radius:9px;background:linear-gradient(180deg,var(--encre-2),var(--encre));
+  color:#fff;font-family:var(--mono);font-size:12px;display:flex;align-items:center;justify-content:center}
+.sous-h{font-size:13px;color:var(--texte-2);margin:0 0 15px;padding-left:36px}
+
+label{display:block}
+label .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:5px}
+input,select{width:100%;padding:11px 12px;border:1px solid var(--trait);border-radius:8px;background:#fff;
+  transition:border-color .15s,box-shadow .15s}
+input:hover,select:hover{border-color:#BCCCE4}
+input:focus,select:focus{outline:0;border-color:var(--encre-2);box-shadow:var(--halo)}
+input.faux{border-color:var(--braise);background:#FDF4F2}
+select{appearance:none;-webkit-appearance:none;padding-right:34px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%235A6B84' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center}
+.leurre{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+.trio{display:grid;gap:12px;grid-template-columns:1fr 1fr}
+.trio .large{grid-column:1/-1}
+@media(max-width:560px){.trio{grid-template-columns:1fr}}
+
+/* Le matériel demandé, en pastilles : un doigt suffit, et un
+   second appui ajoute une unité de plus. C'est le geste répété
+   cinquante fois dans la soirée — il ne passe pas par le clavier. */
+.pastilles{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px}
+.pastilles button{background:#fff;border:1px solid var(--trait);border-radius:999px;padding:11px 16px;
+  font-size:14.5px;cursor:pointer;color:var(--encre);min-height:46px;transition:.13s}
+.pastilles button:hover{border-color:var(--encre-2);background:var(--cobalt-pale)}
+.pastilles button:active{transform:scale(.97)}
+.pastilles button.pris{background:var(--cobalt-clair);border-color:var(--encre-2);font-weight:600;
+  box-shadow:inset 0 0 0 1px var(--encre-2)}
+.pastilles button .q{font-family:var(--mono);font-size:12px;margin-left:7px;color:var(--encre-2)}
+
+.libre{display:flex;gap:9px;align-items:flex-end;margin-bottom:6px}
+.libre label{flex:1}
+.libre .btn{white-space:nowrap}
+
+/* Le panier du déposant : ce qu'il pose sur la table, ligne par
+   ligne, avec sa quantité qui se règle sans clavier. */
+.panier{list-style:none;margin:14px 0 0;padding:0}
+.panier li{display:flex;align-items:center;gap:11px;padding:11px 0;border-top:1px solid var(--trait-2)}
+.panier li:first-child{border-top:0}
+.panier .m{flex:1;font-size:15px;font-weight:600;color:var(--encre);min-width:0;overflow-wrap:anywhere}
+.panier .pas{display:flex;align-items:center;gap:6px}
+.panier .pas button{width:40px;height:40px;border:1px solid var(--trait);background:#fff;border-radius:9px;
+  font-size:19px;line-height:1;cursor:pointer;color:var(--encre);font-family:var(--display)}
+.panier .pas button:hover{border-color:var(--encre-2);background:var(--cobalt-pale)}
+.panier .pas input{width:62px;text-align:center;font-family:var(--mono);padding:10px 4px}
+.panier .sup{background:none;border:0;color:var(--texte-2);font-size:19px;cursor:pointer;padding:6px 4px;line-height:1}
+.panier .sup:hover{color:var(--braise)}
+.total{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);
+  margin-top:14px;padding-top:12px;border-top:1px solid var(--trait)}
+.total b{font-family:var(--display);font-size:17px;letter-spacing:0;text-transform:none;color:var(--encre)}
+
+.btn{background:linear-gradient(180deg,var(--encre-2),var(--encre));color:#fff;border:0;border-radius:9px;padding:13px 24px;
+  font-family:var(--display);font-weight:600;font-size:15px;cursor:pointer;min-height:48px;
+  box-shadow:0 1px 2px rgba(6,43,99,.24),0 8px 18px -10px rgba(6,43,99,.6);transition:.15s}
+.btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.55;cursor:default;transform:none;filter:none}
+.btn.sec{background:#fff;color:var(--encre);border:1px solid var(--trait);box-shadow:var(--ombre)}
+.btn.sec:hover{border-color:var(--encre-2);filter:none}
+.btn.grand{width:100%;font-size:17px;padding:16px 24px;min-height:58px}
+.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:16px;align-items:center}
+
+.alerte{border-radius:10px;padding:13px 16px;font-size:14px;margin-bottom:16px;border:1px solid;border-left-width:4px}
+.alerte.rouge{background:#FDF0EC;border-color:#E8C3B8;border-left-color:var(--braise);color:#8C2F1B}
+.alerte.ambre{background:#FCF3E4;border-color:#E9D3A6;border-left-color:var(--ambre);color:#8A5D12}
+.alerte.bleue{background:var(--cobalt-clair);border-color:#C3D6F0;border-left-color:var(--encre-2);color:var(--encre)}
+.note{font-size:12.5px;color:var(--texte-2);margin-top:24px;padding-top:14px;border-top:1px solid var(--trait)}
+
+/* L'en-tête de la collecte : où l'on est, et ce qui est déjà
+   entré. Il reste sous les yeux pendant toute la permanence. */
+.entete{background:linear-gradient(180deg,var(--cobalt-pale),var(--cobalt-clair));border:1px solid #D5E2F4;
+  border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.entete .l{font-family:var(--display);font-weight:700;font-size:18px;color:var(--encre)}
+.entete .s{font-size:13px;color:var(--texte-2);margin-top:3px}
+.compteurs{display:flex;gap:22px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid #CFDFF3}
+.compteurs div{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2)}
+.compteurs strong{display:block;font-family:var(--display);font-size:22px;letter-spacing:0;text-transform:none;
+  color:var(--encre);line-height:1.1}
+
+.recu{background:linear-gradient(180deg,#F6FCF9,#EDF7F2);border:1px solid #BEDCCE;border-left:4px solid var(--stable);
+  border-radius:12px;padding:15px 18px;margin-bottom:14px}
+.recu .t{font-family:var(--display);font-weight:700;font-size:16px;color:#1E5C46;display:flex;align-items:center;gap:9px}
+.recu .t::before{content:"✓";flex:0 0 22px;width:22px;height:22px;border-radius:50%;background:var(--stable);color:#fff;
+  font-size:13px;display:flex;align-items:center;justify-content:center}
+.recu .d{font-size:13.5px;color:#2A5545;margin-top:5px}
+
+/* Le récapitulatif : les totaux par matériel et la liste des
+   déposants, tels qu'ils sont dans le cockpit à la seconde près.
+   C'est le document qu'on imprime ou qu'on photographie à la
+   fermeture, et qu'on fait signer. */
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+th,td{text-align:left;padding:8px 9px;border-bottom:1px solid var(--trait-2)}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--texte-2);font-weight:400}
+td.q{text-align:right;font-weight:600;font-family:var(--mono)}
+tr.tot td{border-top:2px solid var(--encre);border-bottom:0;font-weight:700;font-size:15px}
+.vide{color:var(--texte-2);font-style:italic;margin:8px 0 0;font-size:14px}
+
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:50;max-width:calc(100% - 32px);
+  background:var(--encre);color:#fff;border-radius:10px;padding:12px 18px;font-size:14px;
+  box-shadow:0 12px 30px -12px rgba(6,43,99,.8);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(-4px)}
+
+@media(max-width:640px){
+  .page{padding:20px 14px 44px}
+  h1{font-size:23px}
+  .carte{padding:16px 15px;border-radius:12px}
+  .sous-h{padding-left:0}
+  input,select{font-size:16px;padding:12px 13px;min-height:48px}
+  .actions{flex-direction:column;align-items:stretch}
+  .actions .btn{width:100%}
+}
+@media print{
+  body::before{display:none}
+  @page{margin:14mm}
+  body{background:#fff;font-size:10.5pt}
+  .bandeau,.actions,.no-print,.toast{display:none!important}
+  .page{padding:0;max-width:none}
+  .carte,.entete{border:0;box-shadow:none;padding:0;background:none}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="bandeau"><div class="in">
+  <div>
+    <div class="nom">CPTS Pau Béarn</div>
+    <div class="sous">Collecte de matériel — saisie sur place</div>
+  </div>
+  <div class="chip">Plan blanc régional · ORSAN AMAVI</div>
+</div></div>
+
+<main class="page" id="page">
+  <p class="chapo">Chargement…</p>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   SAISIE SUR PLACE — CPTS Pau Béarn
+
+   L'écran de la personne qui tient la table à l'entrée d'une
+   collecte. Quelqu'un se présente avec du matériel : on note son
+   nom, sa profession, ce qu'il pose, on envoie. Ça arrive dans le
+   cockpit de crise, et le récapitulatif de la collecte se met à
+   jour tout seul — plus de feuille volante à ressaisir le soir.
+
+   Trois partis pris, parce que la saisie se fait debout, sur un
+   téléphone, avec quelqu'un en face qui attend :
+   - le matériel demandé s'ajoute d'une pastille, pas d'un clavier,
+     et un second appui ajoute une unité ;
+   - rien n'est obligatoire au-delà du nom et d'un matériel ;
+   - un envoi qui échoue ne vide pas l'écran : on renvoie.
+
+   Cette page n'a pas le code du cockpit. Elle a un lien qui ne
+   vaut que pour une collecte, porte un jeton, et cesse de
+   répondre dès que la collecte est clôturée.
+   ========================================================= */
+
+const PAR = new URLSearchParams(location.search);
+const ID_POINT = PAR.get('p') || '';
+const JETON    = PAR.get('j') || '';
+const API = 'api.php?terrain=1&p=' + encodeURIComponent(ID_POINT) + '&j=' + encodeURIComponent(JETON);
+
+/* Ces professions doublent celles du cockpit : une liste courte,
+   qui n'empêche pas d'écrire autre chose. */
+const PROFESSIONS = ['','Pharmacien','Préparateur en pharmacie','Médecin généraliste','Médecin spécialiste',
+  'Infirmier ou infirmière (IDE)','Masseur-kinésithérapeute','Chirurgien-dentiste','Sage-femme',
+  'Pédicure-podologue','Orthophoniste','Ergothérapeute','Psychologue','Ambulancier','Aide-soignant',
+  'Auxiliaire de vie','Secrétaire médical','Étudiant en santé, interne','Autre professionnel de santé',
+  'Structure ou entreprise','Particulier'];
+
+let ctx = null;          /* la collecte, telle que le serveur la dit */
+let panier = [];         /* ce que le déposant en cours pose sur la table */
+let envoiEnCours = false;
+let dernier = null;      /* le dépôt qui vient d'être enregistré */
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const val = id => (document.getElementById(id)?.value || '').trim();
+const frdate = d => d ? new Date(d + 'T12:00:00').toLocaleDateString('fr-FR',
+  {weekday:'long', day:'2-digit', month:'long', year:'numeric'}) : '';
+const nb = n => (Math.round(n * 100) / 100).toString().replace('.', ',');
+
+function afficher(html){ document.getElementById('page').innerHTML = html; }
+let minuteur = null;
+function toast(m){
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('on');
+  clearTimeout(minuteur);
+  minuteur = setTimeout(() => t.classList.remove('on'), 3200);
+}
+
+/* --- Ouverture ------------------------------------------
+   Le lien vaut pour une collecte et pour elle seule. Sans jeton
+   valable, ou une fois la collecte clôturée, on le dit sans
+   détour : mieux vaut un écran fermé qu'une saisie qui se perd. */
+async function demarrer(){
+  if(!ID_POINT || !JETON) return sansLien();
+  let r;
+  try{
+    r = await fetch(API, {headers:{'Accept':'application/json'}});
+    ctx = await r.json();
+  }catch(e){
+    return afficher(`<div class="alerte rouge">Le service est injoignable. Vérifiez la connexion, puis rechargez cette page. En attendant, notez les dépôts sur papier — rien n'est perdu, ils se saisiront après coup.</div>`);
+  }
+  if(!ctx || !ctx.ouverte){
+    return ctx && ctx.motif === 'close' ? close() : sansLien();
+  }
+  if(!Array.isArray(ctx.suggestions)) ctx.suggestions = [];
+  saisie();
+}
+
+function sansLien(){
+  afficher(`<p class="sur-titre">Collecte de matériel</p>
+  <h1>Ce lien n'est plus valable</h1>
+  <p class="chapo">Cet écran de saisie ne correspond à aucune collecte ouverte.</p>
+  <div class="carte">
+    <div class="alerte ambre">Le lien a peut-être été révoqué, ou recopié incomplètement.</div>
+    <p style="margin-bottom:0">Demandez-en un nouveau à la coordination de la CPTS Pau Béarn. En attendant,
+    notez les dépôts sur papier : nom, prénom, profession du déposant, matériel et quantité. Rien ne se perd,
+    tout se saisit après coup.</p>
+  </div>`);
+}
+
+function close(){
+  afficher(`<p class="sur-titre">Collecte de matériel</p>
+  <h1>${esc(ctx.lieu || 'Collecte')} — clôturée</h1>
+  <p class="chapo">Cette collecte a été clôturée : la saisie n'est plus acceptée.</p>
+  <div class="carte">
+    <div class="alerte ambre">Le récapitulatif a été arrêté, et les totaux ne bougent plus.</div>
+    <p style="margin-bottom:0">Si un dépôt reste à consigner, appelez la coordination de la CPTS Pau Béarn :
+    il sera ajouté à la main, avec la mention qu'il est arrivé après la clôture.</p>
+  </div>`);
+}
+
+/* Les trois chiffres de la collecte, tels que le serveur les
+   compte — jamais tels que cet appareil les additionne : deux
+   personnes peuvent tenir la table, et la coordination saisit de
+   son côté. */
+function compteursHTML(){
+  const r = (ctx && ctx.recap) || {lignes:0, unites:0, deposants:[]};
+  const n = (r.deposants || []).length;
+  return `<div><strong>${n}</strong> déposant${n > 1 ? 's' : ''}</div>
+    <div><strong>${nb(r.unites || 0)}</strong> unité${(r.unites || 0) > 1 ? 's' : ''}</div>
+    <div><strong>${r.lignes || 0}</strong> ligne${(r.lignes || 0) > 1 ? 's' : ''}</div>`;
+}
+
+const pastillesHTML = () => (ctx.suggestions || []).map((m,i) =>
+  `<button type="button" onclick="ajouter(${i})" id="past-${i}">${esc(m)}</button>`).join('');
+
+/* --- L'écran de saisie ----------------------------------- */
+function saisie(){
+  const r = ctx.recap || {lignes:0, unites:0, deposants:[], parMat:[]};
+  const creneau = [ctx.debut, ctx.fin].filter(Boolean).join(' – ');
+
+  afficher(`
+  <div class="entete">
+    <div class="l">${esc(ctx.lieu || 'Collecte de matériel')}</div>
+    <div class="s">${[frdate(ctx.date), creneau, ctx.adresse].filter(Boolean).map(esc).join(' · ')}</div>
+    ${ctx.responsable ? `<div class="s">Sous la responsabilité de ${esc(ctx.responsable)}</div>` : ''}
+    <div class="compteurs" id="compteurs">${compteursHTML()}</div>
+  </div>
+
+  <div id="recu"></div>
+
+  <div class="carte">
+    <h2><span class="n">1</span>Qui dépose</h2>
+    <p class="sous-h">Le nom sert à établir le récapitulatif et, si la personne le demande, un bordereau de don.</p>
+    <div class="trio">
+      <label><span class="k">Prénom</span><input id="prenom" autocomplete="off" placeholder="Sophie"></label>
+      <label><span class="k">Nom</span><input id="nom" autocomplete="off" placeholder="Maréchal"></label>
+      <label class="large"><span class="k">Profession ou structure</span>
+        <input id="profession" list="professions" autocomplete="off" placeholder="Pharmacien, cabinet infirmier, particulier…"></label>
+    </div>
+    <datalist id="professions">${PROFESSIONS.filter(Boolean).map(p => `<option value="${esc(p)}">`).join('')}</datalist>
+    <p class="leurre"><label>Ne rien écrire ici <input id="site" tabindex="-1" autocomplete="off"></label></p>
+  </div>
+
+  <div class="carte">
+    <h2><span class="n">2</span>Ce qui est déposé</h2>
+    <p class="sous-h">Appuyez sur le matériel apporté : un appui l'ajoute, un second en ajoute un de plus. La quantité se corrige ensuite.</p>
+    <div class="pastilles" id="pastilles">${pastillesHTML()}</div>
+    <div class="libre">
+      <label><span class="k">Autre matériel</span>
+        <input id="autre" autocomplete="off" placeholder="Désignation" onkeydown="if(event.key==='Enter'){event.preventDefault();ajouterAutre()}"></label>
+      <button class="btn sec" type="button" onclick="ajouterAutre()">Ajouter</button>
+    </div>
+    <ul class="panier" id="panier"></ul>
+    <div class="total" id="total">Rien de déposé pour l'instant</div>
+  </div>
+
+  <button class="btn grand" id="envoyer" onclick="envoyer()">Enregistrer ce dépôt</button>
+
+  <div class="carte" style="margin-top:22px">
+    <h2><span class="n">3</span>Récapitulatif de la collecte</h2>
+    <p class="sous-h">Tout ce qui a été saisi depuis l'ouverture, ici comme par la coordination. C'est ce document qu'on imprime ou qu'on photographie à la fermeture.</p>
+    <div id="recap">${recapHTML()}</div>
+    <div class="actions no-print">
+      <button class="btn sec" type="button" onclick="window.print()">Imprimer le récapitulatif</button>
+      <button class="btn sec" type="button" onclick="rafraichir()">Actualiser</button>
+    </div>
+  </div>
+
+  <p class="note">Chaque envoi arrive directement dans le cockpit de crise de la CPTS Pau Béarn. Les noms saisis
+  ici servent à la traçabilité de la collecte et ne sont transmis à personne d'autre. Cet écran cesse de
+  répondre dès que la collecte est clôturée.</p>`);
+
+  redessinerPanier();
+  const p = document.getElementById('prenom');
+  if(p && window.innerWidth > 640) p.focus();
+}
+
+/* --- Le panier ------------------------------------------- */
+function ajouter(i){
+  const m = (ctx.suggestions || [])[i];
+  if(!m) return;
+  poser(m);
+}
+function ajouterAutre(){
+  const m = val('autre');
+  if(!m){ toast("Écrivez la désignation du matériel"); return; }
+  poser(m);
+  const c = document.getElementById('autre');
+  if(c){ c.value = ''; c.focus(); }
+}
+function poser(m){
+  const e = panier.find(x => x.materiel.toLowerCase() === m.toLowerCase());
+  if(e) e.quantite = (Number(e.quantite) || 0) + 1;
+  else panier.push({materiel:m, quantite:1});
+  redessinerPanier();
+}
+function majQuantite(i, v){
+  if(!panier[i]) return;
+  const n = parseFloat(String(v).replace(',', '.'));
+  panier[i].quantite = isFinite(n) && n >= 0 ? n : 0;
+  majTotal();
+  majPastilles();
+}
+function pas(i, d){
+  if(!panier[i]) return;
+  panier[i].quantite = Math.max(0, (Number(panier[i].quantite) || 0) + d);
+  redessinerPanier();
+}
+function retirer(i){ panier.splice(i, 1); redessinerPanier(); }
+
+const totalPanier = () => panier.reduce((s,l) => s + (Number(l.quantite) || 0), 0);
+
+function redessinerPanier(){
+  const c = document.getElementById('panier');
+  if(!c) return;
+  c.innerHTML = panier.map((l,i) => `<li>
+    <span class="m">${esc(l.materiel)}</span>
+    <span class="pas">
+      <button type="button" onclick="pas(${i},-1)" aria-label="Un de moins">−</button>
+      <input type="number" min="0" step="1" inputmode="numeric" value="${esc(l.quantite)}"
+        oninput="majQuantite(${i}, this.value)" aria-label="Quantité de ${esc(l.materiel)}">
+      <button type="button" onclick="pas(${i},1)" aria-label="Un de plus">+</button>
+    </span>
+    <button class="sup" type="button" onclick="retirer(${i})" aria-label="Retirer ${esc(l.materiel)}">✕</button>
+  </li>`).join('');
+  majTotal();
+  majPastilles();
+}
+function majTotal(){
+  const t = document.getElementById('total');
+  if(!t) return;
+  const u = totalPanier(), n = panier.length;
+  t.innerHTML = n
+    ? `<b>${nb(u)}</b> unité${u > 1 ? 's' : ''} · ${n} matériel${n > 1 ? 's' : ''} différent${n > 1 ? 's' : ''}`
+    : "Rien de déposé pour l'instant";
+}
+/* La pastille dit ce qu'elle a déjà mis dans le panier : sans
+   cela, on ne sait plus si l'appui a été pris en compte. */
+function majPastilles(){
+  (ctx.suggestions || []).forEach((m,i) => {
+    const b = document.getElementById('past-' + i);
+    if(!b) return;
+    const e = panier.find(x => x.materiel.toLowerCase() === m.toLowerCase());
+    b.className = e ? 'pris' : '';
+    b.innerHTML = esc(m) + (e ? `<span class="q">×${esc(nb(Number(e.quantite) || 0))}</span>` : '');
+  });
+}
+
+/* --- Envoi ----------------------------------------------- */
+async function envoyer(){
+  if(envoiEnCours) return;
+  const prenom = val('prenom'), nom = val('nom');
+  const lignes = panier.filter(l => (l.materiel || '').trim());
+
+  if(!prenom && !nom){
+    toast("Le nom du déposant est nécessaire");
+    document.getElementById('nom')?.classList.add('faux');
+    document.getElementById('nom')?.focus();
+    return;
+  }
+  if(!lignes.length){ toast("Ajoutez au moins un matériel"); return; }
+
+  document.getElementById('nom')?.classList.remove('faux');
+  envoiEnCours = true;
+  const b = document.getElementById('envoyer');
+  if(b){ b.disabled = true; b.textContent = 'Enregistrement…'; }
+
+  let r, d = null;
+  try{
+    r = await fetch(API, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        p: ID_POINT, j: JETON,
+        nom, prenom, profession: val('profession'),
+        site: val('site'),
+        lignes: lignes.map(l => ({materiel:l.materiel, quantite:String(l.quantite)}))
+      })
+    });
+    d = await r.json();
+  }catch(e){
+    envoiEnCours = false;
+    if(b){ b.disabled = false; b.textContent = 'Enregistrer ce dépôt'; }
+    toast("Envoi impossible — la saisie est conservée, réessayez");
+    return;
+  }
+
+  envoiEnCours = false;
+  if(b){ b.disabled = false; b.textContent = 'Enregistrer ce dépôt'; }
+
+  if(!r.ok || !d || !d.ok){
+    toast((d && d.erreur) || "Enregistrement refusé — la saisie est conservée");
+    return;
+  }
+
+  /* Enregistré : l'écran se vide pour le suivant, et le
+     récapitulatif se met à jour avec les chiffres du serveur —
+     ceux du cockpit, pas ceux de cet appareil. */
+  dernier = {
+    qui: [prenom, nom].filter(Boolean).join(' '),
+    unites: totalPanier(),
+    lignes: lignes.length,
+    ref: d.ref || ''
+  };
+  ctx.recap = d.recap || ctx.recap;
+  /* Ce qui vient d'entrer devient une pastille, s'il n'y était
+     pas : le deuxième déposant apporte souvent la même chose. */
+  lignes.forEach(l => {
+    if(!(ctx.suggestions||[]).some(x => x.toLowerCase() === l.materiel.toLowerCase())){
+      ctx.suggestions.push(l.materiel);
+    }
+  });
+  panier = [];
+  ['prenom','nom','profession','autre'].forEach(k => { const e = document.getElementById(k); if(e) e.value = ''; });
+
+  saisie();
+  const z = document.getElementById('recu');
+  if(z) z.innerHTML = `<div class="recu">
+    <div class="t">Dépôt enregistré</div>
+    <div class="d">${esc(dernier.qui)} — ${nb(dernier.unites)} unité${dernier.unites > 1 ? 's' : ''}
+      en ${dernier.lignes} ligne${dernier.lignes > 1 ? 's' : ''}${dernier.ref ? ' · réf. ' + esc(dernier.ref) : ''}.
+      L'écran est prêt pour le déposant suivant.</div>
+  </div>`;
+  window.scrollTo(0,0);
+  toast("Dépôt enregistré");
+}
+
+/* --- Récapitulatif --------------------------------------- */
+function recapHTML(){
+  const r = (ctx && ctx.recap) || {lignes:0, unites:0, deposants:[], parMat:[]};
+  if(!r.lignes) return `<p class="vide">Aucun dépôt saisi pour l'instant.</p>`;
+  return `<table>
+    <thead><tr><th>Matériel</th><th style="text-align:right">Quantité</th></tr></thead>
+    <tbody>${r.parMat.map(m => `<tr><td>${esc(m.materiel)}</td><td class="q">${nb(m.quantite)}</td></tr>`).join('')}
+      <tr class="tot"><td>Total</td><td class="q">${nb(r.unites)}</td></tr></tbody>
+  </table>
+  <table style="margin-top:20px">
+    <thead><tr><th>Déposant</th><th>Profession</th><th style="text-align:right">Unités</th></tr></thead>
+    <tbody>${r.deposants.map(d => `<tr><td>${esc(d.nom)}</td><td style="color:var(--texte-2)">${esc(d.qualite||'')}</td><td class="q">${nb(d.unites)}</td></tr>`).join('')}</tbody>
+  </table>`;
+}
+
+/* Deux personnes peuvent tenir la table en même temps, et la
+   coordination saisir de son côté : le récapitulatif se relit au
+   serveur plutôt que de se déduire de cet écran. */
+async function rafraichir(){
+  try{
+    const r = await fetch(API, {headers:{'Accept':'application/json'}});
+    const d = await r.json();
+    if(d && d.ouverte){
+      ctx.recap = d.recap || ctx.recap;
+      ctx.suggestions = d.suggestions || ctx.suggestions;
+      const z = document.getElementById('recap');
+      if(z) z.innerHTML = recapHTML();
+      const c = document.getElementById('compteurs');
+      if(c) c.innerHTML = compteursHTML();
+      const s = document.getElementById('pastilles');
+      if(s) s.innerHTML = pastillesHTML();
+      majPastilles();
+      toast("Récapitulatif à jour");
+    }else if(d && d.motif === 'close'){
+      ctx = d; close();
+    }
+  }catch(e){ toast("Serveur injoignable — récapitulatif inchangé"); }
+}
+
+demarrer();
+</script>
+</body>
+</html>

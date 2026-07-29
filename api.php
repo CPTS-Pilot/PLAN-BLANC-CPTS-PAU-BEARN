@@ -202,7 +202,7 @@ function empreinteAppelant() {
    pour la saisie répétée, global pour le reste. Un compteur par
    porte : une journée de collecte chargée ne doit pas fermer le
    recensement des renforts, et réciproquement. */
-function quotaDepot($empreinte, $porte = 'depots') {
+function quotaDepot($empreinte, $porte = 'depots', $parIP = DEPOT_PAR_IP, $global = DEPOT_GLOBAL) {
     $f = DOSSIER . '/' . $porte . '.php';
     $liste = [];
     if (file_exists($f)) {
@@ -221,7 +221,7 @@ function quotaDepot($empreinte, $porte = 'depots') {
         $recents[] = $x;
         if (isset($x['e']) && $x['e'] === $empreinte) $mien++;
     }
-    if ($mien >= DEPOT_PAR_IP || count($recents) >= DEPOT_GLOBAL) return false;
+    if ($mien >= $parIP || count($recents) >= $global) return false;
     $recents[] = ['t' => time(), 'e' => $empreinte];
     @file_put_contents($f, GARDE . json_encode($recents));
     return true;
@@ -855,6 +855,287 @@ if (isset($_GET['consultations'])) {
             'id'  => $id,
             'ref' => 'MG-2026-' . strtoupper(substr($id, -4)),
             'le'  => $le,
+        ]);
+    } finally {
+        flock($fp, LOCK_UN);
+        fclose($fp);
+    }
+}
+
+/* =========================================================
+   SAISIE SUR PLACE — quatrième porte publique
+
+   Les trois précédentes s'adressent à qui déclare pour
+   lui-même, depuis son cabinet. Celle-ci s'adresse à la
+   personne qui tient la table à l'entrée d'une collecte et note
+   ce qui arrive, déposant par déposant, pendant deux heures.
+
+   Elle n'a pas le code du cockpit. Elle a un lien qui ne vaut
+   que pour une collecte : l'identifiant de celle-ci et un jeton
+   tiré au sort par le cockpit au moment où le lien est fabriqué.
+   Le jeton se révoque d'un clic, et la clôture de la collecte
+   ferme la porte d'elle-même — un lien retrouvé le lendemain
+   dans un vieux message n'écrit plus rien.
+
+   Ce qui entre ici rejoint directement les lignes de dépôt de
+   la collecte : les totaux, la synthèse par matériel et le
+   récapitulatif imprimable s'en déduisent sans ressaisie.
+   ========================================================= */
+
+const TERRAIN_LIGNES  = 20;    /* matériels par déposant            */
+const TERRAIN_DEPOTS  = 400;   /* dépôts par heure et par adresse   */
+const TERRAIN_GLOBAL  = 1200;  /* dépôts par heure, toutes adresses */
+const TERRAIN_PLAFOND = 4000;  /* lignes de dépôt par collecte      */
+
+/* Ce qui se range en consommable sans qu'on ait à le dire. Le
+   cockpit fait le même tri (CAT_PAR_DEFAUT) : toute addition
+   ici doit y être reportée. */
+function categorieTerrain($materiel) {
+    $m = function_exists('mb_strtolower') ? mb_strtolower($materiel, 'UTF-8') : strtolower($materiel);
+    foreach (['masque', 'gel ', 'gel hydro', 'gant', 'compresse', 'pansement',
+              'seringue', 'aiguille', 'bandelette', 'lancette', 'blouse', 'surblouse',
+              'charlotte', 'sursouliers', 'solut', 'antiseptique'] as $mot) {
+        if (strpos($m, $mot) !== false) return 'Consommable';
+    }
+    return 'Dispositif médical';
+}
+
+/* La collecte visée par le lien, à condition que le jeton
+   corresponde. On renvoie aussi son rang : l'écriture se fait
+   sur la liste relue sous verrou, jamais sur cette copie. */
+function collecteTerrain($etat, $id, $jeton) {
+    if ($id === '' || $jeton === '') return null;
+    $d = isset($etat['donnees']) && is_array($etat['donnees']) ? $etat['donnees'] : [];
+    $pts = isset($d['points']) && is_array($d['points']) ? $d['points'] : [];
+    foreach ($pts as $i => $p) {
+        if (!is_array($p) || (string) ($p['id'] ?? '') !== $id) continue;
+        $j = isset($p['jeton']) ? (string) $p['jeton'] : '';
+        if ($j === '' || !hash_equals($j, $jeton)) return null;
+        return ['rang' => $i, 'point' => $p];
+    }
+    return null;
+}
+
+/* Une collecte close ou annulée n'accepte plus rien : la personne
+   qui tient la table a fermé, et ce qui arrive après relève d'une
+   autre collecte. */
+function terrainOuvert($p) {
+    $s = (string) ($p['statut'] ?? 'Ouvert');
+    return $s !== 'Clôturé' && $s !== 'Annulé';
+}
+
+/* Le récapitulatif tel qu'il s'affiche sur place : les totaux
+   par matériel et la liste des déposants déjà passés. Il se
+   recalcule depuis les lignes, jamais depuis un compteur. */
+function synthesTerrain($p) {
+    $lignes = isset($p['lignes']) && is_array($p['lignes']) ? $p['lignes'] : [];
+    $mats = [];
+    $deps = [];
+    $unites = 0;
+    $n = 0;
+    foreach ($lignes as $l) {
+        if (!is_array($l)) continue;
+        $m = trim((string) ($l['materiel'] ?? ''));
+        if ($m === '') continue;
+        $n++;
+        $q = (float) str_replace(',', '.', (string) ($l['quantite'] ?? 0));
+        if (!is_finite($q) || $q < 0) $q = 0;
+        $unites += $q;
+        if (!isset($mats[$m])) $mats[$m] = 0;
+        $mats[$m] += $q;
+        $d = trim((string) ($l['deposant'] ?? ''));
+        if ($d !== '') {
+            if (!isset($deps[$d])) $deps[$d] = ['nom' => $d, 'qualite' => (string) ($l['qualite'] ?? ''), 'unites' => 0];
+            $deps[$d]['unites'] += $q;
+        }
+    }
+    arsort($mats);
+    $parMat = [];
+    foreach ($mats as $m => $q) $parMat[] = ['materiel' => $m, 'quantite' => $q];
+    return [
+        'lignes'    => $n,
+        'unites'    => $unites,
+        'deposants' => array_values($deps),
+        'parMat'    => $parMat,
+    ];
+}
+
+if (isset($_GET['terrain'])) {
+
+    $idPoint = txt($_GET['p'] ?? '', 40);
+    $jeton   = txt($_GET['j'] ?? '', 64);
+
+    /* La page interroge cette adresse avant de s'afficher : le
+       lieu, le créneau, la liste du matériel attendu et ce qui a
+       déjà été noté. Rien d'autre de l'état ne sort d'ici. */
+    if ($methode === 'GET') {
+        $etat = lireEtat();
+        $trouve = collecteTerrain($etat, $idPoint, $jeton);
+        if ($trouve === null) {
+            repondre(200, ['ouverte' => false, 'motif' => 'lien']);
+        }
+        $p = $trouve['point'];
+        if (!terrainOuvert($p)) {
+            repondre(200, [
+                'ouverte' => false,
+                'motif'   => 'close',
+                'lieu'    => txt($p['lieu'] ?? '', 200),
+                'statut'  => txt($p['statut'] ?? '', 40),
+            ]);
+        }
+
+        /* Le matériel proposé d'un doigt : ce qui a été demandé
+           par les appels aux dons ouverts, plus ce qui est déjà
+           passé par la table — c'est presque toujours la même
+           chose qui revient. */
+        $suggestions = [];
+        $ajouter = function ($x) use (&$suggestions) {
+            $x = txt($x, 140);
+            if ($x !== '' && !in_array($x, $suggestions, true) && count($suggestions) < 24) $suggestions[] = $x;
+        };
+        foreach (campagnesCollecte($etat) as $c) {
+            if (!is_array($c) || empty($c['ouverte'])) continue;
+            foreach ((isset($c['articles']) && is_array($c['articles']) ? $c['articles'] : []) as $a) {
+                if (is_array($a)) $ajouter($a['nom'] ?? '');
+            }
+        }
+        foreach ((isset($p['lignes']) && is_array($p['lignes']) ? $p['lignes'] : []) as $l) {
+            if (is_array($l)) $ajouter($l['materiel'] ?? '');
+        }
+        foreach (['Thermomètre', 'Hémoglucotest', 'Tensiomètre', 'Saturomètre', 'Stéthoscope',
+                  'Masques FFP2', 'Gel hydroalcoolique'] as $x) $ajouter($x);
+
+        repondre(200, [
+            'ouverte'     => true,
+            'lieu'        => txt($p['lieu'] ?? '', 200),
+            'adresse'     => txt($p['adresse'] ?? '', 200),
+            'date'        => txt($p['date'] ?? '', 12),
+            'debut'       => txt($p['debut'] ?? '', 8),
+            'fin'         => txt($p['fin'] ?? '', 8),
+            'responsable' => txt($p['responsable'] ?? '', 160),
+            'destination' => txt($p['destination'] ?? '', 200),
+            'suggestions' => $suggestions,
+            'recap'       => synthesTerrain($p),
+        ]);
+    }
+
+    if ($methode !== 'POST') {
+        repondre(405, ['erreur' => 'Méthode non autorisée']);
+    }
+
+    $brut = file_get_contents('php://input');
+    if ($brut === false || strlen($brut) > DEPOT_CORPS_MAX) {
+        repondre(413, ['erreur' => 'Saisie trop volumineuse']);
+    }
+    $in = json_decode($brut ?: '', true);
+    if (!is_array($in)) {
+        repondre(400, ['erreur' => 'Saisie mal formée']);
+    }
+
+    /* Champ leurre, comme aux autres portes : seuls les robots le
+       remplissent. On répond comme si tout allait bien. */
+    if (txt($in['site'] ?? '', 40) !== '') {
+        repondre(200, ['ok' => true, 'ref' => 'DP-2026-0000']);
+    }
+
+    $idPoint = $idPoint !== '' ? $idPoint : txt($in['p'] ?? '', 40);
+    $jeton   = $jeton   !== '' ? $jeton   : txt($in['j'] ?? '', 64);
+
+    $nom        = txt($in['nom'] ?? '', 80);
+    $prenom     = txt($in['prenom'] ?? '', 80);
+    $profession = txt($in['profession'] ?? '', 120);
+    $deposant   = trim($prenom . ' ' . $nom);
+
+    $lignes = [];
+    $brutLignes = isset($in['lignes']) && is_array($in['lignes']) ? $in['lignes'] : [];
+    foreach ($brutLignes as $l) {
+        if (count($lignes) >= TERRAIN_LIGNES) break;
+        if (!is_array($l)) continue;
+        $mat = txt($l['materiel'] ?? '', 140);
+        if ($mat === '') continue;
+        $q = (float) str_replace(',', '.', txt($l['quantite'] ?? '', 12));
+        if (!is_finite($q) || $q < 0) $q = 0;
+        if ($q > 100000) $q = 100000;
+        $lignes[] = [
+            'deposant'  => $deposant,
+            'qualite'   => $profession,
+            'materiel'  => $mat,
+            'categorie' => categorieTerrain($mat),
+            'quantite'  => $q == (int) $q ? (int) $q : $q,
+        ];
+    }
+
+    if ($deposant === '' || !count($lignes)) {
+        repondre(400, ['erreur' => 'Le nom du déposant et au moins un matériel sont nécessaires']);
+    }
+
+    if (!quotaDepot(empreinteAppelant(), 'terrain', TERRAIN_DEPOTS, TERRAIN_GLOBAL)) {
+        repondre(429, ['erreur' => 'Trop de dépôts en peu de temps. Attendez une minute, ou appelez la coordination.']);
+    }
+
+    $fp = @fopen(FICHIER . '.lock', 'c');
+    if ($fp === false || !flock($fp, LOCK_EX)) {
+        repondre(503, ['erreur' => 'Enregistrement momentanément indisponible']);
+    }
+
+    try {
+        $etat = lireEtat();
+        $trouve = collecteTerrain($etat, $idPoint, $jeton);
+        if ($trouve === null) {
+            repondre(403, ['erreur' => 'Ce lien de saisie n\'est plus valable. Appelez la coordination de la CPTS Pau Béarn.']);
+        }
+        if (!terrainOuvert($trouve['point'])) {
+            repondre(403, ['erreur' => 'Cette collecte a été clôturée : la saisie n\'est plus acceptée. Le dépôt reste à consigner par la coordination.']);
+        }
+
+        $donnees = (array) ($etat['donnees'] ?? []);
+        $points = isset($donnees['points']) && is_array($donnees['points']) ? $donnees['points'] : [];
+        $rang = $trouve['rang'];
+        $p = is_array($points[$rang] ?? null) ? $points[$rang] : null;
+        if ($p === null || (string) ($p['id'] ?? '') !== $idPoint) {
+            repondre(409, ['erreur' => 'La collecte a changé pendant la saisie. Rechargez la page.']);
+        }
+
+        $anciennes = isset($p['lignes']) && is_array($p['lignes']) ? $p['lignes'] : [];
+        if (count($anciennes) + count($lignes) > TERRAIN_PLAFOND) {
+            repondre(507, ['erreur' => 'Collecte saturée — appelez la coordination']);
+        }
+
+        $le = date('c');
+        $id = 'dt' . substr(md5(uniqid('', true)), 0, 10);
+        foreach ($lignes as $k => $l) {
+            $l['id'] = $id . '-' . $k;
+            /* D'où vient la ligne : le récapitulatif ne distingue
+               pas, mais la coordination doit pouvoir savoir ce qui
+               a été noté sur place et ce qu'elle a saisi elle-même. */
+            $l['source'] = 'terrain';
+            $l['quand']  = $le;
+            $anciennes[] = $l;
+        }
+        $p['lignes'] = $anciennes;
+        $points[$rang] = $p;
+        $donnees['points'] = $points;
+
+        $nouveau = [
+            'version' => (isset($etat['version']) ? (int) $etat['version'] : 0) + 1,
+            'maj'     => date('c'),
+            'par'     => $deposant . ' (saisie sur place)',
+            'donnees' => $donnees,
+        ];
+
+        if (!ecrireEtat($nouveau)) {
+            repondre(500, ['erreur' => 'Enregistrement impossible']);
+        }
+        tracer(sprintf('v%d dépôt sur place — %s, %s (%d ligne%s)',
+            $nouveau['version'], txt($p['lieu'] ?? '', 80), $deposant,
+            count($lignes), count($lignes) > 1 ? 's' : ''));
+
+        repondre(200, [
+            'ok'    => true,
+            'id'    => $id,
+            'ref'   => 'DP-2026-' . strtoupper(substr($id, -4)),
+            'le'    => $le,
+            'recap' => synthesTerrain($p),
         ]);
     } finally {
         flock($fp, LOCK_UN);
