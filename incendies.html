@@ -527,10 +527,42 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
    à droite qui la distingue de tout ce que nous avons fait
    nous-mêmes. C'est aussi elle qui remonte dans « Remontées
    terrain ». */
-.ent-r.dehors{border-right:3px solid var(--ambre)}
 .ent-r .venu{display:inline-flex;align-items:baseline;gap:7px;background:#FCF3E4;color:#8A5D12;
   border-radius:20px;padding:4px 11px;font-size:12.5px;max-width:100%}
 .ent-r .venu .p{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;opacity:.75}
+
+/* ---------- la main courante ----------
+   Une entrée n'a pas de statut à porter : elle atteste, elle ne se
+   pilote pas. Ce qui la distingue d'une autre, c'est sa provenance —
+   d'où le liseré, bleu quand c'est nous, ambre quand ça vient du
+   dehors — et la personne qui s'en est chargée, qui la signe.
+   Le texte, lui, est souvent un paragraphe entier : il se lit en
+   corps de lecture, aéré, et non en titre gras. */
+.ent-r.mc{border-left-color:var(--encre-2);padding:16px 19px 15px;margin-bottom:12px;
+  transition:box-shadow .14s,border-color .14s}
+.ent-r.mc:hover{box-shadow:0 3px 14px rgba(6,43,99,.07)}
+.ent-r.mc.dehors{border-left-color:var(--ambre);background:linear-gradient(90deg,#FFFDF8,var(--carte) 220px)}
+.ent-r.mc .haut{gap:9px;margin-bottom:9px}
+.ent-r.mc .hr{background:var(--surface);border-radius:5px;padding:3px 8px;font-size:11px;
+  letter-spacing:.03em;color:var(--encre)}
+.ent-r.mc .ti{font-family:var(--corps);font-weight:400;font-size:15px;line-height:1.62;
+  color:var(--texte)}
+/* La signature : initiales en pastille, nom à côté. */
+.ent-r.mc .par{display:inline-flex;align-items:center;gap:9px;margin-top:13px}
+.ent-r.mc .par .av{width:29px;height:29px;flex:none;border-radius:50%;background:var(--cobalt-clair);
+  color:var(--encre-2);font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.02em;
+  display:inline-flex;align-items:center;justify-content:center}
+.ent-r.mc .par .nn{display:flex;flex-direction:column;line-height:1.25;font-size:13.5px;color:var(--texte)}
+.ent-r.mc .par .k{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--texte-2)}
+/* La suite donnée n'est pas une remarque en marge : c'est ce qui
+   reste à faire. Elle se pose dans un cadre à elle. */
+.ent-r.mc .bloc{margin-top:13px;padding:10px 13px;border-left:0;border-radius:7px;
+  background:var(--surface)}
+.ent-r.mc .bloc .k{color:var(--encre-2);margin-bottom:4px}
+.ent-r.mc .bloc .v{font-size:13.5px;line-height:1.55;color:var(--texte-2)}
+.ent-r.mc .pied{margin-top:13px;border-top:1px solid var(--trait);opacity:.85}
+@media(max-width:600px){.ent-r.mc{padding:14px 15px}}
 .ent-r .pied{margin-top:11px;padding-top:8px;border-top:1px dashed var(--trait);
   font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--texte-2);
   display:flex;gap:6px 16px;flex-wrap:wrap}
@@ -1023,9 +1055,10 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 /* z-index:0 enferme les couches de Leaflet — elles montent jusqu'à
    800 — sous les fenêtres du cockpit, qui sont à 50. Sans cela, la
    carte passerait par-dessus la modale de saisie. */
-.carto-toile,.carto-vide{height:330px;border-top:1px solid var(--trait);background:var(--cobalt-clair);
+.carto-hote,.carto-vide{height:330px;border-top:1px solid var(--trait);background:var(--cobalt-clair);
   position:relative;z-index:0;isolation:isolate}
-.carto-toile.court,.carto-vide.court{height:260px}
+.carto-hote.court,.carto-vide.court{height:260px}
+.carto-toile{height:100%}
 .carto-vide,.carto .attente{display:flex;align-items:center;justify-content:center;height:100%;
   font-size:13px;color:var(--texte-2);font-style:italic;text-align:center;padding:22px;line-height:1.45}
 .carto .legende{display:flex;flex-wrap:wrap;gap:7px 15px;padding:11px 16px;border-top:1px solid var(--trait);
@@ -1954,10 +1987,14 @@ async function validerContact(nom){
    où il faut désigner quelqu'un — main courante comprise. */
 function nomsMissionnes(){
   const v = new Map();
-  const ajouter = n => {
-    const t = (n||'').trim();
+  /* Un même champ peut nommer deux personnes — « Anne Latisnère et Eva
+     Poulmarch » quand une action a été portée à deux. Ce sont deux
+     personnes distinctes : chacune entre dans la liste pour elle-même, et
+     aucune paire ne s'y présente comme une identité à part entière. */
+  const ajouter = n => (n||'').split(/\s*(?:,|;|&|\+|\bet\b)\s*/i).forEach(p => {
+    const t = p.trim();
     if(t && t !== 'Anonyme') v.set(cleP(t), t);
-  };
+  });
   (etat.referents||[]).forEach(r => ajouter(r.nom));
   etat.missions.forEach(m => {
     ajouter(m.pilote); ajouter(m.suppleant);
@@ -2931,8 +2968,7 @@ const JOURNAL = {
      alors de provenance — c'est la seule chose qui distingue deux
      entrées entre elles. */
   courante: {
-    marque:'mc', titre:'evenement', venu:'source',
-    chips:[{c:'qui', l:"Pris en charge par"}],
+    marque:'mc', titre:'evenement', venu:'source', personne:'qui',
     blocs:[{c:'suite', l:"Suite donnée"}]
   },
   terrain: {
@@ -2968,6 +3004,14 @@ function classeReg(o){
   if(['À faire','En attente','À suivre'].includes(o.statut)) return 't-attente';
   if(['Clos','Terminé'].includes(o.statut)) return 't-fini';
   return '';
+}
+
+/* Les initiales d'un nom pour la pastille de signature. Deux
+   lettres suffisent ; « Anne Latisnère et Eva Poulmarch » en donne
+   AL, et l'on lit le nom entier juste à côté. */
+function initialesDe(nom){
+  const m = String(nom || '').trim().split(/[\s'’-]+/).filter(Boolean);
+  return (m.slice(0,2).map(x => x[0]).join('') || '?').toUpperCase();
 }
 
 function frdateJour(d){
@@ -3016,6 +3060,14 @@ function journal(k){
     const venu = cfg.venu && String(o[cfg.venu]||'').trim()
       ? `<span class="venu"><span class="p">Venu du dehors</span>${esc(o[cfg.venu])}</span>` : '';
 
+    /* Celle ou celui qui s'en est chargé se signe : ses initiales en
+       pastille, son nom à côté. C'est la contrepartie du bandeau de
+       provenance — l'entrée dit d'un coup d'œil si elle vient de nous
+       ou du dehors. */
+    const perso = cfg.personne && String(o[cfg.personne]||'').trim()
+      ? `<span class="par"><span class="av">${esc(initialesDe(o[cfg.personne]))}</span>
+           <span class="nn"><span class="k">Pris en charge par</span>${esc(o[cfg.personne])}</span></span>` : '';
+
     h += `<article class="ent-r ${cfg.marque || ''} ${classeReg(o)}${venu ? ' dehors' : ''}">
       <div class="haut">
         ${quand ? `<span class="hr">${esc(quand)}</span>` : ''}${etiqs}${venu}
@@ -3026,6 +3078,7 @@ function journal(k){
         </span>
       </div>
       <div class="ti">${esc(o[cfg.titre]) || '—'}</div>
+      ${perso}
       ${chips ? `<div class="chips">${chips}</div>` : ''}
       ${blocs}${lien}
       ${pied ? `<div class="pied">${pied}</div>` : ''}
@@ -6575,66 +6628,87 @@ function chargerLeaflet(){
   document.head.appendChild(js);
 }
 
-/* Le cockpit reconstruit sa page entière à chaque rendu : les
-   cartes montées sur des conteneurs qui viennent de disparaître
-   doivent être démontées, sinon Leaflet garde ses écouteurs sur
-   des éléments que plus personne ne regarde. */
+/* Le cockpit reconstruit sa page entière à chaque rendu. Le
+   feuillet écrit donc un hôte vide, et la carte — bâtie une fois
+   pour toutes — vient s'y replacer. Celle dont l'hôte a
+   définitivement disparu se démonte, sinon Leaflet garderait ses
+   écouteurs sur un élément que plus personne ne regarde. */
 function monterCartes(){
   for(const id in cartesVives){
-    const c = cartesVives[id];
-    let vif = false;
-    try{ vif = document.body.contains(c.getContainer()); }catch(e){}
-    if(!vif){ try{ c.remove(); }catch(e){} delete cartesVives[id]; }
+    if(document.getElementById('hote-' + id)) continue;
+    try{ cartesVives[id].remove(); }catch(e){}
+    delete cartesVives[id];
   }
-  const toiles = [].slice.call(document.querySelectorAll('.carto-toile'));
-  if(!toiles.length) return;
+  const hotes = [].slice.call(document.querySelectorAll('.carto-hote'));
+  if(!hotes.length) return;
 
   geocoderMedecins();
 
   if(leafletEtat === 'echec'){
-    toiles.forEach(t => { t.innerHTML = `<div class="attente">Le fond de carte n'a pas pu être chargé — poste hors ligne, ou réseau qui n'autorise pas openstreetmap.org. Les adresses restent lisibles sur chaque fiche, et le lien « Itinéraire » ouvre l'application de cartes du téléphone.</div>`; });
+    hotes.forEach(t => { t.innerHTML = `<div class="attente">Le fond de carte n'a pas pu être chargé — poste hors ligne, ou réseau qui n'autorise pas openstreetmap.org. Les adresses restent lisibles sur chaque fiche, et le lien « Itinéraire » ouvre l'application de cartes du téléphone.</div>`; });
     return;
   }
   if(leafletEtat !== 'pret'){ chargerLeaflet(); return; }
-  toiles.forEach(dessinerCarte);
+  hotes.forEach(dessinerCarte);
 }
 
-function dessinerCarte(el){
-  const pts = (cartoDonnees[el.id] || []).filter(p => p.lat !== null && p.lon !== null);
-  let carte = cartesVives[el.id];
-  if(!carte){
+function dessinerCarte(hote){
+  const idc = hote.dataset.carte;
+  const pts = (cartoDonnees[idc] || []).filter(p => p.lat !== null && p.lon !== null);
+  let carte = cartesVives[idc];
+
+  if(carte){
+    /* La carte existe déjà : on la replace dans son hôte neuf
+       plutôt que d'en rebâtir une. Sans cela, une seule lettre
+       tapée dans la recherche des patients — qui refait la page
+       entière — rejetterait la vue à son cadrage d'origine, et
+       refermerait la bulle qu'on venait d'ouvrir. */
+    if(carte._toile.parentNode !== hote) hote.appendChild(carte._toile);
+  }else{
+    const toile = document.createElement('div');
+    toile.className = 'carto-toile';
+    hote.appendChild(toile);
     /* La molette ne zoome pas : sur une page qui défile, une carte
        qui capture le défilement se traverse à la souris comme un
        piège. Le zoom se fait aux boutons ou à deux doigts. */
-    carte = L.map(el, {scrollWheelZoom:false}).setView(CARTO_CENTRE, 11);
+    carte = L.map(toile, {scrollWheelZoom:false}).setView(CARTO_CENTRE, 11);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom:18,
       attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
     }).addTo(carte);
     carte._couche = L.layerGroup().addTo(carte);
-    cartesVives[el.id] = carte;
+    carte._toile = toile;
+    cartesVives[idc] = carte;
   }
-  carte._couche.clearLayers();
-  carte._reperes = {};
 
-  pts.forEach(p => {
-    const r = L.circleMarker([p.lat, p.lon], {
-      radius:9, weight:3, color:'#fff',
-      fillColor: CARTO_TEINTES[p.statut] || '#0B4FA8',
-      /* Un point posé sur la commune faute d'adresse exacte se
-         montre pâle : il dit « quelque part par ici », pas « là ». */
-      fillOpacity: p.approx ? .42 : .95
-    }).addTo(carte._couche);
-    r.bindPopup(bullecarte(p));
-    carte._reperes[p.id] = r;
-  });
-
-  if(pts.length){
-    const b = L.latLngBounds(pts.map(p => [p.lat, p.lon]));
-    carte.fitBounds(b, {padding:[30,30], maxZoom: pts.length === 1 ? 15 : 14});
+  /* Les points ne se redessinent que s'ils ont changé : le reste
+     du temps, le re-rendu de la page ne touche pas à la carte. */
+  const signe = pts.map(p => [p.id, p.lat, p.lon, p.statut, p.approx].join(':')).join('|');
+  if(signe !== carte._signe){
+    carte._couche.clearLayers();
+    carte._reperes = {};
+    pts.forEach(p => {
+      const r = L.circleMarker([p.lat, p.lon], {
+        radius:9, weight:3, color:'#fff',
+        fillColor: CARTO_TEINTES[p.statut] || '#0B4FA8',
+        /* Un point posé sur la commune faute d'adresse exacte se
+           montre pâle : il dit « quelque part par ici », pas « là ». */
+        fillOpacity: p.approx ? .42 : .95
+      }).addTo(carte._couche);
+      r.bindPopup(bullecarte(p));
+      carte._reperes[p.id] = r;
+    });
+    /* Le cadrage se refait quand la population de points change —
+       un médecin qui vient d'être situé doit entrer dans le cadre. */
+    if(pts.length){
+      const b = L.latLngBounds(pts.map(p => [p.lat, p.lon]));
+      carte.fitBounds(b, {padding:[30,30], maxZoom: pts.length === 1 ? 15 : 14});
+    }
+    carte._signe = signe;
   }
-  /* Le conteneur vient d'être inséré : Leaflet l'a mesuré avant
-     que la page ne prenne sa largeur définitive. */
+
+  /* Le conteneur vient d'être replacé : Leaflet l'avait mesuré
+     avant que la page ne prenne sa largeur définitive. */
   setTimeout(() => { try{ carte.invalidateSize(); }catch(e){} }, 80);
 }
 
@@ -6665,7 +6739,7 @@ function blocCarte(idc, pts, o){
 
   let corps;
   if(plie) corps = '';
-  else if(situes.length || attente) corps = `<div class="carto-toile${court}" id="${idc}"></div>`;
+  else if(situes.length || attente) corps = `<div class="carto-hote${court}" id="hote-${idc}" data-carte="${idc}"></div>`;
   else corps = `<div class="carto-vide${court}">${pts.length
     ? "Aucune adresse renseignée pour l'instant. Une adresse portée sur une fiche se pose ici en point, toute seule."
     : "Aucun médecin au registre : la carte se remplit à mesure que les fiches se créent."}</div>`;
