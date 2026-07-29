@@ -740,6 +740,42 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .carte.formulaire .lien-f .btn{flex:0 0 auto}
 @media(max-width:600px){.carte.formulaire .lien-f .btn{width:100%}}
 
+/* ---------- appels aux dons ----------
+   Une campagne, c'est une liste de matériel nommée, ouverte le
+   temps d'un appel puis close. Ce qu'on doit voir sans lire :
+   celles qui sont ouvertes en ce moment, et ce qu'elles
+   demandent. Le liseré le dit — vert ouvert, gris clos. */
+.camp{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--trait);
+  border-radius:10px;padding:17px 19px;margin-bottom:13px}
+.camp.ouverte{border-left-color:var(--stable);box-shadow:0 2px 14px rgba(6,43,99,.07)}
+.camp.essai{border-left-color:var(--ambre)}
+.camp .tc{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:8px}
+.camp .tc h3{font-family:var(--display);font-weight:700;font-size:17.5px;line-height:1.25;
+  color:var(--encre);margin:0;flex:1;min-width:200px}
+.camp .motif{font-size:13px;color:var(--texte-2);line-height:1.5;margin:0 0 11px;max-width:74ch}
+.camp .arts{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:11px}
+.camp .arts span{font-size:12.5px;background:#DFF0E9;color:#1E5C46;border-radius:6px;padding:4px 9px;line-height:1.3}
+.camp .arts span i{font-style:normal;opacity:.7}
+.camp .arts .libre{background:var(--fond-2,#F1F3F6);color:var(--texte-2)}
+.camp .quand{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--texte-2);margin-bottom:11px}
+.camp .recu{font-size:13px;color:var(--texte-2);margin:0 0 11px}
+.camp .recu b{font-family:var(--display);font-size:16px;color:var(--encre)}
+.camp .actions{margin-top:2px}
+.camp .lien-f{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:11px}
+.camp .lien-f input{flex:1;min-width:200px;font-family:var(--mono);font-size:12.5px;background:var(--surface)}
+@media(max-width:600px){.camp .lien-f .btn,.camp .actions .btn{width:100%}}
+
+/* Les articles en cours de saisie : une ligne par matériel
+   demandé, la désignation et ce qu'on en précise. */
+.art-l{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px}
+.art-l .n{font-family:var(--mono);font-size:11px;color:var(--texte-2);flex:0 0 20px;padding-top:11px}
+.art-l .ch{flex:1;display:grid;gap:8px;grid-template-columns:1fr 1fr}
+@media(max-width:640px){.art-l .ch{grid-template-columns:1fr}}
+.art-l button.sup{background:none;border:0;color:var(--texte-2);opacity:.45;cursor:pointer;
+  font-size:15px;padding:8px 4px 0}
+.art-l button.sup:hover{opacity:1;color:var(--braise)}
+
 /* ---------- choix d'un module dans un onglet ----------
    Un onglet qui porte deux métiers distincts ne les empile pas :
    il fait choisir. On entre dans l'un ou dans l'autre, et on
@@ -767,6 +803,7 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
   margin-left:7px;vertical-align:2px;font-weight:400;white-space:nowrap;
 }
 .don .ident .n .src-f.neuf,.stock .nom .src-f.neuf{background:#FCF0DA;color:#8A5D12}
+.don .ident .n .src-f.camp{background:#DFF0E9;color:#1E5C46;text-transform:none;letter-spacing:.02em;font-size:10px}
 .don .ident .n .src-f.saisie,.stock .nom .src-f.saisie{background:var(--fond-2,#F1F3F6);color:var(--texte-2)}
 
 .don .declaration{border:1px solid var(--trait);border-left:3px solid var(--encre-2);border-radius:0 8px 8px 0;padding:13px 15px;margin-bottom:14px;background:#FCFDFF}
@@ -890,6 +927,31 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 
 /* ---------- bordereau de don ---------- */
 #modale.large{max-width:860px}
+/* --- Rapports ------------------------------------------
+   Quatre cartes d'entrée : chacune dit ce qu'elle contient et où
+   elle en est, et s'ouvre sur son écran. */
+.rapports{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:14px;margin-top:6px}
+.rapp{background:var(--carte);border:1px solid var(--trait);border-radius:9px;padding:17px 18px 15px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:7px;transition:border-color .12s,box-shadow .12s}
+.rapp:hover{border-color:var(--encre-2);box-shadow:0 2px 10px rgba(16,24,32,.07)}
+.rapp .n{font-family:var(--display);font-weight:700;font-size:15.5px;color:var(--encre)}
+.rapp .d{font-size:13px;color:var(--texte-2);line-height:1.45;flex:1}
+.rapp .e{font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--encre-2);border-top:1px solid var(--trait);padding-top:8px}
+.rapp.vierge .e{color:var(--texte-2)}
+.retour-r{background:none;border:none;color:var(--encre-2);font-size:13px;cursor:pointer;padding:0;margin-bottom:10px}
+.retour-r:hover{text-decoration:underline}
+
+/* L'étoile de marquage : discrète tant que rien n'est retenu,
+   pleine et ambrée dès que l'entrée part dans un rapport. */
+.ret-b{color:var(--texte-2)}
+.ret-b.on{color:var(--ambre);font-weight:700}
+.ret-m{display:flex;gap:8px;align-items:flex-start;background:#FFFBEF;border:1px solid var(--ambre);border-radius:0 6px 6px 0;border-left-width:3px;padding:8px 11px;margin-top:9px;font-size:12.5px}
+.ret-m .g{font-family:var(--mono);font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:#8A6A12;white-space:nowrap;padding-top:2px}
+.ret-m .t{color:var(--encre)}
+.gen-l{display:flex;flex-direction:column;gap:7px;margin-bottom:4px}
+.gen-l label{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--trait);border-radius:7px;padding:9px 11px;cursor:pointer;font-size:13.5px}
+.gen-l label:hover{border-color:var(--encre-2)}
+.gen-l label.sel{border-color:var(--encre);background:var(--cobalt-clair)}
+.gen-l .ou{display:block;font-size:11.5px;color:var(--texte-2);margin-top:2px}
 .acte{color:#101820;font-size:13.5px;line-height:1.5}
 .acte .ent{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:2px solid var(--encre);padding-bottom:9px;margin-bottom:16px}
 .acte .ent .org{font-family:var(--display);font-weight:700;font-size:15px;color:var(--encre)}
@@ -1417,7 +1479,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
     <div class="pied">
       <div id="identite">—</div>
       <button onclick="demanderIdentite()">Changer de nom</button>
-      <button onclick="aller('dossier')">Dossier PDF</button>
+      <button onclick="ouvrirRapport('dossier')">Dossier PDF</button>
       <button onclick="exporter()">Exporter</button>
       <button onclick="document.getElementById('fimport').click()">Importer</button>
       <input type="file" id="fimport" accept=".json" style="display:none" onchange="importer(event)">
@@ -1660,6 +1722,8 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
      public s'anime, les réponses tombent dans le registre. */
   consultations: { ouverte:false, message:'', cadre:"Il s'agit de consultations ponctuelles au cabinet, aux horaires que vous choisissez : renouvellement d'ordonnance interrompue par un départ précipité, suites d'inhalation de fumées. Répondre ne vous engage ni à devenir médecin traitant, ni à recevoir plus de patients que vous ne l'avez indiqué." },
   courante: [
+    {id:'mc38', date:'2026-07-29', heure:'', source:'', evenement:"La collecte de matériel ne se mène plus d'un bloc mais par appels aux dons, et n'importe qui de l'équipe peut en lancer un sans passer par la coordination. Constat de départ : la campagne du 27/07 portait sur cinq dispositifs de mesure demandés par le centre d'accueil de Bordeaux ; elle est close, le besoin suivant sera tout aussi précis et tout aussi différent, et il n'y avait qu'un seul formulaire, qu'un seul interrupteur et qu'une seule ligne de texte à réécrire pour dire ce qu'on demandait. Désormais, dans « Collecte de matériel », carte « Formulaire de dons en ligne », un bouton « Créer un appel aux dons » ouvre une fenêtre où se posent l'intitulé, le motif — pour nous, pas pour le donateur —, le texte affiché en tête du formulaire, le lieu de dépôt, et surtout la liste du matériel demandé, un article par ligne avec sa précision. C'est cette liste qui fabrique le formulaire : le professionnel ne décrit plus ce qu'il a, il coche dans ce qu'on lui demande et dit combien. Une case, décochée par défaut, autorise les propositions hors liste ; sans elle le formulaire dit qu'on ne collecte rien d'autre. Chaque appel a son propre lien, ses propres dates d'ouverture et de clôture, et son propre compte de déclarations. Un appel clos se relance d'un bouton, qui recopie la liste dans un appel neuf à corriger.", suite:"Un appel se crée fermé : rien ne sort tant qu'on ne le lance pas, et le lancement pose la même question que les autres formulaires publics — ouverture officielle, qui se consigne ici avec la liste annoncée, ou essai, qui ne laisse aucune trace. La collecte du 27/07 est reprise telle quelle comme premier appel, avec ses cinq dispositifs, pour que ce qui a été demandé ce jour-là reste lisible. Au registre, chaque déclaration porte le nom de l'appel auquel elle répond, se filtre par lui et sort avec lui à l'export Excel. Un lien d'appel clos retrouvé dans un vieux message ne bascule pas sur l'appel en cours : il dit qu'il est clos et renvoie vers ce qui est ouvert — sans quoi on donnerait pour autre chose que ce qu'on a lu. Un appel qui a reçu des déclarations ne se supprime pas.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
+    {id:'mc37', date:'2026-07-29', heure:'', source:'', evenement:"Un onglet « Rapports » s'ouvre dans le Suivi. Le cockpit savait déjà tout, mais il ne le disait nulle part en une page : le Cockpit montre l'instant sans garder le chemin parcouru, et le dossier de traçabilité met tout bout à bout, ce qui est exhaustif et illisible. L'onglet porte quatre documents tirés du même fonds. « Points de situation » : le rapport détaillé qu'on arrête à une date — situation, consignes, chiffres, état de chaque mission avec sa prochaine action, faits marquants de la période, ce qui reste en suspens. Une fois arrêté il se fige et ne se recalcule plus : il restera ce que la CPTS savait ce jour-là, y compris si elle se trompait, ce qui est précisément ce qu'un retour d'expérience cherche. « Matière pour le RETEX » : ce qui a marché, ce qui a manqué, ce qu'on fera autrement — les trois seules choses qu'aucun compteur ne retrouvera. « Pour le plan SSE » : les dix fiches mission, dont la trame but / ce qu'on fait / avec qui / pour qui / ce qu'on ne fait pas est déjà celle d'une fiche de plan, et sept fiches réflexes rangées par déclencheur et non par action — pour qu'elles servent aussi à la canicule, où il n'y aura ni collecte ni patients évacués. Deux de ces déclencheurs n'ont aucun onglet dans le cockpit, le déclenchement du plan blanc et la demande de position d'un adhérent ou de la presse : ils se sont joués à l'instinct et rien n'en a été gardé.", suite:"Tout cela se remplit seul, sauf une chose : une étoile est posée sur chaque entrée de la main courante, des remontées terrain, des échanges avec l'ARS et des visios de crise. Un clic dit ce que l'entrée doit devenir — fait marquant, ce qui a marché, ce qui a manqué, à changer, ou point de doctrine — et les quatre rapports vont la chercher là où elle est écrite, sans jamais la recopier. Une seule étoile et non une par rapport : deux gestes séparés et plus personne n'en ferait aucun. Chaque document sort en PDF par l'impression, et en Word sans aucune bibliothèque à charger, donc depuis n'importe quel poste qui n'a que son navigateur. Le dossier de traçabilité rejoint les Rapports, sa place étant parmi eux plutôt que dans un bouton de pied de page. La mission « Traçabilité » pose comme limite qu'on ne rédige pas de fiches réflexes pendant la crise : rien ici n'en rédige, on ramasse la matière tant qu'elle est chaude pour que la rédaction se fasse à froid en septembre.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc36', date:'2026-07-29', heure:'', source:'', evenement:"Deux corrections au feuillet « Médecins volontaires », tirées de la saisie au téléphone. Les précisions notées sur une fiche ne se lisaient plus que comme une ligne parmi les autres, en bas de carte : elles remontent en tête, juste sous le nom, dans un encadré à filet rouge avec une pastille d'alerte, et s'écrivent en gras. C'est là que se trouve ce qui fait rappeler ou ne pas rappeler un cabinet — « ne prend que le matin », « rappeler avant d'adresser », « uniquement ses propres patients » — et cela ne doit plus se manquer d'un coup d'œil. Second point : un cabinet donne souvent deux lignes, le standard et le portable. La fiche accepte désormais un second numéro, dit tel quel — « en second recours » — avec la possibilité de préciser à qui il correspond. Le principal reste le bouton bleu plein, à composer en premier ; le second se pose dessous, en bouton creux, et compose lui aussi d'un doigt. Les deux numéros suivent partout : bulle de la carte, écran d'orientation d'un patient, écran de confirmation d'un créneau, export Excel.", suite:"Le formulaire en ligne des généralistes pose lui aussi la question du second numéro, sans l'exiger, et le récapitulatif remis au médecin le porte. Les fiches déjà saisies ne bougent pas : le second numéro s'ajoute par le bouton « Modifier », au fil des rappels.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc35', date:'2026-07-29', heure:'', source:'', evenement:"Reprise du feuillet « Patients signalés / orientés », après une première saisie réelle. Le formulaire de signalement ne demandait pas le numéro de téléphone du patient : il le demande désormais, juste sous l'âge. C'était le manque le plus gênant — une fois le médecin trouvé, on n'avait personne à rappeler et il fallait attendre que la pharmacie rappelle d'elle-même. Le numéro n'est pas obligatoire : un signalement sans numéro vaut mieux qu'un signalement perdu. Il s'ajoute aussi aux lignes déjà saisies par le crayon de modification, part à l'export Excel, entre dans la recherche, et disparaît avec le reste à l'anonymisation du registre. Le registre lui-même ne se lit plus en bandes pleine largeur mais en cartes : trois par ligne sur ordinateur, deux en tablette, une seule sur téléphone. Chaque carte porte en tête le nom, la commune et l'heure, puis le motif dans son propre encadré, en gros — c'est ce pour quoi on décroche. Une personne signalée urgente et sans médecin porte un bandeau rouge pleine largeur en tête de carte : dans une liste de trente, c'est la seule chose qui doit sauter aux yeux. Le numéro s'affiche en bouton bleu qui compose l'appel d'un doigt, et une carte sans numéro le dit.", suite:"La recherche avancée du registre est repliée : ne restent visibles que le champ de recherche et le tri, sur une seule ligne. Période, statut, urgence et voie dorment derrière un bouton « Affiner » qui compte les filtres posés — un registre tronqué ne doit jamais passer pour un registre complet. Corrigé au passage : le pied de chaque ligne écrivait « Orientation par » le nom de la personne qui avait saisi le signalement, alors qu'à ce moment-là rien n'est encore orienté. Il écrit maintenant « Saisie par », et n'ajoute « Orientation par » qu'une fois un médecin désigné, au nom de la personne qui l'a désigné — ce n'est pas toujours la même.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc34', date:'2026-07-29', heure:'', source:'', evenement:"L'onglet « Appels CPTS » quitte les Actions pour le Suivi, et prend le nom de « Contact avec les CPTS ». Il se lit maintenant juste sous « Situation régionale », dont il est le prolongement : appeler une CPTS voisine n'est pas une action que la CPTS Pau Béarn conduit pour elle-même, c'est la manière dont on sait ce qui se passe là-bas. Rien ne change dans l'écran : les mêmes fiches, les mêmes numéros, le même journal d'appels, le même export.", suite:"Les Actions ne portent plus que ce que la CPTS mène en propre : la collecte, l'appel au renfort, les patients évacués.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
@@ -1766,6 +1830,11 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
   /* Le hub santé : les lieux du territoire qui peuvent accueillir
      une personne évacuée nécessitant des soins. */
   lieux: [],
+  /* Les points de situation arrêtés. Chacun fige ce que la CPTS
+     savait et faisait à une date : une fois arrêté, il ne se
+     réécrit plus, et le suivant repart de là. C'est la succession
+     qui a de la valeur, pas le dernier état. */
+  situations: [],
   contacts: [
     {id:'c1', structure:"ARS — Délégation départementale 64", nom:'', fonction:'', tel:'', mail:'', role:"Interlocuteur unique de la CPTS pendant le plan blanc", auteur:'', quand:''},
     {id:'c4', structure:"Parc des expositions de Bordeaux — centre d'accueil", nom:'', fonction:"Médecin coordonnateur du site", tel:'', mail:'', role:"Exprime les besoins en matériel du centre d'accueil et reçoit la collecte. Numéro transmis par l'ARS le 26/07 et détenu par Anne Latisnère : à reporter ici.", auteur:'Anne Latisnère', quand:''},
@@ -2019,6 +2088,7 @@ function fusionnerNouveautes(){
   });
   reverserDiffusions();
   consignerPatientsHerites();
+  consignerCollecteHeritee();
   completerVeille();
   corrigerRelaisRenfort();
 }
@@ -2413,7 +2483,16 @@ function exporterCSV(k){
   const ch   = champsSaisie(cfg.f);
   const cols = ['date', ...ch.map(f => f.c), 'auteur', 'modifiePar'];
   const ent  = ['Date', ...ch.map(f => f.l), 'Saisi par', 'Modifié par'];
-  const lig  = chrono(k, etat[k]).map(o => cols.map(c => csvVal(o[c])));
+  const src  = chrono(k, etat[k]);
+  const lig  = src.map(o => cols.map(c => csvVal(o[c])));
+  /* Le registre des dons porte une colonne que le formulaire de
+     saisie ne connaît pas : l'appel auquel la déclaration répond.
+     Elle se lit juste après la date — c'est par elle qu'on trie
+     pour savoir ce qu'une campagne a rapporté. */
+  if(k === 'dons'){
+    ent.splice(1, 0, "Appel aux dons");
+    src.forEach((o, i) => lig[i].splice(1, 0, csvVal(o.campagne ? nomCampagne(o) : '')));
+  }
   telechargerCSV(cfg.titre, [ent.map(csvVal), ...lig]);
 }
 function exporterTout(){
@@ -2460,6 +2539,7 @@ const ONGLETS = [
   {id:'fil',       nom:'Fil d\'actualité',    groupe:'Suivi', cpt:null},
   {id:'veille',    nom:'Situation régionale', groupe:'Suivi', cpt:null},
   {id:'appels',    nom:'Contact avec les CPTS', groupe:'Suivi', cpt:'cpts'},
+  {id:'rapports',  nom:'Rapports',           groupe:'Suivi', cpt:'situations'},
   {id:'courante',  nom:'Main courante',      groupe:'Traçabilité', cpt:'courante'},
   {id:'terrain',   nom:'Remontées terrain',  groupe:'Traçabilité', cpt:'terrain'},
   {id:'ars',       nom:'Échanges avec l\'ARS', groupe:'Traçabilité', cpt:'ars'},
@@ -2491,7 +2571,7 @@ function rendreNav(){
   });
   document.getElementById('nav').innerHTML = h;
 }
-function aller(id){ onglet = id; rendre(); window.scrollTo(0,0); }
+function aller(id){ onglet = id; rapport = ''; rendre(); window.scrollTo(0,0); }
 
 /* =========================================================
    COLLECTIONS
@@ -3265,7 +3345,12 @@ async function enregistrer(k, id, mode){
     if(estManuel(k)) o.rang = Math.min(...etat[k].map(x => typeof x.rang === 'number' ? x.rang : 0)) - 1;
     etat[k].unshift(o);
   }
-  await sauver(); fermer(); rendre(); toast(existant ? "Modifié" : "Enregistré");
+  /* Un besoin en matériel identifié est un fait de la journée : il
+     se consigne en main courante en même temps qu'au registre. */
+  if(k === 'materiel') consignerBesoinEnCourante(o);
+  await sauver(); fermer(); rendre();
+  toast(k === 'materiel' ? (existant ? "Modifié, et repris en main courante" : "Enregistré et consigné en main courante")
+                         : (existant ? "Modifié" : "Enregistré"));
 }
 
 async function supprimer(k, id){
@@ -3501,6 +3586,7 @@ function journal(k){
         ${quand ? `<span class="hr">${esc(quand)}</span>` : ''}${etiqs}${venu}
         <span class="outils">
           ${fleches(k, o.id, i, lignes.length)}
+          ${SOURCES_RET[k] ? boutonRetenu(k, o) : ''}
           <button title="Modifier" onclick="ouvrirEdition('${k}','${o.id}')">✎</button>
           <button title="Supprimer" onclick="supprimer('${k}','${o.id}')">×</button>
         </span>
@@ -3508,7 +3594,7 @@ function journal(k){
       <div class="ti">${esc(o[cfg.titre]) || '—'}</div>
       ${perso}
       ${chips ? `<div class="chips">${chips}</div>` : ''}
-      ${blocs}${lien}
+      ${blocs}${lien}${marqueRetenue(o)}
       ${pied ? `<div class="pied">${pied}</div>` : ''}
     </article>`;
   });
@@ -4227,8 +4313,11 @@ function carteVisio(v, deplie){
 
     if(v.prochaine) h += `<div class="bloc-v"><span class="k">Prochaine séance</span><div class="d">${esc(v.prochaine)}</div></div>`;
 
+    h += marqueRetenue(v);
+
     h += `<div class="bas-v">
       <button class="btn${vide ? '' : ' sec'}" onclick="ouvrirSaisieVisio('${v.id}')">${vide ? 'Consigner le compte rendu' : 'Modifier'}</button>
+      <button class="btn sec" onclick="ouvrirRetenu('visios','${v.id}')">${v.retenu && v.retenu.genre ? 'Modifier ce qu\'on en retient' : 'Retenir pour les rapports'}</button>
       <button class="retirer sup" onclick="supprimerVisio('${v.id}')">Retirer</button>
     </div></div>`;
   }
@@ -5000,9 +5089,75 @@ function ouvrirDon(id){ donOuvert = (donOuvert === id) ? null : id; rendre(); }
    rubrique « dons » par une porte de dépôt sans code d'accès.
    Le copil ouvre et ferme cette porte d'ici. */
 const FORMULAIRE = 'don-de-materiel.html';
-function lienFormulaire(){
-  try{ return new URL(FORMULAIRE, location.href).href; }
-  catch(e){ return FORMULAIRE; }
+function lienFormulaire(idCampagne){
+  const q = idCampagne ? '?c=' + encodeURIComponent(idCampagne) : '';
+  try{ return new URL(FORMULAIRE + q, location.href).href; }
+  catch(e){ return FORMULAIRE + q; }
+}
+
+/* =========================================================
+   APPELS AUX DONS
+   Une collecte ne se mène pas d'un bloc et pour toujours : on
+   demande du matériel précis, à un moment précis, parce qu'une
+   structure l'a demandé — puis on referme et on recommence
+   autrement. Chaque appel porte donc sa propre liste, son propre
+   lien et sa propre date d'ouverture. Les équipes en créent un
+   sans avoir besoin de personne : c'est le formulaire lui-même
+   qui se fabrique ici.
+   ========================================================= */
+
+/* La collecte d'avant les appels devient le premier d'entre eux,
+   pour que ce qui a été demandé le 27/07 reste lisible. L'identité
+   est fixe — pas d'uid() — pour qu'une reprise du calcul ne crée
+   pas un doublon tant que rien n'a été enregistré. */
+function normaliserCampagnes(){
+  const c = etat.collecte = etat.collecte || {ouverte:false};
+  if(Array.isArray(c.campagnes)) return c.campagnes;
+  c.campagnes = [];
+  if(c.besoins || c.ouverte){
+    const t = String(c.besoins || '');
+    const coupe = t.indexOf('.');
+    const liste = coupe > 0 ? t.slice(0, coupe) : t;
+    const reste = coupe > 0 ? t.slice(coupe + 1).trim() : '';
+    c.campagnes.push({
+      id: 'cp-origine',
+      titre: "Dispositifs de mesure — centre d'accueil de Bordeaux",
+      motif: "Besoin exprimé le 26/07 par le médecin coordonnateur du parc des expositions de Bordeaux : 10 appareils pour 500 patients, avec beaucoup de casse.",
+      cadre: reste,
+      depot: '',
+      horsListe: false,
+      articles: liste.split(',').map(x => x.trim()).filter(Boolean)
+                     .map((nom, i) => ({id:'ar-origine-' + i, nom: nom.charAt(0).toUpperCase() + nom.slice(1), precision:''})),
+      ouverte: !!c.ouverte,
+      officielle: c.officielle !== false,
+      ouvertLe: c.ouverte ? '' : '2026-07-27',
+      fermeLe: '',
+      auteur: '', quand: ''
+    });
+  }
+  return c.campagnes;
+}
+const campagnes = () => normaliserCampagnes();
+const campagne = id => campagnes().find(c => c.id === id);
+/* Ce qu'un appel a rapporté : les déclarations qui le désignent.
+   Les lignes d'avant les appels n'en désignent aucun et se lisent
+   au registre, comme avant. */
+const donsDeCampagne = id => (etat.dons || []).filter(x => x.campagne === id);
+/* L'appel tel qu'il s'appelle aujourd'hui, si on l'a encore ;
+   sinon celui que la déclaration a gardé au moment du dépôt —
+   un appel supprimé ne doit pas effacer ce à quoi le donateur a
+   répondu. */
+function nomCampagne(o){
+  const c = campagne(o.campagne);
+  return (c && c.titre) || o.campagneTitre || 'Appel retiré';
+}
+
+/* L'interrupteur global de la collecte suit les appels : il reste
+   la porte que le serveur regarde en premier, et ce qui fait dire
+   « collecte ouverte » au palier. */
+function majOuvertureCollecte(){
+  etat.collecte = etat.collecte || {ouverte:false};
+  etat.collecte.ouverte = campagnes().some(c => c.ouverte);
 }
 
 /* --- Ouvrir un formulaire : pour de vrai, ou pour voir ---
@@ -5040,7 +5195,10 @@ function repondreOuverture(r){
    ce qui s'était ouvert en essai se referme en silence. Renvoie
    null si on a renoncé, sinon ce qui vient d'être fait. */
 async function basculerFormulairePublic(cfg){
-  const s = etat[cfg.cle] = etat[cfg.cle] || {ouverte:false};
+  /* Trois formulaires ont leur interrupteur à la racine de l'état,
+     les appels aux dons l'ont sur la campagne elle-même : on
+     accepte donc aussi qu'on nous passe l'objet directement. */
+  const s = cfg.obj || (etat[cfg.cle] = etat[cfg.cle] || {ouverte:false});
   if(!s.ouverte){
     const r = await demanderOuverture({titre:cfg.titre, portee:cfg.portee});
     if(!r) return null;
@@ -5070,34 +5228,51 @@ const etiqOuv = (s, ouvert) => !s.ouverte ? `<span class="etiq e-bloque">Fermé<
   : s.officielle === false ? `<span class="etiq e-attente">Ouvert — essai</span>`
   : `<span class="etiq e-cours">${ouvert}</span>`;
 
-async function basculerCollecte(){
+async function basculerCampagne(id){
+  const c = campagne(id);
+  if(!c) return;
+  const liste = (c.articles || []).map(a => a.nom).filter(Boolean);
   const r = await basculerFormulairePublic({
-    cle:'collecte',
-    titre:"Ouvrir la collecte de matériel",
-    portee:"Le formulaire de don devient accessible à toute personne qui en a le lien. La doctrine de la CPTS est de n'ouvrir aucune collecte tant qu'un besoin écrit et un lieu de réception nommé ne sont pas validés.",
-    consigner: consignerCollecteEnCourante
+    obj: c,
+    titre: c.ouverte ? "Clore l'appel aux dons" : "Lancer l'appel aux dons",
+    portee: "« " + esc(c.titre || 'Appel sans titre') + " » — le formulaire devient accessible à toute personne qui en a le lien, et ne demande que "
+      + (liste.length ? "le matériel de la liste annoncée : " + esc(liste.join(', ')) + "."
+                      : "une description libre du matériel proposé.")
+      + " La doctrine de la CPTS reste de n'appeler aux dons que sur un besoin écrit et un lieu de réception nommés.",
+    consigner: ouvre => consignerCampagneEnCourante(c, ouvre)
   });
   if(!r) return;
+  /* Les dates d'ouverture et de clôture font l'histoire de
+     l'appel : c'est ce qui distingue un brouillon jamais lancé
+     d'une campagne terminée, et ce qu'on relit six mois après. */
+  if(r.ouvre){ c.ouvertLe = aujourdhui(); c.ouvertA = maintenant(); c.ouvertPar = moi; c.fermeLe = ''; }
+  else { c.fermeLe = aujourdhui(); c.fermeA = maintenant(); c.fermePar = moi; }
+  majOuvertureCollecte();
   await sauver(); rendre();
   toast(r.ouvre
-    ? (r.officielle ? "Collecte ouverte — l'ouverture est consignée en main courante"
-                    : "Collecte ouverte pour essai — rien n'est consigné")
-    : (r.officielle ? "Collecte fermée — la fermeture est consignée en main courante"
-                    : "Essai terminé — la collecte est refermée, rien n'a été consigné"));
+    ? (r.officielle ? "Appel lancé — l'ouverture est consignée en main courante"
+                    : "Appel ouvert pour essai — rien n'est consigné")
+    : (r.officielle ? "Appel clos — la clôture est consignée en main courante"
+                    : "Essai terminé — l'appel est refermé, rien n'a été consigné"));
 }
 
 /* Règle du cockpit : ce qui part de la CPTS se consigne en main
    courante, en plus de sa rubrique métier. */
-function consignerCollecteEnCourante(ouvre){
+function consignerCampagneEnCourante(c, ouvre){
+  const liste = (c.articles || []).map(a => a.nom + (a.precision ? ' (' + a.precision + ')' : '')).filter(Boolean);
+  const recues = donsDeCampagne(c.id).length;
   etat.courante = etat.courante || [];
   etat.courante.unshift({
     id: uid(), date: aujourdhui(), heure: maintenant(), source: '',
     evenement: ouvre
-      ? "Ouverture de la collecte de matériel : le formulaire de don en ligne est accessible à qui en a le lien."
-        + ((etat.collecte && etat.collecte.besoins) ? "\nBesoins annoncés : " + etat.collecte.besoins : '')
-      : "Fermeture de la collecte de matériel : le formulaire de don n'accepte plus de déclaration.",
+      ? "Lancement de l'appel aux dons « " + (c.titre || 'sans titre') + " » : le formulaire en ligne est accessible à qui en a le lien."
+        + (liste.length ? "\nMatériel demandé : " + liste.join(', ') + "." : '')
+        + (c.horsListe ? "\nLes propositions hors liste sont acceptées, sous réserve de rappel." : "\nRien n'est collecté au-delà de cette liste.")
+        + (c.motif ? "\nMotif : " + c.motif : '')
+      : "Clôture de l'appel aux dons « " + (c.titre || 'sans titre') + " » : le formulaire n'accepte plus de déclaration."
+        + (recues ? "\n" + recues + " déclaration" + (recues > 1 ? 's reçues' : ' reçue') + " par ce formulaire." : "\nAucune déclaration reçue par ce formulaire."),
     suite: ouvre
-      ? "Diffuser le lien du formulaire aux professionnels du territoire, canal par canal, et consigner chaque diffusion ici. Vérifier chaque déclaration reçue et organiser l'enlèvement avec le lieu de stockage."
+      ? "Diffuser le lien de l'appel aux professionnels du territoire, canal par canal, et consigner chaque diffusion ici. Vérifier chaque déclaration reçue et organiser l'enlèvement avec le lieu de stockage."
       : "Prévenir les donateurs déjà déclarés de la suite donnée à leur don, et arrêter le compte de ce qui a été réellement déposé.",
     qui: moi,
     auteur: moi, quand: ''
@@ -5106,62 +5281,230 @@ function consignerCollecteEnCourante(ouvre){
 
 function editerCollecte(){
   const c = etat.collecte || {};
-  document.getElementById('modale').innerHTML = `<h3>Textes du formulaire public</h3>
-    <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">Ces deux textes s'affichent sur don.html. Le premier quand la collecte est fermée, le second en tête du formulaire quand elle est ouverte.</p>
-    <label style="margin-bottom:12px"><span class="k">Message affiché collecte fermée</span>
-      <textarea id="co-message" placeholder="Ex. Une collecte sera peut-être ouverte en fin de semaine.">${esc(c.message||'')}</textarea></label>
-    <label style="margin-bottom:12px"><span class="k">Besoins annoncés collecte ouverte</span>
-      <textarea id="co-besoins" placeholder="Ex. masques FFP2, compresses stériles, sérum physiologique.">${esc(c.besoins||'')}</textarea></label>
+  document.getElementById('modale').innerHTML = `<h3>Message quand aucun appel n'est ouvert</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">Ce texte s'affiche à qui ouvre le formulaire de don alors qu'aucun appel n'est en cours — un lien retrouvé dans un vieux message, par exemple. Le reste de la page dit déjà que la CPTS ne sollicite rien : n'écrivez ici que ce qui s'ajoute.</p>
+    <label style="margin-bottom:12px"><span class="k">Message affiché</span>
+      <textarea id="co-message" placeholder="Ex. Un nouvel appel sera peut-être ouvert en fin de semaine.">${esc(c.message||'')}</textarea></label>
     <div class="actions"><button class="btn" onclick="validerCollecte()">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
   document.getElementById('rideau').classList.add('on');
 }
 async function validerCollecte(){
   etat.collecte = etat.collecte || {ouverte:false};
   etat.collecte.message = document.getElementById('co-message').value.trim();
-  etat.collecte.besoins = document.getElementById('co-besoins').value.trim();
-  await sauver(); fermer(); rendre(); toast("Textes du formulaire mis à jour");
+  await sauver(); fermer(); rendre(); toast("Message mis à jour");
 }
 
-function copierLien(){
-  const l = lienFormulaire();
+function copierLien(id){
+  const l = lienFormulaire(id);
   const fini = () => toast("Lien copié — collez-le dans le message aux adhérents");
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(l).then(fini, () => toast("Copie impossible — sélectionnez le lien à la main"));
   }else{
-    const i = document.getElementById('lien-don');
+    const i = document.getElementById('lien-' + id);
     if(i){ i.select(); try{ document.execCommand('copy'); fini(); }catch(e){ toast("Sélectionnez le lien à la main"); } }
   }
 }
 
-function carteFormulaire(){
-  const c = etat.collecte || {};
-  const aVerifier = (etat.dons||[]).filter(x => x.source === 'formulaire' && x.aVerifier).length;
-  return `<div class="carte formulaire ${c.ouverte?'ouverte':''}">
-    <div class="ligne-f">
-      <div>
-        <h2 style="margin-bottom:2px">Formulaire de don en ligne</h2>
-        <p class="sous-f">Le professionnel déclare son don et accepte les conditions du bordereau depuis son téléphone. La ligne arrive ici, il repart avec son récapitulatif en PDF. Plus rien à imprimer ni à renvoyer.</p>
-      </div>
-      ${etiqOuv(c, 'Ouvert aux dépôts')}
+/* La carte d'un appel : ce qu'il demande, où il en est, et les
+   trois gestes qu'on fait dessus — l'ouvrir, en copier le lien,
+   le refermer. Un appel clos se relance d'un bouton : c'est le
+   cas courant, on redemande le même matériel autrement, ou
+   presque le même. */
+function carteCampagne(c){
+  const recus = donsDeCampagne(c.id);
+  const aVerifier = recus.filter(x => x.aVerifier).length;
+  const arts = c.articles || [];
+  const jamaisLance = !c.ouverte && !c.ouvertLe;
+  return `<div class="camp ${c.ouverte ? (c.officielle === false ? 'essai ouverte' : 'ouverte') : ''}">
+    <div class="tc">
+      <h3>${esc(c.titre || 'Appel sans titre')}</h3>
+      ${c.ouverte ? etiqOuv(c, 'Ouvert aux dons')
+                  : jamaisLance ? `<span class="etiq e-lancer">Brouillon</span>`
+                                : `<span class="etiq e-bloque">Clos</span>`}
     </div>
+    ${c.motif ? `<p class="motif">${esc(c.motif)}</p>` : ''}
+    ${arts.length
+      ? `<div class="arts">${arts.map(a => `<span>${esc(a.nom)}${a.precision ? ` <i>— ${esc(a.precision)}</i>` : ''}</span>`).join('')}
+         ${c.horsListe ? `<span class="libre">+ hors liste accepté</span>` : ''}</div>`
+      : `<div class="arts"><span class="libre">Saisie libre — aucun matériel nommé</span></div>`}
+    <div class="quand">${c.ouvertLe
+      ? `Lancé le ${frdate(c.ouvertLe)}${c.ouvertA ? ' à ' + esc(c.ouvertA) : ''}${c.ouvertPar ? ' par ' + esc(c.ouvertPar) : ''}`
+      : 'Jamais lancé'}${c.fermeLe && !c.ouverte ? ` · Clos le ${frdate(c.fermeLe)}${c.fermeA ? ' à ' + esc(c.fermeA) : ''}` : ''}</div>
     ${bandeauEssai(c)}
+    ${recus.length
+      ? `<p class="recu"><b>${recus.length}</b> déclaration${recus.length>1?'s':''} reçue${recus.length>1?'s':''} par cet appel${aVerifier ? ` — <strong style="color:var(--braise)">${aVerifier} à vérifier</strong>` : ''}</p>`
+      : (c.ouvertLe ? `<p class="recu">Aucune déclaration reçue par cet appel.</p>` : '')}
     ${c.ouverte
       ? `<div class="lien-f">
-           <input id="lien-don" readonly value="${esc(lienFormulaire())}" onclick="this.select()">
-           <button class="btn sec" onclick="copierLien()">Copier le lien</button>
+           <input id="lien-${esc(c.id)}" readonly value="${esc(lienFormulaire(c.id))}" onclick="this.select()">
+           <button class="btn sec" onclick="copierLien('${esc(c.id)}')">Copier le lien</button>
          </div>
-         <p class="sous-f" style="margin:9px 0 0">Ce lien est à diffuser aux adhérents. Toute personne qui l'a peut déposer une proposition ; le cockpit, lui, reste protégé par son code d'accès.</p>`
-      : `<div class="note" style="margin:0">Tant que la collecte est fermée, le formulaire affiche aux professionnels que la CPTS ne sollicite aucun don et refuse tout dépôt. C'est la position à tenir tant que l'ARS n'a pas transmis de besoin écrit et de lieu de réception.</div>`}
+         <p class="sous-f" style="margin:0 0 11px">Ce lien est celui de cet appel, et de lui seul. Toute personne qui l'a peut déclarer un don ; le cockpit, lui, reste protégé par son code d'accès.</p>`
+      : ''}
     <div class="actions">
-      <button class="btn${c.ouverte?' sec':''}" onclick="basculerCollecte()">${c.ouverte?'Fermer la collecte':'Ouvrir la collecte'}</button>
-      <button class="btn sec" onclick="editerCollecte()">Textes affichés</button>
-      ${c.ouverte ? `<a class="btn sec" href="${esc(lienFormulaire())}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Voir le formulaire</a>` : ''}
-      ${aVerifier ? `<button class="btn sec" onclick="verifierDepots()" style="margin-left:auto;color:var(--braise);border-color:#E8C3B8">${aVerifier} dépôt${aVerifier>1?'s':''} à vérifier</button>` : ''}
+      <button class="btn${c.ouverte ? ' sec' : ''}" onclick="basculerCampagne('${esc(c.id)}')">${c.ouverte ? "Clore l'appel" : (jamaisLance ? "Lancer l'appel" : "Rouvrir l'appel")}</button>
+      ${c.ouverte ? `<a class="btn sec" href="${esc(lienFormulaire(c.id))}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Voir le formulaire</a>` : ''}
+      <button class="btn sec" onclick="editerCampagne('${esc(c.id)}')">Modifier</button>
+      ${!c.ouverte && c.ouvertLe ? `<button class="btn sec" onclick="relancerCampagne('${esc(c.id)}')">Relancer avec une nouvelle liste</button>` : ''}
+      ${recus.length ? `<button class="btn sec" onclick="voirDonsCampagne('${esc(c.id)}')">Voir les déclarations</button>` : ''}
+      ${!c.ouverte && !recus.length ? `<button class="btn sec sup" onclick="supprimerCampagne('${esc(c.id)}')" style="margin-left:auto">Supprimer</button>` : ''}
     </div>
   </div>`;
 }
 
+/* --- Créer, modifier, relancer un appel ------------------
+   Les articles se tiennent à part le temps de la saisie, comme
+   les lignes d'un point de collecte : ils ne rejoignent l'appel
+   qu'à l'enregistrement. */
+let articlesSaisie = [];
+let campagneSaisie = null;
+
+function articleSaisieHTML(a, i){
+  return `<div class="art-l">
+    <span class="n">${i+1}</span>
+    <div class="ch">
+      <input id="ar-nom-${i}" list="mat-suggeres" value="${esc(a.nom||'')}" placeholder="Désignation — ex. saturomètre"
+        oninput="majArticleSaisie(${i},'nom',this.value)">
+      <input id="ar-prec-${i}" value="${esc(a.precision||'')}" placeholder="Précision — ex. adulte, avec brassard"
+        oninput="majArticleSaisie(${i},'precision',this.value)">
+    </div>
+    <button class="sup" onclick="retirerArticleSaisie(${i})" title="Retirer ce matériel">✕</button>
+  </div>`;
+}
+function majArticleSaisie(i, champ, v){ if(articlesSaisie[i]) articlesSaisie[i][champ] = v; }
+function redessinerArticles(){
+  const z = document.getElementById('articles-camp');
+  if(z) z.innerHTML = articlesSaisie.map(articleSaisieHTML).join('');
+}
+function ajouterArticleSaisie(){
+  articlesSaisie.push({nom:'', precision:''});
+  redessinerArticles();
+  const e = document.getElementById('ar-nom-' + (articlesSaisie.length - 1));
+  if(e){ e.scrollIntoView({block:'nearest'}); e.focus(); }
+}
+function retirerArticleSaisie(i){ articlesSaisie.splice(i,1); if(!articlesSaisie.length) articlesSaisie.push({nom:'',precision:''}); redessinerArticles(); }
+
+/* Créer, modifier ou relancer passent par la même fenêtre : ce
+   qui change, c'est ce qu'on y trouve en l'ouvrant. Relancer
+   recopie un appel clos sans son historique — même liste, à
+   corriger, et une ouverture à refaire. */
+function editerCampagne(id){
+  const c = id ? campagne(id) : null;
+  campagneSaisie = c ? c.id : null;
+  articlesSaisie = c ? JSON.parse(JSON.stringify(c.articles || [])) : [];
+  if(!articlesSaisie.length) articlesSaisie.push({nom:'', precision:''});
+  const g = (ch, d) => esc(c ? (c[ch] ?? '') : (d ?? ''));
+  const m = document.getElementById('modale');
+  m.classList.add('large');
+  m.innerHTML = `<h3>${c ? "Modifier l'appel aux dons" : "Créer un appel aux dons"}</h3>
+  <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">Un appel, c'est une liste de matériel précise, ouverte le temps qu'il faut puis close. C'est ce que vous écrivez ici que les professionnels liront sur leur téléphone, et rien d'autre : ils cocheront dans votre liste au lieu de décrire eux-mêmes ce qu'ils ont.</p>
+  <datalist id="mat-suggeres">${MAT_SUGGERES.map(x => `<option value="${esc(x)}">`).join('')}</datalist>
+  <div class="form">
+    <label class="large"><span class="k">Intitulé de l'appel *</span>
+      <input id="ca-titre" value="${g('titre')}" placeholder="Ex. Oxygénothérapie pour les EHPAD évacués">
+      <span style="font-size:12px;color:var(--texte-2)">C'est le titre de la page que verra le donateur. Nommez le matériel et pour qui.</span></label>
+    <label class="large"><span class="k">Pourquoi cet appel</span>
+      <textarea id="ca-motif" placeholder="Ex. Besoin exprimé le 29/07 par le centre d'accueil de Mimizan : 40 lits pour 12 concentrateurs.">${g('motif')}</textarea>
+      <span style="font-size:12px;color:var(--texte-2)">Pour le cockpit et la main courante — le donateur ne le voit pas.</span></label>
+    <label class="large"><span class="k">Texte affiché en tête du formulaire</span>
+      <textarea id="ca-cadre" placeholder="Ex. Le centre d'accueil de Mimizan manque de concentrateurs d'oxygène. Rien d'autre n'est collecté sur cet appel.">${g('cadre')}</textarea>
+      <span style="font-size:12px;color:var(--texte-2)">Ce que le professionnel lit avant de répondre : ce qui est demandé, pour qui, et jusqu'à quand.</span></label>
+    <label class="large"><span class="k">Dépôt et enlèvement</span>
+      <textarea id="ca-depot" placeholder="Ex. Dépôt à la Foire Expo de Pau, samedi 17h-19h, ou enlèvement au cabinet sur appel.">${g('depot')}</textarea>
+      <span style="font-size:12px;color:var(--texte-2)">S'affiche au donateur au moment où il indique sa disponibilité. À laisser vide si l'enlèvement se convient au téléphone.</span></label>
+  </div>
+  <div style="margin-top:18px">
+    <div class="barre-h" style="margin-bottom:8px">
+      <span class="cpt-h">Matériel demandé</span>
+      <button class="btn sec" onclick="ajouterArticleSaisie()">Ajouter un matériel</button>
+    </div>
+    <div id="articles-camp">${articlesSaisie.map(articleSaisieHTML).join('')}</div>
+    <label class="coche-l" style="display:flex;gap:10px;align-items:flex-start;margin-top:12px;cursor:pointer">
+      <input type="checkbox" id="ca-horsliste" ${c && c.horsListe ? 'checked' : ''} style="width:18px;height:18px;flex:0 0 18px;margin-top:2px">
+      <span style="font-size:13.5px;line-height:1.45">Accepter aussi les propositions hors de cette liste.<br>
+        <span style="color:var(--texte-2);font-size:12.5px">Sans cette case, le formulaire ne propose que la liste ci-dessus et dit qu'on ne collecte rien d'autre — c'est la position à tenir quand le besoin est précis.</span></span>
+    </label>
+    <div class="note" style="margin:14px 0 0">Un appel sans aucun matériel nommé demande au donateur d'écrire lui-même ce qu'il propose, comme avant. C'est plus long pour lui, et plus long à vérifier ensuite.</div>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="validerCampagne()">${c ? 'Enregistrer' : "Créer l'appel"}</button>
+    <button class="btn sec" onclick="fermer()">Annuler</button>
+  </div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+
+function relancerCampagne(id){
+  const c = campagne(id);
+  if(!c) return;
+  editerCampagne(null);
+  /* On rouvre la fenêtre de création déjà remplie de l'appel
+     précédent : le cas courant est de redemander presque la même
+     chose. Le titre porte la date pour qu'on ne confonde pas les
+     deux dans le registre. */
+  articlesSaisie = JSON.parse(JSON.stringify(c.articles || []));
+  if(!articlesSaisie.length) articlesSaisie.push({nom:'', precision:''});
+  redessinerArticles();
+  const p = (ch, v) => { const e = document.getElementById(ch); if(e) e.value = v || ''; };
+  p('ca-titre', (c.titre || '') + ' — ' + frdateL(aujourdhui()));
+  p('ca-motif', c.motif);
+  p('ca-cadre', c.cadre);
+  p('ca-depot', c.depot);
+  const h = document.getElementById('ca-horsliste');
+  if(h) h.checked = !!c.horsListe;
+  toast("Reprise de « " + (c.titre || 'appel sans titre') + " » — corrigez la liste, puis créez");
+}
+
+async function validerCampagne(){
+  const g = ch => (document.getElementById('ca-' + ch) || {}).value || '';
+  const titre = g('titre').trim();
+  if(!titre){ toast("L'intitulé de l'appel est obligatoire"); return; }
+  const articles = articlesSaisie
+    .map(a => ({nom:(a.nom||'').trim(), precision:(a.precision||'').trim()}))
+    .filter(a => a.nom)
+    .map((a, i) => ({id:'ar' + Date.now().toString(36) + i, nom:a.nom, precision:a.precision}));
+  const champs = {
+    titre, motif:g('motif').trim(), cadre:g('cadre').trim(), depot:g('depot').trim(),
+    horsListe: !!(document.getElementById('ca-horsliste') || {}).checked,
+    articles
+  };
+  const liste = campagnes();
+  const c = campagneSaisie ? campagne(campagneSaisie) : null;
+  if(c){
+    /* Un article déjà coché par un donateur garde son identité :
+       on ne renumérote que ce qui est nouveau. */
+    const anciens = {};
+    (c.articles || []).forEach(a => { anciens[a.nom] = a.id; });
+    champs.articles = champs.articles.map(a => anciens[a.nom] ? Object.assign({}, a, {id:anciens[a.nom]}) : a);
+    Object.assign(c, champs);
+    c.modifiePar = moi;
+  }else{
+    liste.unshift(Object.assign({
+      id: uid(), ouverte:false, officielle:false, ouvertLe:'', fermeLe:'',
+      auteur: moi, quand: new Date().toISOString()
+    }, champs));
+  }
+  campagneSaisie = null;
+  await sauver(); fermer(); rendre();
+  toast(c ? "Appel mis à jour" : "Appel créé — il reste à lancer");
+}
+
+async function supprimerCampagne(id){
+  const c = campagne(id);
+  if(!c) return;
+  if(donsDeCampagne(id).length){ toast("Cet appel a reçu des déclarations : il ne se supprime pas"); return; }
+  if(!confirm("Supprimer l'appel « " + (c.titre || 'sans titre') + " » ?\n\nRien n'a été déclaré dessus. Cette suppression ne se rattrape pas.")) return;
+  const liste = campagnes();
+  liste.splice(liste.indexOf(c), 1);
+  majOuvertureCollecte();
+  await sauver(); rendre(); toast("Appel supprimé");
+}
+
+/* Depuis la carte d'un appel : ses déclarations se lisent au
+   registre, filtrées sur lui. */
+function voirDonsCampagne(id){ filtreDon = 'camp:' + id; allerModuleMat('dons'); }
+
 function vueCollecte(){
+  normaliserCampagnes();
   if(moduleMat === 'formulaire') return moduleFormulaireDons();
   if(moduleMat === 'dons')       return moduleDons();
   if(moduleMat === 'points')     return modulePointsCollecte();
@@ -5185,7 +5528,7 @@ function teteModuleMat(titre){
    de cause, sans avoir à entrer. */
 function vueModulesMat(){
   const d = etat.dons || [], s = etat.stockage || [], v = etat.renforts || [];
-  const c = etat.collecte || {};
+  const camps = campagnes();
   const oui = d.filter(x => x.reponse === 'Oui').length;
   const att = d.filter(x => x.reponse !== 'Oui' && x.reponse !== 'Non').length;
   const parFormulaire = d.filter(x => x.source === 'formulaire').length;
@@ -5202,9 +5545,9 @@ function vueModulesMat(){
   <div class="modules">
     <button class="module" onclick="allerModuleMat('formulaire')">
       <div class="titre-m">Formulaire de dons en ligne</div>
-      <p class="sous-m">La porte par laquelle les pharmacies, les infirmiers et les autres professionnels déclarent ce qu'ils peuvent donner, depuis leur téléphone. C'est ici qu'on ouvre et qu'on ferme la collecte, et qu'on récupère le lien à diffuser.</p>
+      <p class="sous-m">Les appels aux dons que la CPTS lance sur le territoire : un formulaire par besoin, avec sa liste de matériel, que les professionnels remplissent depuis leur téléphone. C'est ici qu'on en crée un, qu'on le lance, qu'on le clôt et qu'on récupère le lien à diffuser.</p>
       <div class="chiffres">
-        <div><strong>${c.ouverte ? 'Ouverte' : 'Fermée'}</strong> collecte</div>
+        <div><strong>${camps.filter(x => x.ouverte).length || 'Aucun'}</strong> appel${camps.filter(x => x.ouverte).length > 1 ? 's' : ''} ouvert${camps.filter(x => x.ouverte).length > 1 ? 's' : ''}</div>
         <div><strong>${parFormulaire}</strong> déclarations reçues</div>
         ${aVerifier ? `<div><strong style="color:var(--ambre)">${aVerifier}</strong> à vérifier</div>` : ''}
       </div>
@@ -5255,13 +5598,48 @@ function vueModulesMat(){
   </div>`;
 }
 
-/* Carte 1 — le formulaire, et rien d'autre : on l'ouvre, on le
-   ferme, on copie le lien. Les déclarations qu'il rapporte se
-   lisent dans le registre, qui est la carte suivante. */
+/* Carte 1 — les appels aux dons. Chacun est un formulaire en
+   ligne à lui seul : sa liste de matériel, son lien, ses dates.
+   On en crée un, on le lance, on le referme, on en relance un
+   autre — sans que personne d'autre n'ait à intervenir. Les
+   déclarations qu'ils rapportent se lisent dans le registre, qui
+   est la carte suivante. */
 function moduleFormulaireDons(){
-  return teteModuleMat('Formulaire de dons en ligne')
-    + carteFormulaire()
-    + `<div class="note">Ouvrir la collecte crée une attente chez les professionnels du territoire : on ne l'ouvre qu'au moment de diffuser l'appel, et seulement une fois le besoin écrit et le lieu de réception connus. Ce qui arrive par ce formulaire se retrouve au registre, dans <a href="#" onclick="allerModuleMat('dons');return false;">Matériel collecté</a>.</div>`;
+  const liste = campagnes();
+  const ouvertes = liste.filter(c => c.ouverte);
+  const brouillons = liste.filter(c => !c.ouverte && !c.ouvertLe);
+  const closes = liste.filter(c => !c.ouverte && c.ouvertLe);
+  const aVerifier = (etat.dons||[]).filter(x => x.source === 'formulaire' && x.aVerifier).length;
+
+  let h = teteModuleMat('Formulaire de dons en ligne');
+
+  h += `<p class="chapo" style="margin-top:-6px">Un appel aux dons, c'est un formulaire en ligne fabriqué pour un besoin précis : vous nommez le matériel demandé, le professionnel coche ce qu'il a depuis son téléphone, et la déclaration arrive au registre avec son bordereau. Quand le besoin change, on clôt l'appel et on en lance un autre.</p>`;
+
+  h += `<div class="barre-h">
+    <span class="cpt-h">${ouvertes.length ? ouvertes.length + ' appel' + (ouvertes.length>1?'s':'') + ' ouvert' + (ouvertes.length>1?'s':'') : 'Aucun appel ouvert'}${closes.length ? ' · ' + closes.length + ' clos' : ''}</span>
+    ${aVerifier ? `<button class="btn sec" onclick="verifierDepots()" style="color:var(--braise);border-color:#E8C3B8">${aVerifier} dépôt${aVerifier>1?'s':''} à vérifier</button>` : ''}
+    <button class="btn sec" onclick="editerCollecte()">Message hors appel</button>
+    <button class="btn" onclick="editerCampagne(null)">Créer un appel aux dons</button>
+  </div>`;
+
+  if(!liste.length){
+    return h + `<div class="carte"><p class="vide">Aucun appel aux dons n'a encore été créé. « Créer un appel aux dons » ouvre la fenêtre où se posent l'intitulé, le motif et la liste du matériel demandé — c'est tout ce qu'il faut pour fabriquer le formulaire.</p></div>`
+      + `<div class="note">Lancer un appel crée une attente chez les professionnels du territoire : on ne le lance qu'au moment de diffuser le lien, et seulement une fois le besoin écrit et le lieu de réception connus.</div>`;
+  }
+
+  const bloc = (titre, sous, arr) => arr.length
+    ? `<div style="margin-bottom:22px">
+         <div class="k" style="margin-bottom:3px">${titre}</div>
+         <p class="sous-f" style="margin:0 0 11px">${sous}</p>
+         ${arr.map(carteCampagne).join('')}
+       </div>`
+    : '';
+
+  h += bloc("Appels ouverts", "Le lien répond en ce moment à qui l'a reçu. Diffusez-le, et consignez chaque diffusion en main courante.", ouvertes);
+  h += bloc("Brouillons", "Créés, jamais lancés. Le formulaire ne répond pas encore : rien ne sort tant qu'on ne l'ouvre pas.", brouillons);
+  h += bloc("Appels clos", "Terminés. Le lien diffusé dit désormais que l'appel est clos, et renvoie vers ce qui est ouvert. « Relancer » recopie la liste dans un appel neuf.", closes);
+
+  return h + `<div class="note">Ce qui arrive par ces formulaires se retrouve au registre, dans <a href="#" onclick="allerModuleMat('dons');return false;">Matériel collecté</a>, avec le nom de l'appel auquel chaque déclaration répond.</div>`;
 }
 
 /* Carte 3 — les lieux : ceux qui peuvent stocker, et ceux où une
@@ -5310,10 +5688,16 @@ function moduleDons(){
   const reps = ['Tout','Oui','Non','En attente','À rappeler']
     .concat(parFormulaire ? ['Formulaire'] : [])
     .concat(parSaisie ? ['Saisie'] : []);
+  /* Un appel qui a rapporté quelque chose devient un filtre : la
+     question « qu'est-ce que la campagne de lundi a donné ? » se
+     pose telle quelle, et se répond ici. */
+  const campsUtiles = campagnes().filter(c => donsDeCampagne(c.id).length);
   if(d.length) h += `<div class="filtres">${reps.map(r =>
-    `<button class="${filtreDon===r?'on':''}" onclick="filtrerDon('${r}')">${LIB_SRC[r] || esc(r)}${r!=='Tout'?` <span style="opacity:.6">${compte(r)}</span>`:''}</button>`).join('')}</div>`;
+    `<button class="${filtreDon===r?'on':''}" onclick="filtrerDon('${r}')">${LIB_SRC[r] || esc(r)}${r!=='Tout'?` <span style="opacity:.6">${compte(r)}</span>`:''}</button>`).join('')
+    + campsUtiles.map(c => `<button class="${filtreDon==='camp:'+c.id?'on':''}" onclick="filtrerDon('camp:${esc(c.id)}')">${esc(c.titre||'Appel sans titre')} <span style="opacity:.6">${donsDeCampagne(c.id).length}</span></button>`).join('')}</div>`;
 
   let vus = filtreDon === 'Tout' ? [...d]
+    : filtreDon.indexOf('camp:') === 0 ? d.filter(x => x.campagne === filtreDon.slice(5))
     : filtreDon === 'Formulaire' ? d.filter(x => x.source === 'formulaire')
     : filtreDon === 'Saisie' ? d.filter(x => x.source === 'saisie')
     : d.filter(x => x.reponse === filtreDon);
@@ -5334,7 +5718,7 @@ function moduleDons(){
         <span class="qd">${frdate(o.date)}<br>${esc(o.heure||'—')}</span>
         <span class="ident">
           <span class="n">${esc(o.structure)}${o.source === 'formulaire'
-            ? `<span class="src-f">Formulaire</span>${o.aVerifier ? `<span class="src-f neuf">À vérifier</span>` : ''}`
+            ? `<span class="src-f">Formulaire</span>${o.campagne ? `<span class="src-f camp">${esc(nomCampagne(o))}</span>` : ''}${o.aVerifier ? `<span class="src-f neuf">À vérifier</span>` : ''}`
             : o.source === 'saisie'
             ? `<span class="src-f saisie">Saisie à la main</span>`
             : ''}</span>
@@ -5376,7 +5760,8 @@ function detailDon(o){
     h += `<div class="declaration">
       <div class="dt">Déclaration reçue par le formulaire en ligne</div>
       <div class="dc">
-        ${[['Adresse', o.adresse], ['Courriel', o.mail], ['Qualité du représentant', e.qualite],
+        ${[['Répond à l\'appel', o.campagne ? nomCampagne(o) : ''],
+           ['Adresse', o.adresse], ['Courriel', o.mail], ['Qualité du représentant', e.qualite],
            ['Disponible à partir de', o.dispo], ['Volume approximatif', o.quantite]]
           .filter(x => x[1]).map(x => `<div><span class="k">${x[0]}</span>${esc(x[1])}</div>`).join('')
           || `<div><span class="k">Aucun élément complémentaire déclaré</span></div>`}
@@ -5992,6 +6377,131 @@ function ouvrirPoint(id){
   majTotalDepot();
 }
 
+/* --- ce que la collecte laisse en main courante ------------
+   Règle du cockpit : toute information recueillie se consigne en
+   main courante, en plus de sa rubrique. Ouvrir un point de
+   collecte et identifier un besoin en matériel sont deux faits
+   datés de la journée : chacun y laisse son entrée sans qu'on ait
+   à la recopier. L'identifiant est dérivé de celui de la fiche —
+   c'est ce qui permet de réécrire l'entrée quand la fiche est
+   corrigée plutôt que d'en empiler une seconde, et de ne pas la
+   recréer une fois retirée à la main. La clôture d'un point garde
+   son entrée propre : c'est un autre fait, avec ses chiffres. */
+const idMCPoint  = p => 'mcpt-' + p.id;
+const idMCBesoin = b => 'mcbm-' + b.id;
+
+/* L'entrée garde la date et l'heure du fait, pas celles de la
+   frappe : une fiche corrigée le lendemain ne doit pas remonter en
+   tête de la journée. Une entrée sans heure se range en fin de
+   journée, ce qui vaut mieux qu'une heure inventée. */
+function poserEnCourante(id, t){
+  etat.courante = etat.courante || [];
+  etat.retires = etat.retires || [];
+  if(etat.retires.includes(id)) return;
+  const deja = etat.courante.find(x => x.id === id);
+  const ligne = {
+    id,
+    date: t.date || (deja && deja.date) || aujourdhui(),
+    heure: deja ? deja.heure : (t.heure || ''),
+    source: t.source || '', evenement: t.evenement, suite: t.suite,
+    qui: t.qui || (deja && deja.qui) || (moi === 'Anonyme' ? '' : moi),
+    auteur: (deja && deja.auteur) || (moi === 'Anonyme' ? '' : moi),
+    quand: (deja && deja.quand) || ''
+  };
+  if(deja) Object.assign(deja, ligne);
+  else etat.courante.unshift(ligne);
+}
+
+/* Un point de collecte, c'est un lieu, un créneau et quelqu'un sur
+   place : l'entrée dit ces trois-là, plus ce qui manque encore
+   pour que le point tienne. Elle ne vient pas du dehors — elle n'a
+   donc pas de source, mais la personne responsable. */
+function texteMCPoint(p){
+  const s = synthesePoint(p);
+  const tete = p.statut === 'Annulé'  ? "Point de collecte annulé"
+             : p.statut === 'Clôturé' ? "Point de collecte tenu"
+             : "Ouverture d'un point de collecte";
+  const reste = [
+    p.responsable  ? '' : "Nommer la personne responsable sur place.",
+    p.debut || p.fin ? '' : "Arrêter le créneau d'ouverture.",
+    p.destination  ? '' : "Nommer la destination du matériel."
+  ].filter(Boolean).join(' ');
+  return {
+    date: p.date || '',
+    heure: p.debut || '',
+    qui: p.responsable || '',
+    evenement: `${tete} : ${p.lieu}` + (p.adresse ? `, ${p.adresse}` : '') + '.'
+      + (p.debut || p.fin ? ` Ouvert de ${p.debut || '—'} à ${p.fin || '—'}.` : '')
+      + (p.responsable ? ` Sous la responsabilité de ${p.responsable}.` : '')
+      + (p.equipe ? ` Avec ${p.equipe}.` : '')
+      + (p.destination ? ` Matériel destiné à ${p.destination}.` : '')
+      + (s.lignes ? ` ${s.unites} unités déposées à ce stade, par ${s.deposants.length} déposant${s.deposants.length > 1 ? 's' : ''}.` : ''),
+    suite: p.statut === 'Annulé'
+      ? "Prévenir les professionnels à qui le point avait été annoncé."
+      : (reste ? reste + ' ' : '')
+        + "Dépôts, récapitulatif et clôture au feuillet « Points de collecte » de « Collecte de matériel »."
+  };
+}
+
+/* Un besoin nous est toujours exprimé par quelqu'un : la structure
+   demandeuse est la source, et l'entrée remonte d'elle-même en
+   « Remontées terrain ». Ce que la CPTS collecte ne va jamais
+   au-delà de ce qui est écrit là — la suite dit donc ce qui
+   manque avant d'ouvrir quoi que ce soit aux adhérents. */
+function texteMCBesoin(b){
+  const bloque = [
+    b.lieu         ? '' : "le lieu de livraison",
+    b.contactPlace ? '' : "le contact sur place"
+  ].filter(Boolean);
+  const val = b.valide === 'Oui'        ? "Besoin validé par l'ARS."
+            : b.valide === 'Non'        ? "L'ARS n'a pas validé ce besoin : ne rien ouvrir aux adhérents sur cette base."
+            : b.valide === 'Sans objet' ? "Validation de l'ARS sans objet."
+            : "Validation de l'ARS en attente.";
+  return {
+    date: b.date || '',
+    source: String(b.demandeur || '').trim(),
+    evenement: "Besoin en matériel identifié"
+      + (b.demandeur ? ` — ${b.demandeur}` : '') + ' : '
+      + (b.nature || 'nature du matériel à préciser') + '.'
+      + (b.quantite ? ` Quantité : ${b.quantite}.` : '')
+      + (b.delai ? ` Délai souhaité : ${b.delai}.` : '')
+      + (b.lieu ? ` Livraison : ${b.lieu}.` : '')
+      + (b.contactPlace ? ` Contact sur place : ${b.contactPlace}.` : '')
+      + (b.horaires ? ` Horaires de réception : ${b.horaires}.` : '')
+      + (b.statut ? ` Statut : ${b.statut.toLowerCase()}.` : ''),
+    suite: val
+      + (bloque.length ? ` Tant que ${bloque.join(' et ')} ${bloque.length > 1 ? 'ne sont' : "n'est"} pas renseigné${bloque.length > 1 ? 's' : ''}, aucune collecte n'est ouverte aux adhérents.` : '')
+      + " Suivi au feuillet « Besoins exprimés » de « Collecte de matériel »."
+  };
+}
+
+function consignerPointEnCourante(p){
+  if(!p || !p.id || !p.lieu) return;
+  poserEnCourante(idMCPoint(p), texteMCPoint(p));
+}
+function consignerBesoinEnCourante(b){
+  if(!b || !b.id) return;
+  poserEnCourante(idMCBesoin(b), texteMCBesoin(b));
+}
+
+/* Les points et les besoins saisis avant que la main courante ne
+   les reçoive n'y figurent pas : on les y porte une fois, à
+   l'ouverture du cockpit, à la date du fait. Les fiches de
+   l'amorçage en sont exclues — leur histoire est déjà écrite à la
+   main dans la main courante, et l'y remettre ferait doublon. */
+function consignerCollecteHeritee(){
+  etat.courante = etat.courante || [];
+  const vus = new Set(etat.courante.map(o => o.id));
+  const amorce = k => new Set((etatInitial[k] || []).map(o => o.id));
+  const pointsAmorces = amorce('points'), besoinsAmorces = amorce('materiel');
+  (etat.points || []).forEach(p => {
+    if(p && p.id && !pointsAmorces.has(p.id) && !vus.has(idMCPoint(p))) consignerPointEnCourante(p);
+  });
+  (etat.materiel || []).forEach(b => {
+    if(b && b.id && !besoinsAmorces.has(b.id) && !vus.has(idMCBesoin(b))) consignerBesoinEnCourante(b);
+  });
+}
+
 async function validerPoint(id){
   const g = c => (document.getElementById('pt-' + c) || {}).value || '';
   const lieu = g('lieu').trim();
@@ -6010,10 +6520,14 @@ async function validerPoint(id){
   };
   etat.points = etat.points || [];
   const o = id ? etat.points.find(x => x.id === id) : null;
+  const p = o || Object.assign({id:uid(), pieces:[], auteur:moi, quand:new Date().toISOString()}, champs);
   if(o){ Object.assign(o, champs); o.modifiePar = moi; }
-  else etat.points.push(Object.assign({id:uid(), pieces:[], auteur:moi, quand:new Date().toISOString()}, champs));
+  else etat.points.push(p);
+  /* Ouvrir un point est un fait de la journée : il se consigne en
+     main courante en même temps qu'ici. */
+  consignerPointEnCourante(p);
   await sauver(); fermer(); rendre();
-  toast(o ? "Point de collecte mis à jour" : "Point de collecte ouvert");
+  toast(o ? "Point de collecte mis à jour" : "Point de collecte ouvert et consigné en main courante");
 }
 
 async function cloturerPoint(id){
@@ -9109,6 +9623,657 @@ function tableauFige(k){
   return h + '</tbody></table></div>';
 }
 
+/* =========================================================
+   RAPPORTS
+
+   Ce que la crise laisse derrière elle. Quatre documents tirés du
+   même fonds : le point de situation qu'on arrête à une date, la
+   matière du retour d'expérience, les projets de fiches pour le
+   plan SSE, et le dossier de traçabilité complet.
+
+   Rien ne s'y saisit deux fois. Le squelette se recalcule à chaque
+   ouverture depuis ce que le cockpit sait déjà — chiffres, état des
+   missions, consignes, ce qui reste en suspens. Seul le corps du
+   texte vient d'un geste : l'étoile posée sur une entrée au moment
+   où on la consigne. C'est le seul endroit où l'on demande quelque
+   chose de plus, et c'est ce qui sépare un relevé de compteurs d'un
+   document qu'on peut envoyer.
+   ========================================================= */
+
+let rapport = '';
+let brouillonSit = null;
+let genreChoisi = '';
+
+function ouvrirRapport(id){ onglet = 'rapports'; rapport = id; rendre(); window.scrollTo(0,0); }
+
+/* --- Le geste : une étoile, cinq sorties ------------------
+   Deux étoiles séparées — une pour le point de situation, une pour
+   le RETEX — et plus personne ne marque rien. Il n'y en a donc
+   qu'une, et c'est au clic qu'on dit ce que l'entrée doit devenir. */
+const RETENUS = [
+  {id:'fait',     l:"Fait marquant",     ou:"Point de situation", d:"Ce qui a changé la situation, ou ce que la CPTS a engagé."},
+  {id:'marche',   l:"Ce qui a marché",   ou:"RETEX",              d:"Un circuit, un réflexe ou un appui qui a tenu."},
+  {id:'manque',   l:"Ce qui a manqué",   ou:"RETEX",              d:"Une information, un moyen ou un interlocuteur qui a fait défaut."},
+  {id:'changer',  l:"À changer",         ou:"RETEX",              d:"Ce qu'on ferait autrement la prochaine fois."},
+  {id:'doctrine', l:"Point de doctrine", ou:"Plan SSE",           d:"Une règle apprise ici, qui doit figurer dans une fiche."}
+];
+const RETENU_DE = id => RETENUS.find(x => x.id === id) || null;
+
+/* Les collections où l'étoile se pose. Chacune dit seulement où
+   lire son titre : le reste du module ne connaît plus que cette
+   forme-là, et une nouvelle collection s'y ajoute en une ligne. */
+const SOURCES_RET = {
+  courante: {l:"Main courante",           titre:o => o.evenement},
+  terrain:  {l:"Remontée terrain",        titre:o => o.sujet},
+  ars:      {l:"Échange avec l'ARS",      titre:o => o.objet},
+  visios:   {l:"Visio de crise de l'ARS", titre:o => o.instance || "Visio de crise de l'ARS"}
+};
+
+/* Tout ce qui a été retenu, à plat et dans l'ordre des faits.
+   La marque vit sur l'entrée elle-même : rien n'est recopié, et
+   supprimer une entrée emporte sa marque — il n'y a pas d'orphelin
+   à gérer. */
+function marquesRetenues(genres){
+  const out = [];
+  Object.keys(SOURCES_RET).forEach(k => {
+    (etat[k] || []).forEach(o => {
+      const r = o.retenu;
+      if(!r || !r.genre) return;
+      if(genres && genres.indexOf(r.genre) < 0) return;
+      out.push({k, id:o.id, source:SOURCES_RET[k].l, titre:SOURCES_RET[k].titre(o) || '—',
+        date:o.date || '', heure:o.heure || '', genre:r.genre,
+        note:r.note || '', par:r.par || '', quand:r.quand || ''});
+    });
+  });
+  return out.sort((a,b) => (a.date + ' ' + a.heure).localeCompare(b.date + ' ' + b.heure));
+}
+
+function boutonRetenu(k, o){
+  const on = !!(o.retenu && o.retenu.genre);
+  const g = on ? RETENU_DE(o.retenu.genre) : null;
+  return `<button class="ret-b${on ? ' on' : ''}" title="${on
+    ? 'Retenu — ' + esc(g ? g.l : '') : "Retenir pour les rapports"}"
+    onclick="ouvrirRetenu('${k}','${o.id}')">${on ? '★' : '☆'}</button>`;
+}
+
+function marqueRetenue(o){
+  const r = o && o.retenu;
+  if(!r || !r.genre) return '';
+  const g = RETENU_DE(r.genre);
+  const dit = String(r.note || '').trim();
+  return `<div class="ret-m">
+    <span class="g">${esc(g ? g.l : r.genre)}</span>
+    <span class="t">${dit ? esc(dit) : `Retenu pour « ${esc(g ? g.ou : '')} »`}${
+      r.par ? ' <span style="color:var(--texte-2)">— ' + esc(r.par) + '</span>' : ''}</span></div>`;
+}
+
+function ouvrirRetenu(k, id){
+  const o = (etat[k] || []).find(x => x.id === id);
+  const cfg = SOURCES_RET[k];
+  if(!o || !cfg) return;
+  const r = o.retenu || {};
+  genreChoisi = r.genre || '';
+  document.getElementById('modale').innerHTML = `<h3>Retenir pour les rapports</h3>
+    <p style="color:var(--texte-2);margin:0 0 8px;font-size:13px">${esc(cfg.l)}${o.date ? ' · ' + frdateL(o.date) : ''}</p>
+    <div class="rappel" style="margin-bottom:14px">${esc(cfg.titre(o) || '—')}</div>
+    <p style="color:var(--texte-2);margin:0 0 10px;font-size:13.5px">Ce que cette entrée doit devenir. Elle n'est recopiée nulle part : elle reste écrite ici, et le rapport vient la chercher.</p>
+    <div class="gen-l">${RETENUS.map(x => `<label class="${genreChoisi === x.id ? 'sel' : ''}" onclick="choisirGenre('${x.id}')">
+      <input type="radio" name="gen-ret" value="${x.id}"${genreChoisi === x.id ? ' checked' : ''}>
+      <span><b>${esc(x.l)}</b><span class="ou">${esc(x.d)} → ${esc(x.ou)}</span></span>
+    </label>`).join('')}</div>
+    <label class="large"><span class="k">Ce qu'il faut en retenir</span>
+      <textarea id="ret-note" rows="3" placeholder="Facultatif, mais c'est ce qui fera la valeur du rapport : une phrase pour qui le lira sans avoir vécu la scène.">${esc(r.note || '')}</textarea></label>
+    <div class="actions">
+      <button class="btn" onclick="validerRetenu('${k}','${id}')">Retenir</button>
+      ${r.genre ? `<button class="btn sec" onclick="retirerRetenu('${k}','${id}')">Ne plus retenir</button>` : ''}
+      <button class="btn sec" onclick="fermer()">Annuler</button>
+    </div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+
+function choisirGenre(g){
+  genreChoisi = g;
+  document.querySelectorAll('.gen-l label').forEach(l => l.classList.remove('sel'));
+  const i = document.querySelector('.gen-l input[value="' + g + '"]');
+  if(i){ i.checked = true; i.closest('label').classList.add('sel'); }
+}
+
+async function validerRetenu(k, id){
+  if(!genreChoisi){ toast("Choisissez ce que cette entrée doit devenir"); return; }
+  const o = (etat[k] || []).find(x => x.id === id); if(!o) return;
+  const n = document.getElementById('ret-note');
+  o.retenu = {genre:genreChoisi, note:(n ? n.value : '').trim(), par:moi, quand:new Date().toISOString()};
+  const g = RETENU_DE(genreChoisi);
+  await sauver(); fermer(); rendre();
+  toast("Retenu pour « " + (g ? g.ou : '') + " »");
+}
+
+async function retirerRetenu(k, id){
+  const o = (etat[k] || []).find(x => x.id === id); if(!o) return;
+  delete o.retenu;
+  await sauver(); fermer(); rendre();
+  toast("L'entrée ne part plus dans les rapports");
+}
+
+/* --- La page d'entrée -------------------------------------- */
+function vueRapports(){
+  if(rapport === 'situations') return vueSituations();
+  if(rapport === 'retex')      return vueRetex();
+  if(rapport === 'sse')        return vueSSE();
+  if(rapport === 'dossier')
+    return `<button class="retour-r" onclick="aller('rapports')">← Tous les rapports</button>` + vueDossier();
+
+  const sit = situationsTriees();
+  const der = sit[0] || null;
+  const neufs = faitsDepuis(der ? der.quand : '').length;
+  const rx = marquesRetenues(['marche','manque','changer']).length;
+  const doc = marquesRetenues(['doctrine']).length;
+
+  const carte = (id, nom, d, e, vierge) => `<button class="rapp${vierge ? ' vierge' : ''}" onclick="ouvrirRapport('${id}')">
+    <div class="n">${nom}</div><div class="d">${d}</div><div class="e">${e}</div></button>`;
+
+  return `<h1>Rapports</h1>
+  <p class="chapo">Ce que cette crise laisse derrière elle. Quatre documents tirés du même fonds : le point de situation qu'on arrête à une date, la matière du retour d'expérience, les projets de fiches pour le plan SSE, et le dossier de traçabilité complet. Aucun ne se rédige de zéro — ils se remplissent de ce qui est déjà consigné, et de ce que vous marquez d'une étoile au fil de l'eau.</p>
+
+  <div class="note">L'étoile ☆ est posée sur chaque entrée de la <a href="#" onclick="aller('courante');return false;">main courante</a>, des <a href="#" onclick="aller('terrain');return false;">remontées terrain</a>, des <a href="#" onclick="aller('ars');return false;">échanges avec l'ARS</a> et des visios de crise. Un clic, cinq secondes : on dit si l'entrée est un fait marquant, ce qui a marché, ce qui a manqué, ce qu'on changera, ou un point de doctrine. Les quatre rapports se remplissent seuls à partir de là.</p></div>
+
+  <div class="rapports">
+    ${carte('situations', "Points de situation",
+      "Le rapport détaillé, arrêté à une date et signé : la situation, les consignes, les chiffres, l'état de chaque mission avec sa prochaine action, ce qui reste en suspens, et les faits marquants depuis le point précédent. Export PDF et Word.",
+      sit.length
+        ? `${sit.length} point${sit.length>1?'s':''} arrêté${sit.length>1?'s':''} · dernier le ${frdateL(der.quand.slice(0,10))}${neufs ? ` · ${neufs} fait${neufs>1?'s':''} marquant${neufs>1?'s':''} depuis` : ''}`
+        : (neufs ? `Aucun point arrêté · ${neufs} fait${neufs>1?'s':''} marquant${neufs>1?'s':''} en attente` : "Aucun point arrêté"),
+      !sit.length)}
+
+    ${carte('retex', "Matière pour le RETEX",
+      "Ce qui s'oublie en deux semaines et qu'aucun compteur ne retrouvera : ce qui a marché, ce qui a manqué, ce qu'on fera autrement. La chronologie et les délais se calculent seuls ; ces trois colonnes-là ne peuvent venir que de vous.",
+      rx ? `${rx} élément${rx>1?'s':''} versé${rx>1?'s':''} au retour d'expérience` : "Rien versé au RETEX pour l'instant",
+      !rx)}
+
+    ${carte('sse', "Pour le plan SSE",
+      "Les fiches mission, déjà écrites à quatre cinquièmes dans le cockpit, et les fiches réflexes rangées par déclencheur — non par action, pour qu'elles servent aussi à la canicule. Export Word, à coller dans le plan en cours de rédaction.",
+      `${(etat.missions||[]).length} fiche${(etat.missions||[]).length>1?'s':''} mission · ${DECLENCHEURS.length} déclencheurs${doc ? ` · ${doc} point${doc>1?'s':''} de doctrine` : ''}`,
+      !doc)}
+
+    ${carte('dossier', "Dossier de traçabilité",
+      "L'intégralité de ce qui a été tracé, mis bout à bout : fiches mission, visios de l'ARS, tous les registres, tous les points de collecte, tous les appels. C'est la pièce à joindre, pas celle qu'on lit.",
+      "Recalculé à chaque ouverture", false)}
+  </div>`;
+}
+
+/* --- Points de situation ----------------------------------- */
+function situationsTriees(){
+  return (etat.situations || []).slice().sort((a,b) => String(b.quand||'').localeCompare(String(a.quand||'')));
+}
+function faitsDepuis(depuis){
+  return marquesRetenues(['fait']).filter(x => !depuis || String(x.quand || '') > depuis);
+}
+
+function vueSituations(){
+  const sit = situationsTriees();
+  const der = sit[0] || null;
+  const neufs = faitsDepuis(der ? der.quand : '');
+
+  let h = `<button class="retour-r" onclick="aller('rapports')">← Tous les rapports</button>
+  <h1>Points de situation</h1>
+  <p class="chapo">Un point de situation dit où en est la CPTS à une date, pour quelqu'un qui n'a pas suivi. On l'arrête quand on veut : il se fige, il s'archive, et le suivant repart de là. C'est la succession de ces points qui montre le chemin parcouru — et c'est elle, bien plus que le dernier état, qui servira au retour d'expérience.</p>
+  <div class="barre-h">
+    <span class="cpt-h">${sit.length} point${sit.length>1?'s':''} arrêté${sit.length>1?'s':''}${
+      neufs.length ? ` · ${neufs.length} fait${neufs.length>1?'s':''} marquant${neufs.length>1?'s':''} depuis le dernier` : ''}</span>
+    <button class="btn" onclick="preparerSituation()">Préparer un point de situation</button>
+  </div>`;
+
+  if(!neufs.length){
+    h += `<div class="note">Aucun fait marquant retenu ${der ? 'depuis le point du ' + frdateL(der.quand.slice(0,10)) : 'pour l\'instant'}. Le point se prépare quand même — il portera les chiffres, l'état des missions et ce qui reste en suspens — mais il ne dira pas ce qu'il faut en retenir. C'est l'étoile ☆ posée en main courante qui lui donne son corps.</div>`;
+  }
+
+  if(!sit.length){
+    h += `<div class="carte"><p class="vide">Aucun point de situation arrêté. Le premier fixera le point de départ : tout ce qui sera retenu ensuite se comptera à partir de sa date.</p></div>`;
+  }else{
+    h += `<div class="carte"><ul class="fil">` + sit.map(s => `<li>
+      <div class="h">${frdate(s.quand.slice(0,10))}<br><span style="font-family:var(--mono);font-size:10.5px">${esc(s.ref)}</span></div>
+      <div class="c">
+        <div class="t">${esc(s.phrase) || 'Point de situation'}</div>
+        <div class="d">${s.faits.length} fait${s.faits.length>1?'s':''} marquant${s.faits.length>1?'s':''} · ${
+          s.missions.filter(m => m.statut === 'En cours').length} mission${s.missions.filter(m => m.statut === 'En cours').length>1?'s':''} en cours · ${
+          s.suspens.length} point${s.suspens.length>1?'s':''} en suspens</div>
+        <div class="s">Arrêté le ${frdateL(s.quand.slice(0,10))} à ${esc(s.quand.slice(11,16))}${s.par && s.par !== 'Anonyme' ? ' par ' + esc(s.par) : ''}</div>
+        <div class="actions" style="margin-top:8px">
+          <button class="btn sec" onclick="voirSituation('${s.id}')">Ouvrir le document</button>
+          <button class="btn sec" onclick="exporterSituationWord('${s.id}')">Word</button>
+        </div>
+      </div></li>`).join('') + `</ul></div>`;
+  }
+  return h;
+}
+
+/* Le brouillon se construit à l'ouverture, jamais avant : il ne
+   peut donc pas être en retard sur ce qui a été saisi entre-temps. */
+function brouillonSituation(){
+  const sit = situationsTriees();
+  const der = sit[0] || null;
+  const depuis = der ? der.quand : '';
+
+  const ch = [
+    {n: etat.missions.filter(m => m.statut === 'En cours').length, l:"missions en cours"},
+    {n: etat.missions.filter(m => !m.pilote).length,               l:"missions sans pilote désigné"},
+    {n: (etat.cpts || []).length,                                  l:"CPTS contactées"},
+    {n: (etat.terrain || []).length,                               l:"remontées de terrain"},
+    {n: (etat.volontaires || []).length,                           l:"professionnels volontaires au renfort"},
+    {n: (etat.medecins || []).length,                              l:"médecins généralistes volontaires"},
+    {n: (etat.orientes || []).length,                              l:"patients évacués orientés"},
+    {n: (etat.courante || []).length,                              l:"entrées en main courante"}
+  ];
+  const unites = (etat.points || []).reduce((t, p) => t + synthesePoint(p).unites, 0);
+  if(unites) ch.push({n:unites, l:"unités de matériel collectées"});
+
+  const suspens = [];
+  (etat.ars || []).filter(a => a.statut === 'À faire' || a.statut === 'En attente').forEach(a =>
+    suspens.push({quoi:"ARS — " + (a.objet || '—'),
+      detail:[a.sens, a.interlocuteur, a.statut, a.attendu].filter(Boolean).join(' · ')}));
+  etat.missions.filter(m => !m.pilote).forEach(m =>
+    suspens.push({quoi:"Mission sans pilote — " + m.titre, detail:m.prochaine || "Prochaine action à écrire."}));
+  etat.missions.filter(m => m.statut === 'Bloqué').forEach(m =>
+    suspens.push({quoi:"Mission bloquée — " + m.titre, detail:m.prochaine || ''}));
+
+  return {
+    id: uid(),
+    ref: 'PS-2026-' + String((etat.situations || []).length + 1).padStart(2, '0'),
+    quand: new Date().toISOString(),
+    par: moi,
+    depuis, depuisRef: der ? der.ref : '',
+    niveau: etat.entete.niveau, phrase: etat.entete.phrase,
+    faire: etat.consignes.faire.slice(), eviter: etat.consignes.eviter.slice(),
+    chiffres: ch,
+    missions: etat.missions.map(m => ({titre:m.titre, pilote:m.pilote, suppleant:m.suppleant,
+      statut:m.statut, prochaine:m.prochaine})),
+    faits: faitsDepuis(depuis).map(f => ({date:f.date, heure:f.heure, source:f.source,
+      titre:f.titre, note:f.note, par:f.par})),
+    suspens,
+    analyse: ''
+  };
+}
+
+/* Le document lui-même. Une seule écriture pour l'écran et pour
+   Word : ce qui s'imprime est exactement ce qui s'exporte. */
+function corpsSituation(s, mode){
+  const ecran = mode !== 'word';
+  const modifiable = ecran && !s.fige;
+  const nb = s.faits.length;
+
+  const lignesFaits = nb ? s.faits.map(f => `<tr>
+    <td style="white-space:nowrap">${frdateL(f.date)}${f.heure ? '<br>' + esc(f.heure) : ''}</td>
+    <td>${esc(f.source)}</td>
+    <td><b>${esc(f.titre)}</b>${f.note ? '<br>' + esc(f.note) : ''}</td>
+  </tr>`).join('') : `<tr><td colspan="3" class="vide">Aucun fait marquant retenu sur la période. Les chiffres et l'état des missions ci-dessus restent valables ; ce que la période a appris n'a pas été consigné.</td></tr>`;
+
+  return `<div class="ent">
+    <div class="g">
+      <div class="org">CPTS Pau Béarn</div>
+      <div class="sub">Plan blanc régional · ORSAN AMAVI — feux de forêt Gironde et Landes</div>
+    </div>
+    <div class="d">
+      <div class="ref">Réf. ${esc(s.ref)}</div>
+      <div class="sub">${frdateL(s.quand.slice(0,10))} à ${esc(s.quand.slice(11,16))}</div>
+    </div>
+  </div>
+
+  <h1 class="ttl">Point de situation</h1>
+  <div class="ss">Arrêté au ${frdateL(s.quand.slice(0,10))} à ${esc(s.quand.slice(11,16))}${
+    s.par && s.par !== 'Anonyme' ? ' par ' + esc(s.par) : ''}${
+    s.depuis ? ` · couvre la période depuis le point ${esc(s.depuisRef)} du ${frdateL(s.depuis.slice(0,10))}` : ' · premier point de situation de la crise'}</div>
+
+  <h2>1 · La situation</h2>
+  <div class="ctx"><b>${esc(s.niveau)}</b><br>${esc(s.phrase)}</div>
+
+  <h2>2 · Ce que la CPTS fait, et ce qu'elle ne fait pas</h2>
+  <table>
+    <thead><tr><th style="width:50%">Ce qu'on fait</th><th style="width:50%">Ce qu'on ne fait pas</th></tr></thead>
+    <tbody><tr>
+      <td>${s.faire.length ? '<ul>' + s.faire.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<span class="vide">Aucune consigne active.</span>'}</td>
+      <td>${s.eviter.length ? '<ul>' + s.eviter.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<span class="vide">Aucune consigne active.</span>'}</td>
+    </tr></tbody>
+  </table>
+
+  <h2>3 · Les chiffres à cette date</h2>
+  <table>
+    <thead><tr><th style="width:16%">Nombre</th><th>Ce qu'il compte</th></tr></thead>
+    <tbody>${s.chiffres.map(c => `<tr><td style="text-align:right;font-weight:700">${c.n}</td><td>${esc(c.l)}</td></tr>`).join('')}</tbody>
+  </table>
+
+  <h2>4 · Où en est chaque mission</h2>
+  <table>
+    <thead><tr><th style="width:34%">Mission</th><th style="width:14%">État</th><th style="width:20%">Pilote</th><th>Prochaine action</th></tr></thead>
+    <tbody>${s.missions.map(m => `<tr>
+      <td><b>${esc(m.titre)}</b></td>
+      <td>${esc(m.statut)}</td>
+      <td>${esc(m.pilote) || '<span class="vide">à désigner</span>'}${m.suppleant ? '<br><span style="font-size:9pt;color:#5A6A7C">appui : ' + esc(m.suppleant) + '</span>' : ''}</td>
+      <td>${esc(m.prochaine) || '<span class="vide">à écrire</span>'}</td>
+    </tr>`).join('')}</tbody>
+  </table>
+
+  <h2>5 · Faits marquants${s.depuis ? ' de la période' : ' depuis le début de la mobilisation'}</h2>
+  <table>
+    <thead><tr><th style="width:13%">Date</th><th style="width:20%">Provenance</th><th>Ce qui s'est passé</th></tr></thead>
+    <tbody>${lignesFaits}</tbody>
+  </table>
+
+  <h2>6 · Ce qui reste en suspens</h2>
+  ${s.suspens.length ? `<table>
+    <thead><tr><th style="width:42%">Objet</th><th>Où ça en est</th></tr></thead>
+    <tbody>${s.suspens.map(x => `<tr><td><b>${esc(x.quoi)}</b></td><td>${esc(x.detail) || '—'}</td></tr>`).join('')}</tbody>
+  </table>` : `<p class="vide">Rien en suspens : aucune mission sans pilote, aucun échange en attente auprès de l'ARS.</p>`}
+
+  <h2>7 · Ce qu'on en retient</h2>
+  ${modifiable
+    ? `<div id="ps-analyse" contenteditable="true" style="min-height:76px;border:1px dashed #98A6BA;border-radius:6px;padding:10px 12px;font-size:13px">${esc(s.analyse || '')}</div>`
+    : (String(s.analyse || '').trim()
+        ? `<p>${esc(s.analyse).replace(/\n/g, '<br>')}</p>`
+        : `<p class="vide">Rien n'a été ajouté à la main sur ce point.</p>`)}
+
+  <div class="pied">Point de situation établi à partir du cockpit de crise de la CPTS Pau Béarn. Les chiffres et l'état des missions sont ceux enregistrés à la date d'arrêt ; les faits marquants sont ceux que l'équipe a expressément retenus. Un exemplaire est conservé au dossier de traçabilité de la CPTS.${
+    s.fige ? '' : ' Document en préparation : il n\'est pas encore arrêté.'}</div>`;
+}
+
+function preparerSituation(){
+  brouillonSit = brouillonSituation();
+  const m = document.getElementById('modale');
+  m.classList.add('large');
+  m.innerHTML = `<div class="acte">${corpsSituation(brouillonSit, 'ecran')}</div>
+  <div class="actions">
+    <button class="btn" onclick="arreterSituation()">Arrêter ce point de situation</button>
+    <button class="btn sec" onclick="imprimerModale()">Imprimer ou enregistrer en PDF</button>
+    <button class="btn sec" onclick="exporterSituationWord('')">Word</button>
+    <button class="btn sec" onclick="fermer()">Fermer sans arrêter</button>
+  </div>`;
+  document.getElementById('rideau').classList.add('on');
+  toast("Le paragraphe « Ce qu'on en retient » s'écrit directement à l'écran");
+}
+
+function voirSituation(id){
+  const s = (etat.situations || []).find(x => x.id === id); if(!s) return;
+  const m = document.getElementById('modale');
+  m.classList.add('large');
+  m.innerHTML = `<div class="acte">${corpsSituation(s, 'ecran')}</div>
+  <div class="actions">
+    <button class="btn" onclick="imprimerModale()">Imprimer ou enregistrer en PDF</button>
+    <button class="btn sec" onclick="exporterSituationWord('${s.id}')">Word</button>
+    <button class="btn sec" onclick="fermer()">Fermer</button>
+  </div>`;
+  document.getElementById('rideau').classList.add('on');
+}
+
+/* Arrêter, c'est figer. Le document ne se recalculera plus : il
+   restera ce que la CPTS savait ce jour-là, y compris si ce qu'elle
+   savait était faux. C'est précisément ce qu'un REX cherche. */
+async function arreterSituation(){
+  if(!brouillonSit) return;
+  const el = document.getElementById('ps-analyse');
+  const s = brouillonSit;
+  s.analyse = el ? el.innerText.trim() : '';
+  s.fige = true;
+  s.par = moi;
+  s.quand = new Date().toISOString();
+
+  etat.situations = etat.situations || [];
+  etat.situations.push(s);
+
+  const n = s.faits.length, sp = s.suspens.length;
+  etat.courante.unshift({
+    id: uid(), date: aujourdhui(), heure: new Date().toTimeString().slice(0,5), source:'',
+    evenement: `Point de situation ${s.ref} arrêté : ${n} fait${n>1?'s':''} marquant${n>1?'s':''} retenu${n>1?'s':''}, ${
+      s.missions.filter(m => m.statut === 'En cours').length} missions en cours, ${sp} point${sp>1?'s':''} en suspens.`,
+    suite: "Le document est figé et archivé dans « Rapports », feuillet « Points de situation ». Il ne se recalcule plus : le prochain point repartira de cette date.",
+    qui: '', auteur: moi, quand: new Date().toISOString()
+  });
+
+  brouillonSit = null;
+  await sauver(); fermer(); rendre();
+  toast("Point de situation arrêté et consigné en main courante");
+}
+
+function exporterSituationWord(id){
+  let s;
+  if(id){ s = (etat.situations || []).find(x => x.id === id); }
+  else {
+    s = brouillonSit;
+    const el = document.getElementById('ps-analyse');
+    if(s && el) s.analyse = el.innerText.trim();
+  }
+  if(!s) return;
+  telechargerWord("Point de situation " + s.ref, "Point de situation — CPTS Pau Béarn",
+    corpsSituation(s, 'word'));
+}
+
+/* --- Word sans bibliothèque --------------------------------
+   Un document HTML que Word ouvre, met en page et laisse modifier.
+   Rien à charger depuis un CDN, rien à installer : le cockpit doit
+   pouvoir sortir un document depuis un poste qui n'a que son
+   navigateur. */
+function telechargerWord(nom, titre, corps){
+  const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="utf-8"><title>${esc(titre)}</title>
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom></w:WordDocument></xml><![endif]-->
+<style>
+@page{size:A4 portrait;margin:2cm}
+body{font-family:Calibri,Arial,sans-serif;font-size:10.5pt;color:#101820;line-height:1.4}
+h1,.ttl{font-size:17pt;margin:0 0 2pt;text-transform:uppercase;font-weight:bold}
+.ss{font-size:9.5pt;color:#5A6A7C;margin:0 0 14pt}
+h2{font-size:10pt;text-transform:uppercase;letter-spacing:.05em;color:#1F3B5B;border-bottom:1px solid #C6D0DC;padding-bottom:3pt;margin:15pt 0 6pt}
+.ent{border-bottom:2px solid #101820;padding-bottom:6pt;margin-bottom:12pt;font-size:9pt}
+.ent .g,.ent .d{display:inline-block;vertical-align:top}
+.ent .d{float:right;text-align:right}
+.org{font-size:12.5pt;font-weight:bold}
+.sub{font-size:8.5pt;color:#5A6A7C}
+.ref{font-family:Consolas,monospace;font-size:9.5pt}
+.ctx{background:#EEF3F9;border-left:3px solid #1F3B5B;padding:8pt 10pt;margin-bottom:10pt;font-size:10pt}
+table{width:100%;border-collapse:collapse;font-size:9.5pt;margin:4pt 0}
+th{background:#EEF3F9;border:1px solid #C6D0DC;padding:4pt 6pt;text-align:left;font-size:8.5pt;text-transform:uppercase;color:#5A6A7C}
+td{border:1px solid #C6D0DC;padding:4pt 6pt;vertical-align:top}
+ul,ol{margin:3pt 0;padding-left:15pt}
+li{margin-bottom:3pt}
+p{margin:4pt 0}
+.vide{color:#5A6A7C;font-style:italic}
+.pied{border-top:1px solid #C6D0DC;margin-top:15pt;padding-top:6pt;font-size:8.5pt;color:#5A6A7C}
+</style></head><body>${corps}</body></html>`;
+  const b = new Blob(['\uFEFF' + html], {type:'application/msword'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = nom.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') + '-' + aujourdhui() + '.doc';
+  a.click();
+  toast("Document Word téléchargé — il s'ouvre et se modifie normalement");
+}
+
+/* --- Matière pour le RETEX ---------------------------------
+   Trois colonnes que la machine ne saura jamais remplir seule, et
+   une chronologie qu'elle est seule à pouvoir tenir sans rien
+   oublier. Le document fini viendra ; ce qui presse, c'est que la
+   matière ne se perde pas. */
+function vueRetex(){
+  const cols = [
+    {g:'marche',  t:"Ce qui a marché",  s:"Les circuits, les réflexes et les appuis qui ont tenu. À reconduire tels quels dans le plan."},
+    {g:'manque',  t:"Ce qui a manqué",  s:"Les informations, les moyens et les interlocuteurs qui ont fait défaut, et à quel moment."},
+    {g:'changer', t:"À changer",        s:"Ce qu'on ferait autrement. C'est ce qui deviendra une ligne du plan SSE."}
+  ];
+  const tout = marquesRetenues(['marche','manque','changer']);
+
+  let h = `<button class="retour-r" onclick="aller('rapports')">← Tous les rapports</button>
+  <h1>Matière pour le RETEX</h1>
+  <p class="chapo">Le retour d'expérience s'écrira à froid, en septembre. Ce qui ne peut pas attendre, c'est la matière : ce qui a marché, ce qui a manqué, ce qu'on fera autrement. Ça s'oublie en deux semaines, et aucun compteur ne le retrouvera. Cette page ne rédige rien — elle ramasse, pendant que c'est encore chaud.</p>
+  <div class="barre-h">
+    <span class="cpt-h">${tout.length} élément${tout.length>1?'s':''} versé${tout.length>1?'s':''} au retour d'expérience</span>
+    <button class="btn sec" onclick="imprimer()">PDF</button>
+    <button class="btn sec" onclick="exporterRetexWord()">Word</button>
+  </div>`;
+
+  h += `<div class="note">La chronologie complète, les décisions et les délais se calculent seuls à partir de la main courante — ils seront repris dans le document final sans que personne n'ait à les ressaisir. Les trois colonnes ci-dessous sont les seules qui dépendent de vous.</div>`;
+
+  cols.forEach(c => {
+    const l = marquesRetenues([c.g]);
+    h += `<h2 style="margin-top:24px">${c.t} <span class="cpt-h">${l.length}</span></h2>
+    <p class="sous-h">${c.s}</p><div class="carte">`;
+    if(!l.length){
+      h += `<p class="vide">Rien de versé sous cette entrée. L'étoile ☆ d'une entrée de main courante ou d'une remontée terrain permet de l'y ranger.</p>`;
+    }else{
+      h += `<ul class="fil">` + l.map(x => `<li>
+        <div class="h">${frdate(x.date)}${x.heure ? '<br>' + esc(x.heure) : ''}</div>
+        <div class="c">
+          <div class="t">${esc(x.titre)}</div>
+          ${x.note ? `<div class="d">${esc(x.note)}</div>` : ''}
+          <div class="s">${esc(x.source)}${x.par ? ' · retenu par ' + esc(x.par) : ''}</div>
+        </div></li>`).join('') + `</ul>`;
+    }
+    h += `</div>`;
+  });
+  return h;
+}
+
+function exporterRetexWord(){
+  const bloc = (g, t) => {
+    const l = marquesRetenues([g]);
+    return `<h2>${t}</h2>` + (l.length
+      ? `<table><thead><tr><th style="width:13%">Date</th><th style="width:20%">Provenance</th><th>Ce qu'on en retient</th></tr></thead><tbody>` +
+        l.map(x => `<tr><td style="white-space:nowrap">${frdateL(x.date)}</td><td>${esc(x.source)}</td>
+          <td><b>${esc(x.titre)}</b>${x.note ? '<br>' + esc(x.note) : ''}</td></tr>`).join('') + `</tbody></table>`
+      : `<p class="vide">Rien de versé sous cette entrée à ce jour.</p>`);
+  };
+  telechargerWord("Matiere RETEX", "Matière pour le RETEX — CPTS Pau Béarn",
+    `<div class="ent"><div class="g"><div class="org">CPTS Pau Béarn</div>
+      <div class="sub">Plan blanc régional · ORSAN AMAVI — feux de forêt Gironde et Landes</div></div>
+      <div class="d"><div class="sub">Édité le ${frdateL(aujourdhui())}</div></div></div>
+    <h1 class="ttl">Matière pour le retour d'expérience</h1>
+    <div class="ss">Éléments retenus au fil de la crise par l'équipe de gestion de crise. Document de travail préparatoire au RETEX — il ne constitue pas le retour d'expérience lui-même.</div>`
+    + bloc('marche', "1 · Ce qui a marché")
+    + bloc('manque', "2 · Ce qui a manqué")
+    + bloc('changer', "3 · Ce qu'on fera autrement")
+    + `<div class="pied">Extrait du cockpit de crise de la CPTS Pau Béarn. Chaque ligne renvoie à une entrée datée de la main courante, des remontées terrain, des échanges avec l'ARS ou des visios de crise, consultable au dossier de traçabilité.</div>`);
+}
+
+/* --- Pour le plan SSE --------------------------------------
+   Deux documents, deux découpes. Les fiches mission suivent ce que
+   la CPTS porte durablement — elles existent déjà mot pour mot.
+   Les fiches réflexes suivent le déclencheur, pas l'action : c'est
+   ce qui leur permet de servir aussi à la canicule, où il n'y aura
+   ni collecte de matériel ni patients évacués. */
+const DECLENCHEURS = [
+  {id:'d1', q:"L'ARS déclenche un plan blanc régional ou une bascule ORSAN",
+   s:"La première heure : qui est prévenu, qui ouvre le cockpit, qui parle à l'ARS, et ce qu'on ne diffuse pas encore.", m:''},
+  {id:'d2', q:"Une structure exprime un besoin en matériel",
+   s:"Ce qu'on vérifie avant d'ouvrir quoi que ce soit : un besoin écrit, un lieu de livraison nommé, une liste fermée.", m:'m3'},
+  {id:'d3', q:"Un appel à renfort circule",
+   s:"Distinguer le relais d'un dispositif porté par un autre du recensement mené en propre. Assurance, continuité des soins, accord de diffusion.", m:'m5'},
+  {id:'d4', q:"Une personne déplacée se présente sans médecin traitant",
+   s:"Le circuit depuis la pharmacie ou les soins non programmés vers le vivier de généralistes. Accord au comptoir, messagerie sécurisée.", m:'m10'},
+  {id:'d5', q:"Un professionnel du territoire signale une situation",
+   s:"Où ça se consigne, qui rappelle, et à partir de quand ça remonte à l'ARS.", m:'m2'},
+  {id:'d6', q:"Une CPTS voisine est touchée",
+   s:"Prendre des nouvelles sans placer d'offre. Noter l'appel même quand la réponse est « rien ».", m:'m4'},
+  {id:'d7', q:"Un adhérent ou la presse demande une position",
+   s:"Qui parle au nom de la CPTS, et ce qui ne sort pas sans validation de la gouvernance.", m:''}
+];
+
+function vueSSE(){
+  const doc = marquesRetenues(['doctrine']);
+  const vides = DECLENCHEURS.filter(d => !d.m).length;
+
+  let h = `<button class="retour-r" onclick="aller('rapports')">← Tous les rapports</button>
+  <h1>Pour le plan SSE</h1>
+  <p class="chapo">La mission « Traçabilité » pose comme limite qu'on ne rédige pas de fiches réflexes pendant la crise. Cette page ne les rédige pas : elle ramasse la matière pendant qu'elle est encore chaude, pour que la rédaction se fasse à froid sans avoir rien oublié.</p>
+  <div class="barre-h">
+    <span class="cpt-h">${(etat.missions||[]).length} fiches mission · ${DECLENCHEURS.length} déclencheurs · ${doc.length} point${doc.length>1?'s':''} de doctrine</span>
+    <button class="btn sec" onclick="exporterFichesMissionWord()">Fiches mission en Word</button>
+  </div>
+
+  <h2 style="margin-top:24px">Fiches mission <span class="cpt-h">déjà écrites</span></h2>
+  <p class="sous-h">La trame <em>but · ce qu'on fait · avec qui · pour qui · ce qu'on ne fait pas</em> que vous avez remplie pour chaque mission est exactement celle d'une fiche mission de plan SSE. Il n'y a rien à réécrire — seulement à extraire.</p>
+  <div class="carte">`;
+
+  h += (etat.missions || []).map(m => {
+    const f = m.fiche || {};
+    const remplie = ['but','faire','avec','pour','limite'].filter(c => String(f[c]||'').trim()).length;
+    return `<div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--trait)">
+      <div style="font-family:var(--display);font-weight:700;font-size:14.5px">${esc(m.titre)}</div>
+      <div style="font-size:12.5px;color:var(--texte-2);margin:3px 0 5px">${remplie}/5 rubriques renseignées${
+        m.pilote ? ' · pilote : ' + esc(m.pilote) : ' · pilote à désigner'}</div>
+      ${f.limite ? `<div style="font-size:13px;color:var(--braise)"><b>Ce qu'on ne fait pas :</b> ${esc(f.limite)}</div>`
+        : `<div style="font-size:13px;color:var(--texte-2)"><em>Aucune limite écrite — c'est pourtant la ligne qui compte le plus dans une fiche.</em></div>`}
+    </div>`;
+  }).join('') + `</div>`;
+
+  h += `<h2 style="margin-top:26px">Fiches réflexes <span class="cpt-h">rangées par déclencheur</span></h2>
+  <p class="sous-h">Une fiche réflexe ne répond pas à « comment on fait une collecte », mais à « il est 14 h, voilà ce qui arrive — qu'est-ce que je fais ? ». C'est pourquoi elle se range par déclencheur : découpée par action, elle ne servirait qu'à cette crise-ci.</p>`;
+
+  if(vides) h += `<div class="note"><strong>${vides} déclencheurs n'ont pas d'onglet dans le cockpit.</strong> Ils se sont joués à l'instinct, dans les premières heures et au téléphone, et rien n'en a été consigné. Ce sont ceux qui manqueront le plus au plan : l'étoile ☆ « point de doctrine » est le seul moyen d'en garder quelque chose.</div>`;
+
+  h += `<div class="carte">` + DECLENCHEURS.map(d => {
+    const m = d.m ? (etat.missions || []).find(x => x.id === d.m) : null;
+    return `<div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--trait)">
+      <div style="font-family:var(--display);font-weight:700;font-size:14.5px">${esc(d.q)}</div>
+      <div style="font-size:13px;margin:4px 0 5px">${esc(d.s)}</div>
+      <div style="font-size:12.5px;color:${m ? 'var(--texte-2)' : 'var(--braise)'}">${m
+        ? 'Matière disponible — mission « ' + esc(m.titre) + ' »'
+        : "Aucune matière dans le cockpit : ce déclencheur n'a jamais été formalisé."}</div>
+    </div>`;
+  }).join('') + `</div>`;
+
+  h += `<h2 style="margin-top:26px">Points de doctrine retenus <span class="cpt-h">${doc.length}</span></h2>
+  <p class="sous-h">Les règles apprises dans cette crise, qui devront figurer dans une fiche. Elles se rattacheront à leur déclencheur au moment de la rédaction.</p><div class="carte">`;
+  if(!doc.length){
+    h += `<p class="vide">Aucun point de doctrine retenu pour l'instant. Chaque fois qu'une règle se dégage — « aucun enlèvement sans lieu de livraison nommé », « on recense, on n'affecte pas » — l'étoile ☆ de l'entrée permet de la mettre de côté.</p>`;
+  }else{
+    h += `<ul class="fil">` + doc.map(x => `<li>
+      <div class="h">${frdate(x.date)}</div>
+      <div class="c"><div class="t">${esc(x.titre)}</div>
+      ${x.note ? `<div class="d">${esc(x.note)}</div>` : ''}
+      <div class="s">${esc(x.source)}${x.par ? ' · retenu par ' + esc(x.par) : ''}</div></div></li>`).join('') + `</ul>`;
+  }
+  return h + `</div>`;
+}
+
+function exporterFichesMissionWord(){
+  const doc = marquesRetenues(['doctrine']);
+  const corps = (etat.missions || []).map((m, i) => {
+    const f = m.fiche || {};
+    const li = t => String(t || '').split('\n').map(x => x.trim()).filter(Boolean);
+    const faire = li(f.faire);
+    return `<h2>Fiche ${i + 1} · ${esc(m.titre)}</h2>
+    <table>
+      <tbody>
+        <tr><th style="width:22%">But</th><td>${esc(f.but) || '<span class="vide">à écrire</span>'}</td></tr>
+        <tr><th>Ce qu'on fait</th><td>${faire.length ? '<ol>' + faire.map(x => '<li>' + esc(x) + '</li>').join('') + '</ol>' : '<span class="vide">à écrire</span>'}</td></tr>
+        <tr><th>Avec qui</th><td>${esc(f.avec) || '<span class="vide">à écrire</span>'}</td></tr>
+        <tr><th>Pour qui</th><td>${esc(f.pour) || '<span class="vide">à écrire</span>'}</td></tr>
+        <tr><th>Ce qu'on ne fait pas</th><td><b>${esc(f.limite) || '<span class="vide">à écrire — c\'est la ligne qui compte le plus</span>'}</b></td></tr>
+        <tr><th>Pilote pressenti</th><td>${esc(m.pilote) || '<span class="vide">à désigner</span>'}${m.suppleant ? ' · appui : ' + esc(m.suppleant) : ''}</td></tr>
+      </tbody>
+    </table>`;
+  }).join('');
+
+  const decl = `<h2>Fiches réflexes à rédiger — par déclencheur</h2>
+  <table><thead><tr><th style="width:38%">Quand ceci arrive</th><th style="width:40%">La fiche doit dire</th><th>Matière</th></tr></thead><tbody>`
+    + DECLENCHEURS.map(d => {
+      const m = d.m ? (etat.missions || []).find(x => x.id === d.m) : null;
+      return `<tr><td><b>${esc(d.q)}</b></td><td>${esc(d.s)}</td><td>${m
+        ? esc(m.titre) : '<span class="vide">jamais formalisé — à reconstituer de mémoire</span>'}</td></tr>`;
+    }).join('') + `</tbody></table>`;
+
+  const doctrine = `<h2>Points de doctrine retenus pendant la crise</h2>` + (doc.length
+    ? `<table><thead><tr><th style="width:13%">Date</th><th style="width:22%">Provenance</th><th>La règle</th></tr></thead><tbody>`
+      + doc.map(x => `<tr><td style="white-space:nowrap">${frdateL(x.date)}</td><td>${esc(x.source)}</td>
+        <td><b>${esc(x.titre)}</b>${x.note ? '<br>' + esc(x.note) : ''}</td></tr>`).join('') + `</tbody></table>`
+    : `<p class="vide">Aucun point de doctrine retenu à ce jour.</p>`);
+
+  telechargerWord("Fiches plan SSE", "Fiches pour le plan SSE — CPTS Pau Béarn",
+    `<div class="ent"><div class="g"><div class="org">CPTS Pau Béarn</div>
+      <div class="sub">Matière pour le plan SSE — tirée de la mobilisation plan blanc régional / ORSAN AMAVI</div></div>
+      <div class="d"><div class="sub">Édité le ${frdateL(aujourdhui())}</div></div></div>
+    <h1 class="ttl">Fiches pour le plan SSE</h1>
+    <div class="ss">Projets de fiches extraits du cockpit de crise. Les fiches mission sont préremplies par ce qui a réellement été fait ; les fiches réflexes restent à rédiger, rangées par déclencheur pour qu'elles servent à toute crise et non à celle-ci seulement.</div>`
+    + corps + decl + doctrine
+    + `<div class="pied">Document de travail. Ce qui figure ici a été écrit pendant la crise, sous contrainte de temps : à relire et à trancher à froid avant intégration au plan SSE de la CPTS Pau Béarn.</div>`);
+}
+
 function vueDossier(){
   let h = `<h1>Dossier de traçabilité</h1>
   <div style="font-family:var(--display);font-weight:600;font-size:16px;color:var(--encre);margin:-2px 0 6px">CPTS Pau Béarn</div>
@@ -9267,6 +10432,7 @@ function rendre(){
   else if(onglet === 'materiel') v.innerHTML = vueCollecte();
   else if(onglet === 'volontaires') v.innerHTML = vueRenfort();
   else if(onglet === 'orientation') v.innerHTML = vueOrientation();
+  else if(onglet === 'rapports') v.innerHTML = vueRapports();
   else if(onglet === 'dossier') v.innerHTML = vueDossier();
   else v.innerHTML = vueCollection(onglet);
   v.insertAdjacentHTML('afterbegin', '<div class="entete-print" id="printhead"></div>');

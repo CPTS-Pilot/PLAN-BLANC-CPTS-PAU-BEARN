@@ -161,8 +161,34 @@ function porteOuverte($etat, $rubrique) {
     return !empty($c['ouverte']);
 }
 
+/* La collecte ne se mène plus d'un bloc mais par campagnes : une
+   liste de matériel précise, ouverte le temps d'un appel, puis
+   close. Chacune a son interrupteur ; l'interrupteur global de
+   « collecte » reste celui des états ouverts avant les campagnes,
+   et vaut toujours pour un formulaire appelé sans campagne. */
+function campagnesCollecte($etat) {
+    $d = isset($etat['donnees']) && is_array($etat['donnees']) ? $etat['donnees'] : [];
+    $c = isset($d['collecte']) && is_array($d['collecte']) ? $d['collecte'] : [];
+    return isset($c['campagnes']) && is_array($c['campagnes']) ? $c['campagnes'] : [];
+}
+
+function campagneCollecte($etat, $id) {
+    if ($id === '') return null;
+    foreach (campagnesCollecte($etat) as $c) {
+        if (is_array($c) && (string) ($c['id'] ?? '') === $id) return $c;
+    }
+    return null;
+}
+
+/* Une seule campagne ouverte suffit à ouvrir la porte : le dépôt
+   lui-même vérifie ensuite que c'est bien celle qu'on lui
+   désigne. */
 function collecteOuverte($etat) {
-    return porteOuverte($etat, 'collecte');
+    if (porteOuverte($etat, 'collecte')) return true;
+    foreach (campagnesCollecte($etat) as $c) {
+        if (is_array($c) && !empty($c['ouverte'])) return true;
+    }
+    return false;
 }
 
 /* Empreinte de l'appelant : on ne conserve pas l'adresse IP en
@@ -210,10 +236,42 @@ if (isset($_GET['depot'])) {
         $etat = lireEtat();
         $d = isset($etat['donnees']) && is_array($etat['donnees']) ? $etat['donnees'] : [];
         $c = isset($d['collecte']) && is_array($d['collecte']) ? $d['collecte'] : [];
+
+        /* Seules les campagnes ouvertes sortent d'ici, et seulement
+           ce que le formulaire a besoin d'afficher : ni qui les a
+           créées, ni ce qu'elles ont déjà reçu. */
+        $camps = [];
+        foreach (campagnesCollecte($etat) as $k) {
+            if (!is_array($k) || empty($k['ouverte'])) continue;
+            $arts = [];
+            $bruts = isset($k['articles']) && is_array($k['articles']) ? $k['articles'] : [];
+            foreach ($bruts as $a) {
+                if (count($arts) >= 40) break;
+                if (!is_array($a)) continue;
+                $nom = txt($a['nom'] ?? '', 140);
+                if ($nom === '') continue;
+                $arts[] = [
+                    'id'        => txt($a['id'] ?? '', 40),
+                    'nom'       => $nom,
+                    'precision' => txt($a['precision'] ?? '', 240),
+                ];
+            }
+            $camps[] = [
+                'id'        => txt($k['id'] ?? '', 40),
+                'titre'     => txt($k['titre'] ?? '', 200),
+                'cadre'     => txt($k['cadre'] ?? '', 1500),
+                'depot'     => txt($k['depot'] ?? '', 400),
+                'horsListe' => !empty($k['horsListe']),
+                'articles'  => $arts,
+            ];
+            if (count($camps) >= 20) break;
+        }
+
         repondre(200, [
-            'ouverte' => collecteOuverte($etat),
-            'message' => txt($c['message'] ?? '', 600),
-            'besoins' => txt($c['besoins'] ?? '', 1200),
+            'ouverte'   => collecteOuverte($etat),
+            'message'   => txt($c['message'] ?? '', 600),
+            'besoins'   => txt($c['besoins'] ?? '', 1200),
+            'campagnes' => $camps,
         ]);
     }
 
@@ -241,6 +299,8 @@ if (isset($_GET['depot'])) {
     $tel         = txt($in['tel'] ?? '', 40);
     $mail        = txt($in['mail'] ?? '', 120);
     if ($mail !== '' && !filter_var($mail, FILTER_VALIDATE_EMAIL)) $mail = '';
+
+    $campagne = txt($in['campagne'] ?? '', 40);
 
     $lignes = [];
     $brutLignes = isset($in['lignes']) && is_array($in['lignes']) ? $in['lignes'] : [];
@@ -277,6 +337,23 @@ if (isset($_GET['depot'])) {
         $etat = lireEtat();
         if (!collecteOuverte($etat)) {
             repondre(403, ['erreur' => 'La collecte de matériel n\'est pas ouverte']);
+        }
+
+        /* Une déclaration désigne la campagne à laquelle elle
+           répond : c'est elle qui fait foi, pas l'état général de
+           la collecte. Une campagne refermée entre le moment où
+           l'on ouvre le formulaire et celui où on le valide
+           n'accepte plus rien — le donateur doit l'apprendre. */
+        $campagneTitre = '';
+        if ($campagne !== '') {
+            $k = campagneCollecte($etat, $campagne);
+            if ($k === null) {
+                repondre(404, ['erreur' => 'Cet appel aux dons n\'existe plus. Appelez la coordination de la CPTS Pau Béarn.']);
+            }
+            if (empty($k['ouverte'])) {
+                repondre(403, ['erreur' => 'Cet appel aux dons vient d\'être clos. Votre déclaration n\'a pas été enregistrée — appelez la coordination de la CPTS Pau Béarn si votre don reste possible.']);
+            }
+            $campagneTitre = txt($k['titre'] ?? '', 200);
         }
 
         $donnees = (array) ($etat['donnees'] ?? []);
@@ -316,6 +393,8 @@ if (isset($_GET['depot'])) {
             'bordereau'    => 'Engagement en ligne',
             'note'         => txt($in['note'] ?? '', 800),
             'lignes'       => $lignes,
+            'campagne'     => $campagne,
+            'campagneTitre'=> $campagneTitre,
             'source'       => 'formulaire',
             'aVerifier'    => true,
             'engagement'   => [

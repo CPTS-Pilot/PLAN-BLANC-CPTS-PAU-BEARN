@@ -202,7 +202,22 @@ const RECEVEUR = "Entité désignée par l'ARS Nouvelle-Aquitaine — précisée
    demande, ce qui est le cas courant — un seul type de matériel. */
 let lignes = [{}];
 let envoiEnCours = false;
-let contexte = { ouverte: false, message: '', besoins: '' };
+let contexte = { ouverte: false, message: '', besoins: '', campagnes: [] };
+
+/* --- La campagne à laquelle on répond -------------------
+   La collecte ne se mène pas d'un bloc : la CPTS ouvre un appel
+   ciblé, avec sa liste de matériel, le referme, puis en ouvre un
+   autre. Le lien diffusé porte la campagne — don-de-materiel.html?c=…
+   — et c'est elle qui décide de ce que la page demande. Sans
+   campagne, la page retombe sur l'ancien fonctionnement : une
+   saisie libre du matériel proposé. */
+let campagne = null;
+/* Ce que le donateur a coché dans la liste : une entrée par
+   article retenu, la quantité et l'état allant avec. */
+let choix = {};
+/* Le hors-liste ne s'affiche qu'à la demande, et seulement si la
+   campagne l'accepte : la liste annoncée doit rester la règle. */
+let horsListeOuvert = false;
 
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
   ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -221,7 +236,60 @@ async function demarrer(){
   }catch(e){
     return afficher(`<div class="alerte rouge">Le service est momentanément injoignable. Réessayez dans quelques minutes, ou appelez la coordination de la CPTS Pau Béarn.</div>`);
   }
+
+  const ouvertes = Array.isArray(contexte.campagnes) ? contexte.campagnes : [];
+  let demandee = '';
+  try{ demandee = new URLSearchParams(location.search).get('c') || ''; }catch(e){ demandee = ''; }
+
+  /* Un lien qui désigne une campagne close ne doit pas glisser
+     vers une autre : celui qui l'a reçu croirait donner pour ce
+     qu'on lui a demandé. On le lui dit, et on lui montre ce qui
+     est ouvert aujourd'hui. */
+  if(demandee){
+    campagne = ouvertes.find(c => c.id === demandee) || null;
+    if(!campagne) return campagneClose(ouvertes);
+    return formulaire();
+  }
+
+  if(ouvertes.length === 1){ campagne = ouvertes[0]; return formulaire(); }
+  if(ouvertes.length > 1) return choisirCampagne(ouvertes);
+
+  /* Aucune campagne : la collecte d'avant les campagnes, si elle
+     est encore ouverte, continue de fonctionner telle quelle. */
   contexte.ouverte ? formulaire() : ferme();
+}
+
+/* Le lien porte une campagne qui n'est plus ouverte — ou qui a
+   été retirée du cockpit. */
+function campagneClose(ouvertes){
+  afficher(`<h1>Appel aux dons clos</h1>
+  <p class="chapo">L'appel aux dons auquel renvoie ce lien est terminé.</p>
+  <div class="carte">
+    <div class="alerte ambre">Cet appel n'accepte plus de déclaration. Merci de votre proposition — elle est arrivée après la clôture, ou le matériel demandé a été réuni.</div>
+    ${ouvertes.length ? `<p>La CPTS Pau Béarn a en revanche ${ouvertes.length > 1 ? 'd\'autres appels ouverts' : 'un autre appel ouvert'} en ce moment :</p>
+      <div class="actions" style="flex-direction:column;align-items:stretch">
+        ${ouvertes.map(c => `<a class="btn" style="text-decoration:none;text-align:center" href="?c=${encodeURIComponent(c.id)}">${esc(c.titre || 'Appel aux dons en cours')}</a>`).join('')}
+      </div>`
+      : `<p style="margin-bottom:0">Aucun autre appel n'est ouvert à ce jour. Si vous avez du matériel à proposer, appelez la coordination de la CPTS Pau Béarn plutôt que de le déposer quelque part : un don non sollicité encombre les circuits de secours plus qu'il ne les aide.</p>`}
+  </div>`);
+}
+
+/* Deux appels ouverts en même temps, et un lien sans campagne :
+   on ne devine pas à laquelle des deux le donateur répond. */
+function choisirCampagne(ouvertes){
+  afficher(`<h1>Proposer un don de matériel</h1>
+  <p class="chapo">La CPTS Pau Béarn a ${ouvertes.length} appels aux dons ouverts. Choisissez celui auquel vous répondez : chacun porte sa propre liste de matériel.</p>
+  ${ouvertes.map(c => `<div class="carte">
+    <h2 style="margin-bottom:6px">${esc(c.titre || 'Appel aux dons')}</h2>
+    ${(c.articles||[]).length
+      ? `<p class="sous-h">Matériel demandé : ${c.articles.map(a => esc(a.nom)).join(', ')}.</p>`
+      : ''}
+    <div class="actions"><button type="button" class="btn" onclick="retenirCampagne('${esc(c.id)}')">Répondre à cet appel</button></div>
+  </div>`).join('')}`);
+}
+function retenirCampagne(id){
+  campagne = (contexte.campagnes || []).find(c => c.id === id) || null;
+  if(campagne) formulaire();
 }
 
 function afficher(html){
@@ -245,12 +313,14 @@ function ferme(){
 
 /* --- Le formulaire -------------------------------------- */
 function formulaire(){
-  afficher(`<h1>Proposer un don de matériel</h1>
+  const c = campagne;
+  afficher(`<h1>${c && c.titre ? esc(c.titre) : 'Proposer un don de matériel'}</h1>
   <p class="chapo">Ce formulaire remplace le bordereau de don papier. Vous décrivez ce que vous proposez,
   vous acceptez les conditions du don, et vous recevez immédiatement votre récapitulatif à conserver.
   Rien à imprimer, rien à renvoyer.</p>
 
-  ${contexte.besoins ? `<div class="alerte ambre"><strong>Besoins exprimés à ce jour :</strong> ${esc(contexte.besoins)}</div>` : ''}
+  ${c && c.cadre ? `<div class="alerte ambre">${esc(c.cadre).replace(/\n/g,'<br>')}</div>` : ''}
+  ${!c && contexte.besoins ? `<div class="alerte ambre"><strong>Besoins exprimés à ce jour :</strong> ${esc(contexte.besoins)}</div>` : ''}
 
   <div class="carte">
     <h2>1 · Votre structure</h2>
@@ -277,17 +347,12 @@ function formulaire(){
     </div>
   </div>
 
-  <div class="carte">
-    <h2>2 · Matériel proposé</h2>
-    <p class="sous-h">Une ligne par type de matériel. Seule la désignation est obligatoire, mais plus vous
-    êtes précis, moins il y aura d'appels de vérification.</p>
-    <div class="lignes" id="lignes"></div>
-    <div class="actions"><button type="button" class="btn sec" onclick="ajouterLigne()">+ Ajouter une ligne</button></div>
-  </div>
+  <div class="carte" id="carte-materiel">${sectionMateriel()}</div>
 
   <div class="carte">
     <h2>3 · Disponibilité</h2>
     <p class="sous-h">Où et quand le matériel peut être récupéré.</p>
+    ${c && c.depot ? `<div class="alerte ambre" style="margin-bottom:14px"><strong>Dépôt et enlèvement :</strong> ${esc(c.depot).replace(/\n/g,'<br>')}</div>` : ''}
     <div class="form">
       <label><span class="k">Disponible à partir de</span>
         <input id="f-dispo" placeholder="Ex. dès demain 9 h, à tout moment"></label>
@@ -336,6 +401,88 @@ function formulaire(){
   ORSAN AMAVI. Elles ne sont ni cédées, ni utilisées à d'autres fins, et sont conservées le temps de la
   mobilisation et de son retour d'expérience. Vous pouvez demander leur rectification ou leur suppression
   auprès de la coordination de la CPTS Pau Béarn.</p>`);
+  rendreLignes();
+}
+
+/* --- 2 · Le matériel ------------------------------------
+   Deux formulaires en un. Quand la campagne annonce une liste
+   fermée — le cas courant, puisque c'est tout l'intérêt d'un
+   appel ciblé — on ne fait pas écrire au donateur ce qu'on lui a
+   déjà nommé : il coche, il dit combien. Sans liste, on retombe
+   sur la saisie libre, ligne par ligne. */
+function sectionMateriel(){
+  const arts = (campagne && campagne.articles) || [];
+  if(!arts.length){
+    return `<h2>2 · Matériel proposé</h2>
+    <p class="sous-h">Une ligne par type de matériel. Seule la désignation est obligatoire, mais plus vous
+    êtes précis, moins il y aura d'appels de vérification.</p>
+    <div class="lignes" id="lignes"></div>
+    <div class="actions"><button type="button" class="btn sec" onclick="ajouterLigne()">+ Ajouter une ligne</button></div>`;
+  }
+  const retenus = arts.filter(a => choix[a.id] && choix[a.id].pris).length;
+  return `<h2>2 · Ce que vous pouvez donner</h2>
+  <p class="sous-h">Voici précisément ce qui est demandé. Cochez ce que vous avez, indiquez la quantité : rien d'autre à décrire.</p>
+  <div class="lignes">${arts.map(articleHTML).join('')}</div>
+  ${campagne.horsListe
+    ? (horsListeOuvert
+        ? `<div style="margin-top:14px">
+             <p class="sous-h" style="margin-bottom:9px"><strong>Autre matériel.</strong> Ce qui sort de la liste ci-dessus n'est pas garanti d'être retenu : la coordination vous rappellera avant tout enlèvement.</p>
+             <div class="lignes" id="lignes"></div>
+             <div class="actions"><button type="button" class="btn sec" onclick="ajouterLigne()">+ Ajouter une ligne</button></div>
+           </div>`
+        : `<div class="actions"><button type="button" class="btn sec" onclick="ouvrirHorsListe()">Je peux donner autre chose que cette liste</button></div>`)
+    : `<p class="note" style="margin:14px 0 0">La CPTS ne collecte rien au-delà de cette liste : c'est ce qui a été demandé, et ce qui sera acheminé. Pour proposer autre chose, appelez la coordination.</p>`}
+  <p class="sous-h" id="compte-materiel" style="margin:12px 0 0">${retenus
+    ? `${retenus} matériel${retenus>1?'s':''} retenu${retenus>1?'s':''}.`
+    : 'Aucun matériel coché pour l\'instant.'}</p>`;
+}
+
+function articleHTML(a){
+  const ch = choix[a.id] || {};
+  return `<div class="lg" id="art-${esc(a.id)}" style="${ch.pris ? 'border-left-color:var(--stable,#2E7D5B);background:#F7FCFA' : ''}">
+    <label class="coche" style="margin:0;border:0;padding:0;background:none">
+      <input type="checkbox" ${ch.pris ? 'checked' : ''} onchange="cocherArticle('${esc(a.id)}',this.checked)">
+      <span><strong>${esc(a.nom)}</strong>${a.precision ? `<br><span style="color:var(--texte-2);font-size:13px">${esc(a.precision)}</span>` : ''}</span>
+    </label>
+    ${ch.pris ? `<div class="champs" style="margin-top:12px">
+      <label><span class="k">Combien ?</span>
+        <input id="q-${esc(a.id)}" value="${esc(ch.quantite||'')}" inputmode="text" placeholder="Ex. 3, une dizaine"
+          onchange="majArticle('${esc(a.id)}','quantite',this.value)"></label>
+      <label><span class="k">État</span>
+        <select onchange="majArticle('${esc(a.id)}','etat',this.value)">
+          ${ETATS.map(e => `<option ${e===(ch.etat||ETATS[0])?'selected':''}>${esc(e)}</option>`).join('')}
+        </select></label>
+      <label><span class="k">Observations</span>
+        <input value="${esc(ch.obs||'')}" placeholder="Ex. péremption 03/2027, sans brassard"
+          onchange="majArticle('${esc(a.id)}','obs',this.value)"></label>
+    </div>` : ''}
+  </div>`;
+}
+
+function cocherArticle(id, pris){
+  lissage();
+  choix[id] = choix[id] || {};
+  choix[id].pris = pris;
+  if(!pris){ delete choix[id]; }
+  redessinerMateriel();
+  /* Cocher, c'est annoncer qu'on donne : la quantité est la
+     question suivante, on y amène directement. */
+  if(pris){ const e = document.getElementById('q-' + id); if(e) e.focus(); }
+}
+function majArticle(id, champ, v){
+  choix[id] = choix[id] || {pris:true};
+  choix[id][champ] = v.trim();
+  const z = document.getElementById('compte-materiel');
+  if(z){
+    const n = Object.keys(choix).filter(k => choix[k].pris).length;
+    z.textContent = n ? `${n} matériel${n>1?'s':''} retenu${n>1?'s':''}.` : 'Aucun matériel coché pour l\'instant.';
+  }
+}
+function ouvrirHorsListe(){ lissage(); horsListeOuvert = true; redessinerMateriel(); }
+function redessinerMateriel(){
+  const z = document.getElementById('carte-materiel');
+  if(!z) return;
+  z.innerHTML = sectionMateriel();
   rendreLignes();
 }
 
@@ -396,7 +543,21 @@ async function valider(){
   if(envoiEnCours) return;
   lissage();
 
+  /* Le matériel part sous une seule forme, quelle que soit la
+     façon dont il a été saisi : le bordereau et le registre du
+     cockpit ne connaissent que des lignes. */
+  const coches = ((campagne && campagne.articles) || [])
+    .filter(a => choix[a.id] && choix[a.id].pris)
+    .map(a => ({
+      designation: a.nom + (a.precision ? ' (' + a.precision + ')' : ''),
+      quantite: (choix[a.id].quantite || '').trim(),
+      etat: choix[a.id].etat || ETATS[0],
+      obs: (choix[a.id].obs || '').trim(),
+      article: a.id
+    }));
+
   const donnees = {
+    campagne:     campagne ? campagne.id : '',
     structure:    val('f-structure'),
     type:         val('f-type'),
     commune:      val('f-commune'),
@@ -411,8 +572,8 @@ async function valider(){
     site:         val('f-site'),
     /* Le menu « état » affiche sa première valeur sans qu'on y
        touche : on la transmet, plutôt que de la laisser vide. */
-    lignes:       lignes.filter(l => (l.designation||'').trim())
-                        .map(l => ({...l, etat: l.etat || ETATS[0]})),
+    lignes:       coches.concat(lignes.filter(l => (l.designation||'').trim())
+                        .map(l => ({...l, etat: l.etat || ETATS[0]}))),
     conditions:   document.getElementById('c-conditions').checked
                   && document.getElementById('c-habilite').checked
   };
@@ -427,8 +588,9 @@ async function valider(){
   exiger('f-representant', donnees.representant, 'votre nom');
   exiger('f-tel',          donnees.tel,          'un téléphone');
   if(!donnees.lignes.length){
-    manques.push('au moins une ligne de matériel');
-    premier = premier || 'l-designation-0';
+    const liste = ((campagne && campagne.articles) || []).length;
+    manques.push(liste ? 'au moins un matériel coché' : 'au moins une ligne de matériel');
+    premier = premier || (liste ? 'carte-materiel' : 'l-designation-0');
   }
   const cond = document.getElementById('c-conditions').checked;
   const habi = document.getElementById('c-habilite').checked;
@@ -540,6 +702,7 @@ function recapitulatif(d, ref, quand){
     ${l('Date de réception', '')}
 
     <h3>3 · Matériel remis</h3>
+    ${campagne && campagne.titre ? l('Répond à l\'appel', campagne.titre) : ''}
     <div class="tw"><table>
       <thead><tr><th style="width:44%">Désignation</th><th style="width:16%">Quantité</th>
         <th style="width:18%">État</th><th style="width:22%">Observations</th></tr></thead>
