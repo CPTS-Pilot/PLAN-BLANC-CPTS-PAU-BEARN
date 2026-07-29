@@ -314,6 +314,11 @@ if (isset($_GET['depot'])) {
             'quantite'    => txt($l['quantite'] ?? '', 60),
             'etat'        => txt($l['etat'] ?? '', 60),
             'obs'         => txt($l['obs'] ?? '', 200),
+            /* L'article de la liste que cette ligne coche. C'est ce
+               qui permet, au moment de relancer, de dire lequel des
+               matériels demandés a trouvé preneur et lequel n'a
+               intéressé personne. Vide pour une saisie hors liste. */
+            'article'     => txt($l['article'] ?? '', 40),
         ];
     }
 

@@ -242,7 +242,10 @@ const frdate = d => d ? new Date(d + 'T12:00:00').toLocaleDateString('fr-FR',
   {weekday:'long', day:'2-digit', month:'long', year:'numeric'}) : '';
 const nb = n => (Math.round(n * 100) / 100).toString().replace('.', ',');
 
-function afficher(html){ document.getElementById('page').innerHTML = html; }
+/* Un écran qui se remplace se relit depuis le début : sans cela on
+   reste à la hauteur où on avait laissé le précédent, et le nouveau
+   s'ouvre en son milieu. */
+function afficher(html){ document.getElementById('page').innerHTML = html; window.scrollTo(0,0); }
 let minuteur = null;
 function toast(m){
   const t = document.getElementById('toast');
@@ -517,7 +520,6 @@ async function envoyer(){
       en ${dernier.lignes} ligne${dernier.lignes > 1 ? 's' : ''}${dernier.ref ? ' · réf. ' + esc(dernier.ref) : ''}.
       L'écran est prêt pour le déposant suivant.</div>
   </div>`;
-  window.scrollTo(0,0);
   toast("Dépôt enregistré");
 }
 

@@ -658,32 +658,42 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
    d'où le liseré, bleu quand c'est nous, ambre quand ça vient du
    dehors — et la personne qui s'en est chargée, qui la signe.
    Le texte, lui, est souvent un paragraphe entier : il se lit en
-   corps de lecture, aéré, et non en titre gras. */
-.ent-r.mc{border-left-color:var(--encre-2);padding:16px 19px 15px;margin-bottom:12px;
+   corps de lecture et non en titre gras.
+
+   Serré, et non aéré : la main courante se parcourt, trente entrées
+   à la suite, et chacune tenait le tiers d'un écran pour trois
+   lignes de texte. Ce qui a été resserré, ce sont les blancs — les
+   marges, la hauteur de ligne, la pastille de signature ramenée sur
+   une seule ligne. Le corps du texte, lui, n'a pas bougé : c'est ce
+   qu'on vient lire. */
+.ent-r.mc{border-left-color:var(--encre-2);padding:10px 15px 9px;margin-bottom:6px;
   transition:box-shadow .14s,border-color .14s}
 .ent-r.mc:hover{box-shadow:0 3px 14px rgba(6,43,99,.07)}
 .ent-r.mc.dehors{border-left-color:var(--ambre);background:linear-gradient(90deg,#FFFDF8,var(--carte) 220px)}
-.ent-r.mc .haut{gap:9px;margin-bottom:9px}
-.ent-r.mc .hr{background:var(--surface);border-radius:5px;padding:3px 8px;font-size:11px;
+.ent-r.mc .haut{gap:8px;margin-bottom:5px}
+.ent-r.mc .hr{background:var(--surface);border-radius:5px;padding:2px 7px;font-size:11px;
   letter-spacing:.03em;color:var(--encre)}
-.ent-r.mc .ti{font-family:var(--corps);font-weight:400;font-size:15px;line-height:1.62;
+.ent-r.mc .venu{padding:2px 9px;font-size:11.5px;gap:6px}
+.ent-r.mc .ti{font-family:var(--corps);font-weight:400;font-size:14.5px;line-height:1.5;
   color:var(--texte)}
-/* La signature : initiales en pastille, nom à côté. */
-.ent-r.mc .par{display:inline-flex;align-items:center;gap:9px;margin-top:13px}
-.ent-r.mc .par .av{width:29px;height:29px;flex:none;border-radius:50%;background:var(--cobalt-clair);
-  color:var(--encre-2);font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.02em;
+/* La signature : initiales en pastille, nom à côté — sur une seule
+   ligne, le libellé et le nom côte à côte plutôt qu'empilés. */
+.ent-r.mc .par{display:inline-flex;align-items:center;gap:7px;margin-top:7px}
+.ent-r.mc .par .av{width:21px;height:21px;flex:none;border-radius:50%;background:var(--cobalt-clair);
+  color:var(--encre-2);font-family:var(--display);font-weight:700;font-size:9.5px;letter-spacing:.02em;
   display:inline-flex;align-items:center;justify-content:center}
-.ent-r.mc .par .nn{display:flex;flex-direction:column;line-height:1.25;font-size:13.5px;color:var(--texte)}
+.ent-r.mc .par .nn{display:flex;flex-direction:row;align-items:baseline;gap:6px;flex-wrap:wrap;
+  line-height:1.25;font-size:13px;color:var(--texte)}
 .ent-r.mc .par .k{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
   color:var(--texte-2)}
 /* La suite donnée n'est pas une remarque en marge : c'est ce qui
    reste à faire. Elle se pose dans un cadre à elle. */
-.ent-r.mc .bloc{margin-top:13px;padding:10px 13px;border-left:0;border-radius:7px;
+.ent-r.mc .bloc{margin-top:7px;padding:6px 10px;border-left:0;border-radius:6px;
   background:var(--surface)}
-.ent-r.mc .bloc .k{color:var(--encre-2);margin-bottom:4px}
-.ent-r.mc .bloc .v{font-size:13.5px;line-height:1.55;color:var(--texte-2)}
-.ent-r.mc .pied{margin-top:13px;border-top:1px solid var(--trait);opacity:.85}
-@media(max-width:600px){.ent-r.mc{padding:14px 15px}}
+.ent-r.mc .bloc .k{color:var(--encre-2);margin-bottom:1px}
+.ent-r.mc .bloc .v{font-size:13px;line-height:1.45;color:var(--texte-2)}
+.ent-r.mc .pied{margin-top:7px;padding-top:6px;border-top:1px solid var(--trait);opacity:.85}
+@media(max-width:600px){.ent-r.mc{padding:9px 12px 8px}}
 .ent-r .pied{margin-top:11px;padding-top:8px;border-top:1px dashed var(--trait);
   font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--texte-2);
   display:flex;gap:6px 16px;flex-wrap:wrap}
@@ -797,6 +807,30 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
    dans la liste s'efface au lieu de se proposer deux fois. */
 .sugg button.pris{opacity:.4;pointer-events:none;text-decoration:line-through}
 
+/* ---------- relancer un appel ----------
+   Relancer, ce n'est pas recopier : c'est décider, matériel par
+   matériel, ce qu'on redemande. La ligne dit donc ce que le
+   précédent appel a rapporté — combien de professionnels l'ont
+   proposé, et combien d'unités. Un matériel que personne n'avait
+   ne se redemande pas de la même façon qu'un matériel qui a
+   trouvé preneur. */
+.bilan{display:flex;flex-direction:column;gap:8px}
+.bil{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--trait);
+  border-radius:9px;padding:11px 12px;cursor:pointer;background:#fff}
+.bil:hover{border-color:var(--encre-2)}
+.bil.on{border-color:var(--stable);background:#F7FCFA}
+.bil input{width:18px;height:18px;flex:0 0 18px;margin-top:2px;accent-color:var(--encre-2)}
+.bil .bn{flex:1;min-width:0;font-size:14px;line-height:1.35;color:var(--encre)}
+.bil .bn i{display:block;font-style:normal;color:var(--texte-2);font-size:12.5px;margin-top:2px}
+.bil .bq{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:#1E5C46;
+  background:#DFF0E9;border-radius:5px;padding:5px 8px;white-space:nowrap;flex:0 0 auto;line-height:1.25}
+.bil .bq.nul{background:var(--fond-2,#F1F3F6);color:var(--texte-2)}
+@media(max-width:560px){.bil{flex-wrap:wrap}.bil .bq{margin-left:29px}}
+/* Le rappel de ce dont un appel est la suite, sur sa carte. */
+.camp .suite-c{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--encre-2);background:var(--cobalt-clair);border-radius:5px;padding:4px 8px;
+  display:inline-block;margin-bottom:9px}
+
 /* L'aperçu. Ce qu'on fabrique ici n'est pas un formulaire de
    saisie, c'est une page que quelqu'un lira sur son téléphone :
    on la montre pendant qu'on l'écrit, plutôt que de la découvrir
@@ -865,10 +899,32 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .titre-s .k{font-family:var(--display);font-weight:700;font-size:17px;color:var(--encre);
   letter-spacing:-.005em;text-transform:none;margin-bottom:3px}
 .titre-s .sous-f{margin:0;font-size:13.5px;line-height:1.5;color:var(--texte-2);max-width:72ch}
-.retour-m{background:none;border:0;padding:0;margin:0 0 12px;cursor:pointer;
-  font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--texte-2)}
-.retour-m:hover{color:var(--encre-2)}
-@media print{.modules,.retour-m{display:none}}
+/* --- Le pas en arrière ----------------------------------------
+   Entrer dans un sous-écran est facile ; en ressortir doit l'être
+   autant. Le retour n'est donc pas une mention en petits capitales
+   qu'on devine, mais un bouton plein : une flèche cerclée qu'on
+   repère du coin de l'œil, le nom de l'écran où l'on retombe, et
+   une cible assez large pour le pouce. Une seule allure pour tous
+   les retours du cockpit — matériel, renfort, orientation, recueil,
+   rapports — pour qu'on n'ait à l'apprendre qu'une fois. */
+.retour-m,.retour-r,.retour-f{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--carte);border:1.5px solid var(--encre-2);border-radius:24px;
+  color:var(--encre-2);font-family:var(--corps);font-size:14.5px;font-weight:600;
+  letter-spacing:0;text-transform:none;line-height:1.25;text-align:left;
+  cursor:pointer;padding:8px 18px 8px 9px;min-height:44px;margin:0 0 14px}
+.retour-m::before,.retour-r::before,.retour-f::before{
+  content:"←";flex:0 0 27px;width:27px;height:27px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--cobalt-clair);color:var(--encre-2);
+  font-size:17px;font-weight:700;line-height:1}
+.retour-m:hover,.retour-r:hover,.retour-f:hover{
+  background:var(--encre-2);border-color:var(--encre-2);color:#fff;text-decoration:none}
+.retour-m:hover::before,.retour-r:hover::before,.retour-f:hover::before{
+  background:#fff;color:var(--encre-2)}
+.retour-m:focus-visible,.retour-r:focus-visible,.retour-f:focus-visible{
+  outline:3px solid var(--ambre);outline-offset:2px}
+@media print{.modules,.retour-m,.retour-r{display:none}}
 
 .don .ident .n .src-f,.stock .nom .src-f{
   font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
@@ -2149,8 +2205,8 @@ function demanderCode(){
     <p style="color:var(--texte-2);margin:0 0 14px">Ce cockpit contient des coordonnées de professionnels de santé et le détail des échanges de crise. Le code vous a été communiqué par la coordination.</p>
     <label><span class="k">Code</span><input id="in-code" type="password" placeholder="Code d'accès" onkeydown="if(event.key==='Enter')validerCode()"></label>
     <div class="actions"><button class="btn" onclick="validerCode()">Entrer</button></div>`;
-  document.getElementById('rideau').classList.add('on');
-  setTimeout(()=>{ const i = document.getElementById('in-code'); if(i) i.focus(); }, 60);
+  ouvrirRideau();
+  setTimeout(()=>{ const i = document.getElementById('in-code'); if(i) i.focus({preventScroll:true}); }, 60);
 }
 async function validerCode(){
   const v = document.getElementById('in-code').value.trim();
@@ -2378,7 +2434,7 @@ function editerEntete(){
     <label style="margin-bottom:12px"><span class="k">Pastille — court</span><input id="en-niveau" value="${esc(etat.entete.niveau)}"></label>
     <label style="margin-bottom:12px"><span class="k">Phrase de situation</span><textarea id="en-phrase">${esc(etat.entete.phrase)}</textarea></label>
     <div class="actions"><button class="btn" onclick="validerEntete()">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerEntete(){
   etat.entete.niveau = document.getElementById('en-niveau').value.trim() || etat.entete.niveau;
@@ -2434,6 +2490,19 @@ let modaleRecens = false;
    et celui qui attendait doit l'apprendre plutôt que rester en
    suspens. Voir demanderOuverture(). */
 let repondreOuv = null;
+/* Une fenêtre qui s'ouvre commence par son titre. Le rideau et la
+   modale sont uniques : on n'en crée pas une par formulaire, on
+   remplace ce qu'il y a dedans. Quand une fenêtre s'ouvre depuis
+   une autre — modifier depuis une fiche, confirmer depuis une
+   saisie — la modale est déjà déroulée là où on lisait, et le
+   nouveau formulaire s'ouvrirait au milieu de lui-même. On la
+   remet en haut à chaque ouverture. */
+function ouvrirRideau(){
+  document.getElementById('rideau').classList.add('on');
+  const m = document.getElementById('modale');
+  if(m) m.scrollTop = 0;
+}
+
 function fermer(){
   if(verrouModale) return;
   if(repondreOuv){ const r = repondreOuv; repondreOuv = null; r(null); }
@@ -2487,8 +2556,8 @@ function editerContact(nom){
       <span>Fait partie de la cellule de crise<span class="d">Apparaît en tête de l'organigramme, avec sa profession.</span></span></label>
     <div class="actions"><button class="btn" onclick="validerContact('${nEsc}')">Enregistrer</button>
       <button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
-  setTimeout(()=>{ const i = document.getElementById(neuf ? 'ct-nom' : 'ct-prof'); if(i) i.focus(); }, 60);
+  ouvrirRideau();
+  setTimeout(()=>{ const i = document.getElementById(neuf ? 'ct-nom' : 'ct-prof'); if(i) i.focus({preventScroll:true}); }, 60);
 }
 async function validerContact(nom){
   normaliserPersonnes();
@@ -2570,8 +2639,8 @@ function demanderIdentite(porte){
   h += `<label><span class="k">Prénom et nom</span><input id="in-moi" value="${esc(moi === 'Anonyme' ? dernierNom : moi)}" placeholder="Prénom et nom" onkeydown="if(event.key==='Enter')validerIdentite()"></label>
     <div class="actions"><button class="btn" onclick="validerIdentite()">Entrer dans le cockpit</button>${porte?'':'<button class="btn sec" onclick="fermer()">Annuler</button>'}</div>`;
   m.innerHTML = h;
-  document.getElementById('rideau').classList.add('on');
-  setTimeout(()=>{ const i = document.getElementById('in-moi'); if(i && !noms.length) i.focus(); }, 60);
+  ouvrirRideau();
+  setTimeout(()=>{ const i = document.getElementById('in-moi'); if(i && !noms.length) i.focus({preventScroll:true}); }, 60);
 }
 async function choisirNom(n){
   moi = n;
@@ -3288,7 +3357,7 @@ const CHAMPS = {
 
 function ouvrirAjout(k, mode){
   document.getElementById('modale').innerHTML = formulaire(k, null, mode);
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 
 /* Les champs retenus selon le mode de saisie : en saisie manuelle on
@@ -3444,7 +3513,7 @@ function formulaire(k, o, mode){
 function ouvrirEdition(k, id){
   const o = (etat[k]||[]).find(x => x.id === id); if(!o) return;
   document.getElementById('modale').innerHTML = formulaire(k, o);
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 
 async function enregistrer(k, id, mode){
@@ -3823,8 +3892,8 @@ async function ajouterConsigne(type){
     <p style="color:var(--texte-2);margin:0 0 14px">${type==='faire'?"Ce que les membres doivent faire maintenant.":"Ce qu'il ne faut surtout pas faire, et qui doit être dit explicitement."}</p>
     <label><span class="k">Consigne</span><textarea id="in-cons"></textarea></label>
     <div class="actions"><button class="btn" onclick="validerConsigne('${type}')">Ajouter</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
-  setTimeout(()=>document.getElementById('in-cons').focus(), 60);
+  ouvrirRideau();
+  setTimeout(()=>document.getElementById('in-cons').focus({preventScroll:true}), 60);
 }
 async function validerConsigne(type){
   const v = document.getElementById('in-cons').value.trim();
@@ -3835,7 +3904,7 @@ function modifierConsigne(type, i){
   document.getElementById('modale').innerHTML = `<h3>Modifier la consigne</h3>
     <label><span class="k">Consigne</span><textarea id="in-cons">${esc(etat.consignes[type][i])}</textarea></label>
     <div class="actions"><button class="btn" onclick="validerModifConsigne('${type}',${i})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerModifConsigne(type, i){
   const v = document.getElementById('in-cons').value.trim();
@@ -3983,8 +4052,8 @@ function ajouterRenfort(mid){
     <label style="margin-top:12px"><span class="k">Ce qu'il ou elle prend en charge</span>
       <input id="rf-role" placeholder="Ex. phoning auprès des pharmaciens" onkeydown="if(event.key==='Enter')validerRenfort('${mid}')"></label>
     <div class="actions"><button class="btn" onclick="validerRenfort('${mid}')">Ajouter</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
-  setTimeout(()=>{ const i = document.getElementById('rf-nom'); if(i) i.focus(); }, 60);
+  ouvrirRideau();
+  setTimeout(()=>{ const i = document.getElementById('rf-nom'); if(i) i.focus({preventScroll:true}); }, 60);
 }
 
 async function validerRenfort(mid){
@@ -4123,8 +4192,8 @@ function modifierProchaine(id){
       <input id="pa-ech" type="date" value="${esc(m.echeance || '')}"></label>
     <div class="actions"><button class="btn" onclick="validerProchaine('${id}')">Enregistrer</button>
       <button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
-  setTimeout(()=>{ const i = document.getElementById('pa-txt'); if(i) i.focus(); }, 60);
+  ouvrirRideau();
+  setTimeout(()=>{ const i = document.getElementById('pa-txt'); if(i) i.focus({preventScroll:true}); }, 60);
 }
 async function validerProchaine(id){
   const m = etat.missions.find(x => x.id === id); if(!m) return;
@@ -4156,7 +4225,7 @@ function voirFiche(id){
       <button class="btn sec" onclick="imprimerModale()">Imprimer</button>
       <button class="btn sec" onclick="fermer()">Fermer</button>
     </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 
 function editerFiche(id){
@@ -4174,7 +4243,7 @@ function editerFiche(id){
     <label style="margin-bottom:10px"><span class="k">Ce qu'on ne fait pas</span><textarea id="fi-limite" style="min-height:56px">${esc(f.limite||'')}</textarea></label>
     <label style="margin-bottom:10px"><span class="k">Où consigner</span><select id="fi-espace">${opts}</select></label>
     <div class="actions"><button class="btn" onclick="validerFiche('${m.id}')">Enregistrer</button><button class="btn sec" onclick="voirFiche('${m.id}')">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 
 async function validerFiche(id){
@@ -4211,8 +4280,8 @@ function nouvelleMission(pilote){
     <label style="margin-bottom:10px"><input id="nm-pilote" value="${esc(pilote)}" placeholder="Prénom et nom, ou à désigner plus tard"></label>
     <label style="margin-bottom:10px"><span class="k">Où consigner</span><select id="nm-espace">${opts}</select></label>
     <div class="actions"><button class="btn" onclick="validerMission()">${pilote ? 'Confier la mission' : 'Créer la mission'}</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
-  setTimeout(()=>{ const i = document.getElementById('nm-titre'); if(i) i.focus(); }, 60);
+  ouvrirRideau();
+  setTimeout(()=>{ const i = document.getElementById('nm-titre'); if(i) i.focus({preventScroll:true}); }, 60);
 }
 
 /* Renommer, réaffecter, clore : tout ce qui se corrige au fil de
@@ -4236,7 +4305,7 @@ function modifierMission(id){
       <button class="btn sec" onclick="fermer()">Annuler</button>
       <button class="btn sec" onclick="voirFiche('${id}')">Fiche mission</button>
       <button class="sup-mod" onclick="supprimerMission('${id}')">Supprimer la mission</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerModifMission(id){
   const m = etat.missions.find(x => x.id === id); if(!m) return;
@@ -4269,7 +4338,7 @@ async function supprimerMission(id){
   document.getElementById('modale').innerHTML = `<h3>Supprimer cette mission&nbsp;?</h3>
     <p style="color:var(--texte-2)">« ${esc(m.titre)} » disparaîtra de l'organigramme. Les saisies déjà enregistrées dans son espace sont conservées.</p>
     <div class="actions"><button class="btn" onclick="confirmerSuppression('${id}')">Supprimer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function confirmerSuppression(id){
   noterRetrait(id);
@@ -4514,7 +4583,7 @@ function ouvrirSaisieVisio(id){
     <button class="btn" onclick="validerVisio(${v ? `'${v.id}'` : ''})">Enregistrer</button>
     <button class="btn sec" onclick="fermer()">Annuler</button>
   </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 
 function pointVisioHTML(p, i){
@@ -4747,8 +4816,8 @@ function ouvrirPointSituation(id){
       <button class="btn" onclick="validerPointSituation()">Enregistrer le point</button>
       <button class="btn sec" onclick="fermer()">Annuler</button>
     </div>`;
-  document.getElementById('rideau').classList.add('on');
-  setTimeout(()=>{ const i = document.getElementById('p-etat'); if(i) i.focus(); }, 60);
+  ouvrirRideau();
+  setTimeout(()=>{ const i = document.getElementById('p-etat'); if(i) i.focus({preventScroll:true}); }, 60);
 }
 async function validerPointSituation(){
   const r = rubriqueDe(brouillonPoint);
@@ -4935,7 +5004,7 @@ function ouvrirAppel(id){
     <label class="large"><span class="k">Ce qui a été dit *</span><textarea id="ap-dit" placeholder="Situation sur place, besoins exprimés, réponse obtenue…"></textarea></label>
     <label class="large"><span class="k">Suite à donner</span><textarea id="ap-suite" placeholder="Rappeler le…, transmettre à…, rien"></textarea></label>
   </div><div class="actions"><button class="btn" onclick="validerAppel('${c.id}')">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerAppel(id){
   const c = (etat.cpts||[]).find(x => x.id === id); if(!c) return;
@@ -4965,7 +5034,7 @@ function ouvrirTel(id){
   </div>
   <div class="note">Le numéro publié dans les annuaires n'est pas toujours celui qui répond. Corrigez-le dès qu'un interlocuteur vous en donne un autre, et dites d'où il vient : les autres pilotes appelleront le bon.</div>
   <div class="actions"><button class="btn" onclick="validerTel('${c.id}')">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerTel(id){
   const c = (etat.cpts||[]).find(x => x.id === id); if(!c) return;
@@ -4994,7 +5063,7 @@ function ouvrirCpts(id){
     <label><span class="k">Site</span><input id="cp-url" value="${esc(c?c.url:'')}" placeholder="https://"></label>
     <label class="large"><span class="k">Observation</span><textarea id="cp-note">${esc(c?c.note:'')}</textarea></label>
   </div><div class="actions"><button class="btn" onclick="validerCpts(${c?`'${c.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerCpts(id){
   const g = k => document.getElementById('cp-'+k).value.trim();
@@ -5093,7 +5162,7 @@ function ouvrirEtab(id){
     <label class="large"><span class="k">Observation</span><textarea id="et-note">${esc(o?o.note:'')}</textarea></label>
     <label class="large"><span class="k">Site</span><input id="et-url" value="${esc(o?o.url:'')}" placeholder="https://"></label>
   </div><div class="actions"><button class="btn" onclick="validerEtab(${o?`'${o.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerEtab(id){
   const g = k => document.getElementById('et-'+k).value.trim();
@@ -5159,7 +5228,7 @@ function ouvrirLigne(id){
     <label class="large"><span class="k">Page officielle</span><input id="lg-url" value="${esc(o?o.url:'')}" placeholder="https://"></label>
     <label class="large"><span class="k">Coordonnée à confirmer&nbsp;?</span><select id="lg-verif"><option ${o&&o.verif?'':'selected'}>Non, elle est vérifiée</option><option ${o&&o.verif?'selected':''}>Oui, à confirmer</option></select></label>
   </div><div class="actions"><button class="btn" onclick="validerLigne(${o?`'${o.id}'`:''})">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerLigne(id){
   const n = document.getElementById('lg-nom').value.trim();
@@ -5296,6 +5365,67 @@ function nomCampagne(o){
   return (c && c.titre) || o.campagneTitre || 'Appel retiré';
 }
 
+/* --- Ce qu'un appel a rapporté, matériel par matériel ----
+   Deux désignations écrites différemment — accents, pluriel,
+   parenthèses — désignent le même dispositif : on les rapproche
+   sur une forme réduite. La ligne déclarée porte normalement
+   l'article qu'elle coche ; le rapprochement par le nom sert de
+   repli pour ce qui a été saisi autrement. */
+const cleDes = s => String(s ?? '').toLowerCase().normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+const nbrQte = v => { const n = parseFloat(String(v ?? '').replace(',', '.')); return isFinite(n) ? n : 0; };
+
+function bilanCampagne(id){
+  const c = campagne(id) || {};
+  const dons = donsDeCampagne(id);
+  const arts = (c.articles || []).map(a => Object.assign({}, a, {nb:0, unites:0, flou:false}));
+  const parId = {}, parNom = {};
+  arts.forEach(a => {
+    parId[a.id] = a;
+    const complet = a.nom + (a.precision ? ' (' + a.precision + ')' : '');
+    parNom[cleDes(complet)] = a;
+    if(!parNom[cleDes(a.nom)]) parNom[cleDes(a.nom)] = a;
+  });
+  /* Ce que des professionnels ont proposé sans qu'on le demande :
+     c'est souvent le meilleur indice de ce qu'il fallait demander. */
+  const hors = {};
+  dons.forEach(d => (d.lignes || []).forEach(l => {
+    const a = (l.article && parId[l.article]) || parNom[cleDes(l.designation || '')];
+    if(a){
+      a.nb++;
+      const n = nbrQte(l.quantite);
+      if(n) a.unites += n; else a.flou = true;
+    }else if((l.designation || '').trim()){
+      const k = cleDes(l.designation);
+      hors[k] = hors[k] || {nom:(l.designation || '').trim(), nb:0};
+      hors[k].nb++;
+    }
+  }));
+  return {c, dons, arts, hors: Object.values(hors).sort((a,b) => b.nb - a.nb)};
+}
+
+/* Ce qu'a rapporté un matériel, dit en trois mots. */
+function libBilan(a){
+  if(!a.nb) return {t:"personne n'en a proposé", nul:true};
+  const q = a.unites ? a.unites + (a.flou ? '+' : '') + ' unité' + (a.unites > 1 ? 's' : '') : '';
+  return {t: a.nb + ' déclaration' + (a.nb > 1 ? 's' : '') + (q ? ' · ' + q : ''), nul:false};
+}
+
+/* Le titre proposé à la relance. Une vague se numérote plutôt que
+   de se dater : le donateur lit ce titre, et « (2) » lui dit ce
+   qu'il faut sans l'encombrer. Reprendre la relance d'une relance
+   incrémente au lieu d'empiler. */
+function titreRelance(titre){
+  const nu = String(titre || '').replace(/\s*\(\d+\)\s*$/, '').trim();
+  let max = 1;
+  campagnes().forEach(x => {
+    const t = String(x.titre || '').trim();
+    const m = t.match(/^(.*?)\s*\((\d+)\)$/);
+    if(m && m[1].trim() === nu) max = Math.max(max, parseInt(m[2], 10));
+  });
+  return nu + ' (' + (max + 1) + ')';
+}
+
 /* L'interrupteur global de la collecte suit les appels : il reste
    la porte que le serveur regarde en premier, et ce qui fait dire
    « collecte ouverte » au palier. */
@@ -5325,7 +5455,7 @@ function demanderOuverture(o){
         <button class="btn sec" onclick="repondreOuverture('essai')">Non — je teste seulement</button>
         <button class="btn sec" onclick="repondreOuverture('')" style="margin-left:auto">Annuler</button>
       </div>`;
-    document.getElementById('rideau').classList.add('on');
+    ouvrirRideau();
   });
 }
 function repondreOuverture(r){
@@ -5410,6 +5540,7 @@ function consignerCampagneEnCourante(c, ouvre){
     id: uid(), date: aujourdhui(), heure: maintenant(), source: '',
     evenement: ouvre
       ? "Lancement de l'appel aux dons « " + (c.titre || 'sans titre') + " » : le formulaire en ligne est accessible à qui en a le lien."
+        + (c.suite ? "\nRelance de « " + ((campagne(c.suite) || {}).titre || c.suiteTitre || 'un appel précédent') + " »." : '')
         + (liste.length ? "\nMatériel demandé : " + liste.join(', ') + "." : '')
         + (c.horsListe ? "\nLes propositions hors liste sont acceptées, sous réserve de rappel." : "\nRien n'est collecté au-delà de cette liste.")
         + (c.motif ? "\nMotif : " + c.motif : '')
@@ -5430,7 +5561,7 @@ function editerCollecte(){
     <label style="margin-bottom:12px"><span class="k">Message affiché</span>
       <textarea id="co-message" placeholder="Ex. Un nouvel appel sera peut-être ouvert en fin de semaine.">${esc(c.message||'')}</textarea></label>
     <div class="actions"><button class="btn" onclick="validerCollecte()">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerCollecte(){
   etat.collecte = etat.collecte || {ouverte:false};
@@ -5466,6 +5597,7 @@ function carteCampagne(c){
                   : jamaisLance ? `<span class="etiq e-lancer">Brouillon</span>`
                                 : `<span class="etiq e-bloque">Clos</span>`}
     </div>
+    ${c.suite ? `<div class="suite-c">Relance de « ${esc((campagne(c.suite) || {}).titre || c.suiteTitre || 'un appel retiré')} »</div>` : ''}
     ${c.motif ? `<p class="motif">${esc(c.motif)}</p>` : ''}
     ${arts.length
       ? `<div class="arts">${arts.map(a => `<span>${esc(a.nom)}${a.precision ? ` <i>— ${esc(a.precision)}</i>` : ''}</span>`).join('')}
@@ -5502,6 +5634,10 @@ function carteCampagne(c){
    qu'à l'enregistrement. */
 let articlesSaisie = [];
 let campagneSaisie = null;
+/* L'appel dont celui qu'on est en train de créer est la relance.
+   Se garde sur la fiche : six mois après, on doit pouvoir lire la
+   suite des vagues sans la reconstituer de mémoire. */
+let relanceDe = null;
 
 function articleSaisieHTML(a, i){
   return `<div class="art-l">
@@ -5590,6 +5726,7 @@ function retirerArticleSaisie(i){ articlesSaisie.splice(i,1); redessinerArticles
 function editerCampagne(id){
   const c = id ? campagne(id) : null;
   campagneSaisie = c ? c.id : null;
+  relanceDe = null;
   articlesSaisie = c ? JSON.parse(JSON.stringify(c.articles || [])) : [];
   const g = (ch, d) => esc(c ? (c[ch] ?? '') : (d ?? ''));
   const m = document.getElementById('modale');
@@ -5643,28 +5780,100 @@ function editerCampagne(id){
     <button class="btn" onclick="validerCampagne()">${c ? 'Enregistrer' : "Créer l'appel"}</button>
     <button class="btn sec" onclick="fermer()">Annuler</button>
   </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
   redessinerArticles();
 }
 
+/* --- Relancer un appel ----------------------------------
+   Un premier écran, avant celui de la saisie : relancer n'est pas
+   recopier. On y voit ce que chaque matériel a rapporté la fois
+   précédente, et on décide de le redemander ou non — un matériel
+   que personne n'avait dit quelque chose, un matériel réuni aussi.
+   Ce que des professionnels ont proposé sans qu'on le demande
+   est présenté à part : c'est souvent ce qu'il fallait demander. */
 function relancerCampagne(id){
-  const c = campagne(id);
-  if(!c) return;
+  const b = bilanCampagne(id);
+  const c = b.c;
+  if(!c.id) return;
+  const m = document.getElementById('modale');
+  m.classList.add('large');
+
+  const ligne = (cle, nom, prec, etiq, coche) => `<label class="bil${coche ? ' on' : ''}">
+    <input type="checkbox" ${coche ? 'checked' : ''} data-cle="${esc(cle)}"
+      onchange="this.parentNode.classList.toggle('on', this.checked); majCompteRelance()">
+    <span class="bn">${esc(nom)}${prec ? `<i>${esc(prec)}</i>` : ''}</span>
+    <span class="bq${etiq.nul ? ' nul' : ''}">${esc(etiq.t)}</span>
+  </label>`;
+
+  m.innerHTML = `<h3>Relancer « ${esc(c.titre || 'appel sans titre')} »</h3>
+  <p style="color:var(--texte-2);margin:0 0 4px;font-size:13.5px;line-height:1.5">${
+    c.ouvertLe ? `Lancé le ${frdate(c.ouvertLe)}${c.fermeLe ? `, clos le ${frdate(c.fermeLe)}` : ''} · ` : ''}${
+    b.dons.length ? `${b.dons.length} déclaration${b.dons.length > 1 ? 's' : ''} reçue${b.dons.length > 1 ? 's' : ''}` : 'aucune déclaration reçue'}.
+    Choisissez ce que le nouvel appel redemande — vous pourrez encore tout corriger à l'écran suivant.</p>
+
+  <div class="sous-t">1 · Ce que le précédent appel a rapporté<span class="d">${b.arts.length
+    ? "Décochez ce que vous ne redemandez pas : un matériel déjà réuni, ou un matériel que personne n'a."
+    : "Le précédent appel ne nommait aucun matériel : il n'y a rien à reprendre."}</span></div>
+  ${b.arts.length
+    ? `<div class="bilan" id="rel-arts">${b.arts.map(a =>
+        ligne('a:' + a.id, a.nom, a.precision, libBilan(a), true)).join('')}</div>`
+    : `<div class="art-vide">Rien à reprendre — la nouvelle liste se construira à l'écran suivant.</div>`}
+
+  ${b.hors.length ? `<div class="sous-t">2 · Proposé sans qu'on le demande<span class="d">Des professionnels ont déclaré cela hors de votre liste. Le nommer dans le nouvel appel évite de le faire décrire à la main, et dit qu'on l'accepte.</span></div>
+    <div class="bilan" id="rel-hors">${b.hors.map(h =>
+      ligne('h:' + h.nom, h.nom, '', {t: h.nb + ' déclaration' + (h.nb > 1 ? 's' : ''), nul:false}, false)).join('')}</div>` : ''}
+
+  <div class="art-cpt" id="cpt-relance"></div>
+
+  <div class="actions">
+    <button class="btn" onclick="poursuivreRelance('${esc(c.id)}')">Continuer</button>
+    <button class="btn sec" onclick="poursuivreRelance('${esc(c.id)}', true)">Tout reprendre à l'identique</button>
+    <button class="btn sec" onclick="fermer()" style="margin-left:auto">Annuler</button>
+  </div>`;
+  ouvrirRideau();
+  majCompteRelance();
+}
+
+function majCompteRelance(){
+  const z = document.getElementById('cpt-relance');
+  if(!z) return;
+  const n = document.querySelectorAll('#rel-arts input:checked, #rel-hors input:checked').length;
+  z.innerHTML = n
+    ? `<b>${n}</b> matériel${n > 1 ? 's' : ''} dans le nouvel appel`
+    : `Aucun matériel repris — la nouvelle liste partira de zéro`;
+}
+
+/* Le passage à l'écran de saisie : la liste retenue, les textes
+   du précédent appel, et un titre qui numérote la vague plutôt
+   que de la dater — c'est le donateur qui lit ce titre. */
+function poursuivreRelance(id, tout){
+  const b = bilanCampagne(id);
+  const c = b.c;
+  let arts;
+  if(tout){
+    arts = b.arts.map(a => ({nom:a.nom, precision:a.precision || ''}));
+  }else{
+    const pris = {};
+    document.querySelectorAll('#rel-arts input:checked, #rel-hors input:checked')
+      .forEach(e => pris[e.dataset.cle] = true);
+    arts = b.arts.filter(a => pris['a:' + a.id]).map(a => ({nom:a.nom, precision:a.precision || ''}));
+    b.hors.forEach(h => { if(pris['h:' + h.nom]) arts.push({nom:h.nom, precision:''}); });
+  }
   editerCampagne(null);
-  /* On rouvre la fenêtre de création déjà remplie de l'appel
-     précédent : le cas courant est de redemander presque la même
-     chose. Le titre porte la date pour qu'on ne confonde pas les
-     deux dans le registre. */
-  articlesSaisie = JSON.parse(JSON.stringify(c.articles || []));
+  relanceDe = c.id;
+  articlesSaisie = arts;
   redessinerArticles();
   const p = (ch, v) => { const e = document.getElementById(ch); if(e) e.value = v || ''; };
-  p('ca-titre', (c.titre || '') + ' — ' + frdateL(aujourdhui()));
+  p('ca-titre', titreRelance(c.titre));
   p('ca-motif', c.motif);
   p('ca-cadre', c.cadre);
   p('ca-depot', c.depot);
   const h = document.getElementById('ca-horsliste');
-  if(h) h.checked = !!c.horsListe;
-  toast("Reprise de « " + (c.titre || 'appel sans titre') + " » — corrigez la liste, puis créez");
+  if(h){ h.checked = !!c.horsListe; h.parentNode.classList.toggle('on', !!c.horsListe); }
+  majApercu();
+  toast(arts.length
+    ? `Relance de « ${c.titre || 'appel sans titre'} » — ${arts.length} matériel${arts.length > 1 ? 's' : ''} repris`
+    : `Relance de « ${c.titre || 'appel sans titre'} » — liste à composer`);
 }
 
 async function validerCampagne(){
@@ -5691,12 +5900,14 @@ async function validerCampagne(){
     Object.assign(c, champs);
     c.modifiePar = moi;
   }else{
+    const source = relanceDe ? campagne(relanceDe) : null;
     liste.unshift(Object.assign({
       id: uid(), ouverte:false, officielle:false, ouvertLe:'', fermeLe:'',
+      suite: source ? source.id : '', suiteTitre: source ? (source.titre || '') : '',
       auteur: moi, quand: new Date().toISOString()
     }, champs));
   }
-  campagneSaisie = null;
+  campagneSaisie = null; relanceDe = null;
   await sauver(); fermer(); rendre();
   toast(c ? "Appel mis à jour" : "Appel créé — il reste à lancer");
 }
@@ -5732,7 +5943,7 @@ function vueCollecte(){
    téléphone chaque paragraphe est un écran de défilement de plus
    avant la liste qu'on vient voir. */
 function teteModuleMat(titre){
-  return `<button class="retour-m" onclick="allerModuleMat('')">‹ Collecte de matériel</button>
+  return `<button class="retour-m" onclick="allerModuleMat('')">Revenir à la collecte de matériel</button>
   <h1 style="margin-bottom:14px">${titre}</h1>`;
 }
 
@@ -6083,7 +6294,7 @@ function ouvrirSuiviDon(id){
     <label><span class="k">Heure</span><input type="time" id="sd-heure" value="${maintenant()}"></label>
     <label class="large"><span class="k">Ce qui a été dit ou fait *</span><textarea id="sd-texte" placeholder="Rappel effectué, matériel préparé, enlèvement convenu…"></textarea></label>
   </div><div class="actions"><button class="btn" onclick="validerSuiviDon('${o.id}')">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerSuiviDon(id){
   const o = (etat.dons||[]).find(x => x.id === id); if(!o) return;
@@ -6572,7 +6783,7 @@ async function ouvrirLienTerrain(id){
     <button class="btn sec" onclick="revoquerJeton('${p.id}')" style="margin-left:auto">Révoquer</button>
     <button class="btn sec" onclick="fermer()">Fermer</button>
   </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
   rendre();
 }
 
@@ -6692,7 +6903,7 @@ function ouvrirPoint(id){
     <button class="btn" onclick="validerPoint(${p ? "'" + p.id + "'" : ''})">Enregistrer</button>
     <button class="btn sec" onclick="fermer()">Annuler</button>
   </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
   majTotalDepot();
 }
 
@@ -6776,10 +6987,6 @@ function texteMCBesoin(b){
     b.lieu         ? '' : "le lieu de livraison",
     b.contactPlace ? '' : "le contact sur place"
   ].filter(Boolean);
-  const val = b.valide === 'Oui'        ? "Besoin validé par l'ARS."
-            : b.valide === 'Non'        ? "L'ARS n'a pas validé ce besoin : ne rien ouvrir aux adhérents sur cette base."
-            : b.valide === 'Sans objet' ? "Validation de l'ARS sans objet."
-            : "Validation de l'ARS en attente.";
   return {
     date: b.date || '',
     source: String(b.demandeur || '').trim(),
@@ -6790,11 +6997,15 @@ function texteMCBesoin(b){
       + (b.delai ? ` Délai souhaité : ${b.delai}.` : '')
       + (b.lieu ? ` Livraison : ${b.lieu}.` : '')
       + (b.contactPlace ? ` Contact sur place : ${b.contactPlace}.` : '')
-      + (b.horaires ? ` Horaires de réception : ${b.horaires}.` : '')
-      + (b.statut ? ` Statut : ${b.statut.toLowerCase()}.` : ''),
-    suite: val
-      + (bloque.length ? ` Tant que ${bloque.join(' et ')} ${bloque.length > 1 ? 'ne sont' : "n'est"} pas renseigné${bloque.length > 1 ? 's' : ''}, aucune collecte n'est ouverte aux adhérents.` : '')
-      + " Suivi au feuillet « Besoins exprimés » de « Collecte de matériel »."
+      + (b.horaires ? ` Horaires de réception : ${b.horaires}.` : ''),
+    /* Ni statut ni validation : une entrée de main courante dit ce
+       qui s'est passé à l'heure où ça s'est passé, elle ne se pilote
+       pas. L'état d'avancement se lit au feuillet « Besoins
+       exprimés », où il change ; ici il serait faux dès demain, et
+       il fait deux poids deux mesures avec les entrées écrites à la
+       main, qui n'en ont jamais eu. */
+    suite: (bloque.length ? `Tant que ${bloque.join(' et ')} ${bloque.length > 1 ? 'ne sont' : "n'est"} pas renseigné${bloque.length > 1 ? 's' : ''}, aucune collecte n'est ouverte aux adhérents. ` : '')
+      + "Suivi au feuillet « Besoins exprimés » de « Collecte de matériel »."
   };
 }
 
@@ -7038,7 +7249,7 @@ function recapPoint(id){
     <button class="btn" onclick="imprimerModale()">Imprimer ou enregistrer en PDF</button>
     <button class="btn sec" onclick="fermer()">Fermer</button>
   </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
   toast("Les champs pointillés se complètent directement à l'écran");
 }
 
@@ -7129,7 +7340,7 @@ function editerRenfort(){
     <label style="margin-bottom:12px"><span class="k">Cadre annoncé appel ouvert</span>
       <textarea id="re-cadre" placeholder="Ce qu'on sait du renfort attendu — et ce qu'on ne sait pas encore.">${esc(c.cadre||'')}</textarea></label>
     <div class="actions"><button class="btn" onclick="validerTextesRenfort()">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 /* Nommée « textes » et non « renfort » tout court : ajouter un
    renfort à une mission porte déjà ce nom, plus haut dans la page,
@@ -7231,7 +7442,7 @@ function vueModulesRenfort(){
 }
 
 function vueRenfortFormulaire(){
-  return `<button class="retour-m" onclick="allerModuleRen('')">‹ Appel au renfort</button>`
+  return `<button class="retour-m" onclick="allerModuleRen('')">Revenir à l’appel au renfort</button>`
     + carteFormulaireRenfort();
 }
 
@@ -7250,7 +7461,7 @@ function vueRenfortRegistre(){
   const aVoir = mobilisables.filter(aVerifier).length;
   const professions = new Set(mobilisables.map(x => x.profession).filter(Boolean));
 
-  let h = `<button class="retour-m" onclick="allerModuleRen('')">‹ Appel au renfort</button>`;
+  let h = `<button class="retour-m" onclick="allerModuleRen('')">Revenir à l’appel au renfort</button>`;
 
   const parFormulaire = v.filter(x => x.source === 'formulaire').length;
   const parSaisie = v.filter(x => x.source === 'saisie').length;
@@ -7461,7 +7672,7 @@ function ouvrirSuiviVol(id){
     <label><span class="k">Heure</span><input type="time" id="sv-heure" value="${maintenant()}"></label>
     <label class="large"><span class="k">Ce qui a été dit ou fait *</span><textarea id="sv-texte" placeholder="Assurance vérifiée, disponibilités précisées, nom transmis à l'ARS, affectation proposée…"></textarea></label>
   </div><div class="actions"><button class="btn" onclick="validerSuiviVol('${o.id}')">Enregistrer</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerSuiviVol(id){
   const o = (etat.volontaires||[]).find(x => x.id === id); if(!o) return;
@@ -7589,7 +7800,7 @@ function bordereau(id){
     ${o ? `<button class="btn sec" onclick="marquerBordereau('${o.id}')">Marquer comme édité</button>` : ''}
     <button class="btn sec" onclick="fermer()">Fermer</button>
   </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
   toast("Les champs pointillés se complètent directement à l'écran");
 }
 async function marquerBordereau(id){
@@ -7703,7 +7914,7 @@ function editerConsult(){
     <label style="margin-bottom:12px"><span class="k">Cadre annoncé recensement ouvert</span>
       <textarea id="rc-cadre" placeholder="Ce que la CPTS demande exactement — et ce qu'elle ne demande pas.">${esc(c.cadre||'')}</textarea></label>
     <div class="actions"><button class="btn" onclick="validerConsult()">Enregistrer</button><button class="btn sec" onclick="${modaleRecens ? 'ouvrirRecensement()' : 'fermer()'}">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function validerConsult(){
   etat.consultations = etat.consultations || {ouverte:false};
@@ -7751,7 +7962,7 @@ function ouvrirRecensement(){
       ${c.ouverte ? `<a class="btn sec" href="${esc(lienConsult())}" target="_blank" rel="noopener" style="text-decoration:none;display:inline-flex;align-items:center">Voir le formulaire</a>` : ''}
       <button class="btn sec" onclick="fermer()" style="margin-left:auto">Fermer</button>
     </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 function rafraichirRecensement(){ if(modaleRecens) ouvrirRecensement(); }
 
@@ -8374,7 +8585,7 @@ function vueContinuite(){
   const vivier = med.filter(m => MED_OK.indexOf(m.statut) >= 0);
   const diffusables = vivier.filter(m => m.diffusion === 'Oui');
 
-  let h = `<button class="retour-m" onclick="allerModuleOri('')">‹ Patients évacués</button>
+  let h = `<button class="retour-m" onclick="allerModuleOri('')">Revenir aux patients évacués</button>
 
   <nav class="feuillets">
     <span class="k">Orientation vers les généralistes — 4 feuillets</span>
@@ -8566,7 +8777,7 @@ function ouvrirPositionnement(cle){
       <button class="btn sec" onclick="fermer();ouvrirRecueil()">Signaler un nouveau patient</button>
       <button class="btn sec" onclick="fermer()">Annuler</button>
     </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 
 async function positionner(cle, pid){
@@ -8672,7 +8883,7 @@ function ouvrirConfirmation(cle){
         : `<span class="etiq e-cours" style="margin-left:auto">${esc(o.confirme)}</span>`}
       <button class="btn sec" onclick="fermer()">Fermer</button>
     </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 
 function copierMessageConf(){
@@ -8753,7 +8964,7 @@ function feuilletRecueil(rel, vivier){
   const alerteVivier = !vivier.length
     ? `<div class="note"><strong style="color:var(--ambre)">Aucun médecin volontaire n'est encore recensé.</strong> Vous pouvez recueillir les demandes — elles ne pourront pas être fléchées tant que le vivier est vide. Ouvrez le recensement depuis le feuillet <a href="#" onclick="allerFeuilletOri('medecins');return false;">Médecins volontaires</a>.</div>` : '';
 
-  if(voieRecueil === 'choix') return h + `<button class="retour-f" onclick="choisirVoie('')">‹ Fermer le recueil — revenir à la liste</button>
+  if(voieRecueil === 'choix') return h + `<button class="retour-f" onclick="choisirVoie('')">Fermer le recueil et revenir à la liste</button>
 
   <div class="carte recueil">
     <div class="voies">
@@ -8922,7 +9133,7 @@ function blocPatient(){
 
 /* Voie 1 — la personne cherche un médecin. */
 function formulaireAConsulter(rel, vivier){
-  return `<button class="retour-f" onclick="choisirVoie('choix')">‹ Ce n'est pas ça — revenir au choix</button>
+  return `<button class="retour-f" onclick="choisirVoie('choix')">Ce n’est pas ça, revenir au choix</button>
 
   <div class="carte recueil">
     <div class="tete-r"><span class="v">Consultation</span>
@@ -8972,7 +9183,7 @@ function formulaireAConsulter(rel, vivier){
    enregistre pour que le compte des situations absorbées soit
    juste, et pour savoir vers qui elles sont parties. */
 function formulaireDejaOriente(rel, vivier){
-  return `<button class="retour-f" onclick="choisirVoie('choix')">‹ Ce n'est pas ça — revenir au choix</button>
+  return `<button class="retour-f" onclick="choisirVoie('choix')">Ce n’est pas ça, revenir au choix</button>
 
   <div class="carte recueil">
     <div class="tete-r"><span class="v">Orientation</span>
@@ -9786,8 +9997,8 @@ function ouvrirOrientation(id){
       ${estOriente(o) ? `<button class="btn sec" onclick="retirerMedecin('${o.id}')" style="color:var(--braise);border-color:#E8C3B8">Retirer l'orientation</button>` : ''}
       <button class="btn sec" onclick="fermer()" style="margin-left:auto">Annuler</button>
     </div>`;
-  document.getElementById('rideau').classList.add('on');
-  setTimeout(() => { if(!vivier.length) document.getElementById('or-autre')?.focus(); }, 60);
+  ouvrirRideau();
+  setTimeout(() => { if(!vivier.length) document.getElementById('or-autre')?.focus({preventScroll:true}); }, 60);
 }
 
 /* `mid` vide : on prend le nom tapé dans le champ libre. */
@@ -9864,7 +10075,7 @@ async function anonymiserOrientes(){
     <p style="color:var(--texte-2)">Les ${n} ligne${n>1?'s':''} du registre perdront le nom, le prénom, l'âge, le numéro de téléphone et l'adresse du patient, le nom de la personne qui l'a déclaré, les précisions et les observations. Le reste est conservé : date, commune, motif, urgence, délai, médecin vers qui le patient a été orienté, statut. Les compteurs et le bilan ne bougent pas.</p>
     <p style="color:var(--braise)">L'opération est définitive et vaut pour tous les postes connectés. À faire une fois la crise passée, ou dès qu'une ligne n'a plus besoin d'être suivie.</p>
     <div class="actions"><button class="btn" onclick="confirmerAnonymisation()">Anonymiser</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 async function confirmerAnonymisation(){
   (etat.orientes || []).forEach((o, i) => {
@@ -10093,7 +10304,7 @@ function ouvrirRetenu(k, id){
       ${r.genre ? `<button class="btn sec" onclick="retirerRetenu('${k}','${id}')">Ne plus retenir</button>` : ''}
       <button class="btn sec" onclick="fermer()">Annuler</button>
     </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 
 function choisirGenre(g){
@@ -10138,7 +10349,7 @@ function vueRapports(){
   if(rapport === 'retex')      return ch + vueRetex();
   if(rapport === 'sse')        return ch + vueSSE();
   if(rapport === 'dossier')
-    return ch + `<button class="retour-r" onclick="aller('rapports')">← Tous les rapports</button>` + vueDossier();
+    return ch + `<button class="retour-r" onclick="aller('rapports')">Revenir à tous les rapports</button>` + vueDossier();
 
   const sit = situationsTriees();
   const der = sit[0] || null;
@@ -10191,7 +10402,7 @@ function vueSituations(){
   const der = sit[0] || null;
   const neufs = faitsDepuis(der ? der.quand : '');
 
-  let h = `<button class="retour-r" onclick="aller('rapports')">← Tous les rapports</button>
+  let h = `<button class="retour-r" onclick="aller('rapports')">Revenir à tous les rapports</button>
   <h1>Points de situation</h1>
   <p class="chapo">Un point de situation dit où en est la CPTS à une date, pour quelqu'un qui n'a pas suivi. On l'arrête quand on veut : il se fige, il s'archive, et le suivant repart de là. C'est la succession de ces points qui montre le chemin parcouru — et c'est elle, bien plus que le dernier état, qui servira au retour d'expérience.</p>
   <div class="barre-h">
@@ -10363,7 +10574,7 @@ function preparerSituation(){
     <button class="btn sec" onclick="exporterSituationWord('')">Word</button>
     <button class="btn sec" onclick="fermer()">Fermer sans arrêter</button>
   </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
   toast("Le paragraphe « Ce qu'on en retient » s'écrit directement à l'écran");
 }
 
@@ -10377,7 +10588,7 @@ function voirSituation(id){
     <button class="btn sec" onclick="exporterSituationWord('${s.id}')">Word</button>
     <button class="btn sec" onclick="fermer()">Fermer</button>
   </div>`;
-  document.getElementById('rideau').classList.add('on');
+  ouvrirRideau();
 }
 
 /* Arrêter, c'est figer. Le document ne se recalculera plus : il
@@ -10475,7 +10686,7 @@ function vueRetex(){
   ];
   const tout = marquesRetenues(['marche','manque','changer']);
 
-  let h = `<button class="retour-r" onclick="aller('rapports')">← Tous les rapports</button>
+  let h = `<button class="retour-r" onclick="aller('rapports')">Revenir à tous les rapports</button>
   <h1>Matière pour le RETEX</h1>
   <p class="chapo">Le retour d'expérience s'écrira à froid, en septembre. Ce qui ne peut pas attendre, c'est la matière : ce qui a marché, ce qui a manqué, ce qu'on fera autrement. Ça s'oublie en deux semaines, et aucun compteur ne le retrouvera. Cette page ne rédige rien — elle ramasse, pendant que c'est encore chaud.</p>
   <div class="barre-h">
@@ -10554,7 +10765,7 @@ function vueSSE(){
   const doc = marquesRetenues(['doctrine']);
   const vides = DECLENCHEURS.filter(d => !d.m).length;
 
-  let h = `<button class="retour-r" onclick="aller('rapports')">← Tous les rapports</button>
+  let h = `<button class="retour-r" onclick="aller('rapports')">Revenir à tous les rapports</button>
   <h1>Pour le plan SSE</h1>
   <p class="chapo">La mission « Traçabilité » pose comme limite qu'on ne rédige pas de fiches réflexes pendant la crise. Cette page ne les rédige pas : elle ramasse la matière pendant qu'elle est encore chaude, pour que la rédaction se fasse à froid sans avoir rien oublié.</p>
   <div class="barre-h">

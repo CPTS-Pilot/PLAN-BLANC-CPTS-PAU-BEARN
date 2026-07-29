@@ -132,7 +132,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .etat.clos{background:#E4F0EA;color:var(--stable)}
 
 .voile{position:fixed;inset:0;background:rgba(20,16,8,.55);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}
-.boite{background:#fff;border-radius:11px;padding:24px;max-width:440px;width:100%}
+.boite{background:#fff;border-radius:11px;padding:24px;max-width:440px;width:100%;max-height:88vh;overflow-y:auto}
 .boite h3{font-family:var(--display);margin:0 0 8px;font-size:18px;color:var(--encre)}
 .boite p{color:var(--texte-2);margin:0 0 14px;font-size:14px}
 
@@ -307,7 +307,7 @@ function boite(html){
   v.addEventListener('click', e => { if(e.target === v) v.remove(); });
   document.body.appendChild(v);
   const p = v.querySelector('input,textarea,select');
-  if(p) p.focus();
+  if(p) p.focus({preventScroll:true});
   return v;
 }
 function fermerBoite(el){ const v = el.closest('.voile'); if(v) v.remove(); }
