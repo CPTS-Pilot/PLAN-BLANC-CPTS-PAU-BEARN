@@ -5283,11 +5283,6 @@ function modulePointsCollecte(){
 /* Carte 2 — le registre des donateurs. */
 function moduleDons(){
   const d = etat.dons || [];
-  const oui = d.filter(x => x.reponse === 'Oui').length;
-  const non = d.filter(x => x.reponse === 'Non').length;
-  const att = d.length - oui - non;
-  const taux = (oui + non) ? Math.round(oui * 100 / (oui + non)) : 0;
-  const pc = n => d.length ? (n * 100 / d.length) : 0;
 
   let h = teteModuleMat('Matériel collecté');
   h += carteDernierPoint();
@@ -5297,27 +5292,7 @@ function moduleDons(){
 
   h += `<div class="compteurs" style="margin-bottom:16px">
     <div class="compteur"><div class="n">${d.length}</div><div class="l">structures contactées ou déclarées</div></div>
-    <div class="compteur"><div class="n" style="color:var(--stable)">${oui}</div><div class="l">ont accepté de donner</div></div>
-    <div class="compteur"><div class="n" style="color:var(--braise)">${non}</div><div class="l">ont refusé ou n'ont rien</div></div>
-    <div class="compteur"><div class="n" style="color:var(--ambre)">${att}</div><div class="l">en attente ou à rappeler</div></div>
-    <div class="compteur"><div class="n">${taux}&thinsp;%</div><div class="l">d'accord parmi les réponses obtenues</div></div>
-    <div class="compteur"><div class="n">${d.filter(x=>x.reponse==='Oui'&&BORDEREAU_ACQUIS.indexOf(x.bordereau)>=0).length}</div><div class="l">bordereaux signés ou engagés en ligne</div></div>
-    ${parFormulaire ? `<div class="compteur"><div class="n" style="color:var(--encre-2)">${parFormulaire}</div><div class="l">reçus par le formulaire</div></div>` : ''}
-    ${parSaisie ? `<div class="compteur"><div class="n" style="color:var(--encre-2)">${parSaisie}</div><div class="l">réponses reportées à la main</div></div>` : ''}
   </div>`;
-
-  if(d.length){
-    h += `<div class="jauge">
-      <i class="oui" style="width:${pc(oui)}%"></i>
-      <i class="non" style="width:${pc(non)}%"></i>
-      <i class="att" style="width:${pc(att)}%"></i>
-    </div>
-    <div class="jl">
-      <span><i class="oui"></i>${oui} accord${oui>1?'s':''}</span>
-      <span><i class="non"></i>${non} refus</span>
-      <span><i class="att"></i>${att} sans réponse ferme</span>
-    </div>`;
-  }
 
   h += `<div class="barre-h">
     <span class="cpt-h">${d.length} ligne${d.length>1?'s':''} au registre</span>
