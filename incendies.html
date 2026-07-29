@@ -1864,7 +1864,11 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
     {id:'a5', date:'2026-07-25', heure:'', sens:"Reçu de l'ARS", canal:'Communiqué', interlocuteur:"ARS Nouvelle-Aquitaine", objet:"Recommandations sanitaires aux populations et masques FFP2", demande:"Épisode de dégradation de la qualité de l'air au-delà du seuil d'alerte. Masques acheminés sur les plateformes régionales, prioritairement pour les patients cardio-respiratoires chroniques, les personnes vulnérables et les professionnels exposés.", reponse:'', attendu:"À relayer aux adhérents et à leurs patients vulnérables. Circuit de retrait des FFP2 dans le 64 à obtenir.", lien:'https://www.nouvelle-aquitaine.ars.sante.fr/communique-de-presse-2026-incendies-en-gironde-et-dans-les-landes-recommandations-sanitaires-aux', echeance:'', statut:'En cours', auteur:'', quand:''},
     {id:'a6', date:'2026-07-26', heure:'19:30', sens:"Envoyé à l'ARS", canal:'Téléphone', interlocuteur:"ARS Nouvelle-Aquitaine", objet:"Besoins en matériel médical : ce qui a été identifié", demande:"L'ARS ne disposait pas de la liste des besoins en matériel médical et devait rappeler.", reponse:"Appel passé par Anne Latisnère, vice-présidente, à 19h30, puis rappel à 22h : transmission du numéro du médecin coordonnateur du parc des expositions de Bordeaux pour la collecte, et de celui de la personne en charge de la logistique.", attendu:"Le besoin se vérifie directement auprès du terrain : le médecin coordonnateur a été appelé dans la foulée — voir « Collecte de matériel », besoins exprimés.", echeance:'', statut:'Clos', auteur:'Anne Latisnère', quand:''},
     {id:'a7', date:'2026-07-27', heure:'08:00', sens:'À envoyer', canal:'Téléphone', interlocuteur:"ARS — Délégation départementale 64 (M. Guinaman)", objet:"Centralisation des dons dans un lieu de stockage du territoire", demande:"Contact devant être pris par Valérie Revel auprès de M. Guinaman à la suite de l'appel du 27/07 à 8h, en amont de la réunion du bureau des maires du même jour à 14h.", reponse:'', attendu:"Le lieu de stockage et la position de l'ARS conditionnent l'ouverture de la collecte aux adhérents.", echeance:'', statut:'En attente', auteur:'Anne Latisnère', quand:''},
-    {id:'a8', date:'2026-07-27', heure:'15:00', sens:"Reçu de l'ARS", canal:'Visio', interlocuteur:"ARS Nouvelle-Aquitaine", objet:"Réunion de crise en visio de 15h", demande:"Point de situation régional de l'ARS en visioconférence, à 15h.", reponse:"La CPTS Pau Béarn y assiste. Eva Poulmarch la représente et en rend compte au copil.", attendu:"Compte rendu à consigner ici et en main courante à l'issue de chaque séance ; les consignes qui en sortent orientent les missions en cours.", echeance:'', statut:'En cours', auteur:'Eva Poulmarch', quand:''},
+    /* `visio` apparie cette entrée à la séance consignée dans la
+       situation régionale : le jour où son compte rendu sera écrit,
+       c'est cette ligne-ci qui se mettra à jour, et non une seconde
+       qui viendrait s'ajouter à côté. */
+    {id:'a8', visio:'vs-2607-15', date:'2026-07-27', heure:'15:00', sens:"Reçu de l'ARS", canal:'Visio', interlocuteur:"ARS Nouvelle-Aquitaine", objet:"Réunion de crise en visio de 15h", demande:"Point de situation régional de l'ARS en visioconférence, à 15h.", reponse:"La CPTS Pau Béarn y assiste. Eva Poulmarch la représente et en rend compte au copil.", attendu:"Compte rendu à consigner ici et en main courante à l'issue de chaque séance ; les consignes qui en sortent orientent les missions en cours.", echeance:'', statut:'En cours', auteur:'Eva Poulmarch', quand:''},
     {id:'a3', date:'2026-07-27', heure:'', sens:'À envoyer', canal:'Mail', interlocuteur:"ARS — Délégation départementale 64", objet:"Six questions de cadrage pour la CPTS", demande:"1. Interlocuteur nommé à la DD64 pour la CPTS pendant le plan blanc. 2. Circuit de mise à disposition des FFP2 pour les libéraux du 64 et leurs patients vulnérables. 3. Consigne régionale sur l'accueil ambulatoire des personnes évacuées hébergées dans le 64. 4. Impact attendu sur les transports sanitaires du 64 et arbitrage sur les transports programmés. 5. Souhaitez-vous que la CPTS constitue une liste de volontaires, sous quel statut et via quel canal ? 6. Existe-t-il une liste de besoins matériels validée, ou la consigne est-elle de ne pas collecter ?", reponse:'', attendu:"Les réponses 5 et 6 conditionnent l'ouverture ou non des missions renfort et collecte.", echeance:'', statut:'À faire', auteur:'', quand:''}
   ],
   /* Interrupteur du formulaire public de don (don.html). Fermé
@@ -4651,13 +4655,15 @@ async function validerVisio(id){
 
   etat.visios = etat.visios || [];
   const v = id ? etat.visios.find(x => x.id === id) : null;
+  let cible = v;
   if(v){
     Object.assign(v, champs, {modifiePar: moi});
     /* Le rappel « compte rendu manquant » n'a plus lieu d'être une
        fois la séance renseignée. */
     if(points.length || champs.consignes || champs.pourNous) delete v.manquant;
   }else{
-    etat.visios.push(Object.assign({id:uid(), auteur:moi, quand:new Date().toISOString()}, champs));
+    cible = Object.assign({id:uid(), auteur:moi, quand:new Date().toISOString()}, champs);
+    etat.visios.push(cible);
   }
 
   const mc = (document.getElementById('vs-mc') || {}).checked;
@@ -4667,9 +4673,45 @@ async function validerVisio(id){
      réécrit à partir de la séance : c'est ce qui se lit au copil. */
   majPointARS(champs);
 
-  visioOuverte = id || null;
+  /* Une séance de crise est un échange avec l'ARS au même titre
+     qu'un mail ou un appel : elle laisse sa ligne dans « Échanges
+     avec l'ARS ». C'était la seule voie de contact à n'en laisser
+     aucune — le compte rendu partait dans la situation régionale et
+     le suivi ARS n'en savait rien. */
+  tracerVisioDansARS(champs, cible.id);
+
+  visioOuverte = cible.id;
   await sauver(); fermer(); rendre();
-  toast(mc ? "Visio consignée, et reportée en main courante" : "Visio consignée");
+  toast(mc ? "Visio consignée, reportée en main courante et tracée avec l'ARS"
+           : "Visio consignée, et tracée dans les échanges avec l'ARS");
+}
+
+/* L'entrée se réécrit à chaque enregistrement du compte rendu au
+   lieu de s'ajouter : une séance, une ligne. C'est le champ `visio`
+   qui les apparie — la séance du 27/07, consignée à la main dans
+   l'amorçage, porte déjà le sien et se mettra donc à jour le jour
+   où son compte rendu sera écrit, sans faire doublon. */
+function tracerVisioDansARS(v, idVisio){
+  etat.ars = etat.ars || [];
+  const pts = (v.points||[]).map(p => '· ' + p.titre + (p.texte ? ' : ' + p.texte : '')).join('\n');
+  const dit = [pts, v.consignes ? "Ce que l'ARS demande : " + v.consignes : ''].filter(Boolean).join('\n');
+  const champs = {
+    date: v.date, heure: v.heure || '',
+    sens: "Reçu de l'ARS", canal: 'Visio',
+    interlocuteur: "ARS Nouvelle-Aquitaine",
+    objet: (v.instance || "Visio de crise de l'ARS")
+      + ' du ' + frdateL(v.date) + (v.heure ? ' à ' + v.heure : ''),
+    demande: dit || "Séance tenue. Le compte rendu reste à consigner : ce qui s'y est dit n'existe nulle part ailleurs.",
+    reponse: [v.represente ? 'CPTS Pau Béarn représentée par ' + v.represente + '.' : '',
+              "Compte rendu tenu dans « Situation régionale ».",
+              v.prochaine ? 'Prochaine séance : ' + v.prochaine : ''].filter(Boolean).join(' '),
+    attendu: v.pourNous || '',
+    statut: v.pourNous ? 'En cours' : (dit ? 'Clos' : 'En attente'),
+    visio: idVisio
+  };
+  const e = etat.ars.find(x => x.visio === idVisio);
+  if(e) Object.assign(e, champs, {modifiePar: moi});
+  else etat.ars.unshift(Object.assign({id:uid(), auteur:moi, quand:new Date().toISOString()}, champs));
 }
 
 function consignerVisioEnCourante(v){
