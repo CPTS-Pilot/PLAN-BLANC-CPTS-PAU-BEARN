@@ -880,22 +880,113 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .sous-t:first-child{margin-top:0;padding-top:0;border-top:0}
 .sous-t .d{display:block;font-family:var(--corps);font-weight:400;font-size:13px;
   color:var(--texte-2);margin-top:3px;line-height:1.35}
-/* Le filtrage du registre des patients : recherche, période,
-   statut et tri. Sur téléphone, une ligne par contrôle. */
-.tamis{display:grid;gap:10px;background:var(--cobalt-clair);border:1px solid var(--trait);
-  border-radius:8px;padding:12px;margin-bottom:14px}
-@media(min-width:760px){.tamis{grid-template-columns:repeat(auto-fit,minmax(168px,1fr));align-items:end}
-  .tamis .q{grid-column:1/-1}}
-.tamis .k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;
-  text-transform:uppercase;color:var(--texte-2);margin-bottom:4px}
-.tamis input,.tamis select{width:100%;padding:9px 11px;border:1px solid var(--trait);
-  border-radius:6px;background:#fff;font-size:14px}
-@media(max-width:600px){.tamis input,.tamis select{font-size:16px;padding:11px 12px}}
-.tamis .pied{grid-column:1/-1;display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-  font-size:12.5px;color:var(--texte-2)}
+/* Le filtrage du registre des patients. Neuf fois sur dix, on
+   cherche un nom : le champ de recherche et le tri tiennent seuls
+   sur une ligne, et le reste — période, statut, urgence, voie —
+   dort derrière « Affiner ». Le tamis ne doit pas coûter plus de
+   hauteur d'écran que les patients qu'il sert à retrouver. */
+.tamis{background:var(--surface);border:1px solid var(--trait);
+  border-radius:9px;padding:8px;margin-bottom:12px}
+.tamis .rang{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.tamis .rang .q{flex:1 1 200px;min-width:0}
+.tamis .rang .tri{flex:0 1 190px}
+.tamis input,.tamis select{padding:8px 10px;border:1px solid var(--trait);
+  border-radius:7px;background:#fff;font-size:13.5px;font-family:inherit;color:var(--texte)}
+.tamis .plus{flex:none;display:inline-flex;align-items:center;gap:6px;background:#fff;
+  border:1px solid var(--trait);border-radius:7px;padding:8px 12px;font-family:inherit;
+  font-size:13px;color:var(--texte-2);cursor:pointer;min-height:38px}
+.tamis .plus:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.tamis .plus.on{background:var(--cobalt-clair);border-color:var(--encre-2);color:var(--encre)}
+.tamis .plus .n{font-family:var(--mono);font-size:10px;background:var(--encre-2);color:#fff;
+  border-radius:9px;padding:1px 6px}
+.tamis .fins{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  margin-top:8px;padding-top:9px;border-top:1px solid var(--trait)}
+.tamis .fins label{display:block;min-width:0}
+.tamis .fins input,.tamis .fins select{width:100%}
+.tamis .k{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--texte-2);margin-bottom:3px}
+.tamis .pied{display:flex;gap:9px;align-items:center;flex-wrap:wrap;border-top:0;
+  font-size:12px;color:var(--texte-2);margin-top:8px;padding:0}
 .tamis .pied button{background:none;border:1px solid var(--trait);border-radius:6px;
-  padding:7px 12px;font-size:13px;color:var(--encre-2);cursor:pointer;min-height:38px}
+  padding:6px 11px;font-family:inherit;font-size:12.5px;color:var(--encre-2);cursor:pointer;min-height:34px}
 .tamis .pied button:hover{border-color:var(--encre-2)}
+@media(max-width:600px){.tamis input,.tamis select{font-size:16px;padding:10px 11px}
+  .tamis .rang .tri{flex:1 1 100%}}
+
+/* ---------- le registre des patients, en cartes ----------
+   Une personne, une carte. Trois par ligne sur grand écran, deux
+   en tablette, une seule sur téléphone : on lit une situation
+   entière sans balayer l'écran de gauche à droite.
+
+   Le liseré du haut donne l'état sans lire — rouge si c'est
+   urgent et que personne n'a été désigné, ambre si ça attend,
+   vert si un médecin est là, gris si c'est clos. Une carte
+   urgente sans médecin porte en plus un bandeau : c'est la seule
+   chose qui doit sauter aux yeux dans une liste de trente. */
+.pats{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(298px,1fr));margin-bottom:14px}
+.fpat{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--ambre);
+  border-radius:10px;padding:0 0 13px;display:flex;flex-direction:column;overflow:hidden}
+.fpat.p-oriente{border-top-color:var(--stable)}
+.fpat.p-clos{border-top-color:#A7B6CA;background:#FAFBFD}
+.fpat.p-urgent{border-top-color:var(--braise);border-color:#EFC6BB;
+  box-shadow:0 2px 12px rgba(194,72,47,.11)}
+/* Le bandeau d'urgence : pleine largeur, en tête de carte, avant
+   même le nom. Il ne s'écrit que tant que personne n'a pris la
+   personne en charge — une fois orientée, elle n'est plus ce
+   qu'on doit regarder en premier. */
+.fpat .cri{display:flex;align-items:center;gap:8px;background:var(--braise);color:#fff;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;
+  padding:7px 15px}
+.fpat .cri::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;flex:none;
+  animation:battre 1.6s ease-in-out infinite}
+@keyframes battre{0%,100%{opacity:1}50%{opacity:.28}}
+@media(prefers-reduced-motion:reduce){.fpat .cri::before{animation:none}}
+.fpat .corps{display:flex;flex-direction:column;gap:9px;padding:12px 15px 0;flex:1}
+.fpat .tete{display:flex;align-items:flex-start;gap:8px}
+.fpat .qui{flex:1;min-width:0}
+.fpat .nom{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.2;
+  color:var(--encre);word-break:break-word}
+.fpat .ou{font-size:12.5px;color:var(--texte-2);margin-top:3px;line-height:1.35}
+.fpat .outils{flex:none;display:flex;gap:1px;margin:-3px -5px 0 0}
+.fpat .outils button{background:none;border:0;cursor:pointer;color:var(--texte-2);opacity:.4;
+  font-size:15px;line-height:1;padding:4px 6px;border-radius:5px}
+.fpat .outils button:hover{opacity:1;color:var(--braise);background:var(--surface)}
+.fpat .outils button[disabled]{opacity:.12;cursor:default;background:none;color:var(--texte-2)}
+.fpat .etats{display:flex;flex-wrap:wrap;gap:5px}
+/* Le motif, c'est ce pour quoi on décroche : il se lit en gros,
+   dans son propre encadré, et vire au rouge quand c'est urgent. */
+.fpat .motif{background:var(--cobalt-clair);border-radius:8px;padding:9px 12px}
+.fpat .motif .v{font-family:var(--display);font-weight:600;font-size:15px;line-height:1.32;
+  color:var(--encre);margin-top:2px;word-break:break-word}
+.fpat.p-urgent .motif{background:#FDEDE8}
+.fpat.p-urgent .motif .v{color:#9B2C0F}
+.fpat.p-clos .motif{background:var(--surface)}
+.fpat .faits{display:flex;flex-direction:column;gap:5px;font-size:13px;line-height:1.4}
+.fpat .faits > span{display:block}
+.fpat .k{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--texte-2);display:block;margin-bottom:1px}
+.fpat .bl{background:var(--surface);border-radius:7px;padding:8px 11px;font-size:13px;line-height:1.42}
+.fpat .bl.vers{background:#E9F3EF}
+.fpat .bl.vers strong{font-family:var(--display);font-size:14.5px;color:#1E5C46}
+.fpat .bl .s{display:block;font-size:11.5px;color:var(--texte-2);margin-top:3px}
+.fpat .avert{background:#FCF3E4;color:#8A5D12;border-radius:7px;padding:8px 11px;font-size:12.5px;line-height:1.4}
+/* Le numéro compose l'appel d'un doigt : c'est le geste qui suit
+   le signalement, et il ne doit pas se chercher. */
+.fpat a.tel{display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  background:var(--encre-2);color:#fff;font-family:var(--display);font-weight:600;font-size:14.5px;
+  border-radius:8px;padding:10px 13px;text-decoration:none;min-height:44px}
+.fpat a.tel:hover{background:var(--encre)}
+.fpat .sans-tel{font-size:12.5px;color:var(--texte-2);font-style:italic}
+.fpat .actes{margin-top:auto;padding:11px 15px 0;display:flex;flex-direction:column;gap:8px}
+.fpat .actes .btn{width:100%;justify-content:center;min-height:44px}
+.fpat .actes label{display:block}
+.fpat .actes select{width:100%;padding:9px 10px;border:1px solid var(--trait);border-radius:7px;
+  background:#fff;font-size:13.5px;font-family:inherit;color:var(--texte)}
+@media(max-width:600px){.fpat .actes select{font-size:16px;padding:11px 12px}}
+.fpat .pied{margin:11px 15px 0;padding:9px 0 0;border-top:1px solid var(--trait);
+  display:flex;flex-wrap:wrap;gap:3px 12px;font-family:var(--mono);font-size:10px;
+  letter-spacing:.05em;color:var(--texte-2)}
+
 /* Le fléchage se fait depuis la ligne du patient : « Orienter le
    patient » est le geste le plus fréquent du feuillet, il tient
    dans un bouton pleine largeur qu'on touche sans viser. */
@@ -950,6 +1041,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .choix-pat .r .deja{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
   background:var(--fond-2,#F1F3F6);color:var(--texte-2);border-radius:4px;padding:2px 6px;margin-left:7px;
   vertical-align:2px;font-weight:400}
+/* La distance se lit avant le reste de la ligne : c'est elle qui
+   fait choisir, une fois la liste rangée du plus près au plus loin. */
+.choix-pat .r .km{font-family:var(--mono);font-size:10px;letter-spacing:.06em;
+  background:var(--cobalt-clair);color:var(--encre-2);border-radius:4px;padding:2px 7px;margin-left:7px;
+  vertical-align:2px;font-weight:500}
 .choix-pat .d{display:block;font-size:12.5px;color:var(--texte-2);margin-top:2px}
 
 /* Le contact du médecin, rendu au moment où on en a besoin. */
@@ -1052,6 +1148,8 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .carto .tete-c .plier{background:none;border:1px solid var(--trait);border-radius:7px;color:var(--texte-2);
   font-family:inherit;font-size:12.5px;padding:7px 12px;cursor:pointer;min-height:36px}
 .carto .tete-c .plier:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.carto .tete-c .plier.on{background:var(--cobalt-clair);border-color:var(--encre-2);
+  color:var(--encre);font-weight:600}
 /* z-index:0 enferme les couches de Leaflet — elles montent jusqu'à
    800 — sous les fenêtres du cockpit, qui sont à 50. Sans cela, la
    carte passerait par-dessus la modale de saisie. */
@@ -1067,12 +1165,24 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .carto .legende i{width:11px;height:11px;border-radius:50%;display:inline-block;
   border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.22)}
 .carto .legende i.approx{opacity:.45}
+/* L'anneau de la légende reprend la forme du cabinet sur la carte :
+   creux, quand la personne signalée est un disque plein. */
+.carto .legende i.creux{border-color:transparent;box-shadow:none}
 .carto .manquants{padding:11px 16px;border-top:1px solid var(--trait);font-size:12.5px;
   color:#8A5D12;background:#FCF3E4;line-height:1.45}
 .carto .source{padding:9px 16px;border-top:1px solid var(--trait);font-size:11px;color:var(--texte-2);line-height:1.4}
 .carto-popup{font-family:var(--corps);font-size:13.5px;line-height:1.45;min-width:180px}
 .carto-popup .n{font-family:var(--display);font-weight:700;font-size:15px;color:var(--encre);line-height:1.2}
 .carto-popup .l{color:var(--texte-2);font-size:12.5px;margin-top:2px}
+.carto-popup .n .urg{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  background:#F7E3DE;color:var(--braise);border-radius:4px;padding:2px 6px;margin-left:7px;
+  vertical-align:2px;font-weight:400}
+/* Le cabinet le plus proche est la réponse qu'on vient chercher en
+   touchant un point : il se détache du reste de la bulle. */
+.carto-popup .pres{margin-top:9px;background:var(--cobalt-clair);border-radius:7px;padding:8px 10px;
+  font-size:13px;line-height:1.4;color:var(--encre)}
+.carto-popup .pres .k{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--texte-2);display:block;margin-bottom:2px}
 .carto-popup a{display:block;margin-top:7px;color:var(--encre-2);font-weight:600;text-decoration:none}
 .carto-popup button{margin-top:9px;background:none;border:1px solid var(--trait);border-radius:7px;
   color:var(--texte-2);font-family:inherit;font-size:12.5px;padding:6px 11px;cursor:pointer}
@@ -1343,6 +1453,8 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
      public s'anime, les réponses tombent dans le registre. */
   consultations: { ouverte:false, message:'', cadre:"Il s'agit de consultations ponctuelles au cabinet, aux horaires que vous choisissez : renouvellement d'ordonnance interrompue par un départ précipité, suites d'inhalation de fumées. Répondre ne vous engage ni à devenir médecin traitant, ni à recevoir plus de patients que vous ne l'avez indiqué." },
   courante: [
+    {id:'mc35', date:'2026-07-29', heure:'', source:'', evenement:"Reprise du feuillet « Patients signalés / orientés », après une première saisie réelle. Le formulaire de signalement ne demandait pas le numéro de téléphone du patient : il le demande désormais, juste sous l'âge. C'était le manque le plus gênant — une fois le médecin trouvé, on n'avait personne à rappeler et il fallait attendre que la pharmacie rappelle d'elle-même. Le numéro n'est pas obligatoire : un signalement sans numéro vaut mieux qu'un signalement perdu. Il s'ajoute aussi aux lignes déjà saisies par le crayon de modification, part à l'export Excel, entre dans la recherche, et disparaît avec le reste à l'anonymisation du registre. Le registre lui-même ne se lit plus en bandes pleine largeur mais en cartes : trois par ligne sur ordinateur, deux en tablette, une seule sur téléphone. Chaque carte porte en tête le nom, la commune et l'heure, puis le motif dans son propre encadré, en gros — c'est ce pour quoi on décroche. Une personne signalée urgente et sans médecin porte un bandeau rouge pleine largeur en tête de carte : dans une liste de trente, c'est la seule chose qui doit sauter aux yeux. Le numéro s'affiche en bouton bleu qui compose l'appel d'un doigt, et une carte sans numéro le dit.", suite:"La recherche avancée du registre est repliée : ne restent visibles que le champ de recherche et le tri, sur une seule ligne. Période, statut, urgence et voie dorment derrière un bouton « Affiner » qui compte les filtres posés — un registre tronqué ne doit jamais passer pour un registre complet. Corrigé au passage : le pied de chaque ligne écrivait « Orientation par » le nom de la personne qui avait saisi le signalement, alors qu'à ce moment-là rien n'est encore orienté. Il écrit maintenant « Saisie par », et n'ajoute « Orientation par » qu'une fois un médecin désigné, au nom de la personne qui l'a désigné — ce n'est pas toujours la même.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
+    {id:'mc34', date:'2026-07-29', heure:'', source:'', evenement:"L'onglet « Appels CPTS » quitte les Actions pour le Suivi, et prend le nom de « Contact avec les CPTS ». Il se lit maintenant juste sous « Situation régionale », dont il est le prolongement : appeler une CPTS voisine n'est pas une action que la CPTS Pau Béarn conduit pour elle-même, c'est la manière dont on sait ce qui se passe là-bas. Rien ne change dans l'écran : les mêmes fiches, les mêmes numéros, le même journal d'appels, le même export.", suite:"Les Actions ne portent plus que ce que la CPTS mène en propre : la collecte, l'appel au renfort, les patients évacués.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc33', date:'2026-07-29', heure:'', source:'', evenement:"Mise en carte des médecins généralistes dans l'onglet « Patients évacués ». Une adresse portée sur une fiche devient un point sur une carte, sans rien à faire de plus : le cockpit la situe tout seul auprès de la Base Adresse Nationale, garde le point avec la fiche et ne le recalcule que si l'adresse change. Deux cartes en découlent. Dans le feuillet « Médecins volontaires », la cartographie du registre entier, un point par cabinet coloré selon la réponse du médecin — vert pour ceux qui acceptent, ambre pour ceux qui ont été sollicités sans réponse ferme, bleu pour ceux qui restent à solliciter, gris pour ceux qui ont dit non : ce sont les trous entre les points qui disent les communes à couvrir. Dans le feuillet « Patients signalés / orientés », au-dessus de la liste, la cartographie des seuls médecins volontaires du territoire : quand une pharmacie appelle, on voit qui est le plus près de la personne avant de décrocher. Toucher un point ouvre le nom du médecin, sa réponse, son numéro qui compose et l'itinéraire ; depuis une fiche du registre, « Situer sur la carte » fait l'inverse. Une adresse que le service ne retrouve pas est signalée sur sa fiche et sous la carte, à corriger ; un médecin dont on n'a que la commune est posé sur le bourg, en point pâle.", suite:"Seules les adresses professionnelles des médecins sont transmises au service d'adresses — aucune donnée de patient ne sort du cockpit. Les deux services employés sont publics et sans compte à ouvrir : la Base Adresse Nationale pour situer, OpenStreetMap pour le fond de carte. Sur un poste hors ligne ou derrière un réseau qui les filtre, la carte le dit et s'efface : la liste, les adresses et le lien « Itinéraire » continuent de fonctionner comme avant. À l'usage, vérifier les adresses signalées non retrouvées — c'est le plus souvent une rue mal orthographiée ou une commune manquante.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc32', date:'2026-07-29', heure:'', source:'', evenement:"Reprise de la main courante sur une confusion de fond : « Coordination » et « Vice-présidence » avaient été portés en source, alors qu'une décision prise entre nous ne vient de nulle part — elle a seulement quelqu'un qui s'en est chargé. Les vingt-cinq entrées concernées perdent leur source et gagnent le nom de la personne qui a mené l'action, relu un par un dans le texte de l'entrée. Six entrées gardent une source, les seules qui en aient une : le CMSI de Billère, les pharmaciens du territoire, l'ARS Nouvelle-Aquitaine, les CPTS des zones touchées et le médecin coordonnateur du parc des expositions de Bordeaux. Le formulaire pose désormais la question en deux temps séparés à l'écran — « Est-ce nous qui l'avons fait ? » puis « Ou est-ce venu du dehors ? » — avec les sources fréquentes en pastilles. Une entrée venue du dehors se reconnaît dans le journal à un bandeau ambre portant le nom de qui l'a communiquée, et remonte d'elle-même dans l'onglet « Remontées terrain », sans y être recopiée : elle n'est écrite qu'une fois et se modifie en main courante. Corrigé au passage : deux entrées différentes portaient le même identifiant mc25, si bien que modifier l'une touchait l'autre.", suite:"Règle à tenir désormais : la source ne se remplit que si l'information nous a été communiquée de l'extérieur — une pharmacie, une structure, l'ARS, un confrère. Tout le reste se nomme dans « Qui s'en est chargé ». Une entrée reste sans personne nommée, l'acheminement du 27/07 au soir vers Bordeaux : le conducteur n'a jamais été consigné, à compléter si quelqu'un s'en souvient.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc31', date:'2026-07-29', heure:'', source:'', evenement:"Refonte de l'onglet « Patients évacués » du cockpit, après un test sur téléphone : il fallait trop faire défiler avant d'atteindre ce qu'on vient réellement chercher. Le module « Accueil patients évacués : hub santé sur le territoire » est retiré de l'interface — l'écran n'était pas mûr ; les lieux déjà recensés restent dans les données et au dossier de traçabilité, et l'écran se rebâtira le moment venu. L'onglet ne présente plus qu'une carte, renommée « Orientation vers les médecins généralistes du territoire ». Sous les feuillets, le titre et le chapô répétés sont supprimés, et la batterie de neuf compteurs est démontée : chaque feuillet ne porte plus que les chiffres qui le concernent — médecins sondés, acceptant de recevoir et communes couvertes chez les médecins volontaires ; patients signalés et patients orientés chez les patients ; structures dans la démarche et structures ayant signalé chez les structures. Le recensement en ligne des généralistes, qui occupait le haut du feuillet, tient maintenant dans un bouton qui ouvre une fenêtre. Les feuillets « Recueillir un patient » et « Patients signalés / orientés » sont fusionnés : un bouton « Signaler un patient » ouvre le formulaire de recueil, la liste des patients est juste en dessous. Sur chaque ligne, un bouton « Orienter le patient » ouvre la liste des médecins volontaires — un nom à toucher, ou un médecin saisi à la main s'il n'est pas au vivier. Le feuillet « Pharmacies et structures » devient « Structures qui orientent ».", suite:"Trois choses sont désormais enregistrées à chaque affectation : le jour, l'heure et le nom de la personne qui affecte, proposé d'après la session ouverte et modifiable quand on saisit pour quelqu'un d'autre. Dans les fiches des médecins et des structures, toucher le numéro compose l'appel et toucher l'adresse ouvre l'application de cartes du téléphone. La mention « accord de diffusion à vérifier » est retirée des fiches : elle se règle au téléphone. Une structure recensée dans « Structures qui orientent » est proposée d'elle-même au moment de signaler un patient — reste à recenser les pharmacies et les structures du territoire susceptibles d'orienter.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
@@ -2105,10 +2217,10 @@ const ONGLETS = [
   {id:'missions',  nom:'Missions & organigramme', groupe:'Pilotage', cpt:'missions'},
   {id:'fil',       nom:'Fil d\'actualité',    groupe:'Suivi', cpt:null},
   {id:'veille',    nom:'Situation régionale', groupe:'Suivi', cpt:null},
+  {id:'appels',    nom:'Contact avec les CPTS', groupe:'Suivi', cpt:'cpts'},
   {id:'courante',  nom:'Main courante',      groupe:'Traçabilité', cpt:'courante'},
   {id:'terrain',   nom:'Remontées terrain',  groupe:'Traçabilité', cpt:'terrain'},
   {id:'ars',       nom:'Échanges avec l\'ARS', groupe:'Traçabilité', cpt:'ars'},
-  {id:'appels',    nom:'Appels CPTS',        groupe:'Actions', cpt:'cpts'},
   {id:'materiel',  nom:'Collecte de matériel', groupe:'Actions', cpt:'dons'},
   {id:'volontaires',nom:'Appel au renfort',  groupe:'Actions', cpt:'volontaires'},
   {id:'orientation',nom:'Patients évacués',  groupe:'Actions', cpt:'medecins'},
@@ -2611,6 +2723,7 @@ const CHAMPS = {
       {c:'nom', l:"Nom du patient", t:'text'},
       {c:'prenom', l:"Prénom du patient", t:'text'},
       {c:'age', l:"Âge", t:'text', ph:"62"},
+      {c:'tel', l:"Téléphone du patient", t:'text', ph:"06 12 34 56 78"},
       {c:'adresse', l:"Adresse où se trouve le patient", t:'text', large:true},
       {c:'ref', l:"Référence patient (reprise de l'identité)", t:'text', ph:"M. D., 62 ans"},
       {c:'provenance', l:"Qui signale", t:'select', o:ORI_PROVENANCES},
@@ -2639,7 +2752,7 @@ const CHAMPS = {
       {c:'statut', l:"Statut", t:'select', o:ORI_STATUTS},
       {c:'note', l:"Observation", t:'textarea', large:true}
     ],
-    cols:['date','heure','voie','nom','prenom','age','adresse','ref','provenance','relais',
+    cols:['date','heure','voie','nom','prenom','age','tel','adresse','ref','provenance','relais',
           'decPrenom','decNom','profession','interlocuteur','commune','situation','motif','detail',
           'urgence','delai','accord','medecin','orienteLe','orienteH','orientePar','circuit',
           'rdvle','rdvh','confirme','par','statut','auteur']
@@ -4161,8 +4274,8 @@ function vueAppels(){
   const faits = l.filter(x => x.appels && x.appels.length).length;
   const nbApp = l.reduce((a,x) => a + ((x.appels||[]).length), 0);
 
-  let h = `<h1>Appels aux CPTS</h1>
-  <p class="chapo">Les CPTS des zones touchées, classées par proximité du feu. On appelle pour prendre des nouvelles et identifier des besoins réels, pas pour placer du matériel. Chaque échange se consigne, même quand la réponse est « rien ».</p>
+  let h = `<h1>Contact avec les CPTS</h1>
+  <p class="chapo">Les CPTS des zones touchées, classées par proximité du feu. On prend des nouvelles et on identifie des besoins réels, pas pour placer du matériel. Chaque échange se consigne, même quand la réponse est « rien ».</p>
   <div class="compteurs" style="margin-bottom:16px">
     <div class="compteur"><div class="n">${l.length}</div><div class="l">CPTS répertoriées</div></div>
     <div class="compteur"><div class="n">${faits}</div><div class="l">déjà contactées</div></div>
@@ -4312,7 +4425,7 @@ function exporterAppels(){
       antechrono(c.appels).forEach(a => rows.push([...tete,a.date,a.heure,a.qui,a.dit,a.suite,a.par].map(csvVal)));
     }
   });
-  telechargerCSV('Appels CPTS', rows);
+  telechargerCSV('Contact avec les CPTS', rows);
 }
 
 function vueOffre(){
@@ -6298,6 +6411,9 @@ let voieRecueil = '';
    l'instant, et dans quel ordre. Rien n'est enregistré — c'est
    une manière de regarder, pas une donnée. */
 let tamisPat = {q:'', du:'', au:'', statut:'Tout', urgence:'Tout', voie:'Tout', tri:'recent'};
+/* Les filtres fins restent repliés tant qu'on ne les demande pas :
+   sur un écran de crise, la place se dispute aux patients. */
+let tamisOuvert = false;
 function allerModuleOri(m){ moduleOri = m; rendre(); window.scrollTo(0,0); }
 /* Un lien profond venu d'ailleurs — du cockpit, d'un autre feuillet —
    ouvre le module qui contient le feuillet visé, pas le palier.
@@ -6515,10 +6631,21 @@ const CARTO_TEINTES = {
   'À solliciter':'#0B4FA8', 'Indisponible':'#9AA8BC'
 };
 
+/* Côté patients, la couleur ne dit pas un statut administratif
+   mais où en est la personne : rouge tant qu'elle est signalée
+   urgente sans médecin, ambre tant qu'elle attend, vert dès
+   qu'un médecin lui est désigné, gris quand la demande est
+   close sans suite. */
+const CARTO_PAT = {attente:'#E8A33D', urgent:'#C2482F', oriente:'#2F7D62', clos:'#9AA8BC'};
+const etatCarto = o => o.statut === 'Sans suite' ? 'clos'
+  : estOriente(o) ? 'oriente'
+  : o.urgence === 'Urgent' ? 'urgent' : 'attente';
+
 let leafletEtat = 'absent';   // absent | charge | pret | echec
 const cartesVives = {};       // les cartes montées, par identifiant de toile
 const cartoDonnees = {};      // les points à poser, par identifiant de toile
 const cartoPliee = {};        // les cartes repliées à la main
+let medSurCartePat = false;   // les médecins volontaires en surimpression
 
 /* L'adresse telle qu'on la soumet : elle sert aussi de témoin.
    Tant qu'elle n'a pas changé, le point calculé reste valable. */
@@ -6548,67 +6675,180 @@ function pointsMedecins(med){
       adresse: m.adresse || '', commune: m.commune || '', tel: m.tel || '',
       lat: bon ? lat : null, lon: bon ? lon : null,
       approx: m.geoPrecision === 'municipality' || m.geoPrecision === 'locality',
-      cle, echec: !!cle && m.geoEchec === cle
+      cle, echec: !!cle && m.geoEchec === cle,
+      forme:'med'
     };
   });
+}
+
+/* --- les patients --------------------------------------
+   Une personne n'est jamais située à son adresse : seule sa
+   commune part au service d'adresses, et c'est sur le bourg
+   qu'elle se pose. Le registre porte l'identité pour pouvoir
+   nommer quelqu'un au médecin qui la prend — il n'a pas à la
+   faire sortir du cockpit pour autant, et la commune suffit
+   largement à dire quel cabinet est le plus près. */
+const cleGeoPat = o => String(o.commune || '').trim().replace(/\s+/g, ' ');
+
+/* Deux personnes d'une même commune tomberaient sur le même
+   point et se recouvriraient. On les écarte en spirale autour du
+   bourg — angle d'or, pour que la spirale ne se recroise pas.
+   Le rang se prend sur l'identifiant, jamais sur l'ordre de la
+   liste : trier ou tamiser le registre ne doit pas faire sauter
+   les points d'une place à l'autre. */
+function pointsPatients(ori, vivier){
+  const rangs = {};
+  (ori || []).forEach(o => {
+    const c = cleGeoPat(o); if(!c) return;
+    (rangs[c] = rangs[c] || []).push(o.id);
+  });
+  for(const c in rangs) rangs[c].sort();
+
+  return (ori || []).map(o => {
+    const cle = cleGeoPat(o);
+    const lat = nombreOuNul(o.lat), lon = nombreOuNul(o.lon);
+    const bon = lat !== null && lon !== null && o.geoCle === cle;
+    let dlat = 0, dlon = 0;
+    if(bon){
+      const n = (rangs[cle] || []).indexOf(o.id);
+      if(n > 0){
+        const ang = n * 2.399963;              // angle d'or, en radians
+        const r = 0.0042 * Math.sqrt(n);       // ~450 m au premier écart
+        dlat = r * Math.cos(ang);
+        dlon = r * Math.sin(ang) / Math.max(.2, Math.cos(lat * Math.PI / 180));
+      }
+    }
+    /* Le cabinet le plus proche ne se cherche que pour qui attend
+       encore quelqu'un : une demande close sans suite n'a personne
+       à se voir proposer. */
+    const cherche = etatCarto(o) === 'attente' || etatCarto(o) === 'urgent';
+    const proche = bon && cherche ? plusProche(lat, lon, vivier) : null;
+    return {
+      id: o.id, nom: refPatient(o) || 'Patient', statut: o.statut || 'À orienter',
+      lieu: [o.motif, o.commune].filter(Boolean).join(' · '),
+      urgent: o.urgence === 'Urgent', medecin: o.medecin || '',
+      couleur: CARTO_PAT[etatCarto(o)], proche,
+      lat: bon ? lat + dlat : null, lon: bon ? lon + dlon : null,
+      cle, echec: !!cle && o.geoEchec === cle,
+      forme:'pat'
+    };
+  });
+}
+
+/* --- la distance ---------------------------------------
+   Haversine : la distance à vol d'oiseau. Ce n'est pas un temps
+   de trajet — en piémont, une vallée peut doubler la route —
+   mais pour ranger des cabinets du plus proche au plus loin
+   d'une commune, elle suffit, et elle ne dépend d'aucun service. */
+function distanceKm(lat1, lon1, lat2, lon2){
+  const R = 6371, rad = Math.PI / 180;
+  const dLat = (lat2 - lat1) * rad, dLon = (lon2 - lon1) * rad;
+  const a = Math.sin(dLat/2) ** 2
+    + Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLon/2) ** 2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(a)));
+}
+
+const fmtKm = d => d === null || d === undefined ? ''
+  : d < 1 ? 'moins d\'1 km' : d.toFixed(d < 10 ? 1 : 0).replace('.', ',') + ' km';
+
+/* Le cabinet volontaire le plus près d'un point, et à quelle
+   distance. `vivier` est une liste de points déjà situés. */
+function plusProche(lat, lon, vivier){
+  let gagnant = null, mieux = Infinity;
+  (vivier || []).forEach(m => {
+    if(m.lat === null || m.lon === null) return;
+    const d = distanceKm(lat, lon, m.lat, m.lon);
+    if(d < mieux){ mieux = d; gagnant = m; }
+  });
+  return gagnant ? {nom: gagnant.nom, id: gagnant.id, km: mieux} : null;
+}
+
+/* La distance d'un patient à un médecin, quand les deux sont
+   situés — sert à ranger la liste au moment d'affecter. */
+function distancePatMed(o, m){
+  const la = nombreOuNul(o.lat), lo = nombreOuNul(o.lon);
+  const lb = nombreOuNul(m.lat), lob = nombreOuNul(m.lon);
+  if(la === null || lo === null || lb === null || lob === null) return null;
+  if(o.geoCle !== cleGeoPat(o) || m.geoCle !== cleGeo(m)) return null;
+  return distanceKm(la, lo, lb, lob);
 }
 
 /* --- le géocodage -------------------------------------
    En file, une adresse à la fois, un souffle entre deux : le
    service est public et gratuit, on ne le mitraille pas. Ce qui
    revient s'écrit sur la fiche et part au serveur en une seule
-   fois à la fin — pas un enregistrement par adresse. */
+   fois à la fin — pas un enregistrement par adresse.
+
+   Deux registres à situer, et pas de la même façon : le cabinet
+   d'un médecin part avec sa rue, la personne signalée part avec
+   sa seule commune, et le service est prié de ne chercher qu'une
+   commune. C'est la ligne de partage à ne pas franchir. */
+const A_SITUER = [
+  {k:'medecins', cle: cleGeo,    type:'',             quoi:'cabinet situé',   quoiP:'cabinets situés'},
+  {k:'orientes', cle: cleGeoPat, type:'municipality', quoi:'personne située', quoiP:'personnes situées'}
+];
+
 let geoEnCours = false;
-async function geocoderMedecins(){
+async function geocoderFiches(){
   if(geoEnCours || leafletEtat === 'echec') return;
   if(navigator.onLine === false) return;
-  const aFaire = (etat.medecins || []).filter(m => {
-    const cle = cleGeo(m);
-    return cle && m.geoCle !== cle && m.geoEchec !== cle;
-  });
-  if(!aFaire.length) return;
+
+  const files = A_SITUER.map(r => ({r, l: (etat[r.k] || []).filter(o => {
+    const cle = r.cle(o);
+    return cle && o.geoCle !== cle && o.geoEchec !== cle;
+  })})).filter(x => x.l.length);
+  if(!files.length) return;
 
   geoEnCours = true;
-  let situes = 0, touche = false;
-  for(const m of aFaire.slice(0, 30)){
-    const cle = cleGeo(m);
-    let d = null;
-    try{
-      const r = await fetch(CARTO_BAN + encodeURIComponent(cle));
-      if(!r.ok) throw new Error(r.status);
-      d = await r.json();
-    }catch(e){
-      /* Service injoignable : on s'arrête là sans rien marquer,
-         la prochaine ouverture de l'onglet réessaiera. */
-      break;
+  let touche = false, coupure = false;
+  const comptes = {};
+
+  for(const {r, l} of files){
+    if(coupure) break;
+    for(const o of l.slice(0, 30)){
+      const cle = r.cle(o);
+      let d = null;
+      try{
+        const r2 = await fetch(CARTO_BAN + encodeURIComponent(cle)
+          + (r.type ? '&type=' + r.type : ''));
+        if(!r2.ok) throw new Error(r2.status);
+        d = await r2.json();
+      }catch(e){
+        /* Service injoignable : on s'arrête là sans rien marquer,
+           la prochaine ouverture de l'onglet réessaiera. */
+        coupure = true;
+        break;
+      }
+      const f = d && d.features && d.features[0];
+      const c = f && f.geometry && f.geometry.coordinates;
+      /* Le service répond toujours quelque chose : sous un certain
+         score, ce qu'il propose n'a plus grand-chose à voir avec ce
+         qu'on lui a demandé. Mieux vaut pas de point qu'un cabinet
+         posé dans la mauvaise vallée. */
+      const sur = f && (f.properties || {}).score >= 0.35;
+      if(c && c.length === 2 && sur){
+        o.lon = c[0]; o.lat = c[1]; o.geoCle = cle;
+        o.geoPrecision = (f.properties || {}).type || '';
+        delete o.geoEchec;
+        comptes[r.k] = (comptes[r.k] || 0) + 1;
+      }else{
+        /* Adresse que le service ne reconnaît pas : on le note pour
+           ne pas la redemander à chaque ouverture, et la fiche le
+           dira — c'est à la coordination de corriger l'adresse. */
+        o.geoEchec = cle;
+      }
+      touche = true;
+      await new Promise(r3 => setTimeout(r3, 320));
     }
-    const f = d && d.features && d.features[0];
-    const c = f && f.geometry && f.geometry.coordinates;
-    /* Le service répond toujours quelque chose : sous un certain
-       score, ce qu'il propose n'a plus grand-chose à voir avec ce
-       qu'on lui a demandé. Mieux vaut pas de point qu'un cabinet
-       posé dans la mauvaise vallée. */
-    const sur = f && (f.properties || {}).score >= 0.35;
-    if(c && c.length === 2 && sur){
-      m.lon = c[0]; m.lat = c[1]; m.geoCle = cle;
-      m.geoPrecision = (f.properties || {}).type || '';
-      delete m.geoEchec;
-      situes++;
-    }else{
-      /* Adresse que le service ne reconnaît pas : on le note pour
-         ne pas la redemander à chaque ouverture, et la fiche le
-         dira — c'est à la coordination de corriger l'adresse. */
-      m.geoEchec = cle;
-    }
-    touche = true;
-    await new Promise(r => setTimeout(r, 320));
   }
   geoEnCours = false;
 
   if(!touche) return;
   await sauver();
   rendre();
-  if(situes) toast(`${situes} cabinet${situes > 1 ? 's situés' : ' situé'} sur la carte`);
+  const dit = A_SITUER.filter(r => comptes[r.k])
+    .map(r => `${comptes[r.k]} ${comptes[r.k] > 1 ? r.quoiP : r.quoi}`).join(' et ');
+  if(dit) toast(dit + ' sur la carte');
 }
 
 /* --- Leaflet, chargé au moment où l'on en a besoin ------
@@ -6642,7 +6882,7 @@ function monterCartes(){
   const hotes = [].slice.call(document.querySelectorAll('.carto-hote'));
   if(!hotes.length) return;
 
-  geocoderMedecins();
+  geocoderFiches();
 
   if(leafletEtat === 'echec'){
     hotes.forEach(t => { t.innerHTML = `<div class="attente">Le fond de carte n'a pas pu être chargé — poste hors ligne, ou réseau qui n'autorise pas openstreetmap.org. Les adresses restent lisibles sur chaque fiche, et le lien « Itinéraire » ouvre l'application de cartes du téléphone.</div>`; });
@@ -6683,18 +6923,23 @@ function dessinerCarte(hote){
 
   /* Les points ne se redessinent que s'ils ont changé : le reste
      du temps, le re-rendu de la page ne touche pas à la carte. */
-  const signe = pts.map(p => [p.id, p.lat, p.lon, p.statut, p.approx].join(':')).join('|');
+  const signe = pts.map(p =>
+    [p.id, p.lat, p.lon, p.statut, p.approx, p.forme, p.creux, p.couleur, p.medecin].join(':')).join('|');
   if(signe !== carte._signe){
     carte._couche.clearLayers();
     carte._reperes = {};
     pts.forEach(p => {
-      const r = L.circleMarker([p.lat, p.lon], {
-        radius:9, weight:3, color:'#fff',
-        fillColor: CARTO_TEINTES[p.statut] || '#0B4FA8',
-        /* Un point posé sur la commune faute d'adresse exacte se
-           montre pâle : il dit « quelque part par ici », pas « là ». */
-        fillOpacity: p.approx ? .42 : .95
-      }).addTo(carte._couche);
+      const teinte = p.couleur || CARTO_TEINTES[p.statut] || '#0B4FA8';
+      /* Deux formes, pour que les deux populations ne se confondent
+         pas quand elles partagent la même carte : la personne
+         signalée est un disque plein, le cabinet un anneau. */
+      const style = p.forme === 'med' && p.creux
+        ? {radius:8, weight:3, color:teinte, fillColor:teinte, fillOpacity:.12}
+        : {radius:9, weight:3, color:'#fff', fillColor:teinte,
+           /* Un point posé sur la commune faute d'adresse exacte se
+              montre pâle : il dit « quelque part par ici », pas « là ». */
+           fillOpacity: p.approx ? .42 : .95};
+      const r = L.circleMarker([p.lat, p.lon], style).addTo(carte._couche);
       r.bindPopup(bullecarte(p));
       carte._reperes[p.id] = r;
     });
@@ -6715,6 +6960,7 @@ function dessinerCarte(hote){
 /* La bulle rend ce dont on a besoin le téléphone à la main :
    qui c'est, sa réponse, son numéro qui compose, l'itinéraire. */
 function bullecarte(p){
+  if(p.forme === 'pat') return bullePatient(p);
   return `<div class="carto-popup">
     <div class="n">${esc(p.nom)}</div>
     ${p.lieu ? `<div class="l">${esc(p.lieu)}</div>` : ''}
@@ -6725,50 +6971,105 @@ function bullecarte(p){
   </div>`;
 }
 
+/* La bulle d'une personne signalée répond à la question qu'on se
+   pose en la regardant sur la carte : qui est le plus près d'elle,
+   et à quelle distance. Le nom du cabinet est donné là, avec de
+   quoi l'affecter sans quitter la carte. */
+function bullePatient(p){
+  return `<div class="carto-popup">
+    <div class="n">${esc(p.nom)}${p.urgent ? `<span class="urg">Urgent</span>` : ''}</div>
+    ${p.lieu ? `<div class="l">${esc(p.lieu)}</div>` : ''}
+    <div class="l">${esc(p.statut)}</div>
+    ${p.medecin ? `<div class="l">Orienté vers ${esc(p.medecin)}</div>` : ''}
+    ${p.proche ? `<div class="pres"><span class="k">Cabinet volontaire le plus proche</span>
+        ${esc(p.proche.nom)} — ${esc(fmtKm(p.proche.km))} à vol d'oiseau</div>` : ''}
+    <button onclick="fermerBulles();ouvrirOrientation('${p.id}')">${
+      p.medecin ? 'Changer le médecin' : 'Orienter le patient'}</button>
+  </div>`;
+}
+
+/* La fenêtre d'affectation s'ouvre par-dessus la carte : la bulle
+   dessous doit se refermer, sinon elle reste ouverte derrière et
+   se retrouve là au retour, sur un patient qu'on a déjà traité. */
+function fermerBulles(){
+  for(const id in cartesVives){ try{ cartesVives[id].closePopup(); }catch(e){} }
+}
+
 /* Le bloc tel qu'il s'écrit dans un feuillet. Les points sont
    déposés au passage dans cartoDonnees : c'est la carte montée
    après le rendu qui viendra les y chercher. */
 function blocCarte(idc, pts, o){
   cartoDonnees[idc] = pts;
+  const vedettes = pts.filter(p => !p.second);   // ce que la carte est censée montrer
   const situes = pts.filter(p => p.lat !== null);
-  const attente = pts.filter(p => p.lat === null && p.cle && !p.echec).length;
-  const introuvables = pts.filter(p => p.echec);
-  const sansAdresse = pts.filter(p => !p.cle);
+  const attente = vedettes.filter(p => p.lat === null && p.cle && !p.echec).length;
   const plie = !!cartoPliee[idc];
   const court = o.court ? ' court' : '';
 
   let corps;
   if(plie) corps = '';
   else if(situes.length || attente) corps = `<div class="carto-hote${court}" id="hote-${idc}" data-carte="${idc}"></div>`;
-  else corps = `<div class="carto-vide${court}">${pts.length
-    ? "Aucune adresse renseignée pour l'instant. Une adresse portée sur une fiche se pose ici en point, toute seule."
-    : "Aucun médecin au registre : la carte se remplit à mesure que les fiches se créent."}</div>`;
+  else corps = `<div class="carto-vide${court}">${esc(vedettes.length ? o.videSansPoint : o.videSansFiche)}</div>`;
 
-  const teintes = [['Volontaire', 'Accepte de recevoir'], ['Sollicité', 'Sollicité, sans réponse ferme'],
-                   ['À solliciter', 'Pas encore sollicité'], ['Indisponible', 'A répondu non']];
-  const presents = teintes.filter(([s]) => situes.some(p =>
-    (CARTO_TEINTES[p.statut] || '#0B4FA8') === CARTO_TEINTES[s]));
+  /* La légende ne montre que ce qui est effectivement posé : une
+     carte où personne n'a encore été orienté n'a pas à porter une
+     pastille verte qui ne correspond à rien. La forme compte
+     autant que la teinte — le vert d'une personne orientée et
+     celui d'un cabinet volontaire sont le même vert, et seuls le
+     disque et l'anneau les distinguent. */
+  const forme = p => (p.couleur || CARTO_TEINTES[p.statut] || '#0B4FA8') + (p.creux ? '|anneau' : '|disque');
+  const cles = new Set(situes.map(forme));
+  const legende = (o.legende || []).filter(x => cles.has(forme({couleur:x.c, creux:x.creux})));
 
   return `<div class="carto">
     <div class="tete-c">
       <div class="t">${esc(o.titre)}</div>
       <p class="s">${o.sous}</p>
+      ${o.outil || ''}
       <button class="plier" onclick="plierCarte('${idc}')">${plie ? 'Afficher la carte' : 'Replier'}</button>
     </div>
     ${corps}
     ${plie || !situes.length ? '' : `<div class="legende">
-      <span><strong>${situes.length}</strong> cabinet${situes.length > 1 ? 's situés' : ' situé'}</span>
-      ${presents.map(([s, l]) => `<span><i style="background:${CARTO_TEINTES[s]}"></i>${esc(l)}</span>`).join('')}
-      ${situes.some(p => p.approx) ? `<span><i class="approx" style="background:#0B4FA8"></i>Situé à la commune seulement</span>` : ''}
+      <span><strong>${vedettes.filter(p => p.lat !== null).length}</strong> ${esc(o.compte)}</span>
+      ${legende.map(x => `<span><i class="${x.creux ? 'creux' : ''}" style="${x.creux
+        ? `background:transparent;box-shadow:0 0 0 1px ${x.c} inset,0 0 0 3px ${x.c} inset`
+        : `background:${x.c}`}"></i>${esc(x.l)}</span>`).join('')}
+      ${vedettes.some(p => p.lat !== null && p.approx) ? `<span><i class="approx" style="background:#0B4FA8"></i>Situé à la commune seulement</span>` : ''}
     </div>`}
-    ${plie || (!introuvables.length && !sansAdresse.length && !attente) ? '' : `<div class="manquants">
-      ${attente ? `${attente} adresse${attente > 1 ? 's sont en cours de localisation' : ' est en cours de localisation'}. ` : ''}
-      ${introuvables.length ? `<strong>${introuvables.length}</strong> adresse${introuvables.length > 1 ? 's n\'ont' : ' n\'a'} pas été retrouvée${introuvables.length > 1 ? 's' : ''} : ${introuvables.map(p => esc(p.nom)).join(', ')} — à corriger sur la fiche. ` : ''}
-      ${sansAdresse.length ? `${sansAdresse.length} médecin${sansAdresse.length > 1 ? 's sont sans adresse ni commune' : ' est sans adresse ni commune'} et ne peu${sansAdresse.length > 1 ? 'vent' : 't'} pas être situé${sansAdresse.length > 1 ? 's' : ''}.` : ''}
-    </div>`}
-    ${plie || (!situes.length && !attente) ? '' : `<div class="source">Adresses situées par la Base Adresse Nationale (service public), fond de carte OpenStreetMap. Seules les adresses professionnelles des médecins sont transmises — aucune donnée de patient.</div>`}
+    ${plie || !o.alerte ? '' : `<div class="manquants">${o.alerte}</div>`}
+    ${plie || (!situes.length && !attente) ? '' : `<div class="source">${esc(o.source)} Fond de carte OpenStreetMap, adresses situées par la Base Adresse Nationale — deux services publics, sans compte ni clé.</div>`}
   </div>`;
 }
+
+/* Ce que la carte des médecins signale d'incomplet, sous elle. */
+function alerteMedecins(pts){
+  const attente = pts.filter(p => p.lat === null && p.cle && !p.echec).length;
+  const introuvables = pts.filter(p => p.echec);
+  const sansAdresse = pts.filter(p => !p.cle);
+  if(!attente && !introuvables.length && !sansAdresse.length) return '';
+  return [
+    attente ? `${attente} adresse${attente > 1 ? 's sont' : ' est'} en cours de localisation.` : '',
+    introuvables.length ? `<strong>${introuvables.length}</strong> adresse${introuvables.length > 1 ? 's n\'ont' : ' n\'a'} pas été retrouvée${introuvables.length > 1 ? 's' : ''} : ${introuvables.map(p => esc(p.nom)).join(', ')} — à corriger sur la fiche.` : '',
+    sansAdresse.length ? `${sansAdresse.length} médecin${sansAdresse.length > 1 ? 's sont' : ' est'} sans adresse ni commune et ne peu${sansAdresse.length > 1 ? 'vent' : 't'} pas être situé${sansAdresse.length > 1 ? 's' : ''}.` : ''
+  ].filter(Boolean).join(' ');
+}
+
+/* Et ce que signale la carte des patients : ici le manque est
+   toujours le même — la commune n'a pas été renseignée au
+   recueil, ou elle n'existe pas sous ce nom. */
+function alertePatients(pts){
+  const attente = pts.filter(p => p.lat === null && p.cle && !p.echec).length;
+  const introuvables = pts.filter(p => p.echec);
+  const sansCommune = pts.filter(p => !p.cle);
+  if(!attente && !introuvables.length && !sansCommune.length) return '';
+  return [
+    attente ? `${attente} commune${attente > 1 ? 's sont' : ' est'} en cours de localisation.` : '',
+    introuvables.length ? `<strong>${introuvables.length}</strong> commune${introuvables.length > 1 ? 's n\'ont' : ' n\'a'} pas été retrouvée${introuvables.length > 1 ? 's' : ''} : ${introuvables.map(p => esc(p.nom)).join(', ')} — vérifier l\'orthographe sur la fiche.` : '',
+    sansCommune.length ? `${sansCommune.length} personne${sansCommune.length > 1 ? 's sont' : ' est'} sans commune au registre et ne peu${sansCommune.length > 1 ? 'vent' : 't'} pas être située${sansCommune.length > 1 ? 's' : ''} : c\'est la question à poser au prochain appel.` : ''
+  ].filter(Boolean).join(' ');
+}
+
+function basculerMedSurPat(){ medSurCartePat = !medSurCartePat; rendre(); }
 
 function plierCarte(idc){ cartoPliee[idc] = !cartoPliee[idc]; rendre(); }
 
@@ -7281,14 +7582,21 @@ function blocSignature(id, libelle){
   </div>`;
 }
 
-/* Le bloc du patient, tête des deux formulaires. */
+/* Le bloc du patient, tête des deux formulaires. Le numéro y est
+   la seule chose qui permette de rappeler quelqu'un : sans lui,
+   une fois le médecin trouvé, on n'a plus personne à joindre — il
+   faut rattendre que la pharmacie rappelle. Il n'est pas
+   obligatoire, parce qu'un signalement sans numéro vaut toujours
+   mieux qu'un signalement perdu. */
 function blocPatient(){
   return `<div class="sous-t">Le patient
-    <span class="d">Le nom permet de le rappeler et de le nommer au médecin. L'adresse dit à quelle distance chercher.</span></div>
+    <span class="d">Le nom permet de le rappeler et de le nommer au médecin. Le numéro est ce par quoi on le joint une fois le médecin trouvé. L'adresse dit à quelle distance chercher.</span></div>
   <div class="form">
     <label><span class="k">Nom *</span><input id="rc-nom" autocomplete="off"></label>
     <label><span class="k">Prénom</span><input id="rc-prenom" autocomplete="off"></label>
     <label><span class="k">Âge</span><input id="rc-age" inputmode="numeric" placeholder="62"></label>
+    <label><span class="k">Téléphone</span>
+      <input id="rc-tel" type="tel" inputmode="tel" placeholder="06 12 34 56 78" autocomplete="off"></label>
     <label><span class="k">Commune</span><input id="rc-commune" placeholder="Pau, Billère…" autocomplete="off"></label>
     <label class="large"><span class="k">Adresse où il se trouve</span>
       <input id="rc-adresse" placeholder="Chez un proche, hébergement collectif, adresse complète…" autocomplete="off"></label>
@@ -7422,7 +7730,7 @@ async function enregistrerRecueil(){
      les lignes d'avant et celles d'après se lisent pareil. */
   const fiche = {
     id: uid(), voie: voieRecueil, date: aujourdhui(), heure: maintenant(),
-    nom: nom, prenom: v('rc-prenom'), age: v('rc-age'), adresse: v('rc-adresse'),
+    nom: nom, prenom: v('rc-prenom'), age: v('rc-age'), tel: v('rc-tel'), adresse: v('rc-adresse'),
     commune: v('rc-commune'), situation: v('rc-situation'),
     motif: motif, detail: v('rc-detail'),
     urgence: deja ? '' : v('rc-urgence'), delai: deja ? '' : v('rc-delai'),
@@ -7469,7 +7777,6 @@ function feuilletMedecins(med, vivier, diffusables, ori){
                  'Sans réponse':4, 'Indisponible':5};
   const tri = [...med].sort((a,b) => (ordre[a.statut] ?? 3) - (ordre[b.statut] ?? 3)
     || nomMed(a).localeCompare(nomMed(b), 'fr'));
-  const sansTel = vivier.filter(m => !String(m.tel||'').trim() && !String(m.rdv||'').trim()).length;
   const parFormulaire = med.filter(m => m.source === 'formulaire').length;
   const communes = new Set(vivier.map(m => (m.commune||'').trim()).filter(Boolean));
   const aConfirmer = med.filter(m => m.source === 'formulaire' && m.aVerifier).length;
@@ -7488,16 +7795,25 @@ function feuilletMedecins(med, vivier, diffusables, ori){
     <button class="btn sec" onclick="exporterCSV('medecins')">Excel</button>
     <button class="btn sec" onclick="imprimer()">PDF</button>
     <button class="btn" onclick="ouvrirAjout('medecins')">Ajouter un médecin</button>
-  </div>
-  <div class="note">Un médecin n'entre dans le fléchage que si l'on sait <strong>par quel numéro le joindre</strong> et <strong>par quelle voie demander un rendez-vous</strong>. Sa réponse est un service rendu, pas une obligation : les conditions qu'il pose se notent et se respectent.${sansTel ? ` <strong style="color:var(--ambre)">${sansTel}</strong> volontaire${sansTel>1?'s sont injoignables':' est injoignable'} faute de numéro.` : ''}</div>`;
+  </div>`;
 
   if(!med.length) return h + `<div class="carte"><p class="vide">Aucun médecin sondé. Le vivier se remplit de deux façons : par le formulaire en ligne une fois le recensement ouvert, ou en appelant les généralistes du territoire un par un — bouton « Ajouter un médecin ».</p></div>`;
 
   /* La carte du registre entier, statut par statut : elle montre
      autant les communes couvertes que les trous entre elles. */
-  h += blocCarte('carte-medecins', pointsMedecins(med), {
+  const ptsMed = pointsMedecins(med);
+  h += blocCarte('carte-medecins', ptsMed, {
     titre:"Cartographie des médecins du territoire",
-    sous:"Chaque cabinet dont l'adresse est renseignée se pose ici en point, coloré par la réponse du médecin. Les trous entre les points sont les communes qu'il reste à couvrir."
+    sous:"Chaque cabinet dont l'adresse est renseignée se pose ici en point, coloré par la réponse du médecin. Les trous entre les points sont les communes qu'il reste à couvrir.",
+    compte:'cabinets situés',
+    legende:[{c:CARTO_TEINTES['Volontaire'],   l:'Accepte de recevoir'},
+             {c:CARTO_TEINTES['Sollicité'],    l:'Sollicité, sans réponse ferme'},
+             {c:CARTO_TEINTES['À solliciter'], l:'Pas encore sollicité'},
+             {c:CARTO_TEINTES['Indisponible'], l:'A répondu non'}],
+    alerte: alerteMedecins(ptsMed),
+    source:"Seules les adresses professionnelles des médecins sont transmises — aucune donnée de patient.",
+    videSansPoint:"Aucune adresse renseignée pour l'instant. Une adresse portée sur une fiche se pose ici en point, toute seule.",
+    videSansFiche:"Aucun médecin au registre : la carte se remplit à mesure que les fiches se créent."
   });
 
   /* Les réponses arrivées par le formulaire se filtrent à part :
@@ -7582,7 +7898,7 @@ function feuilletMedecins(med, vivier, diffusables, ori){
 
 /* Tout ce sur quoi la recherche mord : l'identité, le motif, qui
    signale, le médecin, la commune. */
-const pailleOriente = o => [refPatient(o), o.nom, o.prenom, o.adresse, o.commune, o.motif,
+const pailleOriente = o => [refPatient(o), o.nom, o.prenom, o.tel, o.adresse, o.commune, o.motif,
   o.detail, o.relais, nomDeclarant(o), o.profession, o.medecin, o.note, o.statut]
   .filter(Boolean).join(' ').toLowerCase();
 
@@ -7647,34 +7963,52 @@ function viderTamis(){
   tamisPat = {q:'', du:'', au:'', statut:'Tout', urgence:'Tout', voie:'Tout', tri:'recent'};
   rendre();
 }
+/* Ouvrir les filtres fins ne re-rend que le tamis : le champ de
+   recherche garde ce qu'on venait d'y taper. */
+function basculerTamis(){ tamisOuvert = !tamisOuvert; rendre(); }
 const tamisActif = () => tamisPat.q || tamisPat.du || tamisPat.au
   || tamisPat.statut !== 'Tout' || tamisPat.urgence !== 'Tout' || tamisPat.voie !== 'Tout';
+/* Combien de filtres fins sont posés — la pastille du bouton
+   « Affiner » le dit, pour qu'un registre tronqué ne passe jamais
+   pour un registre complet. La recherche libre n'y compte pas :
+   elle se voit dans son champ. */
+const tamisFins = () => [tamisPat.du || tamisPat.au, tamisPat.statut !== 'Tout',
+  tamisPat.urgence !== 'Tout', tamisPat.voie !== 'Tout'].filter(Boolean).length;
 
+/* Une ligne, et rien de plus tant qu'on ne le demande pas : le
+   champ de recherche, le tri, et le bouton qui déplie le reste.
+   Le compte des lignes affichées ne s'écrit que si le tamis mord
+   réellement sur le registre — sinon il répète la barre du haut. */
 function barreTamis(ori, vus){
   const t = tamisPat;
   const sel = (l, v) => l.map(x => `<option value="${esc(x[0])}" ${x[0]===v?'selected':''}>${esc(x[1])}</option>`).join('');
   const statuts = [['Tout','Tous les statuts'],['Sans médecin','Sans médecin à ce jour']]
     .concat(ORI_STATUTS.map(s => [s, s]));
+  const fins = tamisFins();
   return `<div class="tamis">
-    <label class="q"><span class="k">Rechercher</span>
-      <input id="pat-q" value="${esc(t.q)}" placeholder="Nom, motif, commune, structure, médecin…"
-        autocomplete="off" oninput="majTamis('q', this.value, 'pat-q')"></label>
-    <label><span class="k">Signalés à partir du</span>
-      <input type="date" value="${esc(t.du)}" onchange="majTamis('du', this.value)"></label>
-    <label><span class="k">Jusqu'au</span>
-      <input type="date" value="${esc(t.au)}" onchange="majTamis('au', this.value)"></label>
-    <label><span class="k">Statut</span>
-      <select onchange="majTamis('statut', this.value)">${sel(statuts, t.statut)}</select></label>
-    <label><span class="k">Urgence</span>
-      <select onchange="majTamis('urgence', this.value)">${sel([['Tout','Urgent et non urgent'],['Urgent','Urgent'],['Non urgent','Non urgent'],['','Non renseignée']], t.urgence)}</select></label>
-    <label><span class="k">Voie</span>
-      <select onchange="majTamis('voie', this.value)">${sel([['Tout','Signalés et orientés'],['consulter','À faire consulter'],['oriente','Déjà orientés']], t.voie)}</select></label>
-    <label><span class="k">Trier par</span>
-      <select onchange="majTamis('tri', this.value)">${sel(Object.entries(TRIS_PAT), t.tri)}</select></label>
-    <div class="pied">
-      <span>${vus.length} ligne${vus.length>1?'s':''} affichée${vus.length>1?'s':''} sur ${ori.length}</span>
-      ${tamisActif() ? `<button onclick="viderTamis()">Tout afficher</button>` : ''}
+    <div class="rang">
+      <input class="q" id="pat-q" value="${esc(t.q)}" placeholder="Rechercher un nom, un motif, une commune…"
+        autocomplete="off" oninput="majTamis('q', this.value, 'pat-q')">
+      <select class="tri" onchange="majTamis('tri', this.value)">${sel(Object.entries(TRIS_PAT), t.tri)}</select>
+      <button class="plus${tamisOuvert || fins ? ' on' : ''}" onclick="basculerTamis()"
+        title="Période, statut, urgence, voie">${tamisOuvert ? 'Replier' : 'Affiner'}${fins ? `<span class="n">${fins}</span>` : ''}</button>
     </div>
+    ${tamisOuvert ? `<div class="fins">
+      <label><span class="k">Signalés à partir du</span>
+        <input type="date" value="${esc(t.du)}" onchange="majTamis('du', this.value)"></label>
+      <label><span class="k">Jusqu'au</span>
+        <input type="date" value="${esc(t.au)}" onchange="majTamis('au', this.value)"></label>
+      <label><span class="k">Statut</span>
+        <select onchange="majTamis('statut', this.value)">${sel(statuts, t.statut)}</select></label>
+      <label><span class="k">Urgence</span>
+        <select onchange="majTamis('urgence', this.value)">${sel([['Tout','Urgent et non urgent'],['Urgent','Urgent'],['Non urgent','Non urgent'],['','Non renseignée']], t.urgence)}</select></label>
+      <label><span class="k">Voie</span>
+        <select onchange="majTamis('voie', this.value)">${sel([['Tout','Signalés et orientés'],['consulter','À faire consulter'],['oriente','Déjà orientés']], t.voie)}</select></label>
+    </div>` : ''}
+    ${tamisActif() ? `<div class="pied">
+      <span>${vus.length} sur ${ori.length} affiché${vus.length>1?'s':''}</span>
+      <button onclick="viderTamis()">Tout afficher</button>
+    </div>` : ''}
   </div>`;
 }
 
@@ -7682,6 +8016,45 @@ function barreTamis(ori, vus){
    Au repos, un bouton en tête et la liste dessous ; pendant un
    appel, le formulaire prend toute la place et la liste attend.
    Deux écrans qui se répondaient en devenaient un. */
+/* La carte des personnes signalées : une par point, posée sur sa
+   commune. La couleur dit où elle en est — ambre tant qu'elle
+   attend un médecin, rouge si elle a été signalée urgente et
+   attend encore, verte dès qu'un médecin lui est désigné, grise
+   si la demande est close sans suite.
+
+   Les cabinets volontaires viennent en surimpression sur demande,
+   en anneaux : c'est ce qui répond à « qui est le plus près de
+   cette personne ». Sans eux, la carte reste ce qu'elle est —
+   l'état du registre étalé sur le territoire. */
+function carteDesPatients(ori, vivier){
+  const ptsMed = pointsMedecins(vivier)
+    .map(p => Object.assign({}, p, {creux:true, second:true}));
+  const pts = pointsPatients(ori, ptsMed);
+  const tous = medSurCartePat ? pts.concat(ptsMed.filter(p => p.lat !== null)) : pts;
+  const situables = ptsMed.filter(p => p.lat !== null).length;
+
+  const outil = situables
+    ? `<button class="plier${medSurCartePat ? ' on' : ''}" onclick="basculerMedSurPat()">${
+        medSurCartePat ? 'Masquer les cabinets' : 'Situer les cabinets'}</button>`
+    : '';
+
+  return blocCarte('carte-patients', tous, {
+    court:true, outil,
+    titre:"Cartographie des patients signalés",
+    sous:"Une personne, un point, posé sur sa commune. La couleur dit si elle attend encore un médecin ou si elle en a un. Touchez un point : le cabinet volontaire le plus proche s'y affiche, avec de quoi l'affecter.",
+    compte:'personnes situées',
+    legende:[{c:CARTO_PAT.urgent,  l:'Signalée urgente, sans médecin'},
+             {c:CARTO_PAT.attente, l:'En attente d\'un médecin'},
+             {c:CARTO_PAT.oriente, l:'Orientée vers un médecin'},
+             {c:CARTO_PAT.clos,    l:'Sans suite'},
+             {c:CARTO_TEINTES['Volontaire'], l:'Cabinet volontaire', creux:true}],
+    alerte: alertePatients(pts),
+    source:"Une personne est posée sur sa commune, jamais à son adresse : seul le nom de la commune sort du cockpit, ni identité ni rue.",
+    videSansPoint:"Aucune commune renseignée pour l'instant. La commune saisie au recueil pose la personne sur la carte, toute seule.",
+    videSansFiche:"Aucun patient signalé : la carte se remplit au premier appel d'une pharmacie ou d'une structure."
+  });
+}
+
 function feuilletPatients(ori, vivier, rel){
   if(voieRecueil) return feuilletRecueil(rel || etat.relais || [], vivier);
 
@@ -7701,11 +8074,7 @@ function feuilletPatients(ori, vivier, rel){
     <p class="sous-f" style="margin:10px 0 0">Une saisie par personne. Si la pharmacie appelle pour trois patients, faites trois saisies : c'est ce qui permet de compter les personnes, et pas seulement les appels.</p>
   </div>
 
-  ${blocCarte('carte-vivier', pointsMedecins(vivier), {
-    court:true,
-    titre:"Cartographie des médecins volontaires du territoire",
-    sous:"Où sont les médecins qui acceptent de recevoir. Quand une pharmacie signale une personne, c'est ici qu'on voit qui est le plus près d'elle avant de décrocher."
-  })}
+  ${carteDesPatients(ori, vivier)}
 
   <div class="barre-h">
     <span class="cpt-h">${ori.length} patient${ori.length>1?'s':''} au registre${attente.length ? ` · ${attente.length} sans médecin` : ''}</span>
@@ -7731,62 +8100,118 @@ function feuilletPatients(ori, vivier, rel){
   /* Le regroupement par jour ne veut plus rien dire quand le tri
      n'est pas chronologique. */
   const parJour = !manuel && (tamisPat.tri === 'recent' || tamisPat.tri === 'ancien');
-  let jour = null;
+  /* Les cartes vivent dans une grille, et la grille se referme à
+     chaque changement de jour pour laisser passer l'intertitre :
+     sans quoi le titre du jour se rangerait dans une colonne. */
+  let jour = null, grille = false;
+  const clore = () => { if(!grille) return ''; grille = false; return `</div>`; };
   lignes.forEach((o, i) => {
     if(parJour && o.date !== jour){
       jour = o.date;
+      h += clore();
       h += `<div class="reg-jour"><span class="n">${esc(frdateJour(jour))}</span>` +
            (jour === aujourdhui() ? `<span class="auj">aujourd'hui</span>` : '') + `</div>`;
     }
-    const st = o.statut || 'À orienter';
-    const quand = parJour ? o.heure : [frdate(o.date), o.heure].filter(Boolean).join(' à ');
-    const declarant = nomDeclarant(o);
-    const chips = [[o.motif,"Motif"],[o.urgence === 'Urgent' ? '' : o.urgence,"Urgence"],
-                   [o.adresse,"Adresse"],[o.commune,"Commune"],[o.situation,"Situation"],
-                   [o.delai,"Délai souhaitable"],
-                   [declarant && o.profession ? declarant + ' — ' + o.profession : declarant,"Signalé par"],
-                   [o.relais,"Structure"],[o.provenance,"Type"]]
-      .filter(x => x[0]).map(x => `<span><span class="k">${x[1]}</span>${esc(x[0])}</span>`).join('');
-    const pied = [o.par ? 'Orientation par ' + o.par : (o.auteur ? 'Saisi par ' + o.auteur : ''),
-                  o.modifiePar ? 'Modifié par ' + o.modifiePar : '']
-      .filter(Boolean).map(x => `<span>${esc(x)}</span>`).join('');
+    if(!grille){ h += `<div class="pats">`; grille = true; }
+    h += carteDuPatient(o, i, lignes.length, brut, parJour);
+  });
+  return h + clore();
+}
 
-    h += `<article class="ent-r ${estOriente(o) ? (aRendezVous(o) ? 't-fini' : 't-cours')
-        : st === 'Sans suite' ? 't-fini' : 't-attente'}">
-      <div class="haut">
-        ${quand ? `<span class="hr">${esc(quand)}</span>` : ''}
-        <span class="etiq ${ETIQ_REG[st] || 'e-attente'}">${esc(st)}</span>
-        ${o.urgence === 'Urgent' ? `<span class="etiq e-bloque">Urgent</span>` : ''}
+/* La carte d'un patient. Ce qu'on doit lire avant tout le reste :
+   est-ce urgent, qui est-ce, pour quoi, et a-t-il un médecin.
+   Le reste — situation, adresse, structure qui signale — descend
+   en dessous, en petit. Une carte ne fait pas la largeur de
+   l'écran : elle en fait le tiers, et trois situations se
+   comparent d'un coup d'œil au lieu de se dérouler l'une après
+   l'autre. */
+function carteDuPatient(o, i, total, brut, parJour){
+  const st = o.statut || 'À orienter';
+  const oriente = estOriente(o);
+  const urgent = o.urgence === 'Urgent';
+  const attend = enAttenteMed(o);
+  const clos = st === 'Sans suite';
+  const classe = clos ? 'p-clos' : oriente ? 'p-oriente' : urgent ? 'p-urgent' : 'p-attente';
+  const quand = parJour ? (o.heure ? hFr(o.heure) : '')
+                        : [frdate(o.date), o.heure ? hFr(o.heure) : ''].filter(Boolean).join(' à ');
+  const declarant = nomDeclarant(o);
+  /* Ce qui situe la personne se lit sous son nom, sur une ligne :
+     où elle est, et quand elle a été signalée. */
+  const situe = [o.commune, quand].filter(Boolean).map(esc).join(' · ');
+
+  /* Les précisions de second rang, en bas de carte. Le motif n'y
+     est plus : il a son propre encadré, en tête. */
+  const faits = [[o.situation,"Situation"], [o.adresse,"Adresse"],
+                 [declarant && o.profession ? declarant + ' — ' + o.profession : declarant,"Signalé par"],
+                 [o.relais || o.provenance,"Structure"]]
+    .filter(x => x[0]).map(x => `<span><span class="k">${x[1]}</span>${esc(x[0])}</span>`).join('');
+
+  /* Qui a fait quoi. Au recueil, la ligne est saisie — elle n'est
+     pas encore orientée : c'est « Saisie par ». L'orientation ne
+     s'écrit qu'une fois un médecin désigné, au nom de la personne
+     qui l'a désigné, qui n'est pas forcément celle qui a saisi. */
+  const saisiePar = o.par || o.auteur;
+  const pied = [saisiePar ? 'Saisie par ' + saisiePar : '',
+                oriente && o.orientePar ? 'Orientation par ' + o.orientePar : '',
+                o.modifiePar ? 'Modifié par ' + o.modifiePar : '']
+    .filter(Boolean).map(x => `<span>${esc(x)}</span>`).join('');
+
+  const tel = String(o.tel || '').trim();
+
+  return `<article class="fpat ${classe}">
+    ${urgent && attend ? `<div class="cri">Urgent — sans médecin</div>` : ''}
+    <div class="corps">
+      <div class="tete">
+        <div class="qui">
+          <div class="nom">${esc(refPatient(o)) || 'Identité non précisée'}</div>
+          ${situe ? `<div class="ou">${situe}</div>` : ''}
+        </div>
         <span class="outils">
-          ${brut ? fleches('orientes', o.id, i, lignes.length) : ''}
-          <button title="Modifier" onclick="ouvrirEdition('orientes','${o.id}')">✎</button>
+          ${brut ? fleches('orientes', o.id, i, total) : ''}
+          <button title="Modifier la fiche" onclick="ouvrirEdition('orientes','${o.id}')">✎</button>
           <button title="Supprimer" onclick="supprimer('orientes','${o.id}')">×</button>
         </span>
       </div>
-      <div class="ti">${esc(refPatient(o)) || 'Identité non précisée'}</div>
-      ${chips ? `<div class="chips">${chips}</div>` : ''}
-      ${o.detail ? `<div class="bloc"><span class="k">Précisions</span><div class="v">${esc(o.detail)}</div></div>` : ''}
-      ${estOriente(o)
-        ? `<div class="bloc"><span class="k">Orienté vers</span><div class="v"><strong>${esc(o.medecin)}</strong>${o.horsVivier ? ' — hors du vivier de la CPTS' : ''}${
-            o.orienteLe ? `<br><span style="color:var(--texte-2)">Affecté le ${esc(frdateL(o.orienteLe))}${o.orienteH ? ' à ' + esc(hFr(o.orienteH)) : ''}${o.orientePar ? ' par ' + esc(o.orientePar) : ''}</span>` : ''}</div></div>`
-        : ''}
-      <div class="flechage">
-        <button class="btn${estOriente(o) ? ' sec' : ''}" onclick="ouvrirOrientation('${o.id}')">${estOriente(o) ? 'Changer le médecin' : 'Orienter le patient'}</button>
-        <label><span class="k">Où en est-on</span>
-          <select onchange="majPatient('${o.id}','statut', this.value)">
-            ${ORI_STATUTS.map(s => `<option ${s === st ? 'selected' : ''}>${esc(s)}</option>`).join('')}
-          </select></label>
+
+      <div class="etats">
+        <span class="etiq ${ETIQ_REG[st] || 'e-attente'}">${esc(st)}</span>
+        ${urgent && !attend ? `<span class="etiq e-bloque">Signalé urgent</span>` : ''}
+        ${o.delai && o.delai !== 'À préciser' ? `<span class="etiq e-lancer">${esc(o.delai)}</span>` : ''}
       </div>
-      ${o.rdvle ? `<div class="bloc"><span class="k">Créneau</span><div class="v">${esc(frdateL(o.rdvle))}${o.rdvh ? ' à ' + esc(hFr(o.rdvh)) : (o.rdvpart ? ' — ' + esc(PART_L[o.rdvpart] || o.rdvpart) : '')}${o.confirme ? ` · ${esc(o.confirme)}` : ''}</div></div>` : ''}
-      ${estOriente(o) && o.circuit ? `<div class="bloc"><span class="k">Circuit suivi</span><div class="v">${esc(o.circuit)}</div></div>` : ''}
-      ${(o.accord || 'À recueillir') === 'À recueillir' && st !== 'Sans suite'
-        ? `<div class="bloc"><span class="k">Accord du patient</span><div class="v">À recueillir par la structure qui le reçoit avant que ses coordonnées ne circulent.</div></div>`
-        : o.accord === 'Non' ? `<div class="bloc"><span class="k">Accord du patient</span><div class="v">Refusé — aucune coordonnée ne doit circuler. Lui remettre le nom et le numéro du médecin, à lui d'appeler.</div></div>` : ''}
-      ${o.note ? `<div class="bloc"><span class="k">Observation</span><div class="v">${esc(o.note)}</div></div>` : ''}
-      ${pied ? `<div class="pied">${pied}</div>` : ''}
-    </article>`;
-  });
-  return h;
+
+      ${o.motif ? `<div class="motif"><span class="k">Motif</span><div class="v">${esc(o.motif)}</div></div>` : ''}
+
+      ${tel
+        ? `<a class="tel" href="tel:${esc(tel.replace(/[^0-9+]/g,''))}">Appeler ${esc(tel)}</a>`
+        : clos ? ''
+        : `<div class="sans-tel">Aucun numéro au dossier — l'ajouter par ✎ pour pouvoir rappeler.</div>`}
+
+      ${oriente
+        ? `<div class="bl vers"><span class="k">Orienté vers</span><strong>${esc(o.medecin)}</strong>${
+            o.horsVivier ? ' — hors vivier CPTS' : ''}${
+            o.orienteLe ? `<span class="s">Affecté le ${esc(frdateL(o.orienteLe))}${o.orienteH ? ' à ' + esc(hFr(o.orienteH)) : ''}${o.orientePar ? ' par ' + esc(o.orientePar) : ''}</span>` : ''}</div>`
+        : ''}
+      ${o.rdvle ? `<div class="bl"><span class="k">Créneau</span>${esc(frdateL(o.rdvle))}${o.rdvh ? ' à ' + esc(hFr(o.rdvh)) : (o.rdvpart ? ' — ' + esc(PART_L[o.rdvpart] || o.rdvpart) : '')}${o.confirme ? ` · ${esc(o.confirme)}` : ''}</div>` : ''}
+      ${o.detail ? `<div class="bl"><span class="k">Précisions</span>${esc(o.detail)}</div>` : ''}
+      ${faits ? `<div class="faits">${faits}</div>` : ''}
+      ${oriente && o.circuit ? `<div class="bl"><span class="k">Circuit suivi</span>${esc(o.circuit)}</div>` : ''}
+      ${(o.accord || 'À recueillir') === 'À recueillir' && !clos
+        ? `<div class="avert">Accord du patient à recueillir par la structure qui le reçoit avant que ses coordonnées ne circulent.</div>`
+        : o.accord === 'Non'
+          ? `<div class="avert">Accord refusé — aucune coordonnée ne doit circuler. Lui remettre le nom et le numéro du médecin, à lui d'appeler.</div>`
+          : ''}
+      ${o.note ? `<div class="bl"><span class="k">Observation</span>${esc(o.note)}</div>` : ''}
+    </div>
+
+    <div class="actes">
+      <button class="btn${oriente ? ' sec' : ''}" onclick="ouvrirOrientation('${o.id}')">${oriente ? 'Changer le médecin' : 'Orienter le patient'}</button>
+      <label><span class="k">Où en est-on</span>
+        <select onchange="majPatient('${o.id}','statut', this.value)">
+          ${ORI_STATUTS.map(s => `<option ${s === st ? 'selected' : ''}>${esc(s)}</option>`).join('')}
+        </select></label>
+    </div>
+    ${pied ? `<div class="pied">${pied}</div>` : ''}
+  </article>`;
 }
 
 /* Orienter un patient : le geste le plus fréquent du feuillet.
@@ -7806,17 +8231,30 @@ function ouvrirOrientation(id){
   const vivier = (etat.medecins||[]).filter(m => MED_OK.indexOf(m.statut) >= 0);
   const noms = nomsMissionnes();
 
+  /* Le vivier se range du plus proche au plus loin de la commune
+     du patient, dès que les deux sont situés. C'est la seule
+     question qu'on se pose au moment d'affecter : qui est à côté.
+     Les cabinets qu'on n'a pas pu situer ferment la marche plutôt
+     que de disparaître. */
+  const range = vivier.map(m => ({m, km: distancePatMed(o, m)}));
+  const classe = range.some(x => x.km !== null);
+  if(classe) range.sort((a, b) => (a.km === null ? 1e9 : a.km) - (b.km === null ? 1e9 : b.km));
+
   document.getElementById('modale').innerHTML = `<h3>Orienter ${esc(refPatient(o) || 'ce patient')}</h3>
     <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">${
       [o.motif, o.commune, o.urgence === 'Urgent' ? 'signalé urgent' : ''].filter(Boolean).map(esc).join(' · ') || 'Aucun détail au registre'}</p>
 
     ${vivier.length
-      ? `<span class="k" style="display:block;margin-bottom:6px">Médecins volontaires — toucher un nom pour affecter</span>
-         <div class="choix-pat">${vivier.map(m => `
+      ? `<span class="k" style="display:block;margin-bottom:6px">Médecins volontaires — ${classe
+           ? `du plus proche au plus loin de ${esc(o.commune || 'la commune du patient')}`
+           : 'toucher un nom pour affecter'}</span>
+         <div class="choix-pat">${range.map(({m, km}) => `
            <button onclick="affecterMedecin('${o.id}','${m.id}')">
-             <span class="r">${esc(nomMed(m))}${nomMed(m) === o.medecin ? `<span class="deja">déjà affecté</span>` : ''}</span>
+             <span class="r">${esc(nomMed(m))}${km !== null ? `<span class="km">${esc(fmtKm(km))}</span>` : ''}${
+               nomMed(m) === o.medecin ? `<span class="deja">déjà affecté</span>` : ''}</span>
              <span class="d">${[m.structure, m.commune, m.delai, m.tel].filter(Boolean).map(esc).join(' · ') || 'Coordonnées à compléter'}</span>
-           </button>`).join('')}</div>`
+           </button>`).join('')}</div>
+         ${classe ? `<p class="sous-f" style="margin:8px 0 0;font-size:12px">Distances à vol d'oiseau, de commune à cabinet : elles classent, elles ne disent pas le temps de route.</p>` : ''}`
       : `<p class="vide">Aucun médecin n'a encore accepté de recevoir. Vous pouvez tout de même saisir un nom ci-dessous.</p>`}
 
     <label style="margin-top:12px"><span class="k">Ou saisir un autre médecin</span>
@@ -7891,7 +8329,7 @@ async function majPatient(id, champ, valeur){
 async function anonymiserOrientes(){
   const n = (etat.orientes || []).length;
   document.getElementById('modale').innerHTML = `<h3>Anonymiser le registre des patients&nbsp;?</h3>
-    <p style="color:var(--texte-2)">Les ${n} ligne${n>1?'s':''} du registre perdront le nom, le prénom, l'âge et l'adresse du patient, le nom de la personne qui l'a déclaré, les précisions et les observations. Le reste est conservé : date, commune, motif, urgence, délai, médecin vers qui le patient a été orienté, statut. Les compteurs et le bilan ne bougent pas.</p>
+    <p style="color:var(--texte-2)">Les ${n} ligne${n>1?'s':''} du registre perdront le nom, le prénom, l'âge, le numéro de téléphone et l'adresse du patient, le nom de la personne qui l'a déclaré, les précisions et les observations. Le reste est conservé : date, commune, motif, urgence, délai, médecin vers qui le patient a été orienté, statut. Les compteurs et le bilan ne bougent pas.</p>
     <p style="color:var(--braise)">L'opération est définitive et vaut pour tous les postes connectés. À faire une fois la crise passée, ou dès qu'une ligne n'a plus besoin d'être suivie.</p>
     <div class="actions"><button class="btn" onclick="confirmerAnonymisation()">Anonymiser</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
   document.getElementById('rideau').classList.add('on');
@@ -7899,7 +8337,7 @@ async function anonymiserOrientes(){
 async function confirmerAnonymisation(){
   (etat.orientes || []).forEach((o, i) => {
     o.ref = 'Patient ' + (i + 1);
-    o.nom = o.ref; o.prenom = ''; o.age = ''; o.adresse = '';
+    o.nom = o.ref; o.prenom = ''; o.age = ''; o.tel = ''; o.adresse = '';
     o.decNom = ''; o.decPrenom = ''; o.interlocuteur = '';
     o.detail = ''; o.note = '';
     o.anonymise = new Date().toISOString();
