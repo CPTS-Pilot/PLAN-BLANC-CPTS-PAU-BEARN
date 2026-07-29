@@ -559,19 +559,49 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 
 /* Les feuillets : ce qu'on sait, point par point. Un point vierge
    se distingue d'un point qui a simplement vieilli. */
-.points{display:grid;gap:11px;grid-template-columns:repeat(auto-fill,minmax(315px,1fr));margin-bottom:8px}
-.pt{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--stable);border-radius:10px;padding:15px 16px;display:flex;flex-direction:column;gap:9px}
+/* Une dizaine de points de situation côte à côte : chacun déployé
+   en entier, la page devenait un mur qu'on ne parcourt plus. Le
+   feuillet se replie donc sur ce qui se lit d'un coup d'œil — son
+   nom, l'état en trois lignes, ce que ça implique pour nous — et
+   s'ouvre en entier à la demande. Le crayon reste dans l'en-tête :
+   mettre à jour un point ne demande pas de l'ouvrir d'abord.
+   À l'impression, tout se déplie : un dossier de traçabilité ne
+   tronque rien. */
+.points{display:grid;gap:9px;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));margin-bottom:8px}
+.pt{background:var(--carte);border:1px solid var(--trait);border-top:3px solid var(--stable);border-radius:9px;padding:11px 13px 12px;display:flex;flex-direction:column;gap:7px}
 .pt.vieux{border-top-color:var(--ambre)}
 .pt.vierge{border-top-color:var(--trait);background:var(--surface)}
-.pt .n{font-family:var(--display);font-weight:700;font-size:16.5px;line-height:1.25;letter-spacing:-.01em;color:var(--encre)}
-.pt .e{font-size:14px;line-height:1.45}
+.pt .tete-p{display:flex;align-items:flex-start;gap:4px}
+.pt .bascule{flex:1;display:flex;align-items:flex-start;gap:8px;background:none;border:0;padding:0;
+  cursor:pointer;text-align:left;font-family:inherit;color:inherit;min-width:0}
+.pt .n{font-family:var(--display);font-weight:700;font-size:14.5px;line-height:1.25;letter-spacing:-.01em;color:var(--encre);flex:1}
+.pt .chev{font-family:var(--mono);font-size:11px;color:var(--texte-2);flex:0 0 11px;text-align:center;margin-top:3px}
+.pt .modif-p{background:none;border:0;color:var(--texte-2);cursor:pointer;font-size:14px;
+  padding:0 3px;border-radius:5px;line-height:1.2;flex:0 0 auto}
+.pt .modif-p:hover{color:var(--encre-2);background:var(--cobalt-clair)}
+.pt .e{font-size:13px;line-height:1.45}
 .pt .e.rien{color:var(--texte-2);font-style:italic}
+/* Replié, l'état s'arrête à trois lignes et la suite se devine :
+   c'est assez pour reconnaître le point, pas assez pour croire
+   qu'on l'a lu. */
+.pt:not(.ouvert) .e{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pt:not(.ouvert) .imp .v{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pt:not(.ouvert) .q,.pt:not(.ouvert) .b{display:none}
+.pt .imp{font-size:12.5px;line-height:1.4;background:#FCF3E4;border-left:3px solid var(--ambre);
+  border-radius:0 6px 6px 0;padding:6px 9px;color:#6B4A12}
+.pt .imp .k{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  display:block;margin-bottom:1px;opacity:.75}
+/* Le manque se signale sans prendre la place d'une réponse : une
+   ligne en italique, pas un encadré. Dix feuillets muets ne doivent
+   pas coûter dix pavés. */
+.pt .imp.manque{background:none;border-left:0;border-radius:0;padding:0;
+  font-size:11.5px;color:var(--texte-2);font-style:italic}
 .pt .q{font-size:12.5px;color:var(--texte-2);line-height:1.4}
 .pt .q .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:1px;opacity:.8}
-.pt .meta{font-family:var(--mono);font-size:10.5px;color:var(--texte-2);margin-top:auto;padding-top:4px}
+.pt .meta{font-family:var(--mono);font-size:9.5px;color:var(--texte-2);margin-top:auto;padding-top:3px}
 .pt.vieux .meta{color:#8A5D12}
 .pt .b{display:flex;gap:7px;flex-wrap:wrap}
-.pt .b button{flex:1;min-width:130px;min-height:40px;border-radius:7px;font-size:13px;cursor:pointer;border:1px solid var(--trait);background:#fff;color:var(--texte);font-family:inherit;padding:8px 11px}
+.pt .b button{flex:1;min-width:130px;min-height:38px;border-radius:7px;font-size:13px;cursor:pointer;border:1px solid var(--trait);background:#fff;color:var(--texte);font-family:inherit;padding:8px 11px}
 .pt .b .maj{background:var(--encre-2);border-color:var(--encre-2);color:#fff;font-family:var(--display);font-weight:600}
 .pt .b .maj:hover{background:var(--encre)}
 
@@ -644,6 +674,12 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .ent-r .lien{display:inline-block;margin-top:10px;font-size:13.5px;color:var(--encre-2);
   text-decoration:none;border-bottom:1px solid var(--trait)}
 .ent-r .lien:hover{border-color:var(--encre-2)}
+/* Le renvoi vers le compte rendu d'une séance est un bouton, pas un
+   lien sortant : il reste dans le cockpit, et se donne donc l'allure
+   d'un lien plutôt que celle d'un bouton d'action. */
+.ent-r .lien-v{display:block;background:none;border:0;border-bottom:1px solid var(--trait);
+  padding:0;cursor:pointer;font-family:inherit;text-align:left;width:fit-content}
+.ent-r .lien-v::after{content:" →";color:var(--texte-2)}
 /* Une entrée venue du dehors se reconnaît avant d'être lue : elle
    porte le nom de qui l'a communiquée en tête, et un liseré ambre
    à droite qui la distingue de tout ce que nous avons fait
@@ -1295,6 +1331,15 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .sugg button.on{border-color:var(--encre-2);background:#fff;font-weight:600}
 .sugg.urg button.on{border-color:var(--braise);color:var(--braise)}
 .sugg.urg button.on.calme{border-color:var(--stable);color:var(--stable)}
+/* Les amorces ne sont pas des réponses : elles ouvrent une phrase
+   qu'on finit à la main, et s'additionnent au lieu de se remplacer.
+   Le « + » le dit avant qu'on ait essayé. */
+.sugg.amorces{margin-top:8px}
+.sugg.amorces button{font-size:12.5px;padding:7px 12px;min-height:36px;background:var(--surface);
+  border-color:var(--trait);color:var(--texte-2)}
+.sugg.amorces button::before{content:"+ ";color:var(--encre-2);font-weight:700}
+.sugg.amorces button:hover{background:var(--cobalt-clair);border-color:var(--encre-2);color:var(--encre-2)}
+.sugg.amorces button.on{background:#fff;border-color:var(--encre-2);color:var(--encre-2)}
 /* Les trois temps du formulaire : le patient, ce qu'il lui faut,
    qui le signale. Un intertitre par temps, pour savoir où l'on en
    est quand on fait défiler. */
@@ -1530,8 +1575,11 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 @media print{
   @page{margin:14mm}
   body{background:#fff;font-size:10.5pt}
-  .rail,.bandeau,.filtres,.feuillets,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.pt .b,.guide,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve,.ref .b,.ref.neuf,.tamis,.retour-f,.voies,.sugg,.miss-lunettes,.miss-neuf,.miss-c .barre-m,.miss-pers .modif,.apourvoir li .designer{display:none!important}
+  .rail,.bandeau,.filtres,.feuillets,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.pt .b,.guide,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve,.ref .b,.ref.neuf,.tamis,.retour-f,.voies,.sugg,.miss-lunettes,.miss-neuf,.miss-c .barre-m,.miss-pers .modif,.apourvoir li .designer,.pt .modif-p,.pt .chev,.ent-r .lien-v{display:none!important}
   td.act,th:last-child{display:none!important}
+  /* Un feuillet replié à l'écran s'imprime déplié : un dossier de
+     traçabilité ne tronque rien. */
+  .pt .e,.pt .imp .v,.pt .q{display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important}
   .contenu{padding:0;max-width:none}
   .carte,.tw,.mission,.pers,.ligne,.pt,.visio,.ent-r,.miss-pers,.miss-c,.apourvoir{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
   .miss-pers .manquant,.miss-eq .qn.manque{text-decoration:none;color:#555}
@@ -2266,6 +2314,7 @@ function fusionnerNouveautes(){
     });
   });
   reverserDiffusions();
+  apparierVisioARS();
   consignerPatientsHerites();
   consignerCollecteHeritee();
   completerVeille();
@@ -3770,6 +3819,12 @@ function journal(k){
     const lien = cfg.lien && o[cfg.lien]
       ? `<a class="lien" href="${esc(o[cfg.lien])}" target="_blank" rel="noopener">${esc(cfg.lienL || 'Ouvrir')} ↗</a>` : '';
 
+    /* Une entrée née d'une visio garde le chemin vers son compte
+       rendu : le registre atteste que la séance a eu lieu, le détail
+       point par point reste là où il a été écrit. */
+    const versV = o.visio
+      ? `<button class="lien lien-v" onclick="ouvrirVisioDepuisARS('${o.visio}')">Voir le compte rendu de la séance</button>` : '';
+
     /* Une entrée sans heure de fait n'est pas pour autant sans
        repère : le cockpit horodate chaque enregistrement, et ce
        repère-là se lit au pied de la carte. Il ne dit pas quand la
@@ -3807,7 +3862,7 @@ function journal(k){
       <div class="ti">${esc(o[cfg.titre]) || '—'}</div>
       ${perso}
       ${chips ? `<div class="chips">${chips}</div>` : ''}
-      ${blocs}${lien}${marqueRetenue(o)}
+      ${blocs}${lien}${versV}${marqueRetenue(o)}
       ${pied ? `<div class="pied">${pied}</div>` : ''}
     </article>`;
   });
@@ -4454,6 +4509,11 @@ const visioVide = v => !(v.points||[]).length && !v.consignes && !v.pourNous;
 
 function ouvrirVisio(id){ visioOuverte = (visioOuverte === id) ? null : id; rendre(); }
 
+/* Depuis le registre ARS, on retombe sur la séance dépliée : le
+   registre dit qu'elle a eu lieu, la situation régionale dit ce qui
+   s'y est dit. */
+function ouvrirVisioDepuisARS(id){ visioOuverte = id; aller('veille'); }
+
 function vueVisios(){
   const l = visiosTriees();
   const derniere = l[0];
@@ -4572,7 +4632,9 @@ function ouvrirSaisieVisio(id){
     <label class="large"><span class="k">Ce que l'ARS demande</span>
       <textarea id="vs-consignes" placeholder="Les consignes explicites sorties de la séance, celles qu'on peut citer.">${g('consignes')}</textarea></label>
     <label class="large"><span class="k">Ce que ça change pour la CPTS Pau Béarn</span>
-      <textarea id="vs-pourNous" placeholder="Ce qu'il faut décider, lancer ou arrêter de notre côté à la suite de cette séance.">${g('pourNous')}</textarea></label>
+      <textarea id="vs-pourNous" placeholder="Ce qu'il faut décider, lancer ou arrêter de notre côté à la suite de cette séance.">${g('pourNous')}</textarea>
+      <span class="aide">C'est ce champ-là qui fait la différence entre un compte rendu et une décision : sans lui, la séance reste une information que personne ne reprend. Une amorce ci-dessous pose le début de la phrase, à finir en quelques mots. Ce que vous écrivez ici se retrouve dans « Échanges avec l'ARS », colonne <em>Ce que ça implique pour la CPTS</em>.</span>
+      ${amorces('vs-pourNous', IMPLIQUE_CPTS)}</label>
     <label class="large"><span class="k">Prochaine séance</span>
       <input id="vs-prochaine" value="${g('prochaine')}" placeholder="Ex. demain 15h, même lien"></label>
   </div>
@@ -4714,6 +4776,26 @@ function tracerVisioDansARS(v, idVisio){
   else etat.ars.unshift(Object.assign({id:uid(), auteur:moi, quand:new Date().toISOString()}, champs));
 }
 
+/* Les séances tracées à la main avant que le cockpit ne le fasse
+   seul n'ont pas le lien vers leur compte rendu : sans ce lien, le
+   premier compte rendu consigné ouvrirait une seconde ligne à côté
+   de la première. On le repose une fois au démarrage — d'abord sur
+   les entrées de l'amorçage qui le portent, puis plus largement sur
+   toute entrée « Visio » de mêmes date et heure qu'une séance : ce
+   n'en est jamais une seconde, c'est la même. */
+function apparierVisioARS(){
+  (etatInitial.ars||[]).filter(o => o.visio).forEach(ref => {
+    const e = (etat.ars||[]).find(x => x.id === ref.id);
+    if(e && !e.visio) e.visio = ref.visio;
+  });
+  (etat.visios||[]).forEach(v => {
+    if((etat.ars||[]).some(x => x.visio === v.id)) return;
+    const e = (etat.ars||[]).find(x => !x.visio && x.canal === 'Visio'
+      && x.date === v.date && (x.heure||'') === (v.heure||''));
+    if(e) e.visio = v.id;
+  });
+}
+
 function consignerVisioEnCourante(v){
   etat.courante = etat.courante || [];
   const corps = (v.points||[]).map(p => '· ' + p.titre + (p.texte ? ' : ' + p.texte : '')).join('\n');
@@ -4807,7 +4889,14 @@ function vueVeille(){
 
 /* Les feuillets de la situation régionale. Chacun porte ce qu'on
    sait à l'instant, ce qu'on y suit, et où on va le chercher :
-   prendre la veille, c'est reprendre ceux qui ont vieilli. */
+   prendre la veille, c'est reprendre ceux qui ont vieilli.
+   `pointSitOuvert` : celui qu'on a déplié. Nom distinct de
+   `pointOuvert`, qui appartient aux points de collecte — deux
+   variables du même nom dans la même page se seraient mangées
+   l'une l'autre. */
+let pointSitOuvert = null;
+function ouvrirPointSit(id){ pointSitOuvert = (pointSitOuvert === id) ? null : id; rendre(); }
+
 function vuePoints(nbRafraichir){
   const l = rubriques();
   let h = `<h2 style="margin-top:26px">Les points de situation
@@ -4817,11 +4906,22 @@ function vuePoints(nbRafraichir){
 
   h += l.map(r => {
     const vieux = pointARafraichir(r);
-    return `<div class="pt ${r.etat ? '' : 'vierge'} ${vieux && r.etat ? 'vieux' : ''}">
-      <div class="n">${esc(r.nom)}</div>
+    const ouvert = pointSitOuvert === r.id;
+    return `<div class="pt ${r.etat ? '' : 'vierge'} ${vieux && r.etat ? 'vieux' : ''} ${ouvert ? 'ouvert' : ''}">
+      <div class="tete-p">
+        <button class="bascule" onclick="ouvrirPointSit('${r.id}')" aria-expanded="${ouvert}">
+          <span class="n">${esc(r.nom)}</span>
+          <span class="chev">${ouvert ? '▴' : '▾'}</span>
+        </button>
+        <button class="modif-p" title="${r.etat ? 'Mettre à jour ce point' : 'Écrire le point'}"
+          onclick="ouvrirPointSituation('${r.id}')">✎</button>
+      </div>
       <div class="e ${r.etat ? '' : 'rien'}">${r.etat
         ? esc(r.etat).replace(/\n/g,'<br>')
         : "Point encore vierge — rien n'y a été écrit depuis le début de la crise."}</div>
+      ${r.implique
+        ? `<div class="imp"><span class="k">Ce que ça implique pour nous</span><div class="v">${esc(r.implique).replace(/\n/g,'<br>')}</div></div>`
+        : (r.etat ? `<div class="imp manque"><div class="v">Ce que ça implique pour la CPTS n'a pas été dit.</div></div>` : '')}
       <div class="q"><span class="k">Ce qu'on y suit</span>${esc(r.quoi)}</div>
       ${r.ou ? `<div class="q"><span class="k">Où on le trouve</span>${esc(r.ou)}</div>` : ''}
       <div class="meta">${r.maj
@@ -4846,8 +4946,12 @@ function ouvrirPointSituation(id){
     <div class="rappel">Le copier-coller fait l'affaire : collez le passage utile du communiqué, du compte rendu ou du mail. Mieux vaut le texte brut de la source qu'un résumé approximatif.</div>
     <div class="form">
       <label class="large"><span class="k">Ce qu'on sait à cet instant</span>
-        <textarea id="p-etat" rows="9" placeholder="Ce qui est établi, ce qui a changé depuis hier, ce qui reste incertain. Dater ce qui est daté.">${esc(r.etat)}</textarea>
+        <textarea id="p-etat" rows="8" placeholder="Ce qui est établi, ce qui a changé depuis hier, ce qui reste incertain. Dater ce qui est daté.">${esc(r.etat)}</textarea>
         <span class="aide">Ce texte remplace le précédent — la version d'avant reste tracée en main courante.</span></label>
+      <label class="large"><span class="k">Ce que ça implique pour la CPTS Pau Béarn</span>
+        <textarea id="p-implique" rows="3" placeholder="En une phrase : ce que ce point change pour nous, ou rien du tout.">${esc(r.implique || '')}</textarea>
+        <span class="aide">Un point de situation qui ne dit pas ce qu'il change pour nous se lit et s'oublie. Une amorce pose le début de la phrase, à finir en quelques mots. Répondre « rien à faire » est une réponse : elle évite qu'on se repose la question demain.</span>
+        ${amorces('p-implique', IMPLIQUE_CPTS)}</label>
     </div>
     <div style="margin-top:14px"><label class="coche">
       <input type="checkbox" id="p-mc" checked>
@@ -4866,9 +4970,11 @@ async function validerPointSituation(){
   if(!r) return;
   const v = document.getElementById('p-etat').value.trim();
   if(!v){ toast("Le point est vide"); document.getElementById('p-etat')?.focus(); return; }
+  const imp = (document.getElementById('p-implique') || {}).value?.trim() || '';
   const mc = document.getElementById('p-mc').checked;
-  if(v === r.etat){ fermer(); toast("Le point n'a pas changé"); return; }
+  if(v === r.etat && imp === (r.implique || '')){ fermer(); toast("Le point n'a pas changé"); return; }
   r.etat = v;
+  r.implique = imp;
   r.maj = horodate();
   r.par = moi;
   if(mc) consignerPointSituationEnCourante(r, '');
@@ -4889,7 +4995,11 @@ function consignerPointSituationEnCourante(r, motif){
     heure: maintenant(),
     source: '',
     evenement: "Point de situation — " + r.nom + (motif ? " (" + motif + ")" : '') + "\n" + r.etat,
-    suite: "Situation régionale : le point « " + r.nom + " » a été repris. Il fait foi jusqu'à la prochaine mise à jour.",
+    /* Ce que le point change pour la CPTS n'est pas de la matière de
+       situation : c'est une suite à donner, et elle se lit donc là
+       où la main courante range les suites. */
+    suite: (r.implique ? r.implique + "\n" : '')
+      + "Situation régionale : le point « " + r.nom + " » a été repris. Il fait foi jusqu'à la prochaine mise à jour.",
     qui: moi,
     auteur: moi,
     quand: ''
@@ -8997,6 +9107,43 @@ const pastilles = (cible, liste, cls, val) => `<div class="sugg ${cls||''}">${li
     const c = [cls === 'urg' && x === 'Non urgent' ? 'calme' : '', x === val ? 'on' : ''].filter(Boolean).join(' ');
     return `<button type="button" data-v="${esc(x)}"${c ? ` class="${c}"` : ''} onclick="choisirSugg('${cible}',this)">${esc(x)}</button>`;
   }).join('')}</div>`;
+
+/* --- « Et pour nous, ça veut dire quoi ? » --------------------
+   C'est la question à laquelle personne ne répond spontanément en
+   recopiant un communiqué : on note ce que l'ARS a dit, et le champ
+   qui demande ce que ça change pour la CPTS reste vide. Les amorces
+   ci-dessous ne remplissent rien à la place de qui écrit — elles
+   posent le début de la phrase, et la phrase se finit à la main.
+   Elles s'ajoutent les unes aux autres au lieu de se remplacer :
+   une mise à jour appelle souvent deux suites, un relais aux
+   adhérents et une question à poser. */
+const IMPLIQUE_CPTS = [
+  "Rien à faire de notre côté pour l'instant.",
+  "À relayer aux adhérents :",
+  "À porter au prochain copil :",
+  "Une mission à lancer ou à rouvrir :",
+  "Une question à poser à l'ARS :",
+  "Des renforts à mobiliser :",
+  "Une consigne à afficher en cabinet :",
+  "Ce qui change pour les patients :"
+];
+
+function amorcer(cible, btn){
+  const el = document.getElementById(cible); if(!el) return;
+  const t = btn.dataset.v || '';
+  const cur = el.value.replace(/\s+$/,'');
+  /* Retoucher la même amorce quand elle est seule dans le champ la
+     retire : c'est le geste attendu quand on s'est trompé de bouton
+     et qu'on n'a encore rien écrit derrière. */
+  if(cur === t){ el.value = ''; btn.classList.remove('on'); el.focus(); return; }
+  el.value = cur ? cur + '\n' + t + ' ' : t + ' ';
+  btn.classList.add('on');
+  el.focus();
+  el.setSelectionRange(el.value.length, el.value.length);
+  el.scrollTop = el.scrollHeight;
+}
+const amorces = (cible, liste) => `<div class="sugg amorces">${liste.map(x =>
+  `<button type="button" data-v="${esc(x)}" onclick="amorcer('${cible}',this)">${esc(x)}</button>`).join('')}</div>`;
 
 function feuilletRecueil(rel, vivier){
   const h = `<div class="note protection">
