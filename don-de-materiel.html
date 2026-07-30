@@ -16,71 +16,188 @@
   --encre:#062B63;
   --encre-2:#0B4FA8;
   --cobalt-clair:#E8F0FB;
-  --surface:#F3F6FB;
+  --cobalt-pale:#F5F9FD;
+  --surface:#EEF3FA;
   --carte:#FFFFFF;
   --trait:#D8E1EF;
+  --trait-2:#E6ECF6;
   --texte:#122238;
   --texte-2:#5A6B84;
   --ambre:#E8A33D;
   --braise:#C2482F;
   --stable:#2F7D62;
+  --ombre:0 1px 2px rgba(6,43,99,.05), 0 10px 26px -14px rgba(6,43,99,.22);
+  --halo:0 0 0 3px rgba(11,79,168,.16);
   --display:'Archivo',system-ui,sans-serif;
   --corps:'Source Sans 3',system-ui,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,monospace;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
-body{font-family:var(--corps);background:var(--surface);color:var(--texte);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{font-family:var(--corps);background:var(--surface);color:var(--texte);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+/* Un ciel bleu très pâle en haut de page : la couleur de la CPTS
+   se pose sur le formulaire sans le teinter. */
+body::before{content:"";position:fixed;left:0;right:0;top:0;height:380px;pointer-events:none;z-index:0;
+  background:radial-gradient(115% 100% at 50% 0,#DBE7F7 0%,rgba(238,243,250,0) 72%)}
 button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+::placeholder{color:#9AA8BC}
 
-.bandeau{background:var(--encre);color:#fff;padding:20px 22px}
-.bandeau .in{max-width:880px;margin:0 auto}
-.bandeau .nom{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:.02em}
-.bandeau .sous{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:#7FA3D4;margin-top:6px}
+.bandeau{position:relative;z-index:1;color:#fff;padding:16px 22px;
+  background:linear-gradient(135deg,#04204A 0%,#062B63 46%,#0B4FA8 190%);
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.16)}
+.bandeau .in{max-width:880px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.bandeau .nom{font-family:var(--display);font-weight:700;font-size:16.5px;letter-spacing:.02em}
+.bandeau .sous{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:#8FB0DC;margin-top:5px}
+.bandeau .chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:#CFDFF6;
+  border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.08);border-radius:999px;padding:6px 12px}
 
-.page{max-width:880px;margin:0 auto;padding:26px 22px 60px}
-h1{font-family:var(--display);font-weight:700;font-size:27px;letter-spacing:-.01em;margin:0 0 6px}
-.chapo{color:var(--texte-2);margin:0 0 22px;max-width:66ch}
-.carte{background:var(--carte);border:1px solid var(--trait);border-radius:10px;padding:20px;margin-bottom:16px}
-h2{font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:.02em;margin:0 0 4px;display:flex;align-items:center;gap:9px}
-h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-radius:2px;display:block;flex:0 0 3px}
-.sous-h{font-size:13px;color:var(--texte-2);margin:0 0 15px}
+.page{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:26px 22px 60px}
+.sur-titre{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--encre-2);
+  margin:0 0 8px;display:flex;align-items:center;gap:10px}
+.sur-titre::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#C6D5EA,rgba(198,213,234,0))}
+h1{font-family:var(--display);font-weight:700;font-size:29px;line-height:1.14;letter-spacing:-.02em;margin:0 0 7px;color:var(--encre)}
+.chapo{color:var(--texte-2);margin:0 0 20px;max-width:66ch}
+.carte{background:var(--carte);border:1px solid var(--trait-2);border-radius:14px;padding:20px 22px;margin-bottom:14px;box-shadow:var(--ombre)}
+h2{font-family:var(--display);font-weight:600;font-size:16px;margin:0 0 4px;color:var(--encre);display:flex;align-items:center;gap:10px}
+h2 .n{flex:0 0 26px;width:26px;height:26px;border-radius:9px;background:linear-gradient(180deg,var(--encre-2),var(--encre));
+  color:#fff;font-family:var(--mono);font-size:12px;display:flex;align-items:center;justify-content:center}
+.sous-h{font-size:13px;color:var(--texte-2);margin:0 0 15px;padding-left:36px}
 
-.form{display:grid;gap:13px}
-@media(min-width:720px){.form{grid-template-columns:1fr 1fr}.form .large{grid-column:1/-1}}
+/* ---------- les zones de saisie ----------
+   Bord bleu et halo au focus plutôt qu'un liseré ambre : on voit
+   où l'on écrit sans que la page change de couleur. */
+.grille{display:grid;gap:13px}
+/* Deux champs qui vont ensemble — l'adresse et sa commune — se
+   partagent une ligne au lieu d'en laisser une à moitié vide. */
+.grille .duo{grid-column:1/-1;display:grid;gap:13px}
+@media(min-width:720px){
+  .grille{grid-template-columns:1fr 1fr}
+  .grille .large{grid-column:1/-1}
+  .grille .duo{grid-template-columns:1.5fr 1fr}
+  .option .grille{grid-template-columns:1.4fr 1fr}
+}
 label{display:block}
-label .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:4px}
+label .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:5px}
 label .k i{font-style:normal;color:var(--braise)}
-input,select,textarea{width:100%;padding:9px 11px;border:1px solid var(--trait);border-radius:6px;background:#fff}
-textarea{min-height:74px;resize:vertical}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-offset:1px;border-color:var(--ambre)}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--trait);border-radius:9px;background:#fff;
+  transition:border-color .15s,box-shadow .15s}
+input:hover,select:hover,textarea:hover{border-color:#BCCCE4}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--encre-2);box-shadow:var(--halo)}
+textarea{min-height:78px;resize:vertical;line-height:1.5}
 input.faux,textarea.faux{border-color:var(--braise);background:#FDF4F2}
-.aide{font-size:12.5px;color:var(--texte-2);margin-top:4px}
+select{appearance:none;-webkit-appearance:none;padding-right:34px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%235A6B84' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center}
+.aide{font-size:12.5px;color:var(--texte-2);margin-top:5px;display:block}
 .leurre{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
-.lignes{display:flex;flex-direction:column;gap:12px}
-.lg{border:1px solid var(--trait);border-left:3px solid var(--cobalt-clair);border-radius:8px;padding:13px 14px;background:#FCFDFF}
-.lg .num{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--texte-2);display:flex;align-items:center;margin-bottom:9px}
-.lg .num button{margin-left:auto;background:none;border:0;color:var(--texte-2);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:5px}
-.lg .num button:hover{color:var(--braise);background:#FDF0EC}
-.lg .champs{display:grid;gap:11px}
-@media(min-width:640px){.lg .champs{grid-template-columns:2fr 1fr 1fr}.lg .champs .large{grid-column:1/-1}}
+/* La structure est une possibilité, pas une obligation : un
+   particulier qui donne son saturomètre ne doit pas chercher quoi
+   écrire là. Le bloc se distingue donc du reste du formulaire. */
+.option{margin-top:16px;border:1px solid #D9E4F5;border-radius:12px;padding:15px 16px;
+  background:linear-gradient(180deg,var(--cobalt-pale),#fff)}
+.option-t{font-family:var(--display);font-weight:600;font-size:14.5px;color:var(--encre);
+  display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.option-t .fac{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--encre-2);background:var(--cobalt-clair);border-radius:999px;padding:3px 9px}
+.option-s{font-size:12.5px;color:var(--texte-2);margin:4px 0 13px}
 
-.cond{background:var(--cobalt-clair);border-radius:8px;padding:14px 16px;margin-bottom:14px}
+/* ---------- le pas à pas des quantités ----------
+   La quantité se règle au doigt — moins, plus — ou s'écrit
+   directement. C'est le même geste que sur l'écran de saisie de
+   la table de collecte. */
+.pas{display:inline-flex;align-items:stretch;border:1px solid var(--trait);border-radius:10px;
+  background:#fff;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.pas:focus-within{border-color:var(--encre-2);box-shadow:var(--halo)}
+.pas button{width:44px;border:0;background:#fff;font-size:20px;line-height:1;cursor:pointer;
+  color:var(--encre-2);font-family:var(--display);padding:0}
+.pas button:hover{background:var(--cobalt-clair)}
+.pas button:active{background:#D8E5F8}
+.pas button:disabled{color:#C4CFDE;cursor:default;background:#fff}
+.pas input{width:60px;border:0;border-left:1px solid var(--trait-2);border-right:1px solid var(--trait-2);
+  border-radius:0;text-align:center;font-family:var(--mono);font-size:15px;padding:11px 2px}
+.pas input:focus{outline:0;box-shadow:none;border-color:var(--trait-2)}
+.pas input::-webkit-outer-spin-button,.pas input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.pas input[type=number]{-moz-appearance:textfield;appearance:textfield}
+
+/* ---------- la liste du matériel demandé ----------
+   Une carte par matériel. Fermée, elle se coche d'un doigt ;
+   ouverte, elle ne demande que la quantité et deux précisions.
+   Ce qui est retenu se voit sans lire : bord bleu, fond très pâle,
+   et la quantité rappelée en pastille sur la ligne du titre. */
+.arts{display:grid;gap:10px}
+.art{border:1px solid var(--trait);border-radius:12px;background:#fff;transition:border-color .15s,box-shadow .15s,background .15s}
+.art:hover{border-color:#BCCCE4}
+.art.on{border-color:var(--encre-2);background:linear-gradient(180deg,#F6FAFF,#fff);
+  box-shadow:inset 0 0 0 1px var(--encre-2),var(--ombre)}
+.art-t{display:flex;gap:13px;align-items:flex-start;padding:14px 15px;cursor:pointer;position:relative}
+.art-t input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.art-t .box{flex:0 0 23px;width:23px;height:23px;margin-top:1px;border:1.5px solid #C3D0E2;border-radius:7px;
+  background:#fff;display:flex;align-items:center;justify-content:center;transition:.14s}
+.art-t .box::after{content:"✓";color:#fff;font-size:13px;font-weight:700;line-height:1;opacity:0;transform:scale(.6);transition:.14s}
+.art-t:hover .box{border-color:var(--encre-2)}
+.art-t input:checked+.box{background:linear-gradient(180deg,var(--encre-2),var(--encre));border-color:var(--encre)}
+.art-t input:checked+.box::after{opacity:1;transform:scale(1)}
+.art-t input:focus-visible+.box{box-shadow:var(--halo);border-color:var(--encre-2)}
+.art-n{flex:1;min-width:0}
+.art-n b{font-family:var(--display);font-weight:600;font-size:15.5px;color:var(--encre);line-height:1.3}
+.art-n .pr{display:block;font-size:13px;color:var(--texte-2);margin-top:3px}
+.art-q{flex:none;font-family:var(--mono);font-size:12.5px;color:var(--encre);background:var(--cobalt-clair);
+  border-radius:999px;padding:4px 11px;white-space:nowrap;align-self:center}
+.art-d{margin:0 15px;border-top:1px dashed #D4E0F2;padding:14px 0 16px;display:grid;gap:13px;
+  grid-template-columns:auto 1fr 1.15fr;align-items:end}
+@media(max-width:700px){.art-d{grid-template-columns:1fr}}
+
+/* La saisie libre — hors liste, ou collecte sans liste annoncée.
+   Une ligne par matériel, dans un cadre qui se distingue des
+   cartes de la liste. */
+.lignes{display:grid;gap:12px}
+.lg{border:1px solid var(--trait);border-radius:12px;padding:14px 15px;background:linear-gradient(180deg,#FCFDFF,#fff)}
+.lg .num{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--texte-2);
+  display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.lg .num .p{flex:none;width:22px;height:22px;border-radius:7px;background:var(--cobalt-clair);color:var(--encre-2);
+  display:flex;align-items:center;justify-content:center;font-size:11px}
+.lg .num button{margin-left:auto;background:none;border:0;color:var(--texte-2);cursor:pointer;font-size:12.5px;
+  padding:4px 8px;border-radius:7px;font-family:inherit;letter-spacing:0;text-transform:none}
+.lg .num button:hover{color:var(--braise);background:#FDF0EC}
+.lg .champs{display:grid;gap:12px}
+@media(min-width:700px){
+  .lg .champs{grid-template-columns:auto 1fr 1fr}
+  .lg .champs .large{grid-column:1/-1}
+}
+
+/* Ce qui est retenu, rappelé en bas de la carte du matériel :
+   combien de matériels, combien d'unités. C'est la seule chose
+   qu'on relit avant de valider. */
+.bilan{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:15px;padding:12px 15px;
+  border-radius:11px;background:var(--cobalt-pale);border:1px solid #DEE8F7}
+.bilan .c{font-family:var(--display);font-weight:700;font-size:17px;color:var(--encre)}
+.bilan .l{font-size:13px;color:var(--texte-2)}
+.bilan.rien{background:#fff;border-style:dashed;border-color:var(--trait)}
+
+.cond{background:linear-gradient(180deg,var(--cobalt-pale),var(--cobalt-clair));border:1px solid #D9E4F5;
+  border-radius:12px;padding:15px 17px;margin-bottom:14px}
 .cond ol{margin:0;padding-left:19px;font-size:13.5px}
-.cond li{margin-bottom:6px;text-align:justify}
-.coche{display:flex;gap:11px;align-items:flex-start;padding:11px 13px;border:1px solid var(--trait);border-radius:8px;margin-bottom:9px;cursor:pointer;background:#fff}
-.coche:hover{border-color:var(--encre-2)}
+.cond li{margin-bottom:7px}
+.cond li:last-child{margin-bottom:0}
+.coche{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;border:1px solid var(--trait);
+  border-radius:11px;margin-bottom:10px;cursor:pointer;background:#fff;transition:.14s}
+.coche:hover{border-color:var(--encre-2);background:var(--cobalt-pale)}
+.coche:focus-within{border-color:var(--encre-2);box-shadow:var(--halo)}
 .coche.faux{border-color:var(--braise);background:#FDF4F2}
-.coche input{width:19px;height:19px;flex:0 0 19px;margin:1px 0 0;accent-color:var(--encre-2)}
+.coche input{width:21px;height:21px;flex:0 0 21px;margin:1px 0 0;accent-color:var(--encre-2)}
 .coche span{font-size:14px;line-height:1.45}
 
-.btn{background:var(--encre);color:#fff;border:0;border-radius:7px;padding:12px 22px;font-family:var(--display);font-weight:600;font-size:15px;cursor:pointer;min-height:48px}
-.btn:hover{background:var(--encre-2)}
-.btn:disabled{opacity:.55;cursor:default}
-.btn.sec{background:#fff;color:var(--encre);border:1px solid var(--trait)}
-.btn.sec:hover{border-color:var(--encre)}
-.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.btn{background:linear-gradient(180deg,var(--encre-2),var(--encre));color:#fff;border:0;border-radius:10px;
+  padding:13px 24px;font-family:var(--display);font-weight:600;font-size:15px;cursor:pointer;min-height:48px;
+  box-shadow:0 1px 2px rgba(6,43,99,.24),0 8px 18px -10px rgba(6,43,99,.6);transition:.15s}
+.btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.55;cursor:default;transform:none;filter:none}
+.btn.sec{background:#fff;color:var(--encre);border:1px solid var(--trait);box-shadow:var(--ombre)}
+.btn.sec:hover{border-color:var(--encre-2);filter:none;background:var(--cobalt-pale)}
+.btn.grand{width:100%;font-size:16.5px;padding:16px 24px;min-height:56px}
+.actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:16px;align-items:center}
 
 /* ---------- téléphone ----------
    C'est le cas d'usage principal : le professionnel remplit
@@ -89,31 +206,33 @@ input.faux,textarea.faux{border-color:var(--braise);background:#FDF4F2}
    la page part de travers — et cibles tactiles confortables. */
 @media(max-width:640px){
   .page{padding:20px 15px 48px}
-  h1{font-size:23px}
-  .carte{padding:16px 15px;border-radius:9px}
-  input,select,textarea{font-size:16px;padding:12px 13px;border-radius:7px}
-  textarea{min-height:88px}
-  select{min-height:48px}
-  .coche{padding:13px 14px;gap:13px}
+  h1{font-size:24px}
+  .carte{padding:16px 15px;border-radius:12px}
+  .sous-h{padding-left:0}
+  input,select,textarea{font-size:16px;padding:12px 13px;min-height:48px}
+  textarea{min-height:90px}
+  .pas input{font-size:16px;width:64px;min-height:48px}
+  .pas button{width:48px}
+  .coche{padding:14px 15px;gap:13px}
   .coche input{width:24px;height:24px;flex:0 0 24px}
   .coche span{font-size:14.5px}
-  .lg{padding:14px 13px}
-  .lg .champs{gap:13px}
+  .art-t{padding:14px 14px}
+  .art-d{margin:0 14px}
   .btn{width:100%;padding:14px 20px;min-height:52px}
   .actions{flex-direction:column;align-items:stretch;gap:12px}
   .actions .aide{text-align:center}
   .cond ol{padding-left:17px}
-  .cond li{text-align:left}
   .acte ol li,.acte .ctx,.acte .cachet,.note{text-align:left}
 }
 
-.alerte{border-radius:8px;padding:12px 14px;font-size:14px;margin-bottom:16px}
-.alerte.rouge{background:#FDF0EC;border:1px solid #E8C3B8;color:#8C2F1B}
-.alerte.ambre{background:#FCF3E4;border:1px solid #E9D3A6;color:#8A5D12}
+.alerte{border-radius:11px;padding:13px 16px;font-size:14px;margin-bottom:16px;border:1px solid;border-left-width:4px}
+.alerte.rouge{background:#FDF0EC;border-color:#E8C3B8;border-left-color:var(--braise);color:#8C2F1B}
+.alerte.ambre{background:#FCF3E4;border-color:#E9D3A6;border-left-color:var(--ambre);color:#8A5D12}
+.alerte.bleue{background:var(--cobalt-clair);border-color:#C3D6F0;border-left-color:var(--encre-2);color:var(--encre)}
 .note{font-size:12.5px;color:var(--texte-2);margin-top:26px;padding-top:14px;border-top:1px solid var(--trait);text-align:justify}
 
 /* ---------- récapitulatif remis au donateur ---------- */
-.acte{background:#fff;border:1px solid var(--trait);border-radius:10px;padding:26px;color:#101820;font-size:13.5px;line-height:1.5}
+.acte{background:#fff;border:1px solid var(--trait);border-radius:12px;padding:26px;color:#101820;font-size:13.5px;line-height:1.5;box-shadow:var(--ombre)}
 .acte .ent{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:2px solid var(--encre);padding-bottom:9px;margin-bottom:16px}
 .acte .ent .org{font-family:var(--display);font-weight:700;font-size:15px;color:var(--encre)}
 .acte .ent .sub{font-size:11px;color:var(--texte-2);margin-top:2px}
@@ -135,25 +254,30 @@ input.faux,textarea.faux{border-color:var(--braise);background:#FDF4F2}
 .acte td{border:1px solid var(--trait);padding:7px 8px;vertical-align:top}
 .acte ol{margin:0;padding-left:20px;font-size:12.5px}
 .acte ol li{margin-bottom:5px;text-align:justify}
-.acte .cachet{border:1px solid var(--stable);background:#F1F8F5;border-radius:7px;padding:11px 13px;font-size:12.5px;margin-top:10px}
+.acte .cachet{border:1px solid var(--stable);background:#F1F8F5;border-radius:8px;padding:11px 13px;font-size:12.5px;margin-top:10px}
 .acte .cachet b{color:#1E5C46}
 .acte .sig{display:flex;gap:14px;margin-top:10px}
-.acte .sig .b{flex:1;border:1px solid var(--trait);border-radius:7px;padding:10px 12px;min-height:104px}
+.acte .sig .b{flex:1;border:1px solid var(--trait);border-radius:8px;padding:10px 12px;min-height:104px}
 .acte .sig .b .q{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--texte-2);margin-bottom:6px}
 .acte .sig .b .r{font-size:11.5px;color:var(--texte-2);margin-top:7px}
 .acte .pied{font-size:11px;color:var(--texte-2);border-top:1px solid var(--trait);margin-top:16px;padding-top:8px;text-align:justify}
 @media(max-width:640px){.acte{padding:17px 15px}.acte .l{flex-direction:column;gap:2px}.acte .l .e{flex:none}.acte .sig{flex-direction:column}}
 
-.recu{background:#F1F8F5;border:1px solid #BEDCCE;border-radius:10px;padding:20px 22px;margin-bottom:18px}
-.recu .t{font-family:var(--display);font-weight:700;font-size:20px;color:#1E5C46;margin-bottom:6px}
-.recu .r{font-family:var(--mono);font-size:13px;color:var(--encre);margin-top:10px}
+.recu{background:linear-gradient(180deg,#F6FCF9,#EDF7F2);border:1px solid #BEDCCE;border-left:4px solid var(--stable);
+  border-radius:12px;padding:19px 22px;margin-bottom:18px}
+.recu .t{font-family:var(--display);font-weight:700;font-size:19px;color:#1E5C46;margin-bottom:7px;
+  display:flex;align-items:center;gap:10px}
+.recu .t::before{content:"✓";flex:0 0 24px;width:24px;height:24px;border-radius:50%;background:var(--stable);color:#fff;
+  font-size:14px;display:flex;align-items:center;justify-content:center}
+.recu .r{font-family:var(--mono);font-size:13px;color:var(--encre);margin-top:11px}
 
 @media print{
   @page{margin:14mm}
   body{background:#fff;font-size:10.5pt}
+  body::before{display:none}
   .bandeau,.actions,.recu,.no-print{display:none!important}
   .page{padding:0;max-width:none}
-  .acte{border:0;padding:0;font-size:10pt;line-height:1.42}
+  .acte{border:0;padding:0;font-size:10pt;line-height:1.42;box-shadow:none}
   .acte .tw{overflow:visible}
   .acte .tw table{min-width:0}
   .acte .ttl{font-size:16pt}
@@ -166,8 +290,11 @@ input.faux,textarea.faux{border-color:var(--braise);background:#FDF4F2}
 </head>
 <body>
 <div class="bandeau"><div class="in">
-  <div class="nom">CPTS Pau Béarn</div>
-  <div class="sous">Communauté professionnelle territoriale de santé — Pau et Béarn</div>
+  <div>
+    <div class="nom">CPTS Pau Béarn</div>
+    <div class="sous">Communauté professionnelle territoriale de santé — Pau et Béarn</div>
+  </div>
+  <div class="chip">Plan blanc régional · ORSAN AMAVI</div>
 </div></div>
 
 <main class="page" id="page">
@@ -195,12 +322,26 @@ const TYPES = ['','Pharmacie','Cabinet médical','Cabinet infirmier','Kinésith�
   'Professionnel libéral','Particulier','Autre'];
 const ETATS = ['Neuf, conditionnement d\'origine','Bon état d\'usage','À vérifier'];
 
+/* Les mêmes professions que sur l'écran de saisie de la table de
+   collecte : une liste courte, qui n'empêche pas d'écrire autre
+   chose. */
+const PROFESSIONS = ['Pharmacien','Préparateur en pharmacie','Médecin généraliste','Médecin spécialiste',
+  'Infirmier ou infirmière (IDE)','Masseur-kinésithérapeute','Chirurgien-dentiste','Sage-femme',
+  'Pédicure-podologue','Orthophoniste','Ergothérapeute','Psychologue','Ambulancier','Aide-soignant',
+  'Auxiliaire de vie','Secrétaire médical','Étudiant en santé, interne','Autre professionnel de santé',
+  'Particulier'];
+
+/* Les conditionnements qu'on rencontre : la quantité est un
+   chiffre, l'unité se choisit à côté plutôt que de se deviner
+   dans une phrase. */
+const UNITES = ['unités','boîtes','cartons','paquets','flacons','palettes','litres','kg'];
+
 const RECEVEUR = "Entité désignée par l'ARS Nouvelle-Aquitaine — précisée au moment de l'enlèvement";
 
 /* Une seule ligne au départ : sur un téléphone, trois blocs vides
    donnent l'impression d'un formulaire long. On en ajoute à la
    demande, ce qui est le cas courant — un seul type de matériel. */
-let lignes = [{}];
+let lignes = [{quantite:1, unite:UNITES[0]}];
 let envoiEnCours = false;
 let contexte = { ouverte: false, message: '', besoins: '', campagnes: [] };
 
@@ -224,6 +365,7 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
 const val = id => (document.getElementById(id)?.value || '').trim();
 const frdate = d => d ? new Date(d).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '';
 const frheure = d => d ? new Date(d).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '';
+const nb = n => (Math.round((Number(n) || 0) * 100) / 100).toString().replace('.', ',');
 
 /* --- Ouverture de la collecte ---------------------------
    Le copil ouvre et ferme la collecte depuis le cockpit. Tant
@@ -262,7 +404,8 @@ async function demarrer(){
 /* Le lien porte une campagne qui n'est plus ouverte — ou qui a
    été retirée du cockpit. */
 function campagneClose(ouvertes){
-  afficher(`<h1>Appel aux dons clos</h1>
+  afficher(`<p class="sur-titre">Collecte de matériel</p>
+  <h1>Appel aux dons clos</h1>
   <p class="chapo">L'appel aux dons auquel renvoie ce lien est terminé.</p>
   <div class="carte">
     <div class="alerte ambre">Cet appel n'accepte plus de déclaration. Merci de votre proposition — elle est arrivée après la clôture, ou le matériel demandé a été réuni.</div>
@@ -277,12 +420,13 @@ function campagneClose(ouvertes){
 /* Deux appels ouverts en même temps, et un lien sans campagne :
    on ne devine pas à laquelle des deux le donateur répond. */
 function choisirCampagne(ouvertes){
-  afficher(`<h1>Proposer un don de matériel</h1>
+  afficher(`<p class="sur-titre">Collecte de matériel</p>
+  <h1>Proposer un don de matériel</h1>
   <p class="chapo">La CPTS Pau Béarn a ${ouvertes.length} appels aux dons ouverts. Choisissez celui auquel vous répondez : chacun porte sa propre liste de matériel.</p>
   ${ouvertes.map(c => `<div class="carte">
-    <h2 style="margin-bottom:6px">${esc(c.titre || 'Appel aux dons')}</h2>
+    <h2>${esc(c.titre || 'Appel aux dons')}</h2>
     ${(c.articles||[]).length
-      ? `<p class="sous-h">Matériel demandé : ${c.articles.map(a => esc(a.nom)).join(', ')}.</p>`
+      ? `<p class="sous-h" style="padding-left:0;margin:8px 0 0">Matériel demandé : ${c.articles.map(a => esc(a.nom)).join(', ')}.</p>`
       : ''}
     <div class="actions"><button type="button" class="btn" onclick="retenirCampagne('${esc(c.id)}')">Répondre à cet appel</button></div>
   </div>`).join('')}`);
@@ -298,7 +442,8 @@ function afficher(html){
 }
 
 function ferme(){
-  afficher(`<h1>Collecte de matériel</h1>
+  afficher(`<p class="sur-titre">Collecte de matériel</p>
+  <h1>Collecte de matériel</h1>
   <p class="chapo">La CPTS Pau Béarn n'a pas ouvert de collecte de matériel à ce jour.</p>
   <div class="carte">
     <div class="alerte ambre">Aucun don n'est sollicité pour le moment.</div>
@@ -311,49 +456,70 @@ function ferme(){
   </div>`);
 }
 
-/* --- Le formulaire -------------------------------------- */
+/* --- Le formulaire --------------------------------------
+   Quatre cartes numérotées, dans l'ordre où l'on répond : qui
+   donne, quoi, quand, et l'engagement. */
 function formulaire(){
   const c = campagne;
-  afficher(`<h1>${c && c.titre ? esc(c.titre) : 'Proposer un don de matériel'}</h1>
+  afficher(`<p class="sur-titre">Don de matériel</p>
+  <h1>${c && c.titre ? esc(c.titre) : 'Proposer un don de matériel'}</h1>
   <p class="chapo">Ce formulaire remplace le bordereau de don papier. Vous décrivez ce que vous proposez,
   vous acceptez les conditions du don, et vous recevez immédiatement votre récapitulatif à conserver.
   Rien à imprimer, rien à renvoyer.</p>
 
-  ${c && c.cadre ? `<div class="alerte ambre">${esc(c.cadre).replace(/\n/g,'<br>')}</div>` : ''}
-  ${!c && contexte.besoins ? `<div class="alerte ambre"><strong>Besoins exprimés à ce jour :</strong> ${esc(contexte.besoins)}</div>` : ''}
+  ${c && c.cadre ? `<div class="alerte bleue">${esc(c.cadre).replace(/\n/g,'<br>')}</div>` : ''}
+  ${!c && contexte.besoins ? `<div class="alerte bleue"><strong>Besoins exprimés à ce jour :</strong> ${esc(contexte.besoins)}</div>` : ''}
 
   <div class="carte">
-    <h2>1 · Votre structure</h2>
-    <p class="sous-h">Ces éléments figureront sur le bordereau comme entité donneuse.</p>
-    <div class="form">
-      <label class="large"><span class="k">Dénomination <i>*</i></span>
-        <input id="f-structure" autocomplete="organization" placeholder="Ex. Pharmacie du Hédas, Cabinet infirmier des Halles">
-        <span class="aide">Le nom sous lequel votre structure sera identifiée.</span></label>
-      <label><span class="k">Nature de la structure</span>
-        <select id="f-type">${TYPES.map(t => `<option>${esc(t)}</option>`).join('')}</select></label>
-      <label><span class="k">Commune</span>
-        <input id="f-commune" autocomplete="address-level2" placeholder="Ex. Pau"></label>
-      <label class="large"><span class="k">Adresse</span>
-        <input id="f-adresse" autocomplete="street-address" placeholder="Numéro, rue, code postal"></label>
-      <label><span class="k">Représentant — nom et prénom <i>*</i></span>
-        <input id="f-representant" autocomplete="name" placeholder="Ex. Marie Dupont"></label>
-      <label><span class="k">Qualité</span>
-        <input id="f-qualite" placeholder="Ex. pharmacien titulaire, infirmière libérale"></label>
+    <h2><span class="n">1</span>Qui fait le don</h2>
+    <p class="sous-h">C'est ce qui figurera sur le bordereau, et ce qui nous permet de vous rappeler.</p>
+    <div class="grille">
+      <label><span class="k">Nom <i>*</i></span>
+        <input id="f-nom" autocomplete="family-name" placeholder="Dupont"></label>
+      <label><span class="k">Prénom <i>*</i></span>
+        <input id="f-prenom" autocomplete="given-name" placeholder="Marie"></label>
+      <label class="large"><span class="k">Profession</span>
+        <input id="f-profession" list="professions" autocomplete="off"
+          placeholder="Pharmacien, infirmière libérale, particulier…">
+        <span class="aide">Écrivez librement, ou choisissez dans la liste proposée.</span></label>
+    </div>
+    <datalist id="professions">${PROFESSIONS.map(p => `<option value="${esc(p)}">`).join('')}</datalist>
+
+    <div class="option">
+      <div class="option-t">Au nom d'une structure <span class="fac">facultatif</span></div>
+      <p class="option-s">Pharmacie, cabinet, laboratoire, association, entreprise… Laissez vide si vous
+      donnez à titre personnel : le bordereau sera alors établi à votre nom.</p>
+      <div class="grille">
+        <label><span class="k">Dénomination</span>
+          <input id="f-structure" autocomplete="organization"
+            placeholder="Ex. Pharmacie du Hédas, Cabinet infirmier des Halles"></label>
+        <label><span class="k">Nature de la structure</span>
+          <select id="f-type">${TYPES.map(t => `<option>${esc(t)}</option>`).join('')}</select></label>
+      </div>
+    </div>
+
+    <div class="grille" style="margin-top:16px">
       <label><span class="k">Téléphone <i>*</i></span>
         <input id="f-tel" type="tel" autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78">
         <span class="aide">Indispensable : c'est par téléphone que l'enlèvement sera convenu.</span></label>
       <label><span class="k">Courriel</span>
-        <input id="f-mail" type="email" autocomplete="email" placeholder="nom@exemple.fr"></label>
+        <input id="f-mail" type="email" autocomplete="email" inputmode="email" placeholder="nom@exemple.fr"></label>
+      <div class="duo">
+        <label><span class="k">Adresse</span>
+          <input id="f-adresse" autocomplete="street-address" placeholder="Numéro, rue, code postal"></label>
+        <label><span class="k">Commune</span>
+          <input id="f-commune" autocomplete="address-level2" placeholder="Ex. Pau"></label>
+      </div>
     </div>
   </div>
 
   <div class="carte" id="carte-materiel">${sectionMateriel()}</div>
 
   <div class="carte">
-    <h2>3 · Disponibilité</h2>
+    <h2><span class="n">3</span>Disponibilité</h2>
     <p class="sous-h">Où et quand le matériel peut être récupéré.</p>
-    ${c && c.depot ? `<div class="alerte ambre" style="margin-bottom:14px"><strong>Dépôt et enlèvement :</strong> ${esc(c.depot).replace(/\n/g,'<br>')}</div>` : ''}
-    <div class="form">
+    ${c && c.depot ? `<div class="alerte bleue" style="margin-bottom:15px"><strong>Dépôt et enlèvement :</strong> ${esc(c.depot).replace(/\n/g,'<br>')}</div>` : ''}
+    <div class="grille">
       <label><span class="k">Disponible à partir de</span>
         <input id="f-dispo" placeholder="Ex. dès demain 9 h, à tout moment"></label>
       <label><span class="k">Volume total approximatif</span>
@@ -364,7 +530,7 @@ function formulaire(){
   </div>
 
   <div class="carte">
-    <h2>4 · Conditions du don</h2>
+    <h2><span class="n">4</span>Conditions du don</h2>
     <p class="sous-h">Ce sont les clauses du bordereau de don de la CPTS Pau Béarn. Votre acceptation ici
     vaut engagement, sans signature manuscrite.</p>
     <div class="cond"><ol>
@@ -383,7 +549,8 @@ function formulaire(){
       <span>J'accepte les conditions ci-dessus et je consens le don du matériel décrit.</span></label>
     <label class="coche" id="c-habilite-l">
       <input type="checkbox" id="c-habilite">
-      <span>Je certifie être habilité à engager la structure désignée et exact l'ensemble des éléments déclarés.</span></label>
+      <span>Je certifie exacts les éléments déclarés et, si le don est fait au nom d'une structure, être
+      habilité à l'engager.</span></label>
 
     <div class="leurre" aria-hidden="true">
       <label>Ne pas remplir<input id="f-site" tabindex="-1" autocomplete="off"></label>
@@ -391,7 +558,7 @@ function formulaire(){
 
     <div id="erreur"></div>
     <div class="actions">
-      <button type="button" class="btn" id="valider" onclick="valider()">Valider et transmettre à la CPTS</button>
+      <button type="button" class="btn grand" id="valider" onclick="valider()">Valider et transmettre à la CPTS</button>
       <span class="aide" style="margin:0">Vous obtiendrez ensuite votre récapitulatif à enregistrer en PDF.</span>
     </div>
   </div>
@@ -413,41 +580,52 @@ function formulaire(){
 function sectionMateriel(){
   const arts = (campagne && campagne.articles) || [];
   if(!arts.length){
-    return `<h2>2 · Matériel proposé</h2>
+    return `<h2><span class="n">2</span>Matériel proposé</h2>
     <p class="sous-h">Une ligne par type de matériel. Seule la désignation est obligatoire, mais plus vous
     êtes précis, moins il y aura d'appels de vérification.</p>
     <div class="lignes" id="lignes"></div>
-    <div class="actions"><button type="button" class="btn sec" onclick="ajouterLigne()">+ Ajouter une ligne</button></div>`;
+    <div class="actions"><button type="button" class="btn sec" onclick="ajouterLigne()">+ Ajouter une ligne</button></div>
+    <div id="bilan">${bilanHTML()}</div>`;
   }
-  const retenus = arts.filter(a => choix[a.id] && choix[a.id].pris).length;
-  return `<h2>2 · Ce que vous pouvez donner</h2>
-  <p class="sous-h">Voici précisément ce qui est demandé. Cochez ce que vous avez, indiquez la quantité : rien d'autre à décrire.</p>
-  <div class="lignes">${arts.map(articleHTML).join('')}</div>
+  return `<h2><span class="n">2</span>Ce que vous pouvez donner</h2>
+  <p class="sous-h">Voici précisément ce qui est demandé. Cochez ce que vous avez, réglez la quantité :
+  rien d'autre à décrire.</p>
+  <div class="arts">${arts.map(articleHTML).join('')}</div>
   ${campagne.horsListe
     ? (horsListeOuvert
-        ? `<div style="margin-top:14px">
-             <p class="sous-h" style="margin-bottom:9px"><strong>Autre matériel.</strong> Ce qui sort de la liste ci-dessus n'est pas garanti d'être retenu : la coordination vous rappellera avant tout enlèvement.</p>
+        ? `<div style="margin-top:16px">
+             <p class="sous-h" style="padding-left:0;margin-bottom:11px"><strong>Autre matériel.</strong> Ce qui sort de la liste ci-dessus n'est pas garanti d'être retenu : la coordination vous rappellera avant tout enlèvement.</p>
              <div class="lignes" id="lignes"></div>
              <div class="actions"><button type="button" class="btn sec" onclick="ajouterLigne()">+ Ajouter une ligne</button></div>
            </div>`
         : `<div class="actions"><button type="button" class="btn sec" onclick="ouvrirHorsListe()">Je peux donner autre chose que cette liste</button></div>`)
-    : `<p class="note" style="margin:14px 0 0">La CPTS ne collecte rien au-delà de cette liste : c'est ce qui a été demandé, et ce qui sera acheminé. Pour proposer autre chose, appelez la coordination.</p>`}
-  <p class="sous-h" id="compte-materiel" style="margin:12px 0 0">${retenus
-    ? `${retenus} matériel${retenus>1?'s':''} retenu${retenus>1?'s':''}.`
-    : 'Aucun matériel coché pour l\'instant.'}</p>`;
+    : `<p class="note" style="margin:16px 0 0">La CPTS ne collecte rien au-delà de cette liste : c'est ce qui a été demandé, et ce qui sera acheminé. Pour proposer autre chose, appelez la coordination.</p>`}
+  <div id="bilan">${bilanHTML()}</div>`;
 }
 
+/* Une carte de matériel demandé. Cochée, elle ouvre le pas à pas
+   de la quantité et deux précisions ; le reste du temps elle ne
+   montre que ce qu'on lui demande. */
 function articleHTML(a){
   const ch = choix[a.id] || {};
-  return `<div class="lg" id="art-${esc(a.id)}" style="${ch.pris ? 'border-left-color:var(--stable,#2E7D5B);background:#F7FCFA' : ''}">
-    <label class="coche" style="margin:0;border:0;padding:0;background:none">
+  const q = Number(ch.quantite) || 0;
+  return `<div class="art ${ch.pris ? 'on' : ''}" id="art-${esc(a.id)}">
+    <label class="art-t">
       <input type="checkbox" ${ch.pris ? 'checked' : ''} onchange="cocherArticle('${esc(a.id)}',this.checked)">
-      <span><strong>${esc(a.nom)}</strong>${a.precision ? `<br><span style="color:var(--texte-2);font-size:13px">${esc(a.precision)}</span>` : ''}</span>
+      <span class="box" aria-hidden="true"></span>
+      <span class="art-n"><b>${esc(a.nom)}</b>${a.precision
+        ? `<span class="pr">${esc(a.precision)}</span>` : ''}</span>
+      ${ch.pris ? `<span class="art-q" id="qb-${esc(a.id)}">× ${esc(nb(q))}</span>` : ''}
     </label>
-    ${ch.pris ? `<div class="champs" style="margin-top:12px">
-      <label><span class="k">Combien ?</span>
-        <input id="q-${esc(a.id)}" value="${esc(ch.quantite||'')}" inputmode="text" placeholder="Ex. 3, une dizaine"
-          onchange="majArticle('${esc(a.id)}','quantite',this.value)"></label>
+    ${ch.pris ? `<div class="art-d">
+      <label><span class="k">Quantité</span>
+        <span class="pas">
+          <button type="button" onclick="pasArticle('${esc(a.id)}',-1)" aria-label="Un de moins">−</button>
+          <input id="q-${esc(a.id)}" type="number" min="1" step="1" inputmode="numeric"
+            value="${esc(q || 1)}" aria-label="Quantité de ${esc(a.nom)}"
+            oninput="majQuantiteArticle('${esc(a.id)}',this.value)" onchange="normaliserArticle('${esc(a.id)}')">
+          <button type="button" onclick="pasArticle('${esc(a.id)}',1)" aria-label="Un de plus">+</button>
+        </span></label>
       <label><span class="k">État</span>
         <select onchange="majArticle('${esc(a.id)}','etat',this.value)">
           ${ETATS.map(e => `<option ${e===(ch.etat||ETATS[0])?'selected':''}>${esc(e)}</option>`).join('')}
@@ -461,23 +639,59 @@ function articleHTML(a){
 
 function cocherArticle(id, pris){
   lissage();
-  choix[id] = choix[id] || {};
-  choix[id].pris = pris;
-  if(!pris){ delete choix[id]; }
-  redessinerMateriel();
+  if(pris){
+    choix[id] = Object.assign({quantite:1, etat:ETATS[0]}, choix[id], {pris:true});
+  }else{
+    delete choix[id];
+  }
+  redessinerArticle(id);
+  majBilan();
   /* Cocher, c'est annoncer qu'on donne : la quantité est la
      question suivante, on y amène directement. */
-  if(pris){ const e = document.getElementById('q-' + id); if(e) e.focus(); }
+  if(pris){ const e = document.getElementById('q-' + id); if(e){ e.focus(); e.select(); } }
 }
+
+/* Une carte se redessine seule : refaire toute la liste ferait
+   perdre le champ en cours de saisie sur les autres. */
+function redessinerArticle(id){
+  const z = document.getElementById('art-' + id);
+  const a = ((campagne && campagne.articles) || []).find(x => x.id === id);
+  if(z && a) z.outerHTML = articleHTML(a);
+}
+
 function majArticle(id, champ, v){
-  choix[id] = choix[id] || {pris:true};
+  choix[id] = choix[id] || {pris:true, quantite:1};
   choix[id][champ] = v.trim();
-  const z = document.getElementById('compte-materiel');
-  if(z){
-    const n = Object.keys(choix).filter(k => choix[k].pris).length;
-    z.textContent = n ? `${n} matériel${n>1?'s':''} retenu${n>1?'s':''}.` : 'Aucun matériel coché pour l\'instant.';
-  }
 }
+
+/* Le pas à pas ne redessine rien : il pousse le chiffre dans le
+   champ et met à jour les deux endroits qui l'affichent. */
+function pasArticle(id, d){
+  const ch = choix[id];
+  if(!ch) return;
+  ch.quantite = Math.max(1, (Number(ch.quantite) || 0) + d);
+  const e = document.getElementById('q-' + id);
+  if(e) e.value = ch.quantite;
+  majBilan();
+}
+function majQuantiteArticle(id, v){
+  const ch = choix[id];
+  if(!ch) return;
+  const n = parseFloat(String(v).replace(',', '.'));
+  /* On laisse le champ vide le temps de la frappe : c'est au
+     moment de quitter le champ qu'on remet un chiffre valable. */
+  ch.quantite = isFinite(n) && n > 0 ? n : '';
+  majBilan();
+}
+function normaliserArticle(id){
+  const ch = choix[id];
+  if(!ch) return;
+  if(!(Number(ch.quantite) > 0)) ch.quantite = 1;
+  const e = document.getElementById('q-' + id);
+  if(e) e.value = ch.quantite;
+  majBilan();
+}
+
 function ouvrirHorsListe(){ lissage(); horsListeOuvert = true; redessinerMateriel(); }
 function redessinerMateriel(){
   const z = document.getElementById('carte-materiel');
@@ -486,12 +700,45 @@ function redessinerMateriel(){
   rendreLignes();
 }
 
+/* --- Le bilan de ce qui est retenu -----------------------
+   Deux chiffres relus avant de valider : combien de matériels,
+   combien d'unités en tout. */
+function retenus(){
+  const arts = ((campagne && campagne.articles) || [])
+    .filter(a => choix[a.id] && choix[a.id].pris)
+    .map(a => Number(choix[a.id].quantite) || 0);
+  const libres = lignes.filter(l => (l.designation||'').trim()).map(l => Number(l.quantite) || 0);
+  const tout = arts.concat(libres);
+  return { n: tout.length, unites: tout.reduce((s,x) => s + x, 0) };
+}
+function bilanHTML(){
+  const r = retenus();
+  if(!r.n) return `<div class="bilan rien"><span class="l">Rien de retenu pour l'instant : cochez ou
+    décrivez au moins un matériel.</span></div>`;
+  return `<div class="bilan">
+    <span class="c">${r.n}</span><span class="l">matériel${r.n>1?'s':''} retenu${r.n>1?'s':''}</span>
+    ${r.unites ? `<span class="c" style="margin-left:6px">${nb(r.unites)}</span>
+      <span class="l">unité${r.unites>1?'s':''} au total</span>` : ''}
+  </div>`;
+}
+function majBilan(){
+  const z = document.getElementById('bilan');
+  if(z) z.innerHTML = bilanHTML();
+  /* La pastille du titre rappelle la quantité sans qu'on ait à
+     regarder le champ. */
+  ((campagne && campagne.articles) || []).forEach(a => {
+    const b = document.getElementById('qb-' + a.id);
+    if(b) b.textContent = '× ' + nb(Number((choix[a.id]||{}).quantite) || 0);
+  });
+}
+
+/* --- La saisie libre ------------------------------------- */
 function rendreLignes(){
   const z = document.getElementById('lignes');
   if(!z) return;
   z.innerHTML = lignes.map((l, i) => `<div class="lg">
-    <div class="num">Ligne ${i+1}
-      ${lignes.length > 1 ? `<button type="button" onclick="retirerLigne(${i})" title="Retirer cette ligne">Retirer ×</button>` : ''}
+    <div class="num"><span class="p">${i+1}</span>Matériel ${i+1}
+      ${lignes.length > 1 ? `<button type="button" onclick="retirerLigne(${i})" title="Retirer cette ligne">Retirer ✕</button>` : ''}
     </div>
     <div class="champs">
       <label class="large"><span class="k">Désignation du matériel</span>
@@ -499,38 +746,79 @@ function rendreLignes(){
           placeholder="Ex. saturomètre, tensiomètre, thermomètre, lecteur d'hémoglucotest, stéthoscope"
           onchange="majLigne(${i},'designation',this.value)"></label>
       <label><span class="k">Quantité</span>
-        <input id="l-quantite-${i}" value="${esc(l.quantite||'')}" placeholder="Ex. 200 unités, 4 cartons"
-          onchange="majLigne(${i},'quantite',this.value)"></label>
+        <span class="pas">
+          <button type="button" onclick="pasLigne(${i},-1)" aria-label="Un de moins">−</button>
+          <input id="l-quantite-${i}" type="number" min="1" step="1" inputmode="numeric"
+            value="${esc(Number(l.quantite) > 0 ? l.quantite : 1)}" aria-label="Quantité"
+            oninput="majQuantiteLigne(${i},this.value)" onchange="normaliserLigne(${i})">
+          <button type="button" onclick="pasLigne(${i},1)" aria-label="Un de plus">+</button>
+        </span></label>
+      <label><span class="k">Unité</span>
+        <select id="l-unite-${i}" onchange="majLigne(${i},'unite',this.value)">
+          ${UNITES.map(u => `<option ${u===(l.unite||UNITES[0])?'selected':''}>${esc(u)}</option>`).join('')}
+        </select></label>
       <label><span class="k">État</span>
         <select onchange="majLigne(${i},'etat',this.value)">
           ${ETATS.map(e => `<option ${e===(l.etat||ETATS[0])?'selected':''}>${esc(e)}</option>`).join('')}
         </select></label>
-      <label><span class="k">Observations</span>
-        <input value="${esc(l.obs||'')}" placeholder="Ex. péremption 03/2027"
+      <label class="large"><span class="k">Observations</span>
+        <input id="l-obs-${i}" value="${esc(l.obs||'')}" placeholder="Ex. péremption 03/2027"
           onchange="majLigne(${i},'obs',this.value)"></label>
     </div>
   </div>`).join('');
+  majBilan();
 }
 
-function majLigne(i, champ, v){ lignes[i][champ] = v.trim(); }
+function majLigne(i, champ, v){ if(lignes[i]) lignes[i][champ] = v.trim(); majBilan(); }
+function pasLigne(i, d){
+  if(!lignes[i]) return;
+  lignes[i].quantite = Math.max(1, (Number(lignes[i].quantite) || 0) + d);
+  const e = document.getElementById('l-quantite-' + i);
+  if(e) e.value = lignes[i].quantite;
+  majBilan();
+}
+function majQuantiteLigne(i, v){
+  if(!lignes[i]) return;
+  const n = parseFloat(String(v).replace(',', '.'));
+  lignes[i].quantite = isFinite(n) && n > 0 ? n : '';
+  majBilan();
+}
+function normaliserLigne(i){
+  if(!lignes[i]) return;
+  if(!(Number(lignes[i].quantite) > 0)) lignes[i].quantite = 1;
+  const e = document.getElementById('l-quantite-' + i);
+  if(e) e.value = lignes[i].quantite;
+  majBilan();
+}
 function ajouterLigne(){
-  lissage(); lignes.push({}); rendreLignes();
+  lissage(); lignes.push({quantite:1, unite:UNITES[0]}); rendreLignes();
   /* Le clavier s'ouvre sur la ligne qu'on vient de demander,
      plutôt que de laisser chercher où elle est apparue. */
   const e = document.getElementById(`l-designation-${lignes.length - 1}`);
   if(e){ e.scrollIntoView({block:'center'}); e.focus(); }
 }
-function retirerLigne(i){ lissage(); lignes.splice(i,1); if(!lignes.length) lignes.push({}); rendreLignes(); }
+function retirerLigne(i){
+  lissage(); lignes.splice(i,1);
+  if(!lignes.length) lignes.push({quantite:1, unite:UNITES[0]});
+  rendreLignes();
+}
 
 /* Les champs texte ne se déclarent qu'au « change » : avant de
    redessiner la liste, on relit ce qui est à l'écran pour ne
    pas perdre une saisie en cours. */
 function lissage(){
   lignes.forEach((l, i) => {
-    ['designation','quantite'].forEach(c => {
+    ['designation','obs'].forEach(c => {
       const e = document.getElementById(`l-${c}-${i}`);
       if(e) l[c] = e.value.trim();
     });
+    const q = document.getElementById(`l-quantite-${i}`);
+    if(q){
+      const n = parseFloat(String(q.value).replace(',', '.'));
+      l.quantite = isFinite(n) && n > 0 ? n : 1;
+    }
+    const u = document.getElementById(`l-unite-${i}`);
+    if(u) l.unite = u.value;
   });
 }
 
@@ -545,38 +833,53 @@ async function valider(){
 
   /* Le matériel part sous une seule forme, quelle que soit la
      façon dont il a été saisi : le bordereau et le registre du
-     cockpit ne connaissent que des lignes. */
+     cockpit ne connaissent que des lignes. La quantité, elle,
+     est devenue un chiffre à l'écran — elle repart en texte,
+     avec son unité, comme le registre l'attend. */
   const coches = ((campagne && campagne.articles) || [])
     .filter(a => choix[a.id] && choix[a.id].pris)
     .map(a => ({
       designation: a.nom + (a.precision ? ' (' + a.precision + ')' : ''),
-      quantite: (choix[a.id].quantite || '').trim(),
+      quantite: nb(Number(choix[a.id].quantite) > 0 ? choix[a.id].quantite : 1),
       etat: choix[a.id].etat || ETATS[0],
       obs: (choix[a.id].obs || '').trim(),
       article: a.id
     }));
+  const libres = lignes.filter(l => (l.designation||'').trim()).map(l => ({
+    designation: l.designation.trim(),
+    quantite: nb(Number(l.quantite) > 0 ? l.quantite : 1) + (l.unite ? ' ' + l.unite : ''),
+    etat: l.etat || ETATS[0],
+    obs: (l.obs || '').trim()
+  }));
+
+  /* Le bordereau porte une entité donneuse : la structure quand
+     il y en a une, la personne sinon. Un particulier qui donne
+     son saturomètre n'a pas de dénomination à inventer. */
+  const nom = val('f-nom'), prenom = val('f-prenom');
+  const personne = [prenom, nom].filter(Boolean).join(' ');
+  const structure = val('f-structure');
 
   const donnees = {
     campagne:     campagne ? campagne.id : '',
-    structure:    val('f-structure'),
-    type:         val('f-type'),
+    structure:    structure || personne,
+    type:         structure ? val('f-type') : (val('f-type') || 'Particulier'),
     commune:      val('f-commune'),
     adresse:      val('f-adresse'),
-    representant: val('f-representant'),
-    qualite:      val('f-qualite'),
+    representant: personne,
+    qualite:      val('f-profession'),
     tel:          val('f-tel'),
     mail:         val('f-mail'),
     dispo:        val('f-dispo'),
     quantite:     val('f-quantite'),
     note:         val('f-note'),
     site:         val('f-site'),
-    /* Le menu « état » affiche sa première valeur sans qu'on y
-       touche : on la transmet, plutôt que de la laisser vide. */
-    lignes:       coches.concat(lignes.filter(l => (l.designation||'').trim())
-                        .map(l => ({...l, etat: l.etat || ETATS[0]}))),
+    lignes:       coches.concat(libres),
     conditions:   document.getElementById('c-conditions').checked
                   && document.getElementById('c-habilite').checked
   };
+  /* Ce qui sert à écrire le récapitulatif, sans passer par une
+     recomposition : le nom et la structure séparés. */
+  donnees.nom = nom; donnees.prenom = prenom; donnees.aStructure = !!structure;
 
   const manques = [];
   let premier = null;
@@ -584,9 +887,9 @@ async function valider(){
     marquer(id, !rempli);
     if(!rempli){ manques.push(quoi); premier = premier || id; }
   };
-  exiger('f-structure',    donnees.structure,    'la dénomination de votre structure');
-  exiger('f-representant', donnees.representant, 'votre nom');
-  exiger('f-tel',          donnees.tel,          'un téléphone');
+  exiger('f-nom',    nom,          'votre nom');
+  exiger('f-prenom', prenom,       'votre prénom');
+  exiger('f-tel',    donnees.tel,  'un téléphone');
   if(!donnees.lignes.length){
     const liste = ((campagne && campagne.articles) || []).length;
     manques.push(liste ? 'au moins un matériel coché' : 'au moins une ligne de matériel');
@@ -687,11 +990,11 @@ function recapitulatif(d, ref, quand){
     de responsabilité médicale.</div>
 
     <h3>1 · Entité donneuse</h3>
-    ${l('Dénomination', d.structure)}
-    ${l('Nature de la structure', d.type)}
+    ${d.aStructure ? l('Dénomination', d.structure) + l('Nature de la structure', d.type) : ''}
     ${l('Adresse', d.adresse)}
     ${l('Commune', d.commune)}
-    ${l('Représentant — nom et qualité', [d.representant, d.qualite].filter(Boolean).join(', '))}
+    ${l(d.aStructure ? 'Représentant — nom et prénom' : 'Donateur — nom et prénom', d.representant)}
+    ${l('Profession', d.qualite)}
     ${l('Téléphone', d.tel)}
     ${l('Courriel', d.mail)}
 
@@ -731,10 +1034,11 @@ function recapitulatif(d, ref, quand){
 
     <h3>5 · Engagement et réception</h3>
     <div class="cachet"><b>Engagement du donateur recueilli par voie électronique</b> le
-      ${frdate(quand)} à ${frheure(quand)}, par ${esc(d.representant)}${d.qualite ? ', ' + esc(d.qualite) : ''},
-      pour ${esc(d.structure)}, qui a déclaré accepter les conditions ci-dessus et certifié être habilité à
-      engager la structure. Cette acceptation tient lieu de signature de l'entité donneuse ; aucune
-      signature manuscrite n'est requise de sa part.</div>
+      ${frdate(quand)} à ${frheure(quand)}, par ${esc(d.representant)}${d.qualite ? ', ' + esc(d.qualite) : ''}${
+      d.aStructure ? `, pour ${esc(d.structure)}` : ''}, qui a déclaré accepter les conditions ci-dessus
+      et certifié exacts les éléments déclarés${d.aStructure ? ' ainsi qu\'être habilité à engager la structure' : ''}.
+      Cette acceptation tient lieu de signature de l'entité donneuse ; aucune signature manuscrite n'est
+      requise de sa part.</div>
     <div class="sig">
       <div class="b">
         <div class="q">Pour l'entité réceptrice — à la réception</div>

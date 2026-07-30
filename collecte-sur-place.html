@@ -63,6 +63,8 @@ h2 .n{flex:0 0 26px;width:26px;height:26px;border-radius:9px;background:linear-g
 
 label{display:block}
 label .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:5px}
+label .k .fac{color:var(--encre-2);background:var(--cobalt-clair);border-radius:999px;padding:2px 7px;
+  font-size:8.5px;letter-spacing:.1em;margin-left:5px}
 input,select{width:100%;padding:11px 12px;border:1px solid var(--trait);border-radius:8px;background:#fff;
   transition:border-color .15s,box-shadow .15s}
 input:hover,select:hover{border-color:#BCCCE4}
@@ -331,10 +333,12 @@ function saisie(){
     <h2><span class="n">1</span>Qui dépose</h2>
     <p class="sous-h">Le nom sert à établir le récapitulatif et, si la personne le demande, un bordereau de don.</p>
     <div class="trio">
-      <label><span class="k">Prénom</span><input id="prenom" autocomplete="off" placeholder="Sophie"></label>
       <label><span class="k">Nom</span><input id="nom" autocomplete="off" placeholder="Maréchal"></label>
-      <label class="large"><span class="k">Profession ou structure</span>
-        <input id="profession" list="professions" autocomplete="off" placeholder="Pharmacien, cabinet infirmier, particulier…"></label>
+      <label><span class="k">Prénom</span><input id="prenom" autocomplete="off" placeholder="Sophie"></label>
+      <label><span class="k">Profession</span>
+        <input id="profession" list="professions" autocomplete="off" placeholder="Pharmacien, infirmière, particulier…"></label>
+      <label><span class="k">Structure <span class="fac">facultatif</span></span>
+        <input id="structure" autocomplete="off" placeholder="Pharmacie Berlioz, cabinet des Halles…"></label>
     </div>
     <datalist id="professions">${PROFESSIONS.filter(Boolean).map(p => `<option value="${esc(p)}">`).join('')}</datalist>
     <p class="leurre"><label>Ne rien écrire ici <input id="site" tabindex="-1" autocomplete="off"></label></p>
@@ -370,7 +374,7 @@ function saisie(){
   répondre dès que la collecte est clôturée.</p>`);
 
   redessinerPanier();
-  const p = document.getElementById('prenom');
+  const p = document.getElementById('nom');
   if(p && window.innerWidth > 640) p.focus();
 }
 
@@ -449,6 +453,10 @@ function majPastilles(){
 async function envoyer(){
   if(envoiEnCours) return;
   const prenom = val('prenom'), nom = val('nom');
+  /* Le registre n'a qu'une colonne pour dire ce qu'est le
+     déposant : la profession et la structure y arrivent ensemble,
+     comme elles s'écrivaient côte à côte sur la feuille. */
+  const qualite = [val('profession'), val('structure')].filter(Boolean).join(' — ');
   const lignes = panier.filter(l => (l.materiel || '').trim());
 
   if(!prenom && !nom){
@@ -471,7 +479,7 @@ async function envoyer(){
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         p: ID_POINT, j: JETON,
-        nom, prenom, profession: val('profession'),
+        nom, prenom, profession: qualite,
         site: val('site'),
         lignes: lignes.map(l => ({materiel:l.materiel, quantite:String(l.quantite)}))
       })
@@ -510,7 +518,7 @@ async function envoyer(){
     }
   });
   panier = [];
-  ['prenom','nom','profession','autre'].forEach(k => { const e = document.getElementById(k); if(e) e.value = ''; });
+  ['nom','prenom','profession','structure','autre'].forEach(k => { const e = document.getElementById(k); if(e) e.value = ''; });
 
   saisie();
   const z = document.getElementById('recu');
