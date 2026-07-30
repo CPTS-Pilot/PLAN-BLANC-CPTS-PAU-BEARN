@@ -1818,6 +1818,116 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
    ambre reste lisible dessus. */
 .feuillets{border-top-color:var(--brou)}
 .feuillets button.on{background:var(--brou);border-color:var(--brou)}
+
+/* ---------- cartographie ----------
+   Une commune écrite dans une colonne ne dit pas si la pharmacie
+   partenaire est à cinq minutes de la personne qu'il faut
+   réhydrater. La carte le dit. Elle ne remplace pas la liste :
+   elle se lit à côté d'elle, et se replie quand on n'en a pas
+   besoin. */
+.carto{background:var(--carte);border:1px solid var(--trait);border-radius:9px;margin-bottom:16px;overflow:hidden}
+.carto .tete-c{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px}
+.carto .tete-c .t{font-family:var(--display);font-weight:700;font-size:16px;color:var(--encre);line-height:1.2}
+.carto .tete-c .s{font-size:12.5px;color:var(--texte-2);flex:1 1 220px;line-height:1.35;margin:0}
+/* Une carte qui se passe de phrase d'explication garde ses boutons
+   à droite : l'écart tient la place que le texte occupait. */
+.carto .tete-c .ecart{flex:1 1 auto}
+.carto .tete-c .plier{background:none;border:1px solid var(--trait);border-radius:7px;color:var(--texte-2);
+  font-family:inherit;font-size:12.5px;padding:7px 12px;cursor:pointer;min-height:36px}
+.carto .tete-c .plier:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.carto .tete-c .plier.on{background:var(--ambre-clair);border-color:var(--ambre-fonce);
+  color:var(--encre);font-weight:600}
+/* z-index:0 enferme les couches de Leaflet — elles montent jusqu'à
+   800 — sous les fenêtres du cockpit, qui sont à 50. Sans cela, la
+   carte passerait par-dessus la modale de saisie. */
+.carto-hote,.carto-vide{height:330px;border-top:1px solid var(--trait);background:var(--ambre-clair);
+  position:relative;z-index:0;isolation:isolate}
+.carto-hote.court,.carto-vide.court{height:260px}
+.carto-toile{height:100%}
+.carto-vide,.carto .attente{display:flex;align-items:center;justify-content:center;height:100%;
+  font-size:13px;color:var(--texte-2);font-style:italic;text-align:center;padding:22px;line-height:1.45}
+.carto .legende{display:flex;flex-wrap:wrap;gap:7px 15px;padding:11px 16px;border-top:1px solid var(--trait);
+  font-size:12px;color:var(--texte-2)}
+.carto .legende span{display:inline-flex;align-items:center;gap:6px}
+.carto .legende i{width:11px;height:11px;border-radius:50%;display:inline-block;
+  border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.22)}
+.carto .legende i.approx{opacity:.45}
+/* La légende reprend la forme de la pharmacie sur la carte : une
+   croix, quand la personne signalée est un disque plein. */
+.carto .legende i.croix{width:15px;height:15px;border:none;border-radius:0;box-shadow:none;
+  display:inline-flex;align-items:center}
+/* Le repère d'une pharmacie est une image, pas une pastille : la
+   boîte que Leaflet lui donne ne doit ni fond ni cadre, juste une
+   ombre portée qui le décolle du fond de carte. */
+.carto-croix{background:none;border:none;line-height:0;
+  filter:drop-shadow(0 1px 2px rgba(58,42,16,.42))}
+.carto .manquants{padding:11px 16px;border-top:1px solid var(--trait);font-size:12.5px;
+  color:#8A5D12;background:#FCF3E4;line-height:1.45}
+.carto .source{padding:9px 16px;border-top:1px solid var(--trait);font-size:11px;color:var(--texte-2);line-height:1.4}
+.carto-popup{font-family:var(--corps);font-size:13.5px;line-height:1.45;min-width:180px}
+.carto-popup .n{font-family:var(--display);font-weight:700;font-size:15px;color:var(--encre);line-height:1.2}
+.carto-popup .l{color:var(--texte-2);font-size:12.5px;margin-top:2px}
+/* La pharmacie la plus proche est la réponse qu'on vient chercher
+   en touchant un point : elle se détache du reste de la bulle. */
+.carto-popup .pres{margin-top:9px;background:var(--ambre-clair);border-radius:7px;padding:8px 10px;
+  font-size:13px;line-height:1.4;color:var(--encre)}
+.carto-popup .pres .k{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--texte-2);display:block;margin-bottom:2px}
+.carto-popup a{display:block;margin-top:7px;color:var(--encre-2);font-weight:600;text-decoration:none}
+.carto-popup button{margin-top:9px;background:none;border:1px solid var(--trait);border-radius:7px;
+  color:var(--texte-2);font-family:inherit;font-size:12.5px;padding:6px 11px;cursor:pointer}
+.carto-popup button:hover{border-color:var(--encre-2);color:var(--encre-2)}
+@media print{.carto{display:none!important}}
+
+/* ---------- réhydratation à domicile ----------
+   Trois cartes qui se lisent dans l'ordre : ce qu'on fait, avec
+   quelles officines, et pour qui. */
+.proc{margin:0;padding-left:22px;font-size:14px;line-height:1.55;color:var(--texte)}
+.proc li{margin-bottom:9px}
+.proc li:last-child{margin-bottom:0}
+.rh-l{display:flex;flex-direction:column;gap:11px}
+.rh-c{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--trait);
+  border-radius:9px;padding:14px 16px;display:flex;flex-direction:column;gap:9px}
+.rh-c.ok{border-left-color:var(--stable)}
+.rh-c.attente{border-left-color:var(--ambre)}
+.rh-c.hors{border-left-color:var(--trait);opacity:.72}
+.rh-c .haut{display:flex;align-items:flex-start;gap:11px;flex-wrap:wrap}
+.rh-c .nom{font-family:var(--display);font-weight:700;font-size:15.5px;color:var(--encre);
+  line-height:1.2;flex:1 1 180px}
+.rh-c .meta{font-size:13px;color:var(--texte-2);line-height:1.45}
+.rh-c .champs{display:flex;flex-wrap:wrap;gap:9px 20px}
+.rh-c .champs > div{flex:0 1 auto;min-width:120px}
+.rh-c .champs .k,.rh-c .meta .k,.rh-idel .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:2px}
+/* L'âge se lit à côté des initiales sans leur disputer la place. */
+.rh-c .nom .a{font-family:var(--corps);font-weight:400;font-size:13.5px;color:var(--texte-2)}
+.rh-c .champs .v{font-size:13.5px;color:var(--texte)}
+.rh-c a.tel{color:var(--encre-2);font-weight:600;text-decoration:none;font-size:13.5px}
+.rh-c .barre{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:2px}
+.rh-c .barre .btn{min-height:34px;padding:6px 12px;font-size:13px}
+.rh-idel{border-radius:8px;padding:10px 12px;font-size:13.5px;line-height:1.45;
+  background:var(--surface);border:1px solid var(--trait)}
+.rh-idel.pose{background:#EAF4EF;border-color:#BFDDCF;color:#1F5B47}
+.rh-idel.rappel{background:#FCF3E4;border-color:#EBD6AC;color:#8A5D12}
+.rh-idel a{color:inherit;font-weight:700;text-decoration:none}
+/* Le titre d'une des trois cartes de l'espace, et son numéro : on
+   les lit dans l'ordre, et l'ordre se voit. */
+.rh-t{font-family:var(--display);font-weight:700;font-size:19px;color:var(--encre);
+  margin:0 0 6px;line-height:1.25;display:flex;align-items:baseline;gap:10px}
+.rh-t .n{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ambre-fonce);
+  background:var(--ambre-clair);border-radius:5px;padding:3px 7px;flex:0 0 auto}
+.rh-s{font-size:13.5px;color:var(--texte-2);line-height:1.5;margin:0 0 16px;max-width:78ch}
+/* Le message qui s'affiche sous une réponse « Non » : il ne se
+   saisit pas, il se lit. */
+.note-dep{border-radius:8px;padding:11px 13px;font-size:13.5px;line-height:1.45;
+  background:#FCF3E4;border:1px solid #EBD6AC;color:#8A5D12}
+.note-dep strong{color:#6E4A0E}
+.note-dep a{color:#6E4A0E;font-weight:700}
+.form .note-dep{grid-column:1/-1}
+/* Un champ qu'une réponse précédente rend sans objet se retire du
+   formulaire. « label » porte un display d'auteur : la règle du
+   navigateur pour [hidden] ne suffirait pas à le masquer. */
+.form label[hidden],.note-dep[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -1902,11 +2012,31 @@ const etatInitial = {
       "Ne pas constituer de liste nominative de patients dans le cockpit."
     ]
   },
-  /* Les missions de cet épisode restent à arrêter avec la
-     vice-présidence : c'est là que la canicule diverge le plus des
-     incendies. Une mission créée ici apparaît aussitôt dans
-     l'organigramme, et sa fiche s'écrit depuis la même page. */
-  missions: [],
+  /* Les missions de cet épisode s'arrêtent avec la vice-présidence :
+     c'est là que la canicule diverge le plus des incendies. Une
+     mission créée ici apparaît aussitôt dans l'organigramme, et sa
+     fiche s'écrit depuis la même page. La première est arrêtée : la
+     réhydratation à domicile, portée par la vice-présidence, avec
+     son espace dans le groupe « Actions ». */
+  missions: [
+    {id:'m1', titre:"Mise en place de la réhydratation à domicile",
+     detail:"Organiser avec les pharmacies du territoire la mise à disposition de solutions de réhydratation orale, et faire assurer le passage à domicile chez les personnes signalées par les médecins par un cabinet infirmier libéral.",
+     pilote:'Anne Latisnère', suppleant:'', mandat:"Non — initiative CPTS",
+     statut:'À lancer',
+     prochaine:"Recenser les pharmacies du territoire prêtes à délivrer les solutions de réhydratation, et arrêter avec elles ce qu'elles tiennent en stock.",
+     echeance:'', espace:'rehydratation',
+     fiche:{
+       but:"Qu'une personne à risque de déshydratation — personne âgée isolée, pathologie chronique, traitement sensible à la chaleur — reçoive de quoi se réhydrater chez elle, et que quelqu'un passe le vérifier, plutôt que d'arriver aux urgences en coup de chaleur.",
+       faire:`Recenser les pharmacies du territoire prêtes à délivrer les solutions de réhydratation orale, et noter pour chacune ce qu'elle tient et ses horaires.
+Faire connaître le circuit aux médecins du territoire : qui signale, comment, et à qui.
+Recueillir les personnes signalées par les médecins, en initiales et sans élément clinique au-delà du motif.
+Pour chaque personne signalée, désigner le cabinet infirmier libéral qui assurera le passage à domicile, et le lui dire.
+Quand aucun cabinet infirmier n'est identifié, rappeler le médecin à l'origine de la demande : c'est lui qui connaît le cabinet qui suit la personne.`,
+       avec:"Les pharmacies du territoire, les cabinets infirmiers libéraux, et les médecins généralistes qui signalent.",
+       pour:"Les personnes à risque de déshydratation vivant à domicile sur le territoire de la CPTS Pau Béarn.",
+       limite:"La CPTS ne tient pas de registre nominatif de patients : seules les initiales sont notées. Elle ne se substitue ni au registre communal des personnes vulnérables, tenu par les CCAS, ni à la prescription, qui reste au médecin. Elle n'achète ni ne stocke elle-même de soluté."
+     }}
+  ],
   /* Ce que la veille a retenu. Le carnet de canaux est en revanche
      amorcé ci-dessous : les sources d'une canicule sont connues
      d'avance, elles ne dépendent pas de l'épisode. */
@@ -1915,6 +2045,30 @@ const etatInitial = {
      servi en juillet sur les incendies : c'est le même réseau, et
      les coordonnées sont à reprendre auprès d'Agora Lib. */
   cpts: [],
+
+  /* --- Réhydratation à domicile -------------------------------
+     La procédure telle qu'elle s'affiche en tête de l'espace : une
+     ligne par étape, dans l'ordre où on les fait. Elle est écrite
+     ici pour que l'espace ne s'ouvre pas vide, et se corrige depuis
+     la page — c'est la vice-présidence qui l'arrête, pas ce
+     fichier. */
+  rehydProc: [
+    "Recenser les pharmacies du territoire prêtes à délivrer les solutions de réhydratation orale : ce qu'elles tiennent, leurs horaires, qui décroche. Elles se renseignent dans la carte « Recensement des pharmacies partenaires » et se posent d'elles-mêmes sur le fond de carte.",
+    "Faire connaître le circuit aux médecins généralistes du territoire : c'est le médecin qui repère la personne à risque dans sa patientèle et qui la signale à la CPTS.",
+    "Recueillir le signalement dans la carte « Patients signalés / orientés » : initiales, âge, commune, motif, numéro pour rappeler, et les coordonnées du médecin qui déclare. Aucun élément clinique au-delà du motif, aucun nom en clair.",
+    "Désigner le cabinet infirmier libéral qui assurera le passage à domicile. S'il est connu, il est renseigné sur la fiche et la personne lui est affectée. S'il n'est pas connu, c'est le médecin à l'origine de la demande qu'on rappelle : lui sait quel cabinet suit la personne.",
+    "Prévenir le cabinet infirmier désigné et la pharmacie la plus proche, puis noter le passage effectué sur la fiche. Tant que le passage n'est pas noté, la personne reste en attente sur la carte."
+  ],
+  /* Les officines qui délivrent. L'adresse sert à deux choses : la
+     lire au téléphone, et poser la pharmacie sur la carte — c'est
+     elle qui dit laquelle est la plus proche d'une personne
+     signalée. */
+  pharmacies: [],
+  /* Les personnes signalées par les médecins, en initiales. Le
+     registre ne porte aucun nom en clair : c'est la consigne du
+     cockpit, et elle ne se négocie pas. */
+  rehyd: [],
+
   offre: [
     {id:'o1', cat:"Hôpitaux publics", nom:"Centre Hospitalier de Pau", statut:'Public', type:"Centre hospitalier — établissement support du GHT Béarn et Soule", commune:'Pau', adresse:"4 boulevard Hauterive, 64046 Pau", tel:"05 59 92 48 48", lits:'846', capacites:"Recours de type 3 : réanimation adulte et pédiatrique, néonatalogie, maternité de niveau III, unité neuro-vasculaire, cardiologie interventionnelle. 12 salles de bloc, 3 scanners, 2 IRM. Environ 66 700 passages aux urgences par an.", urgences:'Oui', url:'https://www.ch-pau.fr', note:"Pivot du territoire en cas d'afflux massif de victimes.", verif:false},
     {id:'o2', cat:"Cliniques et privé", nom:"Polyclinique Pau Pyrénées — site Navarre", statut:'Privé', type:"Clinique pluridisciplinaire (groupe GBNA Santé)", commune:'Pau', adresse:"8 boulevard Hauterive, 64000 Pau", tel:'', lits:'370', capacites:"370 lits et places sur les deux sites (Navarre et Marzet). Chirurgie de toutes spécialités, urgences, maternité, unité de soins intensifs en neurochirurgie, surveillance continue. Le plus important établissement de soins privé du sud de la Nouvelle-Aquitaine.", urgences:'Oui', url:'https://polycliniquepaupyrenees.fr', note:"Capacité déclarée pour les deux sites réunis : ne pas la compter deux fois.", verif:true},
@@ -2807,12 +2961,14 @@ const ONGLETS = [
   {id:'rapports',  nom:'Rapports',           groupe:'Suivi', cpt:null},
   {id:'courante',  nom:'Main courante',      groupe:'Traçabilité', cpt:'courante'},
   {id:'ars',       nom:'Échanges avec l\'ARS', groupe:'Traçabilité', cpt:'ars'},
-  /* Le groupe « Actions » est vide tant que les rubriques métier de
-     la canicule ne sont pas arrêtées. Les incendies y logent la
-     collecte de matériel, l'appel au renfort et les patients
-     évacués — aucune des trois ne se transpose telle quelle. Ce que
-     la canicule y mettra se décide avec la vice-présidence ; d'ici
-     là, tout ce qui arrive se consigne en main courante. */
+  /* Première action métier de la canicule, arrêtée avec la
+     vice-présidence : la réhydratation à domicile. Les incendies
+     logent dans ce groupe la collecte de matériel, l'appel au
+     renfort et les patients évacués — aucune des trois ne se
+     transpose telle quelle. Ce qui s'y ajoutera se décide de la
+     même façon ; d'ici là, tout ce qui arrive se consigne en main
+     courante. */
+  {id:'rehydratation', nom:'Réhydratation à domicile', groupe:'Actions', cpt:'rehyd'},
   {id:'offre',     nom:'Offre de soins du territoire', groupe:'Ressources', cpt:null},
   {id:'lignes',    nom:'Qui appeler',         groupe:'Ressources', cpt:null},
   {id:'contacts',  nom:'Contacts de la crise', groupe:'Ressources', cpt:null}
@@ -2863,7 +3019,111 @@ function sourcesCourante(){
   return [...vues, ...SOURCES_DEHORS.filter(s => vues.indexOf(s) === -1)];
 }
 
+/* --- Réhydratation à domicile : les listes fermées ------------
+   Une pharmacie passe d'un état à l'autre dans cet ordre, et la
+   carte reprend ces mêmes états en couleurs. */
+const PH_STATUTS  = ['À contacter','Contactée','Partenaire','Ne participe pas'];
+const PH_ET       = {'Partenaire':'e-cours','Contactée':'e-attente',
+                     'À contacter':'e-lancer','Ne participe pas':'e-fini'};
+const PH_PORTAGE  = ['À préciser','Oui','Non'];
+/* Ce que les officines tiennent le plus souvent : des pastilles qui
+   s'additionnent, sur un champ qui reste libre. */
+const PH_STOCK    = ["Sachets de réhydratation orale","Solution prête à l'emploi",
+                     "Eau en bouteille","Compléments d'électrolytes","Brumisateurs"];
+const RH_STATUTS  = ['À orienter','Cabinet IDEL désigné','Passage assuré','Sans suite'];
+const RH_ET       = {'À orienter':'e-attente','Cabinet IDEL désigné':'e-lancer',
+                     'Passage assuré':'e-cours','Sans suite':'e-fini'};
+const RH_MOTIFS   = ["Personne âgée isolée","Pathologie chronique",
+                     "Traitement sensible à la chaleur","Perte d'autonomie",
+                     "Logement mal ventilé","Signes de déshydratation débutante"];
+/* Les cabinets infirmiers déjà nommés sur une fiche, et les
+   médecins qui ont déjà déclaré : au deuxième signalement du même
+   cabinet ou du même médecin, le nom est à portée de doigt. */
+const dejaVus = (k, c) => [...new Set((etat[k] || [])
+  .map(o => String(o[c] || '').trim()).filter(Boolean))].sort((a,b) => a.localeCompare(b,'fr'));
+
 const CHAMPS = {
+  /* --- Les officines qui délivrent ---------------------------
+     L'adresse sert à deux choses : la lire au téléphone, et poser
+     la pharmacie sur la carte — c'est elle qui dit laquelle est la
+     plus proche d'une personne signalée. */
+  pharmacies: {
+    titre:"Pharmacies partenaires",
+    chapo:"Les officines du territoire prêtes à délivrer les solutions de réhydratation orale, ce qu'elles tiennent et qui y décroche. L'adresse renseignée pose la pharmacie sur la carte : c'est elle qui permet de dire, pour une personne signalée, quelle officine est la plus proche de chez elle.",
+    f:[
+      {c:'nom', l:"Nom de l'officine", t:'text', req:true, large:true, ph:"Pharmacie de la Paix"},
+      {c:'commune', l:"Commune", t:'text', ph:"Pau"},
+      {c:'adresse', l:"Adresse", t:'text', large:true,
+       aide:"C'est cette adresse qui situe la pharmacie sur la carte. Sans elle, la fiche reste lisible mais l'officine n'apparaît pas."},
+      {c:'tel', l:"Téléphone", t:'text', ph:"05 59 00 00 00"},
+      {c:'mail', l:"Courriel", t:'text'},
+      {c:'interlocuteur', l:"Interlocuteur", t:'text', ph:"Titulaire, préparateur…"},
+      {c:'statut', l:"Où en est le partenariat", t:'choix', o:PH_STATUTS, d:() => 'À contacter'},
+      {c:'stock', l:"Ce qu'elle tient à disposition", t:'text', large:true, multi:PH_STOCK},
+      {c:'horaires', l:"Horaires d'ouverture", t:'text', large:true, ph:"Lundi au samedi, 9h-19h30 — fermée le dimanche"},
+      {c:'portage', l:"Assure un portage à domicile", t:'choix', o:PH_PORTAGE, d:() => 'À préciser'},
+      {c:'note', l:"Observation", t:'textarea', large:true}
+    ],
+    cols:['date','nom','commune','adresse','tel','mail','interlocuteur','statut','stock',
+          'horaires','portage','note','auteur']
+  },
+  /* --- Les personnes signalées -------------------------------
+     Le registre ne porte aucun nom en clair : des initiales, un âge,
+     une commune, un motif, et le numéro qui permet de rappeler.
+     C'est la consigne du cockpit, et elle ne se négocie pas. */
+  rehyd: {
+    titre:"Patients signalés / orientés",
+    chapo:"Chaque personne signalée par un médecin du territoire pour une réhydratation à domicile, et ce qu'elle est devenue. Le registre est tenu en initiales, sans aucun élément clinique au-delà du motif. La commune sert à situer la personne sur la carte et à trouver la pharmacie partenaire la plus proche — l'adresse exacte n'est jamais demandée.",
+    f:[
+      {c:'heure', l:"Heure du signalement", t:'time', d:maintenant},
+      {t:'titre', l:"La personne signalée",
+       sous:"Des initiales, jamais un nom en clair."},
+      {c:'nom', l:"Nom du patient — initiales", t:'text', req:true, ph:"D. M."},
+      {c:'age', l:"Âge", t:'text', ph:"82"},
+      {c:'commune', l:"Commune", t:'text', ph:"Pau",
+       aide:"C'est la commune qui situe la personne sur la carte, et rien d'autre : ni la rue, ni le numéro."},
+      {c:'tel', l:"Numéro de téléphone", t:'text', ph:"06 12 34 56 78"},
+      {c:'motif', l:"Motif", t:'text', large:true, sugg:RH_MOTIFS},
+      {t:'titre', l:"Le médecin qui déclare",
+       sous:"Celui qu'on rappelle si le circuit se bloque."},
+      {c:'decNom', l:"Nom du médecin qui déclare", t:'text', large:true,
+       sugg:() => dejaVus('rehyd','decNom')},
+      {c:'decAdresse', l:"Adresse du médecin", t:'text', large:true},
+      {c:'decTel', l:"Téléphone du médecin", t:'text'},
+      {t:'titre', l:"Le cabinet infirmier libéral",
+       sous:"Qui passera chez la personne."},
+      {c:'idel', l:"Cabinet IDEL", t:'choix', o:['Oui','Non']},
+      {c:'idelNom', l:"Nom du cabinet IDEL", t:'text', large:true,
+       dep:'idel', depV:'Oui', sugg:() => dejaVus('rehyd','idelNom'),
+       aide:"Renseigné ici, le cabinet est affecté à la personne : elle sort de la liste d'attente et son point passe au vert sur la carte."},
+      {c:'idelTel', l:"Téléphone du cabinet IDEL", t:'text', dep:'idel', depV:'Oui'},
+      /* Quand le cabinet a été désigné, et par qui : posé par le
+         cockpit au moment où le nom est inscrit, ici comme depuis la
+         fenêtre d'affectation. Ne se saisit pas à la main. */
+      {c:'idelLe', l:"Cabinet désigné le", t:'date', hors:true},
+      {c:'idelPar', l:"Cabinet désigné par", t:'personne', hors:true},
+      {t:'note', dep:'idel', depV:'Non',
+       h:"<strong>Contacter le médecin à l'origine de la demande.</strong> Aucun cabinet infirmier n'est identifié pour cette personne : c'est le médecin qui a déclaré qui sait lequel la suit. La fiche reste en attente jusqu'à ce qu'un cabinet y soit inscrit."},
+      {c:'statut', l:"Où en est la personne", t:'choix', o:RH_STATUTS, d:() => 'À orienter'},
+      {c:'note', l:"Observation", t:'textarea', large:true}
+    ],
+    cols:['date','heure','nom','age','commune','tel','motif','decNom','decAdresse','decTel',
+          'idel','idelNom','idelTel','statut','note','auteur'],
+    /* « Si oui, le renseigner et faire en sorte qu'il soit
+       affecté » : nommer le cabinet suffit à affecter la personne.
+       On ne demande pas de le redire dans la liste des statuts —
+       et on ne touche pas à un statut déjà avancé à la main. */
+    apres: o => {
+      const pose = o.idel === 'Oui' && !!String(o.idelNom || '').trim();
+      if(pose){
+        if(!o.statut || o.statut === 'À orienter') o.statut = 'Cabinet IDEL désigné';
+        if(!o.idelLe){ o.idelLe = o.date || aujourdhui(); o.idelPar = moi === 'Anonyme' ? '' : moi; }
+      }else{
+        if(o.statut === 'Cabinet IDEL désigné') o.statut = 'À orienter';
+        o.idelLe = ''; o.idelPar = '';
+      }
+    }
+  },
   ars: {
     titre:"Échanges avec l'ARS",
     chapo:"Tout ce que l'ARS fait descendre : consignes, communiqués, demandes. Et en regard, ce que la CPTS Pau Béarn répond et ce que ça implique pour elle. C'est la pièce qui distingue ce qui est mandaté de ce que la CPTS Pau Béarn entreprend de sa propre initiative.",
@@ -2926,7 +3186,25 @@ const CHAMPS = {
 
 function ouvrirAjout(k, mode){
   document.getElementById('modale').innerHTML = formulaire(k, null, mode);
+  majDependances();
   ouvrirRideau();
+}
+
+/* --- Un champ qui dépend d'une réponse précédente -------------
+   « Cabinet IDEL : oui / non » ne se contente pas d'être noté :
+   répondre oui ouvre le nom du cabinet à renseigner, répondre non
+   affiche ce qu'il reste à faire — rappeler le médecin. Un champ
+   qu'une réponse rend sans objet se retire du formulaire et se
+   vide : sans cela, un nom de cabinet saisi puis désavoué par un
+   « non » repartirait quand même au registre. */
+function majDependances(){
+  document.querySelectorAll('.form [data-dep]').forEach(el => {
+    const src = document.getElementById(el.dataset.dep);
+    const attendu = String(el.dataset.depv || '').split('|');
+    const montrer = !!src && attendu.indexOf(String(src.value ?? '').trim()) >= 0;
+    el.hidden = !montrer;
+    if(!montrer) el.querySelectorAll('input,select,textarea').forEach(c => { c.value = ''; });
+  });
 }
 
 /* Les champs retenus selon le mode de saisie : en saisie manuelle on
@@ -3019,6 +3297,9 @@ function choisirSugg(cible, btn){
      une liste déroulante. Sur un champ libre à suggestions, il n'y
      a pas de champ de précision et l'appel ne fait rien. */
   bascPrecision(cible);
+  /* Et la réponse qui vient d'être donnée peut en ouvrir ou en
+     fermer d'autres, plus bas dans le formulaire. */
+  majDependances();
 }
 /* `val` allume d'emblée la pastille qui correspond à ce qui est déjà
    dans le champ : en modification, on voit ce qui avait été choisi. */
@@ -3085,6 +3366,13 @@ function amorcer(cible, btn){
 const amorces = (cible, liste) => `<div class="sugg amorces">${liste.map(x =>
   `<button type="button" data-v="${esc(x)}" onclick="amorcer('${cible}',this)">${esc(x)}</button>`).join('')}</div>`;
 
+/* Les attributs qui rattachent un bloc du formulaire à la réponse
+   qui le commande. Posé masqué : c'est majDependances(), appelée
+   dès l'ouverture, qui décide de le montrer. */
+const dep = (k, f) => f.dep
+  ? ` data-dep="f-${k}-${f.dep}" data-depv="${esc(f.depV)}" hidden`
+  : '';
+
 function formulaire(k, o, mode){
   const cfg = CHAMPS[k];
   const ed = !!o;
@@ -3098,13 +3386,19 @@ function formulaire(k, o, mode){
     /* Un intertitre : il ne saisit rien, il découpe le formulaire en
        temps successifs — le même repère qu'au recueil d'un patient. */
     if(f.t === 'titre'){
-      h += `<div class="sous-t">${esc(f.l)}${f.sous ? `<span class="d">${esc(f.sous)}</span>` : ''}</div>`;
+      h += `<div class="sous-t"${dep(k, f)}>${esc(f.l)}${f.sous ? `<span class="d">${esc(f.sous)}</span>` : ''}</div>`;
+      return;
+    }
+    /* Ni un champ ni un intertitre : ce qu'il reste à faire, écrit là
+       où la réponse l'appelle. Rien à saisir, rien à enregistrer. */
+    if(f.t === 'note'){
+      h += `<div class="note-dep"${dep(k, f)}>${f.h}</div>`;
       return;
     }
     const val = ed ? (o[f.c] ?? '') : (typeof f.d === 'function' ? f.d() : '');
     const id = `f-${k}-${f.c}`;
     const ph = f.ph ? ` placeholder="${esc(f.ph)}"` : '';
-    h += `<label class="${f.large?'large':''}"><span class="k">${esc(man && f.lm ? f.lm : f.l)}${f.req?' *':''}</span>`;
+    h += `<label class="${f.large?'large':''}"${dep(k, f)}><span class="k">${esc(man && f.lm ? f.lm : f.l)}${f.req?' *':''}</span>`;
     if(f.t === 'textarea') h += `<textarea id="${id}"${ph}>${esc(val)}</textarea>`;
     else if(f.t === 'select'){
       /* Certaines listes se construisent à la volée : les lieux de
@@ -3169,6 +3463,7 @@ function formulaire(k, o, mode){
 function ouvrirEdition(k, id){
   const o = (etat[k]||[]).find(x => x.id === id); if(!o) return;
   document.getElementById('modale').innerHTML = formulaire(k, o);
+  majDependances();
   ouvrirRideau();
 }
 
@@ -3188,6 +3483,10 @@ async function enregistrer(k, id, mode){
     o[f.c] = v;
   });
   if(manque){ toast(`Champ obligatoire : ${manque}`); return; }
+  /* Ce qu'une réponse entraîne d'elle-même : nommer le cabinet
+     infirmier affecte la personne, sans qu'on ait à le redire dans
+     la liste des statuts. */
+  if(cfg.apres) cfg.apres(o, !!existant);
   if(existant){
     o.modifiePar = moi;
   }else{
@@ -4893,6 +5192,7 @@ const MC_TYPES = [
   ['Visio ARS', 'e-attente'],
   ['Situation', 'e-fini'],
   ['CPTS',      'e-cours'],
+  ['Réhydratation', 'e-cours'],
   ['Rapport',   'e-fini']
 ];
 const MC_COUL = t => (MC_TYPES.find(x => x[0] === t) || [,'e-lancer'])[1];
@@ -5437,9 +5737,30 @@ function poserEnCourante(id, t){
    reste — l'idempotence, l'heure du fait, l'attribution corrigée à
    la main — est l'affaire de poserEnCourante().
 
-   Les rubriques d'action de la canicule s'ajouteront ici, une clé
-   chacune, le jour où elles seront arrêtées. */
+   Les rubriques d'action de la canicule s'ajoutent ici, une clé
+   chacune, le jour où elles sont arrêtées. */
 const MC_REG = {
+  /* Une officine recensée laisse une ligne, et une seule : la
+     réécrire corrige la ligne au lieu d'en ajouter une. */
+  pharmacies: {
+    type:'Réhydratation', personne:o => o.auteur,
+    phrase:o => `Pharmacie ${o.nom || 'non nommée'}${o.commune ? ` (${o.commune})` : ''}`
+      + ` — réhydratation à domicile : ${(o.statut || 'à contacter').toLowerCase()}`
+      + (o.stock ? `. Tient : ${o.stock}` : '') + '.'
+  },
+  /* Une personne signalée aussi — en initiales, comme au registre.
+     La main courante ne dit pas ici ce que la rubrique ne dit pas
+     déjà : ni numéro de téléphone, ni adresse. */
+  rehyd: {
+    type:'Réhydratation', personne:o => o.auteur,
+    phrase:o => `Personne signalée pour une réhydratation à domicile — ${o.nom || 'initiales non renseignées'}`
+      + (o.age ? `, ${o.age} ans` : '') + (o.commune ? `, ${o.commune}` : '')
+      + (o.motif ? ` : ${o.motif}` : '')
+      + (o.decNom ? `. Signalée par ${o.decNom}` : '')
+      + (String(o.idelNom || '').trim() ? `. Cabinet IDEL désigné : ${o.idelNom}`
+         : o.idel === 'Non' ? `. Aucun cabinet IDEL identifié — médecin déclarant à rappeler` : '')
+      + '.'
+  },
   /* Un échange né d'une visio de crise en est déjà sorti consigné,
      avec son compte rendu : on ne le réécrit pas ici, où il ne
      dirait rien de plus et ferait doublon. */
@@ -6158,6 +6479,866 @@ function vueCollection(k){
 const venuesDuDehors = () =>
   (etat.courante || []).filter(o => String(o.source || '').trim());
 
+/* =========================================================
+   RÉHYDRATATION À DOMICILE
+
+   Trois cartes, dans l'ordre où on les lit : la procédure, les
+   officines qui délivrent, les personnes signalées. Le pilotage
+   est ailleurs — dans « Missions & organigramme » — et cet espace
+   ne fait que ce qu'il dit : recenser, signaler, affecter.
+
+   La cartographie est reprise du cockpit incendies, où elle sert
+   à situer les cabinets de médecins. Ici elle situe les officines
+   et les personnes signalées, et répond à la seule question qu'on
+   se pose devant une commune écrite dans une colonne : quelle
+   pharmacie partenaire est la plus près de chez cette personne.
+
+   Deux services publics, ni l'un ni l'autre avec une clé :
+   — la Base Adresse Nationale (api-adresse.data.gouv.fr) pour
+     transformer « 12 rue Carnot, Pau » en un point ;
+   — les fonds de carte d'OpenStreetMap, affichés par Leaflet.
+
+   Seules les adresses d'officine partent au géocodage, et la
+   commune des personnes signalées — jamais leur adresse, qui
+   n'est pas demandée, ni leurs initiales, ni leur motif.
+
+   Si l'un des deux services est injoignable — poste hors ligne,
+   réseau filtré, pare-feu d'un cabinet — la carte le dit et
+   s'efface : les listes restent entières, les adresses restent
+   lisibles sur chaque fiche et le lien « Itinéraire » continue
+   d'ouvrir l'application de cartes du téléphone. Rien de cet
+   espace ne dépend de ce qui suit.
+   ========================================================= */
+
+/* Une adresse touchée sur un téléphone doit ouvrir la carte, pas
+   une page. Cette forme d'URL est celle que les deux systèmes
+   reprennent : iOS propose Plans, Android ouvre Maps, et sur un
+   ordinateur elle s'affiche dans le navigateur. */
+function lienCarte(adresse, commune){
+  const a = String(adresse || '').trim();
+  const c = String(commune || '').trim();
+  const q = (c && a.toLowerCase().indexOf(c.toLowerCase()) < 0 ? a + ', ' + c : a)
+    + (a.toLowerCase().indexOf('france') < 0 ? ', France' : '');
+  return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+}
+
+const CARTO_CSS  = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+const CARTO_JS   = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+const CARTO_BAN  = 'https://api-adresse.data.gouv.fr/search/?limit=1&q=';
+/* Pau, à défaut de tout point : la carte s'ouvre sur le territoire
+   plutôt que sur l'océan. */
+const CARTO_CENTRE = [43.2951, -0.3708];
+
+/* Les teintes des officines reprennent celles de leurs étiquettes :
+   ce qui se lit sur la fiche se retrouve sur la carte. */
+const CARTO_PH = {'Partenaire':'#2F7D62', 'Contactée':'#E8A33D',
+                  'À contacter':'#0B4FA8', 'Ne participe pas':'#9AA8BC'};
+
+/* Côté personnes signalées, la couleur ne dit pas un statut
+   administratif mais où en est la personne : orange tant que
+   personne n'a été désigné pour passer chez elle, bleu quand un
+   cabinet l'a été, vert quand le passage a eu lieu, gris quand la
+   demande est close sans suite. */
+const CARTO_PAT = {attente:'#E2761B', pose:'#0B4FA8', assure:'#2F7D62', clos:'#9AA8BC'};
+
+/* L'officine ne se pose pas en pastille mais en croix : sur la
+   carte des personnes signalées, les deux populations se
+   distinguent à la forme, pas à la nuance. */
+const croixSVG = (teinte, t) => `<svg viewBox="0 0 24 24" width="${t}" height="${t}" aria-hidden="true">
+  <path d="M9.2 2.4h5.6v6.8h6.8v5.6h-6.8v6.8H9.2v-6.8H2.4V9.2h6.8z" fill="${teinte}"
+    stroke="#fff" stroke-width="1.5" stroke-linejoin="round"></path>
+</svg>`;
+
+/* Un cabinet infirmier nommé sur la fiche, c'est une personne
+   affectée : c'est le seul témoin, et il vaut mieux qu'un statut
+   qu'on oublie de changer. */
+const estAffecte = o => !!String(o.idelNom || '').trim();
+const RH_ETAT = o => o.statut === 'Sans suite' ? 'clos'
+  : o.statut === 'Passage assuré' ? 'assure'
+  : estAffecte(o) ? 'pose' : 'attente';
+/* Ce qui attend encore quelqu'un pour passer. */
+const enAttenteIdel = o => !estAffecte(o) && o.statut !== 'Sans suite';
+
+let leafletEtat = 'absent';   // absent | charge | pret | echec
+const cartesVives = {};       // les cartes montées, par identifiant de toile
+const cartoDonnees = {};      // les points à poser, par identifiant de toile
+const cartoPliee = {};        // les cartes repliées à la main
+
+/* L'adresse telle qu'on la soumet : elle sert aussi de témoin.
+   Tant qu'elle n'a pas changé, le point calculé reste valable. */
+function cleGeo(o){
+  const a = String(o.adresse || '').trim();
+  const c = String(o.commune || '').trim();
+  if(!a && !c) return '';
+  const q = a && c && a.toLowerCase().indexOf(c.toLowerCase()) < 0 ? a + ', ' + c : (a || c);
+  return q.replace(/\s+/g, ' ');
+}
+/* Une personne n'est jamais située à son adresse : seule sa commune
+   part au service d'adresses, et c'est sur le bourg qu'elle se pose.
+   Le registre porte de quoi la rappeler — il n'a pas à la faire
+   sortir du cockpit pour autant, et la commune suffit largement à
+   dire quelle officine est la plus près. */
+const cleGeoPat = o => String(o.commune || '').trim().replace(/\s+/g, ' ');
+
+const nombreOuNul = v => typeof v === 'number' && isFinite(v) ? v
+  : (v !== '' && v !== null && v !== undefined && isFinite(Number(v)) ? Number(v) : null);
+
+/* Ce que la carte a besoin de savoir de chaque officine — rien de
+   plus que ce qui s'affiche dans la bulle. `second` marque celles
+   qui ne sont pas la vedette de la carte : sur la carte des
+   personnes signalées, elles sont le décor, et ne se comptent pas
+   à la place des personnes. */
+function pointsPharmacies(ph, second){
+  return (ph || []).map(p => {
+    const cle = cleGeo(p);
+    const lat = nombreOuNul(p.lat), lon = nombreOuNul(p.lon);
+    /* Un point calculé sur une adresse qui a changé depuis ne vaut
+       plus rien : on ne l'affiche pas, il se recalculera. */
+    const bon = lat !== null && lon !== null && p.geoCle === cle;
+    return {
+      id: p.id, nom: p.nom || 'Officine sans nom', statut: p.statut || 'À contacter',
+      lieu: [p.interlocuteur, p.commune].filter(Boolean).join(' · '),
+      adresse: p.adresse || '', commune: p.commune || '', tel: p.tel || '',
+      stock: p.stock || '', horaires: p.horaires || '',
+      couleur: CARTO_PH[p.statut] || CARTO_PH['À contacter'],
+      lat: bon ? lat : null, lon: bon ? lon : null,
+      approx: p.geoPrecision === 'municipality' || p.geoPrecision === 'locality',
+      cle, echec: !!cle && p.geoEchec === cle,
+      forme:'ph', croix:true, second:!!second
+    };
+  });
+}
+
+/* Deux personnes d'une même commune tomberaient sur le même point
+   et se recouvriraient. On les écarte en spirale autour du bourg —
+   angle d'or, pour que la spirale ne se recroise pas. Le rang se
+   prend sur l'identifiant, jamais sur l'ordre de la liste : trier
+   le registre ne doit pas faire sauter les points d'une place à
+   l'autre. */
+function pointsPatients(pat, vivier){
+  const rangs = {};
+  (pat || []).forEach(o => {
+    const c = cleGeoPat(o); if(!c) return;
+    (rangs[c] = rangs[c] || []).push(o.id);
+  });
+  for(const c in rangs) rangs[c].sort();
+
+  return (pat || []).map(o => {
+    const cle = cleGeoPat(o);
+    const lat = nombreOuNul(o.lat), lon = nombreOuNul(o.lon);
+    const bon = lat !== null && lon !== null && o.geoCle === cle;
+    let dlat = 0, dlon = 0;
+    if(bon){
+      const n = (rangs[cle] || []).indexOf(o.id);
+      if(n > 0){
+        const ang = n * 2.399963;              // angle d'or, en radians
+        const r = 0.0042 * Math.sqrt(n);       // ~450 m au premier écart
+        dlat = r * Math.cos(ang);
+        dlon = r * Math.sin(ang) / Math.max(.2, Math.cos(lat * Math.PI / 180));
+      }
+    }
+    /* L'officine la plus proche ne se cherche que pour qui attend
+       encore : une demande close sans suite n'a rien à se voir
+       proposer. */
+    const proche = bon && enAttenteIdel(o) ? plusProche(lat, lon, vivier) : null;
+    return {
+      id: o.id, nom: o.nom || 'Personne signalée', statut: o.statut || 'À orienter',
+      lieu: [o.motif, o.commune].filter(Boolean).join(' · '),
+      age: o.age || '', idelNom: o.idelNom || '', decNom: o.decNom || '',
+      rappel: !estAffecte(o) && o.idel === 'Non',
+      couleur: CARTO_PAT[RH_ETAT(o)], proche,
+      lat: bon ? lat + dlat : null, lon: bon ? lon + dlon : null,
+      cle, echec: !!cle && o.geoEchec === cle,
+      forme:'pat'
+    };
+  });
+}
+
+/* --- la distance ---------------------------------------
+   Haversine : la distance à vol d'oiseau. Ce n'est pas un temps de
+   trajet — en piémont, une vallée peut doubler la route — mais pour
+   ranger des officines du plus proche au plus loin d'une commune,
+   elle suffit, et elle ne dépend d'aucun service. */
+function distanceKm(lat1, lon1, lat2, lon2){
+  const R = 6371, rad = Math.PI / 180;
+  const dLat = (lat2 - lat1) * rad, dLon = (lon2 - lon1) * rad;
+  const a = Math.sin(dLat/2) ** 2
+    + Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLon/2) ** 2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(a)));
+}
+
+const fmtKm = d => d === null || d === undefined ? ''
+  : d < 1 ? 'moins d\'1 km' : d.toFixed(d < 10 ? 1 : 0).replace('.', ',') + ' km';
+
+/* L'officine partenaire la plus près d'un point, et à quelle
+   distance. `vivier` est une liste de points déjà situés. */
+function plusProche(lat, lon, vivier){
+  let gagnant = null, mieux = Infinity;
+  (vivier || []).forEach(m => {
+    if(m.lat === null || m.lon === null) return;
+    const d = distanceKm(lat, lon, m.lat, m.lon);
+    if(d < mieux){ mieux = d; gagnant = m; }
+  });
+  return gagnant ? {nom: gagnant.nom, id: gagnant.id, km: mieux} : null;
+}
+
+/* --- le géocodage -------------------------------------
+   En file, une adresse à la fois, un souffle entre deux : le
+   service est public et gratuit, on ne le mitraille pas. Ce qui
+   revient s'écrit sur la fiche et part au serveur en une seule fois
+   à la fin — pas un enregistrement par adresse.
+
+   Deux registres à situer, et pas de la même façon : l'officine
+   part avec sa rue, la personne signalée part avec sa seule
+   commune, et le service est prié de ne chercher qu'une commune.
+   C'est la ligne de partage à ne pas franchir. */
+const A_SITUER = [
+  {k:'pharmacies', cle: cleGeo,    type:'',             quoi:'officine située', quoiP:'officines situées'},
+  {k:'rehyd',      cle: cleGeoPat, type:'municipality', quoi:'personne située', quoiP:'personnes situées'}
+];
+
+let geoEnCours = false;
+async function geocoderFiches(){
+  if(geoEnCours || leafletEtat === 'echec') return;
+  if(navigator.onLine === false) return;
+
+  const files = A_SITUER.map(r => ({r, l: (etat[r.k] || []).filter(o => {
+    const cle = r.cle(o);
+    return cle && o.geoCle !== cle && o.geoEchec !== cle;
+  })})).filter(x => x.l.length);
+  if(!files.length) return;
+
+  geoEnCours = true;
+  let touche = false, coupure = false;
+  const comptes = {};
+
+  for(const {r, l} of files){
+    if(coupure) break;
+    for(const o of l.slice(0, 30)){
+      const cle = r.cle(o);
+      let d = null;
+      try{
+        const r2 = await fetch(CARTO_BAN + encodeURIComponent(cle)
+          + (r.type ? '&type=' + r.type : ''));
+        if(!r2.ok) throw new Error(r2.status);
+        d = await r2.json();
+      }catch(e){
+        /* Service injoignable : on s'arrête là sans rien marquer, la
+           prochaine ouverture de l'espace réessaiera. */
+        coupure = true;
+        break;
+      }
+      const f = d && d.features && d.features[0];
+      const c = f && f.geometry && f.geometry.coordinates;
+      /* Le service répond toujours quelque chose : sous un certain
+         score, ce qu'il propose n'a plus grand-chose à voir avec ce
+         qu'on lui a demandé. Mieux vaut pas de point qu'une officine
+         posée dans la mauvaise vallée. */
+      const sur = f && (f.properties || {}).score >= 0.35;
+      if(c && c.length === 2 && sur){
+        o.lon = c[0]; o.lat = c[1]; o.geoCle = cle;
+        o.geoPrecision = (f.properties || {}).type || '';
+        delete o.geoEchec;
+        comptes[r.k] = (comptes[r.k] || 0) + 1;
+      }else{
+        /* Adresse que le service ne reconnaît pas : on le note pour
+           ne pas la redemander à chaque ouverture, et la fiche le
+           dira — c'est à la coordination de corriger l'adresse. */
+        o.geoEchec = cle;
+      }
+      touche = true;
+      await new Promise(r3 => setTimeout(r3, 320));
+    }
+  }
+  geoEnCours = false;
+
+  if(!touche) return;
+  await sauver();
+  rendre();
+  const dit = A_SITUER.filter(r => comptes[r.k])
+    .map(r => `${comptes[r.k]} ${comptes[r.k] > 1 ? r.quoiP : r.quoi}`).join(' et ');
+  if(dit) toast(dit + ' sur la carte');
+}
+
+/* --- Leaflet, chargé au moment où l'on en a besoin ------
+   La bibliothèque ne part chercher son fond de carte que si une
+   carte est effectivement à l'écran : ouvrir le cockpit ne coûte
+   rien de plus qu'avant. */
+function chargerLeaflet(){
+  if(leafletEtat !== 'absent') return;
+  leafletEtat = 'charge';
+  const css = document.createElement('link');
+  css.rel = 'stylesheet'; css.href = CARTO_CSS;
+  document.head.appendChild(css);
+  const js = document.createElement('script');
+  js.src = CARTO_JS;
+  js.onload  = () => { leafletEtat = typeof L === 'undefined' ? 'echec' : 'pret'; monterCartes(); };
+  js.onerror = () => { leafletEtat = 'echec'; monterCartes(); };
+  document.head.appendChild(js);
+}
+
+/* Le cockpit reconstruit sa page entière à chaque rendu. La carte
+   écrit donc un hôte vide, et la carte — bâtie une fois pour
+   toutes — vient s'y replacer. Celle dont l'hôte a définitivement
+   disparu se démonte, sinon Leaflet garderait ses écouteurs sur un
+   élément que plus personne ne regarde. */
+function monterCartes(){
+  for(const id in cartesVives){
+    if(document.getElementById('hote-' + id)) continue;
+    try{ cartesVives[id].remove(); }catch(e){}
+    delete cartesVives[id];
+  }
+  const hotes = [].slice.call(document.querySelectorAll('.carto-hote'));
+  if(!hotes.length) return;
+
+  geocoderFiches();
+
+  if(leafletEtat === 'echec'){
+    hotes.forEach(t => { t.innerHTML = `<div class="attente">Le fond de carte n'a pas pu être chargé — poste hors ligne, ou réseau qui n'autorise pas openstreetmap.org. Les adresses restent lisibles sur chaque fiche, et le lien « Itinéraire » ouvre l'application de cartes du téléphone.</div>`; });
+    return;
+  }
+  if(leafletEtat !== 'pret'){ chargerLeaflet(); return; }
+  hotes.forEach(dessinerCarte);
+}
+
+function dessinerCarte(hote){
+  const idc = hote.dataset.carte;
+  const pts = (cartoDonnees[idc] || []).filter(p => p.lat !== null && p.lon !== null);
+  let carte = cartesVives[idc];
+
+  if(carte){
+    /* La carte existe déjà : on la replace dans son hôte neuf plutôt
+       que d'en rebâtir une. Sans cela, le moindre rendu de la page
+       rejetterait la vue à son cadrage d'origine et refermerait la
+       bulle qu'on venait d'ouvrir. */
+    if(carte._toile.parentNode !== hote) hote.appendChild(carte._toile);
+  }else{
+    const toile = document.createElement('div');
+    toile.className = 'carto-toile';
+    hote.appendChild(toile);
+    /* La molette ne zoome pas : sur une page qui défile, une carte
+       qui capture le défilement se traverse à la souris comme un
+       piège. Le zoom se fait aux boutons ou à deux doigts. */
+    carte = L.map(toile, {scrollWheelZoom:false}).setView(CARTO_CENTRE, 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom:18,
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'
+    }).addTo(carte);
+    carte._couche = L.layerGroup().addTo(carte);
+    carte._toile = toile;
+    cartesVives[idc] = carte;
+  }
+
+  /* Les points ne se redessinent que s'ils ont changé : le reste du
+     temps, le re-rendu de la page ne touche pas à la carte. */
+  const signe = pts.map(p =>
+    [p.id, p.lat, p.lon, p.statut, p.approx, p.forme, p.croix, p.couleur, p.idelNom].join(':')).join('|');
+  if(signe !== carte._signe){
+    carte._couche.clearLayers();
+    carte._reperes = {};
+    pts.forEach(p => {
+      const teinte = p.couleur || '#0B4FA8';
+      /* Deux formes, pour que les deux populations ne se confondent
+         pas quand elles partagent la même carte : la personne
+         signalée est un disque plein, l'officine une croix. */
+      let r;
+      if(p.croix){
+        r = L.marker([p.lat, p.lon], {
+          icon: L.divIcon({className:'carto-croix', html:croixSVG(teinte, 24),
+            iconSize:[24,24], iconAnchor:[12,12], popupAnchor:[0,-12]}),
+          title: p.nom
+        }).addTo(carte._couche);
+      }else{
+        r = L.circleMarker([p.lat, p.lon], {radius:9, weight:3, color:'#fff', fillColor:teinte,
+          /* Un point posé sur la commune faute d'adresse exacte se
+             montre pâle : il dit « quelque part par ici », pas « là ». */
+          fillOpacity: p.approx ? .42 : .95}).addTo(carte._couche);
+      }
+      r.bindPopup(bulleCarte(p));
+      carte._reperes[p.id] = r;
+    });
+    /* Le cadrage se refait quand la population de points change —
+       une officine qui vient d'être située doit entrer dans le
+       cadre. */
+    if(pts.length){
+      const b = L.latLngBounds(pts.map(p => [p.lat, p.lon]));
+      carte.fitBounds(b, {padding:[30,30], maxZoom: pts.length === 1 ? 15 : 14});
+    }
+    carte._signe = signe;
+  }
+
+  /* Le conteneur vient d'être replacé : Leaflet l'avait mesuré avant
+     que la page ne prenne sa largeur définitive. */
+  setTimeout(() => { try{ carte.invalidateSize(); }catch(e){} }, 80);
+}
+
+/* La bulle rend ce dont on a besoin le téléphone à la main : qui
+   c'est, où ça en est, le numéro qui compose, l'itinéraire. */
+const bulleCarte = p => p.forme === 'pat' ? bullePatient(p) : bullePharmacie(p);
+
+function bullePharmacie(p){
+  return `<div class="carto-popup">
+    <div class="n">${esc(p.nom)}</div>
+    ${p.lieu ? `<div class="l">${esc(p.lieu)}</div>` : ''}
+    <div class="l">${esc(p.statut)}${p.approx ? " — située à la commune, l'adresse exacte n'a pas été retrouvée" : ''}</div>
+    ${p.stock ? `<div class="l">Tient : ${esc(p.stock)}</div>` : ''}
+    ${p.horaires ? `<div class="l">${esc(p.horaires)}</div>` : ''}
+    ${p.tel ? `<a href="tel:${esc(String(p.tel).replace(/[^0-9+]/g,''))}">Appeler ${esc(p.tel)}</a>` : ''}
+    ${p.adresse ? `<a href="${esc(lienCarte(p.adresse, p.commune))}" target="_blank" rel="noopener">Itinéraire</a>` : ''}
+    <button onclick="ouvrirEdition('pharmacies','${p.id}')">Ouvrir la fiche</button>
+  </div>`;
+}
+
+/* La bulle d'une personne signalée répond à la question qu'on se
+   pose en la regardant sur la carte : quelle officine partenaire
+   est la plus près d'elle, et à quelle distance. Le nom est donné
+   là, avec de quoi désigner le cabinet sans quitter la carte. */
+function bullePatient(p){
+  return `<div class="carto-popup">
+    <div class="n">${esc(p.nom)}${p.rappel ? `<span class="urg">Médecin à rappeler</span>` : ''}</div>
+    ${p.lieu ? `<div class="l">${esc(p.lieu)}${p.age ? ` · ${esc(p.age)} ans` : ''}</div>` : ''}
+    <div class="l">${esc(p.statut)}</div>
+    ${p.idelNom ? `<div class="l">Cabinet IDEL : ${esc(p.idelNom)}</div>` : ''}
+    ${p.proche ? `<div class="pres"><span class="k">Pharmacie partenaire la plus proche</span>
+        ${esc(p.proche.nom)} — ${esc(fmtKm(p.proche.km))} à vol d'oiseau</div>` : ''}
+    <button onclick="fermerBulles();ouvrirIdel('${p.id}')">${
+      p.idelNom ? 'Changer le cabinet IDEL' : 'Désigner le cabinet IDEL'}</button>
+  </div>`;
+}
+
+/* La fenêtre d'affectation s'ouvre par-dessus la carte : la bulle
+   dessous doit se refermer, sinon elle reste ouverte derrière et se
+   retrouve là au retour, sur une personne déjà traitée. */
+function fermerBulles(){
+  for(const id in cartesVives){ try{ cartesVives[id].closePopup(); }catch(e){} }
+}
+
+/* Le bloc tel qu'il s'écrit dans une carte. Les points sont déposés
+   au passage dans cartoDonnees : c'est la carte montée après le
+   rendu qui viendra les y chercher. */
+function blocCarte(idc, pts, o){
+  cartoDonnees[idc] = pts;
+  const vedettes = pts.filter(p => !p.second);   // ce que la carte est censée montrer
+  const situes = pts.filter(p => p.lat !== null);
+  const attente = vedettes.filter(p => p.lat === null && p.cle && !p.echec).length;
+  const plie = !!cartoPliee[idc];
+  const court = o.court ? ' court' : '';
+
+  let corps;
+  if(plie) corps = '';
+  else if(situes.length || attente) corps = `<div class="carto-hote${court}" id="hote-${idc}" data-carte="${idc}"></div>`;
+  else corps = `<div class="carto-vide${court}">${esc(vedettes.length ? o.videSansPoint : o.videSansFiche)}</div>`;
+
+  /* La légende ne montre que ce qui est effectivement posé : une
+     carte où personne n'est encore affecté n'a pas à porter une
+     pastille bleue qui ne correspond à rien. La forme compte autant
+     que la teinte : une personne est un disque, une officine une
+     croix, et la légende ne montre l'un ou l'autre que si la carte
+     le porte vraiment. */
+  const forme = p => (p.couleur || '#0B4FA8') + (p.croix ? '|croix' : '|disque');
+  const cles = new Set(situes.map(forme));
+  const legende = (o.legende || []).filter(x => cles.has(forme({couleur:x.c, croix:x.croix})));
+
+  return `<div class="carto">
+    <div class="tete-c">
+      <div class="t">${esc(o.titre)}</div>
+      ${o.sous ? `<p class="s">${o.sous}</p>` : '<span class="ecart"></span>'}
+      <button class="plier" onclick="plierCarte('${idc}')">${plie ? 'Afficher la carte' : 'Replier'}</button>
+    </div>
+    ${corps}
+    ${plie || !situes.length ? '' : `<div class="legende">
+      <span><strong>${vedettes.filter(p => p.lat !== null).length}</strong> ${esc(o.compte)}</span>
+      ${legende.map(x => `<span>${x.croix
+        ? `<i class="croix">${croixSVG(x.c, 15)}</i>`
+        : `<i style="background:${x.c}"></i>`}${esc(x.l)}</span>`).join('')}
+      ${vedettes.some(p => p.lat !== null && p.approx) ? `<span><i class="approx" style="background:#0B4FA8"></i>Situé à la commune seulement</span>` : ''}
+    </div>`}
+    ${plie || !o.alerte ? '' : `<div class="manquants">${o.alerte}</div>`}
+    ${plie || (!situes.length && !attente) ? '' : `<div class="source">${esc(o.source)} Fond de carte OpenStreetMap, adresses situées par la Base Adresse Nationale — deux services publics, sans compte ni clé.</div>`}
+  </div>`;
+}
+
+/* Ce que la carte des officines signale d'incomplet, sous elle. */
+function alertePharmacies(pts){
+  const attente = pts.filter(p => p.lat === null && p.cle && !p.echec).length;
+  const introuvables = pts.filter(p => p.echec);
+  const sansAdresse = pts.filter(p => !p.cle);
+  if(!attente && !introuvables.length && !sansAdresse.length) return '';
+  return [
+    attente ? `${attente} adresse${attente > 1 ? 's sont' : ' est'} en cours de localisation.` : '',
+    introuvables.length ? `<strong>${introuvables.length}</strong> adresse${introuvables.length > 1 ? 's n\'ont' : ' n\'a'} pas été retrouvée${introuvables.length > 1 ? 's' : ''} : ${introuvables.map(p => esc(p.nom)).join(', ')} — à corriger sur la fiche.` : '',
+    sansAdresse.length ? `${sansAdresse.length} officine${sansAdresse.length > 1 ? 's sont' : ' est'} sans adresse ni commune et ne peu${sansAdresse.length > 1 ? 'vent' : 't'} pas être située${sansAdresse.length > 1 ? 's' : ''}.` : ''
+  ].filter(Boolean).join(' ');
+}
+
+/* Et ce que signale la carte des personnes : ici le manque est
+   toujours le même — la commune n'a pas été renseignée au recueil,
+   ou elle n'existe pas sous ce nom. */
+function alertePatients(pts){
+  const attente = pts.filter(p => p.lat === null && p.cle && !p.echec).length;
+  const introuvables = pts.filter(p => p.echec);
+  const sansCommune = pts.filter(p => !p.cle);
+  if(!attente && !introuvables.length && !sansCommune.length) return '';
+  return [
+    attente ? `${attente} commune${attente > 1 ? 's sont' : ' est'} en cours de localisation.` : '',
+    introuvables.length ? `<strong>${introuvables.length}</strong> commune${introuvables.length > 1 ? 's n\'ont' : ' n\'a'} pas été retrouvée${introuvables.length > 1 ? 's' : ''} : ${introuvables.map(p => esc(p.nom)).join(', ')} — vérifier l\'orthographe sur la fiche.` : '',
+    sansCommune.length ? `${sansCommune.length} personne${sansCommune.length > 1 ? 's sont' : ' est'} sans commune au registre et ne peu${sansCommune.length > 1 ? 'vent' : 't'} pas être située${sansCommune.length > 1 ? 's' : ''} : c\'est la question à poser au prochain appel.` : ''
+  ].filter(Boolean).join(' ');
+}
+
+function plierCarte(idc){ cartoPliee[idc] = !cartoPliee[idc]; rendre(); }
+
+/* Depuis une fiche du registre : la carte se déplie s'il le faut,
+   remonte sous les yeux, se centre sur le point et ouvre sa bulle.
+   C'est le geste qu'on fait quand quelqu'un demande « et elle, elle
+   est où ? ». */
+function situerSur(idc, id, absent){
+  if(cartoPliee[idc]){ cartoPliee[idc] = false; rendre(); setTimeout(() => situerSur(idc, id, absent), 500); return; }
+  const carte = cartesVives[idc];
+  const rep = carte && carte._reperes ? carte._reperes[id] : null;
+  if(!rep){ toast(absent); return; }
+  try{ carte.getContainer().scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){}
+  carte.setView(rep.getLatLng(), 15);
+  rep.openPopup();
+}
+function situerPharma(id){
+  situerSur('carte-pharmacies', id, "Cette officine n'est pas encore située sur la carte.");
+}
+function situerPatient(id){
+  situerSur('carte-patients', id, "Cette personne n'est pas encore située sur la carte : sa commune manque, ou elle n'a pas été retrouvée.");
+}
+
+/* =========================================================
+   L'ESPACE, EN TROIS CARTES
+   ========================================================= */
+
+const telLien = t => `tel:${String(t || '').replace(/[^0-9+]/g,'')}`;
+
+function vueRehydratation(){
+  const ph = etat.pharmacies || [], pat = etat.rehyd || [];
+  const m = (etat.missions || []).find(x => espaceDe(x) === 'rehydratation');
+  const pil = m ? String(m.pilote || '').trim() : '';
+
+  let h = `<h1>Réhydratation à domicile</h1>
+  <p class="chapo">Faire parvenir de quoi se réhydrater aux personnes qui ne peuvent pas aller le chercher, et faire passer quelqu'un chez elles. Le médecin repère la personne à risque dans sa patientèle et la signale ; la CPTS tient la liste des officines qui délivrent, désigne le cabinet infirmier qui passera, et suit ce qui a effectivement été fait.</p>
+  <div class="barre-h">
+    <span class="cpt-h">${pil ? `Pilote : ${esc(pil)}` : 'Pilote à désigner'}${m && m.statut ? ` · ${esc(m.statut)}` : ''} · ${ph.length} officine${ph.length>1?'s':''} recensée${ph.length>1?'s':''} · ${pat.length} personne${pat.length>1?'s':''} signalée${pat.length>1?'s':''}</span>
+    ${m ? `<button class="btn sec" onclick="voirFiche('${m.id}')">Fiche mission</button>` : ''}
+    <button class="btn sec" onclick="imprimer()">PDF</button>
+  </div>`;
+
+  h += carteProcedure();
+  h += cartePharmacies(ph);
+  h += cartePatients(pat, ph);
+  return h;
+}
+
+/* --- Carte 1 : la procédure ------------------------------
+   Ce qu'on fait, dans l'ordre. Écrite dans le cockpit et corrigée
+   depuis la page : c'est la vice-présidence qui l'arrête, et elle
+   n'a pas à passer par un fichier pour la changer. */
+function carteProcedure(){
+  const l = etat.rehydProc || [];
+  return `<div class="carte">
+    <div class="rh-t"><span class="n">1</span>Procédure</div>
+    <p class="rh-s">Les étapes du dispositif, dans l'ordre où elles se font. C'est la page à lire avant de décrocher, et celle qu'on relit quand on reprend la main.</p>
+    ${l.length ? `<ol class="proc">${l.map(x => `<li>${esc(x)}</li>`).join('')}</ol>`
+      : `<p class="vide">La procédure n'est pas encore écrite. Le bouton ci-dessous l'ouvre à la saisie.</p>`}
+    <div class="barre-h" style="margin-top:16px;margin-bottom:0">
+      <span class="cpt-h">${l.length} étape${l.length>1?'s':''}</span>
+      <button class="btn sec" onclick="editerProc()">Modifier la procédure</button>
+    </div>
+  </div>`;
+}
+
+function editerProc(){
+  const l = etat.rehydProc || [];
+  document.getElementById('modale').innerHTML = `<h3>Procédure de la réhydratation à domicile</h3>
+    <p class="chapo" style="margin:-6px 0 14px">Une étape par ligne, dans l'ordre où on les fait. Une ligne vide se retire d'elle-même.</p>
+    <label><span class="k">Les étapes</span>
+      <textarea id="pr-txt" style="min-height:260px">${esc(l.join('\n'))}</textarea></label>
+    <div class="actions"><button class="btn" onclick="validerProc()">Enregistrer</button>
+      <button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  ouvrirRideau();
+}
+
+async function validerProc(){
+  const l = lignes(document.getElementById('pr-txt').value);
+  etat.rehydProc = l;
+  /* Règle du cockpit : ce qui se décide quelque part se consigne en
+     main courante, en plus de sa rubrique. */
+  poserEnCourante('mcr-rehydproc', {
+    type:'Réhydratation', date: aujourdhui(), source:'',
+    evenement:`Procédure de la réhydratation à domicile arrêtée — ${l.length} étape${l.length>1?'s':''}.`,
+    suite:"Consultable en tête de l'espace « Réhydratation à domicile »."
+  });
+  await sauver(); fermer(); rendre(); toast("Procédure enregistrée, et reprise en main courante");
+}
+
+/* --- Carte 2 : les officines -----------------------------
+   Le recensement, et la carte qui le rend lisible : c'est elle qui
+   dit où le maillage est trop clair. */
+function cartePharmacies(ph){
+  const parts = ph.filter(p => p.statut === 'Partenaire').length;
+  const contact = ph.filter(p => p.statut === 'Contactée').length;
+  const aFaire = ph.filter(p => !p.statut || p.statut === 'À contacter').length;
+  const pts = pointsPharmacies(ph);
+  /* La liste se lit dans l'ordre où elle sert : celles qui délivrent
+     d'abord, celles qu'il reste à appeler ensuite, celles qui ne
+     participent pas en bas. Ce n'est pas l'ordre du formulaire, qui
+     est celui d'un partenariat qui avance. */
+  const PH_ORDRE = ['Partenaire','Contactée','À contacter','Ne participe pas'];
+  const rang = p => { const i = PH_ORDRE.indexOf(p.statut); return i < 0 ? PH_ORDRE.length : i; };
+  const rangees = [...ph].sort((a, b) => (rang(a) - rang(b))
+    || String(a.commune||'').localeCompare(String(b.commune||''), 'fr')
+    || String(a.nom||'').localeCompare(String(b.nom||''), 'fr'));
+
+  return `<div class="carte">
+    <div class="rh-t"><span class="n">2</span>Recensement des pharmacies partenaires</div>
+    <p class="rh-s">Les officines du territoire prêtes à délivrer les solutions de réhydratation orale, ce qu'elles tiennent et qui y décroche. L'adresse renseignée pose la pharmacie sur la carte : c'est ce qui permet, pour une personne signalée, de dire quelle officine est la plus proche de chez elle.</p>
+    <div class="compteurs" style="margin-bottom:16px">
+      <div class="compteur"><div class="n">${parts}</div><div class="l">partenaires</div></div>
+      <div class="compteur"><div class="n">${contact}</div><div class="l">contactées, réponse à venir</div></div>
+      <div class="compteur"><div class="n">${aFaire}</div><div class="l">restent à appeler</div></div>
+    </div>
+    ${blocCarte('carte-pharmacies', pts, {
+      titre:"Les officines sur le territoire",
+      sous:"Chaque officine recensée dont l'adresse est renseignée. La couleur dit où en est le partenariat — c'est la carte qui montre les secteurs sans officine partenaire.",
+      compte:"officines situées",
+      legende:[
+        {c:CARTO_PH['Partenaire'], l:"Partenaire", croix:true},
+        {c:CARTO_PH['Contactée'], l:"Contactée", croix:true},
+        {c:CARTO_PH['À contacter'], l:"À contacter", croix:true},
+        {c:CARTO_PH['Ne participe pas'], l:"Ne participe pas", croix:true}
+      ],
+      alerte: alertePharmacies(pts),
+      videSansFiche:"Aucune officine recensée pour l'instant. La première fiche enregistrée avec une adresse ouvre la carte.",
+      videSansPoint:"Aucune adresse renseignée sur les officines recensées : la carte s'affichera dès qu'une fiche en portera une.",
+      source:"Officines recensées par la CPTS Pau Béarn."
+    })}
+    <div class="barre-h">
+      <span class="cpt-h">${ph.length} officine${ph.length>1?'s':''} au recensement</span>
+      ${ph.length ? `<button class="btn sec" onclick="exporterCSV('pharmacies')">Excel</button>` : ''}
+      <button class="btn" onclick="ouvrirAjout('pharmacies')">Ajouter une pharmacie</button>
+    </div>
+    ${ph.length ? `<div class="rh-l">${rangees.map(fichePharma).join('')}</div>`
+      : `<p class="vide">Rien à afficher pour le moment. La première officine appelée ouvre le recensement.</p>`}
+  </div>`;
+}
+
+function fichePharma(p){
+  const st = p.statut || 'À contacter';
+  const cl = st === 'Partenaire' ? 'ok' : st === 'Ne participe pas' ? 'hors' : 'attente';
+  const situable = nombreOuNul(p.lat) !== null && p.geoCle === cleGeo(p);
+  return `<div class="rh-c ${cl}">
+    <div class="haut">
+      <div class="nom">${esc(p.nom || 'Officine sans nom')}</div>
+      <span class="etiq ${PH_ET[st] || 'e-lancer'}">${esc(st)}</span>
+    </div>
+    ${p.adresse || p.commune ? `<div class="meta">${esc([p.adresse, p.commune].filter(Boolean).join(' · '))}${
+      p.geoEchec && p.geoEchec === cleGeo(p) ? ` — <strong>adresse non retrouvée</strong>, à corriger` : ''}</div>` : ''}
+    <div class="champs">
+      ${p.interlocuteur ? `<div><span class="k">Interlocuteur</span><span class="v">${esc(p.interlocuteur)}</span></div>` : ''}
+      ${p.horaires ? `<div><span class="k">Horaires</span><span class="v">${esc(p.horaires)}</span></div>` : ''}
+      ${p.portage && p.portage !== 'À préciser' ? `<div><span class="k">Portage à domicile</span><span class="v">${esc(p.portage)}</span></div>` : ''}
+      ${p.mail ? `<div><span class="k">Courriel</span><span class="v">${esc(p.mail)}</span></div>` : ''}
+    </div>
+    ${p.stock ? `<div class="meta"><span class="k">Tient à disposition</span>${esc(p.stock)}</div>` : ''}
+    ${p.note ? `<div class="meta">${esc(p.note)}</div>` : ''}
+    <div class="barre">
+      ${p.tel ? `<a class="tel" href="${esc(telLien(p.tel))}">Appeler ${esc(p.tel)}</a>` : ''}
+      ${situable ? `<button class="btn sec" onclick="situerPharma('${p.id}')">Situer sur la carte</button>` : ''}
+      ${p.adresse ? `<a class="tel" href="${esc(lienCarte(p.adresse, p.commune))}" target="_blank" rel="noopener">Itinéraire</a>` : ''}
+      <button class="btn sec" onclick="ouvrirEdition('pharmacies','${p.id}')">Modifier</button>
+      <button class="sup-m" title="Retirer du recensement" onclick="supprimer('pharmacies','${p.id}')">×</button>
+    </div>
+  </div>`;
+}
+
+/* --- Carte 3 : les personnes signalées -------------------
+   Le recueil, la carte, et l'affectation du cabinet infirmier. La
+   carte porte les deux populations : les personnes signalées, et
+   autour d'elles les officines — c'est la seule façon de voir d'un
+   coup d'œil qui est loin de tout. */
+function cartePatients(pat, ph){
+  const attente = pat.filter(enAttenteIdel).length;
+  const poses = pat.filter(estAffecte).length;
+  const faits = pat.filter(o => o.statut === 'Passage assuré').length;
+  const rappels = pat.filter(o => enAttenteIdel(o) && o.idel === 'Non').length;
+
+  /* Les officines qui peuvent délivrer, situées : c'est parmi elles
+     qu'on cherche la plus proche. Celles qui ne participent pas ne
+     sont pas du décor utile — elles ne montent pas sur la carte. */
+  const autour = pointsPharmacies(ph.filter(p => p.statut !== 'Ne participe pas'), true);
+  const vivier = autour.filter(p => p.statut === 'Partenaire' && p.lat !== null);
+  const pts = pointsPatients(pat, vivier);
+  /* Ce qui attend quelqu'un passe devant ce qui est réglé, et à
+     égalité c'est le plus récent d'abord : un signalement du matin
+     ne se lit pas après celui d'avant-hier. */
+  const rang = o => { const i = RH_STATUTS.indexOf(o.statut); return i < 0 ? 0 : i; };
+  const rangees = [...pat].sort((a, b) => (rang(a) - rang(b))
+    || String(b.date||'').localeCompare(String(a.date||''))
+    || String(b.heure||'').localeCompare(String(a.heure||'')));
+
+  return `<div class="carte">
+    <div class="rh-t"><span class="n">3</span>Patients signalés / orientés</div>
+    <p class="rh-s">Chaque personne signalée par un médecin du territoire, et ce qu'elle est devenue. Le registre est tenu en initiales, sans élément clinique au-delà du motif : la commune sert à situer la personne sur la carte et à trouver l'officine la plus proche, l'adresse exacte n'est jamais demandée.</p>
+    <div class="compteurs" style="margin-bottom:16px">
+      <div class="compteur"><div class="n">${pat.length}</div><div class="l">personnes signalées</div></div>
+      <div class="compteur"><div class="n">${attente}</div><div class="l">sans cabinet IDEL désigné</div></div>
+      <div class="compteur"><div class="n">${poses}</div><div class="l">cabinets IDEL désignés</div></div>
+      <div class="compteur"><div class="n">${faits}</div><div class="l">passages assurés</div></div>
+    </div>
+    ${rappels ? `<div class="note">${rappels} personne${rappels>1?'s':''} pour ${rappels>1?'lesquelles':'laquelle'} aucun cabinet infirmier n'est identifié : c'est le médecin à l'origine de la demande qu'il faut rappeler — lui sait quel cabinet ${rappels>1?'les':'la'} suit.</div>` : ''}
+    ${blocCarte('carte-patients', [...pts, ...autour], {
+      titre:"Les personnes signalées, et les officines autour d'elles",
+      sous:"Chaque personne est posée sur le bourg de sa commune, jamais à son adresse. Les croix sont les officines : toucher un point donne la pharmacie partenaire la plus proche, et de quoi désigner le cabinet infirmier sans quitter la carte.",
+      compte:"personnes situées",
+      legende:[
+        {c:CARTO_PAT.attente, l:"Sans cabinet IDEL"},
+        {c:CARTO_PAT.pose, l:"Cabinet IDEL désigné"},
+        {c:CARTO_PAT.assure, l:"Passage assuré"},
+        {c:CARTO_PAT.clos, l:"Sans suite"},
+        {c:CARTO_PH['Partenaire'], l:"Pharmacie partenaire", croix:true},
+        {c:CARTO_PH['Contactée'], l:"Officine contactée", croix:true},
+        {c:CARTO_PH['À contacter'], l:"Officine à contacter", croix:true}
+      ],
+      alerte: alertePatients(pts),
+      videSansFiche:"Aucune personne signalée pour l'instant. Le premier signalement d'un médecin ouvre la carte.",
+      videSansPoint:"Aucune commune renseignée sur les personnes signalées : la carte s'affichera dès qu'une fiche en portera une.",
+      source:"Personnes signalées par les médecins du territoire, situées à la commune."
+    })}
+    <div class="barre-h">
+      <span class="cpt-h">${pat.length} personne${pat.length>1?'s':''} au registre</span>
+      ${pat.length ? `<button class="btn sec" onclick="exporterCSV('rehyd')">Excel</button>` : ''}
+      <button class="btn" onclick="ouvrirAjout('rehyd')">Signaler un patient</button>
+    </div>
+    ${pat.length ? `<div class="rh-l">${rangees.map(fichePatient).join('')}</div>`
+      : `<p class="vide">Rien à afficher pour le moment. Le premier signalement ouvre le registre.</p>`}
+  </div>`;
+}
+
+function fichePatient(o){
+  const st = o.statut || 'À orienter';
+  const et = RH_ETAT(o);
+  const cl = et === 'assure' || et === 'pose' ? 'ok' : et === 'clos' ? 'hors' : 'attente';
+  const situable = nombreOuNul(o.lat) !== null && o.geoCle === cleGeoPat(o);
+
+  /* Le cœur de la fiche : qui passe chez cette personne. Trois états
+     seulement, et le troisième dit quoi faire plutôt que de
+     constater qu'il manque quelque chose. */
+  let idel;
+  if(estAffecte(o)){
+    idel = `<div class="rh-idel pose"><span class="k">Cabinet IDEL affecté</span>
+      ${esc(o.idelNom)}${o.idelTel ? ` — <a href="${esc(telLien(o.idelTel))}">${esc(o.idelTel)}</a>` : ''}${
+      o.idelLe ? ` · désigné le ${frdateL(o.idelLe)}${o.idelPar ? ` par ${esc(o.idelPar)}` : ''}` : ''}</div>`;
+  }else if(o.idel === 'Non'){
+    idel = `<div class="rh-idel rappel"><strong>Contacter le médecin à l'origine de la demande.</strong>
+      Aucun cabinet infirmier n'est identifié pour cette personne : c'est le médecin qui a déclaré qui sait lequel la suit.${
+      o.decNom ? ` ${esc(o.decNom)}` : ''}${o.decTel ? ` — <a href="${esc(telLien(o.decTel))}">${esc(o.decTel)}</a>` : ''}</div>`;
+  }else{
+    idel = `<div class="rh-idel"><span class="k">Cabinet IDEL</span>Pas encore renseigné — la question se pose au signalement, et se rattrape ici.</div>`;
+  }
+
+  return `<div class="rh-c ${cl}">
+    <div class="haut">
+      <div class="nom">${esc(o.nom || 'Initiales non renseignées')}${o.age ? ` <span class="a">${esc(o.age)} ans</span>` : ''}</div>
+      <span class="etiq ${RH_ET[st] || 'e-attente'}">${esc(st)}</span>
+    </div>
+    <div class="meta">${esc([o.commune, o.motif].filter(Boolean).join(' · ')) || 'Ni commune ni motif renseignés'}${
+      o.date ? ` · signalée le ${frdateL(o.date)}${o.heure ? ` à ${esc(o.heure)}` : ''}` : ''}</div>
+    <div class="champs">
+      ${o.tel ? `<div><span class="k">Téléphone</span><span class="v"><a class="tel" href="${esc(telLien(o.tel))}">${esc(o.tel)}</a></span></div>` : ''}
+      ${o.decNom ? `<div><span class="k">Médecin déclarant</span><span class="v">${esc(o.decNom)}</span></div>` : ''}
+      ${o.decTel ? `<div><span class="k">Téléphone du médecin</span><span class="v"><a class="tel" href="${esc(telLien(o.decTel))}">${esc(o.decTel)}</a></span></div>` : ''}
+      ${o.decAdresse ? `<div><span class="k">Adresse du médecin</span><span class="v">${esc(o.decAdresse)}</span></div>` : ''}
+    </div>
+    ${idel}
+    ${o.note ? `<div class="meta">${esc(o.note)}</div>` : ''}
+    <div class="barre">
+      <button class="btn" onclick="ouvrirIdel('${o.id}')">${estAffecte(o) ? 'Changer le cabinet IDEL' : 'Désigner le cabinet IDEL'}</button>
+      ${situable ? `<button class="btn sec" onclick="situerPatient('${o.id}')">Situer sur la carte</button>` : ''}
+      <button class="btn sec" onclick="ouvrirEdition('rehyd','${o.id}')">Modifier</button>
+      <button class="sup-m" title="Retirer du registre" onclick="supprimer('rehyd','${o.id}')">×</button>
+    </div>
+  </div>`;
+}
+
+/* --- Désigner le cabinet infirmier -----------------------
+   La question posée au recueil se repose ici, et la même règle
+   s'applique : oui, on nomme le cabinet et la personne lui est
+   affectée ; non, on rappelle le médecin à l'origine de la
+   demande. Cette fenêtre s'ouvre de la fiche comme de la carte. */
+function ouvrirIdel(id){
+  const o = (etat.rehyd || []).find(x => x.id === id); if(!o) return;
+  const rep = estAffecte(o) ? 'Oui' : (o.idel === 'Non' ? 'Non' : (o.idel === 'Oui' ? 'Oui' : ''));
+  const connus = dejaVus('rehyd', 'idelNom');
+
+  document.getElementById('modale').innerHTML = `<h3>Cabinet IDEL — ${esc(o.nom || 'personne signalée')}</h3>
+    <p class="chapo" style="margin:-6px 0 14px">Qui passera chez cette personne${o.commune ? `, à ${esc(o.commune)}` : ''}. Nommer le cabinet l'affecte : la personne sort de la liste d'attente et son point passe au bleu sur la carte.</p>
+    <label><span class="k">Un cabinet infirmier libéral est-il identifié ?</span>
+      <input type="hidden" id="id-rep" value="${esc(rep)}">
+      <div class="sugg">
+        <button type="button" class="${rep==='Oui'?'on':''}" data-v="Oui" onclick="repondreIdel('Oui',this)">Oui</button>
+        <button type="button" class="${rep==='Non'?'on':''}" data-v="Non" onclick="repondreIdel('Non',this)">Non</button>
+      </div></label>
+    <div id="id-oui"${rep === 'Oui' ? '' : ' hidden'}>
+      <label style="margin-top:12px"><span class="k">Nom du cabinet IDEL</span>
+        <input type="text" id="id-nom" list="id-nom-l" autocomplete="off" value="${esc(o.idelNom || '')}" placeholder="Cabinet infirmier…">
+        <datalist id="id-nom-l">${connus.map(n => `<option value="${esc(n)}"></option>`).join('')}</datalist></label>
+      <label style="margin-top:12px"><span class="k">Téléphone du cabinet</span>
+        <input type="text" id="id-tel" value="${esc(o.idelTel || '')}" placeholder="06 12 34 56 78"></label>
+    </div>
+    <div id="id-non" class="note-dep" style="margin-top:12px"${rep === 'Non' ? '' : ' hidden'}>
+      <strong>Contacter le médecin à l'origine de la demande.</strong>
+      Aucun cabinet infirmier n'est identifié pour cette personne : c'est le médecin qui a déclaré qui sait lequel la suit. La fiche reste en attente jusqu'à ce qu'un cabinet y soit inscrit.
+      ${o.decNom || o.decTel ? `<div style="margin-top:7px">${esc(o.decNom || 'Médecin déclarant')}${
+        o.decTel ? ` — <a href="${esc(telLien(o.decTel))}">Appeler ${esc(o.decTel)}</a>` : " — numéro non renseigné sur la fiche"}</div>` : ''}
+    </div>
+    <div class="actions"><button class="btn" onclick="validerIdel('${id}')">Enregistrer</button>
+      <button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  ouvrirRideau();
+}
+
+/* La réponse ouvre l'un des deux blocs et referme l'autre. Retoucher
+   la réponse déjà donnée la retire : c'est le geste attendu quand on
+   s'est trompé de bouton. */
+function repondreIdel(v, btn){
+  const el = document.getElementById('id-rep');
+  const meme = el.value === v;
+  el.value = meme ? '' : v;
+  Array.prototype.forEach.call(btn.parentNode.children,
+    b => b.classList.toggle('on', b === btn && !meme));
+  document.getElementById('id-oui').hidden = el.value !== 'Oui';
+  document.getElementById('id-non').hidden = el.value !== 'Non';
+  if(el.value === 'Oui'){ const n = document.getElementById('id-nom'); if(n) n.focus(); }
+}
+
+async function validerIdel(id){
+  const o = (etat.rehyd || []).find(x => x.id === id); if(!o) return;
+  const rep = document.getElementById('id-rep').value;
+  if(!rep){ toast("Répondre oui ou non sur le cabinet IDEL"); return; }
+
+  if(rep === 'Oui'){
+    const nom = document.getElementById('id-nom').value.trim();
+    if(!nom){ toast("Nommer le cabinet infirmier pour l'affecter"); return; }
+    o.idel = 'Oui';
+    o.idelNom = nom;
+    o.idelTel = document.getElementById('id-tel').value.trim();
+    if(!o.idelLe){ o.idelLe = aujourdhui(); o.idelPar = moi === 'Anonyme' ? '' : moi; }
+    if(!o.statut || o.statut === 'À orienter') o.statut = 'Cabinet IDEL désigné';
+  }else{
+    o.idel = 'Non';
+    o.idelNom = ''; o.idelTel = ''; o.idelLe = ''; o.idelPar = '';
+    if(o.statut === 'Cabinet IDEL désigné') o.statut = 'À orienter';
+  }
+  o.modifiePar = moi;
+  consignerRegistreEnCourante('rehyd', o);
+  await sauver(); fermer(); rendre();
+  toast(rep === 'Oui' ? `Cabinet affecté — ${o.idelNom}`
+                      : "Médecin déclarant à rappeler, et repris en main courante");
+}
+
 function majPrintHead(){
   const el = document.getElementById('printhead');
   if(!el) return;
@@ -6181,10 +7362,15 @@ function rendre(){
   else if(onglet === 'lignes') v.innerHTML = vueLignes();
   else if(onglet === 'offre') v.innerHTML = vueOffre();
   else if(onglet === 'appels') v.innerHTML = vueAppels();
+  else if(onglet === 'rehydratation') v.innerHTML = vueRehydratation();
   else if(onglet === 'rapports') v.innerHTML = vueRapports();
   else v.innerHTML = vueCollection(onglet);
   v.insertAdjacentHTML('afterbegin', '<div class="entete-print" id="printhead"></div>');
   majPrintHead();
+  /* La page vient d'être reconstruite : les cartes qu'elle porte se
+     remontent sur leurs conteneurs neufs, et celles qui ont disparu
+     se démontent. */
+  monterCartes();
 }
 
 charger();
