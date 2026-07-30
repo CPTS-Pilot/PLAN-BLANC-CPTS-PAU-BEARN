@@ -1053,6 +1053,39 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .stock .taches button.on{background:var(--cobalt-clair);border-color:var(--encre-2);color:var(--encre);font-weight:600}
 .stock label.bl select{margin-top:2px}
 
+/* ---------- pool de volontaires ----------
+   Une liste, pas une grille de cartes : un volontaire tient sur une
+   ligne — qui il est, ce qu'il peut faire — et on parcourt vingt
+   noms d'un regard au lieu de faire défiler vingt vignettes. Ce qui
+   a été recueilli en plus vient sous le nom, en clair. */
+.pool{list-style:none;margin:0 0 20px;padding:0;background:var(--carte);
+  border:1px solid var(--trait);border-radius:10px;overflow:hidden}
+.pool li{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;
+  padding:13px 16px;border-bottom:1px solid var(--trait)}
+.pool li:last-child{border-bottom:none}
+.pool li:nth-child(even){background:var(--fond-2,#F9FAFC)}
+.pool .qui{flex:1 1 200px;min-width:0}
+.pool .qui .n{font-family:var(--display);font-weight:700;font-size:15.5px;color:var(--encre);display:block}
+.pool .qui .d{font-size:12.5px;color:var(--texte-2);line-height:1.35}
+.pool .fait{flex:2 1 260px;display:flex;flex-wrap:wrap;gap:5px}
+.pool .fait span{font-size:12px;background:var(--cobalt-clair);color:var(--encre-2);
+  border-radius:12px;padding:3px 9px;line-height:1.4}
+.pool .fait .rien{background:none;color:var(--texte-2);padding:3px 0;font-style:italic}
+/* Le numéro se compose d'un doigt depuis la liste : c'est ce qu'on
+   vient y chercher le jour de l'enlèvement. */
+.pool .tel{flex:none;display:inline-flex;align-items:center;min-height:36px;padding:6px 13px;
+  border-radius:8px;background:var(--encre-2);color:#fff;text-decoration:none;
+  font-family:var(--display);font-weight:600;font-size:13.5px;white-space:nowrap}
+.pool .muet{flex:none;font-size:12.5px;color:var(--braise);font-style:italic}
+.pool .actes{display:flex;gap:7px;margin-left:auto}
+/* Les précisions passent sous la ligne, en pleine largeur : elles
+   sont libres, souvent longues, et ne doivent pas serrer le nom. */
+.pool .prec{flex:1 1 100%;font-size:12.5px;line-height:1.45;color:var(--texte-2);white-space:pre-line}
+.pool .retirer{background:none;border:1px solid var(--trait);border-radius:7px;color:var(--texte-2);
+  font-size:12.5px;padding:6px 11px;cursor:pointer;min-height:34px;transition:border-color .15s,color .15s}
+.pool .retirer:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.pool .retirer.sup:hover{border-color:var(--braise);color:var(--braise)}
+
 /* ---------- points de collecte ----------
    Un point de collecte tenu, c'est un fait daté et chiffré : la
    carte le donne d'un coup d'œil, le récapitulatif imprimable le
@@ -1938,6 +1971,7 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
      public s'anime, les réponses tombent dans le registre. */
   consultations: { ouverte:false, message:'', cadre:"Il s'agit de consultations ponctuelles au cabinet, aux horaires que vous choisissez : renouvellement d'ordonnance interrompue par un départ précipité, suites d'inhalation de fumées. Répondre ne vous engage ni à devenir médecin traitant, ni à recevoir plus de patients que vous ne l'avez indiqué." },
   courante: [
+    {id:'mc41', date:'2026-07-30', heure:'', source:'', evenement:"Le feuillet « Professionnels volontaires » de la collecte de matériel devient le « Pool de volontaires » et se ramène à ce qu'on recueille vraiment au téléphone : nom, prénom, téléphone, profession, commune, ce que la personne peut faire, et une case libre de précisions supplémentaires. Onze champs demandés, sept restent. Disparaissent de la saisie le courriel, le véhicule, le volume transportable, les disponibilités et l'affectation : ce qui se sait se note en précisions, plutôt que d'ouvrir cinq cases à quelqu'un qui a simplement dit oui. Le téléphone, lui, reste demandé et se compose d'un doigt depuis la liste — un volontaire qu'on ne sait pas joindre ne sert à rien le jour de l'enlèvement, et la ligne le dit en clair tant que le numéro manque. Les tâches se donnent en pastilles cumulables — transport, tri, permanence, manutention, appels, coordination — sans empêcher d'écrire autre chose. Une ligne est un volontaire, sans autre statut à trancher : « Proposé », « Confirmé », « Affecté », « Indisponible », « Sans suite » sont retirés, avec les compteurs et le filtre véhicule qui en vivaient. Les volontaires ne s'affichent plus en cartes mais en liste : un par ligne, le nom, ce qu'il fait, ses précisions dessous.", suite:"Ce qui a déjà été saisi n'est pas perdu : créneaux, véhicules et courriels restent dans les données et ressortent à l'export, mais ne se modifient plus depuis le cockpit. Le mot d'ordre à tenir : ce qu'on apprend d'un volontaire au-delà des sept champs se note dans « Précisions supplémentaires ».", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc40', date:'2026-07-29', heure:'19:30', source:'', evenement:"L'onglet « Remontées terrain » est supprimé : tout se consigne désormais en main courante, et une remontée de terrain n'est plus qu'une entrée venue du dehors. C'était déjà le cas dans les faits — trente et une entrées de main courante portaient une source extérieure quand le registre en comptait trois, et chacune recopiait l'autre. Ce qui reconnaît une remontée tient à un seul champ, sa source : une décision prise entre nous n'en a pas. C'est ce compte-là qui servira au bilan ACI et au dialogue de gestion, et il s'affiche au cockpit et en tête de la main courante. Les trois remontées du registre y sont déjà écrites — le CMSI de Billère, les pharmaciens d'officine, et celle de Mohammed Ouldd Chaiba — et le registre lui-même reste en base, intact, sans être lu nulle part.", suite:"Ce que la suppression fait perdre, et qu'il faut savoir : la commune, la profession et la criticité ne sont plus des champs à part, donc plus des chiffres à compter — ils se disent dans le texte de l'entrée. Au passage, la main courante s'horodate mieux : les trois remontées reprises portent leur heure — le CMSI de Billère à 8h00, heure que son propre texte donnait, et Mohammed Ouldd Chaiba à 17h15, heure à laquelle le cockpit l'a enregistrée. Celle des pharmaciens d'officine reste sans heure, son texte ne disant que « coup sur coup dans la matinée » : une heure inventée dans un registre destiné au RETEX vaut moins que pas d'heure du tout. Enfin, au pied de chaque carte de journal s'ajoute l'horodatage de saisie — « Saisi par Eva Poulmarch le 29/07 à 17:15 » — qui dit non pas quand la chose est arrivée, mais quand elle a été écrite.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc39', date:'2026-07-29', heure:'', source:'', evenement:"L'onglet « Collecte de matériel » sépare enfin trois choses qu'il empilait : les lieux où l'on peut déposer, les collectes qu'on a réellement tenues, et les dons que des structures ont annoncés. La carte « Points de collecte » n'est plus qu'un recensement — nom du lieu, adresse, horaires d'accès, personne qui détient les clés, et un bouton pour en ajouter un. Les permanences tenues, qui y vivaient dans un second feuillet, rejoignent « Matériel collecté », où elles s'appellent désormais des collectes réalisées : on en enregistre une avec son lieu, son créneau, son heure de clôture effective, sa destination, on y consigne les dépôts ligne à ligne, on y joint le récapitulatif signé sur place, et le document imprimable se recalcule à chaque ouverture. Sous elles, à part et sans se confondre avec elles, le registre des dons déclarés — la pharmacie de la Paix, la pharmacie Berlioz, les cabinets — qui recense ce qui a été annoncé, non ce qui a été déposé.", suite:"Nouveauté principale : chaque collecte ouverte fabrique un lien de saisie sur place, à remettre à la personne qui tient la table. Elle y note un déposant après l'autre — prénom, nom, profession, le matériel appuyé sur une pastille et sa quantité — et chaque envoi arrive directement dans la collecte ; le récapitulatif se met à jour à la seconde, sans ressaisie le soir venu. Le lien ne donne accès à rien d'autre du cockpit, ne demande aucun code, cesse de répondre dès que la collecte est clôturée, et se révoque d'un bouton s'il a trop circulé. À l'usage : ne le transmettre qu'à qui tient effectivement la table, et clôturer la collecte en partant.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
     {id:'mc38', date:'2026-07-29', heure:'', source:'', evenement:"La collecte de matériel ne se mène plus d'un bloc mais par appels aux dons, et n'importe qui de l'équipe peut en lancer un sans passer par la coordination. Constat de départ : la campagne du 27/07 portait sur cinq dispositifs de mesure demandés par le centre d'accueil de Bordeaux ; elle est close, le besoin suivant sera tout aussi précis et tout aussi différent, et il n'y avait qu'un seul formulaire, qu'un seul interrupteur et qu'une seule ligne de texte à réécrire pour dire ce qu'on demandait. Désormais, dans « Collecte de matériel », carte « Formulaire de dons en ligne », un bouton « Créer un appel aux dons » ouvre une fenêtre où se posent l'intitulé, le motif — pour nous, pas pour le donateur —, le texte affiché en tête du formulaire, le lieu de dépôt, et surtout la liste du matériel demandé, un article par ligne avec sa précision. C'est cette liste qui fabrique le formulaire : le professionnel ne décrit plus ce qu'il a, il coche dans ce qu'on lui demande et dit combien. Une case, décochée par défaut, autorise les propositions hors liste ; sans elle le formulaire dit qu'on ne collecte rien d'autre. Chaque appel a son propre lien, ses propres dates d'ouverture et de clôture, et son propre compte de déclarations. Un appel clos se relance d'un bouton, qui recopie la liste dans un appel neuf à corriger.", suite:"Un appel se crée fermé : rien ne sort tant qu'on ne le lance pas, et le lancement pose la même question que les autres formulaires publics — ouverture officielle, qui se consigne ici avec la liste annoncée, ou essai, qui ne laisse aucune trace. La collecte du 27/07 est reprise telle quelle comme premier appel, avec ses cinq dispositifs, pour que ce qui a été demandé ce jour-là reste lisible. Au registre, chaque déclaration porte le nom de l'appel auquel elle répond, se filtre par lui et sort avec lui à l'export Excel. Un lien d'appel clos retrouvé dans un vieux message ne bascule pas sur l'appel en cours : il dit qu'il est clos et renvoie vers ce qui est ouvert — sans quoi on donnerait pour autre chose que ce qu'on a lu. Un appel qui a reçu des déclarations ne se supprime pas.", qui:'Eva Poulmarch', auteur:'Eva Poulmarch', quand:''},
@@ -3166,24 +3200,28 @@ const CHAMPS = {
     ],
     cols:['nom','adresse','referent','referentTel','horaires','statut']
   },
+  /* Le pool de volontaires : sept champs, pas un de plus. Qui c'est,
+     comment on le joint, d'où il vient, ce qu'il peut faire. Tout le
+     reste — véhicule, créneaux, affectation — se note en précisions
+     plutôt que de demander onze cases à quelqu'un qui a simplement
+     dit oui. Une ligne ici est un volontaire, sans autre statut à
+     trancher. Le téléphone, lui, n'est pas une précision : sans lui
+     le nom ne sert à rien le jour de l'enlèvement. */
   renforts: {
-    titre:"Volontaires pour la collecte",
-    chapo:"Qui donne de son temps pour organiser la collecte : tenir la permanence, trier, charger, transporter. Ce ne sont pas les volontaires soignants du renfort en zone, qui se recensent dans l'onglet « Appel au renfort ».",
+    titre:"Pool de volontaires",
+    chapo:"Qui donne de son temps pour faire tourner la collecte : tenir la permanence, trier, charger, transporter.",
     f:[
-      {c:'nom', l:"Nom et prénom", t:'text', req:true, large:true},
-      {c:'profession', l:"Profession ou structure", t:'text'},
-      {c:'tel', l:"Téléphone", t:'text'},
-      {c:'mail', l:"Courriel", t:'text'},
-      {c:'commune', l:"Commune ou secteur", t:'text'},
-      {c:'taches', l:"Ce qu'il ou elle peut faire", t:'text', large:true},
-      {c:'vehicule', l:"Véhicule", t:'select', o:VEHICULES},
-      {c:'volume', l:"Volume transportable", t:'text'},
-      {c:'dispo', l:"Disponibilités (jours, créneaux)", t:'textarea', large:true},
-      {c:'affectation', l:"Affecté à (lieu, tournée, créneau)", t:'text', large:true},
-      {c:'statut', l:"Statut", t:'select', o:['Proposé','Confirmé','Affecté','Indisponible','Sans suite']},
-      {c:'note', l:"Observation", t:'textarea', large:true}
+      {c:'nom', l:"Nom", t:'text', req:true},
+      {c:'prenom', l:"Prénom", t:'text'},
+      {c:'tel', l:"Téléphone", t:'tel', ph:"06 12 34 56 78"},
+      {c:'profession', l:"Profession", t:'select', o:PROFESSIONS},
+      {c:'commune', l:"Commune", t:'text'},
+      {c:'taches', l:"Ce qu'il ou elle peut faire", t:'text', large:true, multi:TACHES,
+       ph:"Touchez ce qui convient, ou écrivez librement"},
+      {c:'note', l:"Précisions supplémentaires", t:'textarea', large:true,
+       ph:"Véhicule, créneaux, tout ce qui aide à le joindre ou à l'affecter"}
     ],
-    cols:['date','nom','profession','tel','mail','commune','taches','vehicule','volume','dispo','affectation','statut','auteur']
+    cols:['date','nom','prenom','tel','profession','commune','taches','note','auteur']
   },
   /* Le registre du recensement des renforts. Deux façons de le
      remplir, comme celui des donateurs : le professionnel s'inscrit
@@ -3556,6 +3594,11 @@ function formulaire(k, o, mode){
        pastilles : on touche plutôt que de taper, sans que le champ
        cesse d'accepter n'importe quoi d'autre. */
     if(f.sugg) h += pastilles(id, typeof f.sugg === 'function' ? f.sugg() : f.sugg, '', val);
+    /* Et quand les réponses s'additionnent au lieu de se remplacer —
+       la même personne trie, charge et transporte — les pastilles
+       s'ajoutent au champ à la suite, sans l'empêcher d'accepter ce
+       qui n'est pas proposé. */
+    if(f.multi) h += pastillesMulti(id, typeof f.multi === 'function' ? f.multi() : f.multi, val);
     if(f.aide) h += `<span class="aide">${esc(f.aide)}</span>`;
     h += `</label>`;
   });
@@ -5026,8 +5069,8 @@ function evenements(){
         .filter(Boolean).join(' · '), o.par || o.auteur);
     (o.suivi||[]).forEach(s => push(s,'Collecte', o.structure + ' — relance', s.texte, s.par));
   });
-  (etat.renforts||[]).forEach(o => push(o,'Collecte', o.nom + ' — volontaire pour la collecte',
-    [o.taches, aVehicule(o) ? o.vehicule : '', o.dispo, o.statut].filter(Boolean).join(' · '), o.auteur));
+  (etat.renforts||[]).forEach(o => push(o,'Collecte', nomRenfort(o) + ' — volontaire pour la collecte',
+    [o.tel, o.profession, o.commune, o.taches, o.note].filter(Boolean).join(' · '), o.auteur));
   (etat.volontaires||[]).forEach(o => {
     push(o,'Renfort', nomVol(o) + ' — volontaire au renfort',
       [o.profession, o.commune, o.renforts, o.dispo, o.zone, o.statut].filter(Boolean).join(' · '),
@@ -6084,7 +6127,7 @@ function vueCollecte(){
   if(moduleMat === 'formulaire') return moduleFormulaireDons();
   if(moduleMat === 'dons')       return moduleDons();
   if(moduleMat === 'points')     return modulePointsCollecte();
-  if(moduleMat === 'renforts')   return teteModuleMat('Professionnels volontaires') + feuilletRenforts();
+  if(moduleMat === 'renforts')   return teteModuleMat('Pool de volontaires') + feuilletRenforts();
   if(moduleMat === 'besoins')    return teteModuleMat('Besoins exprimés') + feuilletBesoins();
   return vueModulesMat();
 }
@@ -6110,8 +6153,9 @@ function vueModulesMat(){
   const aVerifier = d.filter(x => x.source === 'formulaire' && x.aVerifier).length;
   const pts = etat.points || [];
   const unites = pointsClotures().reduce((t,p) => t + synthesePoint(p).unites, 0);
-  const prets = v.filter(x => x.statut === 'Confirmé' || x.statut === 'Affecté').length;
-  const roulants = v.filter(x => x.statut !== 'Indisponible' && x.statut !== 'Sans suite').filter(aVehicule).length;
+  /* Le pool ne se compte que d'une façon : combien de personnes, et
+     combien d'entre elles ont dit ce qu'elles pouvaient faire. */
+  const roles = v.filter(x => listeTaches(x).length).length;
   const bes = (etat.materiel || []).length;
 
   const clos = pointsClotures().length;
@@ -6153,12 +6197,11 @@ function vueModulesMat(){
     </button>
 
     <button class="module" onclick="allerModuleMat('renforts')">
-      <div class="titre-m">Professionnels volontaires</div>
+      <div class="titre-m">Pool de volontaires</div>
       <p class="sous-m">Les mains dont la collecte a besoin : tenir la permanence, trier, conditionner, charger, transporter. Ce ne sont pas les soignants volontaires pour partir en zone — ceux-là se recensent dans « Appel au renfort ».</p>
       <div class="chiffres">
-        <div><strong>${v.length}</strong> volontaires</div>
-        <div><strong style="color:var(--stable)">${prets}</strong> confirmés ou affectés</div>
-        ${roulants ? `<div><strong>${roulants}</strong> avec véhicule</div>` : ''}
+        <div><strong>${v.length}</strong> volontaire${v.length>1?'s':''}</div>
+        ${roles ? `<div><strong style="color:var(--stable)">${roles}</strong> avec un rôle précisé</div>` : ''}
       </div>
       <div class="entrer">Ouvrir la carte →</div>
     </button>
@@ -6519,69 +6562,38 @@ function feuilletStockage(){
   return h + `</div>`;
 }
 
-/* ---------- volontaires de la collecte ------------------
+/* ---------- pool de volontaires -------------------------
    Une collecte tient sur des mains : quelqu'un pour tenir la
    permanence, quelqu'un pour trier, quelqu'un qui a un
    utilitaire. Ce feuillet les recense et dit qui fait quoi.
    Il ne recense pas les soignants volontaires pour partir en
-   renfort : ceux-là relèvent de l'onglet Volontaires, où le
+   renfort : ceux-là relèvent de l'onglet Appel au renfort, où le
    cadre — assurance, statut, continuité des soins — n'est pas
-   le même. */
-const RENFORT_ORDRE = {'Affecté':0, 'Confirmé':1, 'Proposé':2, 'Indisponible':3, 'Sans suite':4};
-const RENFORT_ETIQ  = {'Affecté':'e-cours', 'Confirmé':'e-cours', 'Proposé':'e-attente',
-                       'Indisponible':'e-bloque', 'Sans suite':'e-fini'};
+   le même.
 
-const listeTaches = o => String(o.taches || '').split(',').map(x => x.trim()).filter(Boolean);
-const aVehicule = o => o.vehicule && o.vehicule !== 'Aucun';
+   Une ligne par personne, et rien d'autre à trancher : quelqu'un
+   qui est là est volontaire. Pas de statut à tenir à jour, pas de
+   carte à déplier — la liste se parcourt du regard, et ce qui a
+   été recueilli en plus se lit sous le nom. */
+const listeTaches = o => listeVirgules(o.taches);
+const nomRenfort = o => [o.prenom, o.nom].filter(x => String(x||'').trim()).join(' ').trim() || 'Sans nom';
 
 function filtrerRenfort(i){
-  filtreRenfort = i === -1 ? 'Tout' : i === -2 ? 'Véhicule' : TACHES[i];
+  filtreRenfort = i === -1 ? 'Tout' : TACHES[i];
   rendre();
-}
-
-async function majRenfort(id, champ, val){
-  const o = (etat.renforts||[]).find(x => x.id === id); if(!o) return;
-  o[champ] = val.trim ? val.trim() : val;
-  o.modifiePar = moi;
-  await sauver(); rendre();
-}
-
-/* Les tâches se cochent depuis la fiche : c'est ce qui change le
-   plus souvent, au fil des disponibilités de chacun. Elles sont
-   rangées dans un seul champ texte, lisible tel quel à l'export
-   comme dans le dossier de traçabilité. */
-async function basculerTache(id, i){
-  const o = (etat.renforts||[]).find(x => x.id === id); if(!o) return;
-  const t = TACHES[i], l = listeTaches(o), j = l.indexOf(t);
-  if(j >= 0) l.splice(j, 1); else l.push(t);
-  o.taches = TACHES.filter(x => l.indexOf(x) >= 0)
-    .concat(l.filter(x => TACHES.indexOf(x) === -1)).join(', ');
-  o.modifiePar = moi;
-  await sauver(); rendre();
 }
 
 function feuilletRenforts(){
   const v = etat.renforts || [];
-  const actifs = v.filter(x => x.statut !== 'Indisponible' && x.statut !== 'Sans suite');
-  const prets = v.filter(x => x.statut === 'Confirmé' || x.statut === 'Affecté').length;
-  const roulants = actifs.filter(aVehicule).length;
-  const muets = v.filter(x => !x.tel).length;
 
-  let h = `<div class="compteurs" style="margin-bottom:16px">
-    <div class="compteur"><div class="n">${v.length}</div><div class="l">volontaires recensés</div></div>
-    <div class="compteur"><div class="n" style="color:var(--stable)">${prets}</div><div class="l">confirmés ou déjà affectés</div></div>
-    <div class="compteur"><div class="n">${roulants}</div><div class="l">disposent d'un véhicule</div></div>
-    ${muets ? `<div class="compteur"><div class="n" style="color:var(--braise)">${muets}</div><div class="l">sans téléphone renseigné</div></div>` : ''}
-  </div>
-  <div class="note">Un volontaire n'est mobilisable que si l'on sait <strong>quand il est disponible</strong> et <strong>par quel numéro le joindre</strong>. La CPTS coordonne : elle ne réquisitionne personne et n'engage aucun volontaire au-delà de ce qu'il a accepté. Les soignants volontaires pour partir en renfort ne se recensent pas ici mais dans l'onglet <a href="#" onclick="aller('volontaires');return false;">Appel au renfort</a>, où le cadre — assurance, statut, continuité des soins — n'est pas le même.</div>
-  <div class="barre-h">
+  let h = `<div class="barre-h">
     <span class="cpt-h">${v.length} volontaire${v.length>1?'s':''}</span>
     <button class="btn sec" onclick="exporterCSV('renforts')">Excel</button>
     <button class="btn sec" onclick="imprimer()">PDF</button>
-    <button class="btn" onclick="ouvrirAjout('renforts')">Recenser un volontaire</button>
+    <button class="btn" onclick="ouvrirAjout('renforts')">Ajouter un volontaire</button>
   </div>`;
 
-  if(!v.length) return h + `<div class="carte"><p class="vide">Aucun volontaire recensé. Notez le premier : son nom, son téléphone, ce qu'il peut faire et quand. Un nom sans créneau ni numéro ne sert à rien le jour de l'enlèvement.</p></div>`;
+  if(!v.length) return h + `<div class="carte"><p class="vide">Aucun volontaire recensé. Notez le premier : son nom, sa commune et ce qu'il peut faire.</p></div>`;
 
   h += `<div class="filtres">
     <button class="${filtreRenfort==='Tout'?'on':''}" onclick="filtrerRenfort(-1)">Tout <span style="opacity:.6">${v.length}</span></button>
@@ -6589,54 +6601,36 @@ function feuilletRenforts(){
       const n = v.filter(x => listeTaches(x).indexOf(t) >= 0).length;
       return n ? `<button class="${filtreRenfort===t?'on':''}" onclick="filtrerRenfort(${i})">${esc(t)} <span style="opacity:.6">${n}</span></button>` : '';
     }).join('')}
-    ${roulants ? `<button class="${filtreRenfort==='Véhicule'?'on':''}" onclick="filtrerRenfort(-2)">Avec véhicule <span style="opacity:.6">${roulants}</span></button>` : ''}
   </div>`;
 
-  let vus = filtreRenfort === 'Tout' ? [...v]
-    : filtreRenfort === 'Véhicule' ? v.filter(aVehicule)
-    : v.filter(x => listeTaches(x).indexOf(filtreRenfort) >= 0);
-  vus.sort((a,b) => (RENFORT_ORDRE[a.statut] ?? 2) - (RENFORT_ORDRE[b.statut] ?? 2)
-    || (a.nom||'').localeCompare(b.nom||'','fr'));
+  const vus = (filtreRenfort === 'Tout' ? [...v]
+    : v.filter(x => listeTaches(x).indexOf(filtreRenfort) >= 0))
+    .sort((a,b) => nomRenfort(a).localeCompare(nomRenfort(b), 'fr'));
 
   if(!vus.length) return h + `<div class="carte"><p class="vide">Aucun volontaire dans ce filtre.</p></div>`;
 
-  h += `<div class="stocks">`;
+  h += `<ul class="pool">`;
   vus.forEach(o => {
-    const cl = (o.statut === 'Confirmé' || o.statut === 'Affecté') ? 'confirme'
-      : (o.statut === 'Indisponible' || o.statut === 'Sans suite') ? 'ecarte' : '';
     const t = listeTaches(o);
-    h += `<div class="stock ${cl}">
-      <div>
-        <div class="nom">${esc(o.nom)}</div>
-        <div style="font-size:13px;color:var(--texte-2);margin-top:3px">${
-          [o.profession, o.commune].filter(Boolean).map(esc).join(' · ') || '—'}</div>
+    h += `<li>
+      <div class="qui">
+        <span class="n">${esc(nomRenfort(o))}</span>
+        ${[o.profession, o.commune].filter(Boolean).length
+          ? `<span class="d">${[o.profession, o.commune].filter(Boolean).map(esc).join(' · ')}</span>` : ''}
       </div>
-      <label class="bl"><span class="k">Statut</span>
-        <select onchange="majRenfort('${o.id}','statut',this.value)">${
-          ['Proposé','Confirmé','Affecté','Indisponible','Sans suite'].map(x =>
-            `<option ${x===(o.statut||'Proposé')?'selected':''}>${esc(x)}</option>`).join('')}</select></label>
-      <div class="bl"><span class="k">Ce qu'il ou elle peut faire</span>
-        <div class="taches">${TACHES.map((x,i) =>
-          `<button class="${t.indexOf(x)>=0?'on':''}" onclick="basculerTache('${o.id}',${i})">${esc(x)}</button>`).join('')}</div>
-        ${t.filter(x => TACHES.indexOf(x) === -1).length
-          ? `<div style="font-size:13px;margin-top:6px">${esc(t.filter(x => TACHES.indexOf(x) === -1).join(', '))}</div>` : ''}</div>
-      ${aVehicule(o) ? `<div class="bl"><span class="k">Véhicule</span>${esc(o.vehicule)}${o.volume?` — ${esc(o.volume)}`:''}</div>` : ''}
-      ${o.dispo ? `<div class="bl"><span class="k">Disponibilités</span><span class="horaires">${esc(o.dispo)}</span></div>`
-                : `<div class="obs">Disponibilités à préciser.</div>`}
-      ${o.affectation ? `<div class="bl"><span class="k">Affecté à</span>${esc(o.affectation)}</div>` : ''}
-      ${o.note ? `<div class="obs">${esc(o.note)}</div>` : ''}
-      <div class="liens">
-        ${o.tel ? `<a class="tel" href="tel:${esc(String(o.tel).replace(/[^0-9+]/g,''))}">Appeler ${esc(o.tel)}</a>`
-                : `<span class="obs">Téléphone à obtenir.</span>`}
-        ${o.mail ? `<a class="adr" href="mailto:${esc(o.mail)}">${esc(o.mail)}</a>` : ''}
-      </div>
-      <div style="display:flex;gap:7px">
+      <div class="fait">${t.length
+        ? t.map(x => `<span>${esc(x)}</span>`).join('')
+        : `<span class="rien">Rôle à préciser</span>`}</div>
+      ${o.tel ? `<a class="tel" href="tel:${esc(String(o.tel).replace(/[^0-9+]/g,''))}">${esc(o.tel)}</a>`
+              : `<span class="muet">Téléphone à obtenir</span>`}
+      <div class="actes">
         <button class="retirer" onclick="ouvrirEdition('renforts','${o.id}')">Modifier</button>
-        <button class="retirer" onclick="supprimer('renforts','${o.id}')">Retirer</button>
+        <button class="retirer sup" onclick="supprimer('renforts','${o.id}')">Retirer</button>
       </div>
-    </div>`;
+      ${o.note ? `<div class="prec">${esc(o.note)}</div>` : ''}
+    </li>`;
   });
-  return h + `</div>`;
+  return h + `</ul>`;
 }
 
 /* ---------- besoins exprimés (ancien onglet Matériel) ---------- */
@@ -9102,6 +9096,26 @@ function choisirSugg(cible, btn){
 }
 /* `val` allume d'emblée la pastille qui correspond à ce qui est déjà
    dans le champ : en modification, on voit ce qui avait été choisi. */
+/* Les mêmes pastilles, mais cumulatives : chacune s'ajoute au champ
+   ou s'en retire, séparées par des virgules. Le champ reste un champ
+   libre — ce qui a été tapé à la main et ne figure dans aucune
+   pastille y reste, et repart tel quel au tableau comme à l'export. */
+const listeVirgules = v => String(v || '').split(',').map(x => x.trim()).filter(Boolean);
+function basculerSugg(cible, btn){
+  const el = document.getElementById(cible); if(!el) return;
+  const v = btn.dataset.v || '';
+  const l = listeVirgules(el.value), i = l.indexOf(v);
+  if(i >= 0) l.splice(i, 1); else l.push(v);
+  el.value = l.join(', ');
+  btn.classList.toggle('on', i < 0);
+}
+const pastillesMulti = (cible, liste, val) => {
+  const l = listeVirgules(val);
+  return `<div class="sugg">${liste.filter(Boolean).map(x =>
+    `<button type="button" data-v="${esc(x)}"${l.indexOf(x) >= 0 ? ' class="on"' : ''} onclick="basculerSugg('${cible}',this)">${esc(x)}</button>`
+  ).join('')}</div>`;
+};
+
 const pastilles = (cible, liste, cls, val) => `<div class="sugg ${cls||''}">${liste.filter(Boolean)
   .map(x => {
     const c = [cls === 'urg' && x === 'Non urgent' ? 'calme' : '', x === val ? 'on' : ''].filter(Boolean).join(' ');
