@@ -203,6 +203,11 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .choixnom.compact button{font-family:var(--corps);font-weight:400;font-size:13.5px;
   padding:7px 13px;min-height:38px;border-radius:20px;border-color:transparent;color:var(--encre-2)}
 .choixnom.compact button.on{border-color:var(--encre-2);font-weight:600}
+/* Les délais courants, en un clic, sous le champ de date. */
+.delais{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.delais button{background:var(--cobalt-clair);border:1px solid transparent;border-radius:20px;
+  color:var(--encre-2);font-family:inherit;font-size:13px;padding:7px 13px;cursor:pointer;min-height:38px}
+.delais button:hover{border-color:var(--encre-2)}
 
 /* Les référents de la gestion de crise : en tête de l'onglet,
    plus compacts que les cartes de mission — on vient y chercher
@@ -295,24 +300,38 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
   font-size:14px;color:var(--texte-2);font-weight:600;min-height:40px;cursor:pointer}
 .miss-lunettes button.on{background:var(--carte);color:var(--encre);box-shadow:0 1px 3px rgba(6,43,99,.13)}
 
-/* La carte d'une personne, réduite à l'os : son nom, et ce
-   qu'elle porte. Le rôle passe en filet de couleur à gauche
-   de chaque mission — plein pour le pilote, gris pour l'appui. */
+/* La carte d'une personne, dans l'ordre où on la lit : le nom en
+   grand, la profession dessous, le statut dans l'association, puis
+   la mission portée et les renforts positionnés dessus. La fiche
+   mission ferme la carte. Rien d'autre. */
 .miss-gens{display:grid;gap:13px;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));margin-bottom:22px}
 .miss-pers{background:var(--carte);border:1px solid var(--trait);border-radius:11px;
   padding:16px 17px 14px;display:flex;flex-direction:column}
-.miss-pers .nom{font-family:var(--display);font-weight:700;font-size:25px;line-height:1.08;
+.miss-pers .nom{font-family:var(--display);font-weight:700;font-size:26px;line-height:1.06;
   letter-spacing:-.02em;color:var(--encre)}
-.miss-pers .prof{font-size:12.5px;color:var(--texte-2);margin-top:4px;line-height:1.3}
-.miss-pers .lignes{margin-top:14px;display:grid;gap:10px}
-.miss-pers .lg{padding:0 0 0 12px;border:0;border-left:3px solid var(--encre-2);
-  background:none;text-align:left;font-family:inherit;width:100%;cursor:pointer}
-.miss-pers .lg.appui{border-left-color:var(--trait)}
-.miss-pers .lg .role{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--encre-2)}
-.miss-pers .lg.appui .role{color:var(--texte-2)}
-.miss-pers .lg .t{display:block;font-size:14.5px;line-height:1.3;margin-top:2px;color:var(--texte)}
-.miss-pers .lg:hover .t{color:var(--encre-2)}
+.miss-pers .prof{font-size:13px;color:var(--texte-2);margin-top:5px;line-height:1.3}
+/* Le statut dans l'association — vice-présidente, référente d'un
+   groupe de travail. Absent quand la personne n'en a pas. */
+.miss-pers .statut{align-self:flex-start;margin-top:7px;font-family:var(--mono);font-size:10px;
+  letter-spacing:.09em;text-transform:uppercase;color:var(--encre-2);
+  background:var(--cobalt-clair);border-radius:4px;padding:4px 8px;line-height:1.25}
+.miss-pers .lignes{margin-top:13px;display:grid;gap:12px}
+/* La mission portée : son intitulé, et dessous les noms de ceux
+   qui viennent en renfort dessus. */
+.miss-pers .mis{border-top:1px solid var(--trait);padding-top:12px}
+.miss-pers .mis .role{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--texte-2);margin-bottom:3px}
+.miss-pers .mis .mt{font-family:var(--display);font-weight:600;font-size:16.5px;line-height:1.25;
+  color:var(--encre)}
+.miss-pers .mis .ech{font-size:12px;color:var(--texte-2);margin-top:3px}
+.miss-pers .mis .rf{font-size:13.5px;line-height:1.35;color:var(--texte);margin-top:6px}
+.miss-pers .mis .rf .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--texte-2);display:block;margin-bottom:2px}
+.miss-pers .plusrf{background:none;border:1px dashed var(--trait);border-radius:6px;
+  color:var(--encre-2);font-family:inherit;font-size:12.5px;padding:6px 10px;cursor:pointer;
+  min-height:34px;margin-top:7px}
+.miss-pers .plusrf:hover{border-color:var(--encre-2);background:var(--cobalt-clair)}
+.miss-pers .fichem{width:100%;margin-top:9px}
 .miss-pers .tel{margin-top:auto;padding-top:14px}
 .miss-pers .tel a{display:inline-flex;align-items:center;gap:7px;text-decoration:none;
   color:var(--encre-2);font-size:14px;padding:7px 10px;background:var(--cobalt-clair);
@@ -2124,6 +2143,11 @@ let versionServeur = 0;
 let codeAcces = '';
 let empreinte = {};
 let sondage = null;
+/* Le carnet de coordonnées tel qu'il était dans la copie locale à
+   l'ouverture. Il ne sort jamais de la mémoire du navigateur, et
+   sert de filet à chaque relève : un numéro connu de cet appareil
+   ne peut plus disparaître parce que le serveur l'ignore. */
+let carnetSecours = {};
 
 const stockageNavigateur = {
   async get(cle){ const v = localStorage.getItem('cpts64_' + cle); return v === null ? null : {value:v}; },
@@ -2147,18 +2171,12 @@ function marquerSynchronise(){
    serveur et on n'y réapplique que les fiches réellement
    touchées de notre côté, repérées par leur identifiant. */
 function fusionner(base, mien, serveur){
-  /* Un dictionnaire — le carnet de coordonnées — se fusionne par clé :
-     ce qu'on a soi-même touché l'emporte, le reste du serveur est
-     conservé. Sans ça, deux personnes qui renseignent deux numéros en
-     même temps s'effacent l'une l'autre. */
+  /* Un dictionnaire — le carnet de coordonnées — ne se fusionne pas
+     fiche par fiche mais champ par champ : voir fusionnerCarnet. Une
+     fiche du serveur sans numéro ne doit jamais écraser le numéro
+     saisi ici. */
   const dico = o => o && typeof o === 'object' && !Array.isArray(o);
-  if(dico(base) && dico(mien) && dico(serveur)){
-    const r = Object.assign({}, serveur);
-    Object.keys(mien).forEach(c => {
-      if(!(c in r) || JSON.stringify(base[c]) !== JSON.stringify(mien[c])) r[c] = mien[c];
-    });
-    return r;
-  }
+  if(dico(base) && dico(mien) && dico(serveur)) return fusionnerCarnet(mien, serveur);
 
   const tableauIdentifie = a => Array.isArray(a) && a.every(x => x && typeof x === 'object' && x.id !== undefined);
   if(!tableauIdentifie(base) || !tableauIdentifie(mien) || !tableauIdentifie(serveur)) return mien;
@@ -2176,6 +2194,40 @@ function fusionner(base, mien, serveur){
 
   const supprimees = [...avant.keys()].filter(id => !apres.has(id));
   return resultat.filter(x => supprimees.indexOf(x.id) === -1);
+}
+
+/* Les numéros de téléphone ont déjà disparu plusieurs fois : ils
+   se perdaient quand une fiche venue du serveur, plus pauvre que
+   celle d'ici, remplaçait la fiche entière. On fusionne donc champ
+   par champ, avec deux règles :
+
+   — un champ rempli n'est jamais écrasé par un champ vide ;
+   — quand les deux sont remplis, la saisie la plus récente
+     l'emporte, et elle seule peut vider un champ volontairement.
+
+   Les fiches d'avant cette règle n'ont pas de date de saisie : elles
+   ne peuvent donc rien effacer, seulement compléter. */
+function fusionnerCarnet(local, distant){
+  const dico = o => (o && typeof o === 'object' && !Array.isArray(o)) ? o : {};
+  const a = dico(local), b = dico(distant);
+  const r = {};
+  const vide = v => v === '' || v === null || v === undefined;
+  new Set(Object.keys(a).concat(Object.keys(b))).forEach(cle => {
+    const ici = a[cle], la = b[cle];
+    if(!ici || typeof ici !== 'object'){ r[cle] = la || ici; return; }
+    if(!la  || typeof la  !== 'object'){ r[cle] = ici; return; }
+    const recent = (ici.maj || '') >= (la.maj || '') ? ici : la;
+    const autre  = recent === ici ? la : ici;
+    const f = Object.assign({}, autre);
+    Object.keys(recent).forEach(k => {
+      /* Vider un champ ne vaut que si la fiche est datée : sans date,
+         on ne sait pas si c'est un effacement voulu ou une fiche
+         écrite avant que le champ existe. */
+      if(!vide(recent[k]) || recent.maj) f[k] = recent[k];
+    });
+    r[cle] = f;
+  });
+  return r;
 }
 
 async function appelApi(methode, corps){
@@ -2199,9 +2251,10 @@ function appliquerDistant(d){
      Un numéro saisi ici et pas encore connu du serveur survit donc à
      la relève, et repart au prochain enregistrement : c'est ce qui
      manquait quand les numéros des pilotes disparaissaient. En cas de
-     saisie concurrente sur la même personne, le serveur l'emporte. */
+     saisie concurrente sur la même personne, c'est la plus récente
+     qui l'emporte, champ par champ — voir fusionnerCarnet. */
   normaliserPersonnes();
-  const carnetLocal = etat.personnes;
+  const carnetLocal = fusionnerCarnet(carnetSecours, etat.personnes);
 
   for(const k in etatInitial){ if(src[k] !== undefined) etat[k] = src[k]; }
   /* Ce qui vient d'arriver du serveur, avant qu'on y ajoute quoi que
@@ -2211,12 +2264,18 @@ function appliquerDistant(d){
   fusionnerNouveautes();
   normaliserPersonnes();
 
-  const aDeposer = Object.keys(carnetLocal).filter(c => !etat.personnes[c]);
-  etat.personnes = Object.assign({}, carnetLocal, etat.personnes);
+  const carnetServeur = etat.personnes;
+  etat.personnes = fusionnerCarnet(carnetLocal, carnetServeur);
+  /* Ce que le serveur ignore encore — une fiche entière comme un
+     simple numéro — doit repartir : on marque la rubrique comme à
+     envoyer plutôt que comme synchronisée. */
+  const aDeposer = JSON.stringify(etat.personnes) !== JSON.stringify(carnetServeur);
+  /* Le filet se remet à jour sur le carnet fusionné : il ne garde
+     jamais moins que ce qui est connu, et suit les effacements
+     volontaires faits ailleurs, qui portent une date plus récente. */
+  carnetSecours = copie(etat.personnes);
   marquerSynchronise();
-  /* Ce que le serveur ignore encore doit repartir : on marque la
-     rubrique comme à envoyer plutôt que comme synchronisée. */
-  if(aDeposer.length) empreinte.personnes = null;
+  if(aDeposer) empreinte.personnes = null;
   /* Même règle pour ce que l'ouverture du cockpit vient d'écrire de
      lui-même : entrées de main courante posées après coup pour un
      besoin, une collecte ou une remontée déjà saisis, fiches de
@@ -2250,6 +2309,12 @@ async function charger(){
   }catch(e){}
 
   const etatLocal = await lireLocal();
+  /* Le carnet gardé sur l'appareil est relu même quand le serveur
+     répond : c'est lui qui rattrape les numéros que le serveur n'a
+     jamais reçus, ou qu'il a perdus. Il ne sert qu'à compléter — la
+     fusion champ par champ décide du reste. */
+  if(etatLocal && etatLocal.personnes) carnetSecours = enDico(etatLocal.personnes);
+
   let issue = await joindreServeur();
 
   if(issue === 'code'){
@@ -2608,12 +2673,14 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape') fermer(); });
    tableau, si bien que la saisie disparaît au rafraîchissement
    suivant. On le remet donc en dictionnaire à chaque fois qu'il
    entre dans le cockpit. */
-function normaliserPersonnes(){
-  const p = etat.personnes;
-  if(p && typeof p === 'object' && !Array.isArray(p)) return;
+function enDico(p){
+  if(p && typeof p === 'object' && !Array.isArray(p)) return p;
   const v = {};
   if(Array.isArray(p)) p.forEach(x => { if(x && x.nom) v[cleP(x.nom)] = x; });
-  etat.personnes = v;
+  return v;
+}
+function normaliserPersonnes(){
+  etat.personnes = enDico(etat.personnes);
 }
 
 function coord(nom){
@@ -2633,8 +2700,15 @@ function editerContact(nom){
     <p style="color:var(--texte-2);margin:0 0 14px">Renseignée une fois, utilisable par tout le monde en un clic depuis l'organigramme.</p>
     ${neuf ? `<label style="margin-bottom:12px"><span class="k">Prénom et nom *</span>
       <input id="ct-nom" placeholder="Prénom et nom"></label>` : ''}
-    <label style="margin-bottom:12px"><span class="k">Profession et rôle</span>
-      <input id="ct-prof" value="${esc((r && r.profession) || c.profession || '')}" placeholder="Ex. infirmière — vice-présidente"></label>
+    <label style="margin-bottom:12px"><span class="k">Profession</span>
+      <input id="ct-prof" value="${esc(c.profession || (r && r.profession) || '')}" placeholder="Ex. infirmière libérale"></label>
+    <label style="margin-bottom:12px"><span class="k">Statut dans l'association — s'il y en a un</span>
+      <input id="ct-statut" list="statuts-asso" value="${esc(c.statut || '')}" placeholder="Ex. vice-présidente"></label>
+    <datalist id="statuts-asso">${
+      ['Présidente','Président','Vice-présidente','Vice-président','Trésorière','Trésorier',
+       'Secrétaire','Membre du bureau','Référente de groupe de travail','Référent de groupe de travail',
+       'Coordinatrice','Coordinateur','Adhérente','Adhérent']
+      .map(s => `<option value="${esc(s)}">`).join('')}</datalist>
     <label style="margin-bottom:12px"><span class="k">Téléphone</span>
       <input id="ct-tel" type="tel" value="${esc(c.tel || (r && r.tel) || '')}" placeholder="06 12 34 56 78"></label>
     <label style="margin-bottom:12px"><span class="k">Mail</span>
@@ -2653,11 +2727,18 @@ async function validerContact(nom){
   if(!n){ toast("Le nom est obligatoire"); return; }
   const prof = document.getElementById('ct-prof').value.trim();
   const tel  = document.getElementById('ct-tel').value.trim();
-  etat.personnes[cleP(n)] = {
+  /* La fiche se complète, elle ne se remplace pas : un champ laissé
+     vide ici ne doit pas effacer ce qui est déjà connu, sauf à
+     vider volontairement un champ qui était rempli — auquel cas la
+     date de saisie dit que c'est bien la version la plus récente. */
+  const avant = etat.personnes[cleP(n)] || {};
+  etat.personnes[cleP(n)] = Object.assign({}, avant, {
     nom: n, tel: tel,
     mail: document.getElementById('ct-mail').value.trim(),
-    profession: prof
-  };
+    profession: prof,
+    statut: document.getElementById('ct-statut').value.trim(),
+    maj: new Date().toISOString(), par: moi
+  });
   /* L'appartenance à la cellule de crise se coche ici : c'est la
      seule chose que le registre des référents retient encore. */
   etat.referents = etat.referents || [];
@@ -4069,20 +4150,28 @@ function vuePersonnes(){
   liste.forEach(p => {
     const c = coord(p.nom);
     const nEsc = esc(p.nom).replace(/'/g, "\\'");
-    const prof = [p.ref ? p.ref.profession : c.profession, p.ref ? 'Cellule de crise' : '']
-      .map(x => (x || '').trim()).filter(Boolean).join(' · ');
+    const prof = ((p.ref && p.ref.profession) || c.profession || '').trim();
+    /* Ce que la personne est dans l'association, pas ce qu'elle fait
+       sur la crise : vice-présidente, référente d'un groupe de
+       travail. Rien ne s'affiche quand elle n'a pas de statut. */
+    const statut = [(c.statut || '').trim(), p.ref ? 'Cellule de crise' : '']
+      .filter(Boolean).join(' · ');
     let contact = '';
     if(c.tel)  contact += `<a href="tel:${esc(String(c.tel).replace(/\s/g,''))}">📞 ${esc(c.tel)}</a>`;
     if(c.mail) contact += `<a href="mailto:${esc(c.mail)}">✉️ ${esc(c.mail)}</a>`;
 
+    const portees = p.pilote.map(o => ({o:o, role:'Pilote'}))
+      .concat(p.appui.map(o => ({o:o, role:o.mention || 'Renfort'})));
+
     h += `<div class="miss-pers">
       <div class="nom">${esc(p.nom)}</div>
       ${prof ? `<div class="prof">${esc(prof)}</div>` : ''}
+      ${statut ? `<div class="statut">${esc(statut)}</div>` : ''}
       <div class="lignes">
-        ${p.pilote.map(o => ligneQuoi(o, 'Pilote')).join('')}
-        ${p.appui.map(o => ligneQuoi(o, o.mention || 'Appui')).join('')}
-        ${p.pilote.length || p.appui.length ? ''
-          : `<div class="prof" style="margin:0">Aucune mission confiée pour l'instant.</div>`}
+        ${portees.map(x => blocMissionPers(x.o, x.role, p.nom)).join('')}
+        ${portees.length ? ''
+          : `<div class="prof" style="margin:0">Aucune mission confiée pour l'instant.
+             <button class="plusrf" onclick="nouvelleMission('${nEsc}')">+ Confier une mission</button></div>`}
       </div>
       <div class="tel">
         ${contact || `<button class="manquant" onclick="editerContact('${nEsc}')">Numéro à renseigner</button>`}
@@ -4100,13 +4189,22 @@ function vuePersonnes(){
   return h + bandeAPourvoir();
 }
 
-/* Une mission sous un nom : le rôle en surtitre, l'intitulé en
-   dessous, et le filet de gauche qui dit s'il pilote ou s'il épaule. */
-function ligneQuoi(o, role){
-  return `<button class="lg${role === 'Pilote' ? '' : ' appui'}" onclick="voirFiche('${o.mid}')">
-    <span class="role">${esc(role)}</span>
-    <span class="t">${esc(o.titre)}</span>
-  </button>`;
+/* Une mission sous un nom : l'intitulé, les noms de ceux qui
+   viennent en renfort dessus, le bouton qui en ajoute un sans
+   quitter la carte, et la fiche mission en bas. */
+function blocMissionPers(o, role, personne){
+  const m = etat.missions.find(x => x.id === o.mid);
+  if(!m) return '';
+  const noms = renfortsDe(m).map(r => (r.nom || '').trim())
+    .filter(n => n && cleP(n) !== cleP(personne));
+  return `<div class="mis">
+    ${role === 'Pilote' ? '' : `<span class="role">${esc(role)}</span>`}
+    <div class="mt">${esc(m.titre)}</div>
+    ${m.echeance ? `<div class="ech">Échéance ${frdateL(m.echeance)}</div>` : ''}
+    ${noms.length ? `<div class="rf"><span class="k">En renfort</span>${esc(noms.join(', '))}</div>` : ''}
+    <button class="plusrf" onclick="ajouterRenfort('${m.id}')">+ Renfort</button>
+    <button class="btn sec fichem" onclick="voirFiche('${m.id}')">Fiche mission</button>
+  </div>`;
 }
 
 /* Ce que personne ne porte n'est pas quelqu'un : la bande descend
@@ -4368,22 +4466,39 @@ function choixPilote(champ, actuel, exclu){
     `<button class="${cleP(n)===cleP(actuel)?'on':''}" onclick="document.getElementById('${champ}').value='${esc(n).replace(/'/g,"\\'")}'">${esc(n)}</button>`).join('') + `</div>`;
 }
 
+/* Créer une mission tient en deux réponses : ce qu'il y a à faire,
+   et pour quand. Le pilote est déjà connu quand on part d'une
+   carte. Tout le reste — la fiche, l'espace où consigner, la
+   prochaine action — se remplit ensuite, si besoin. */
 function nouvelleMission(pilote){
   pilote = pilote || '';
-  const opts = ONGLETS.filter(o => !['cockpit','missions'].includes(o.id))
-    .map(o => `<option value="${o.id}">${o.nom}</option>`).join('');
   document.getElementById('modale').innerHTML = `
     <h3>${pilote ? `Confier une mission à ${esc(pilote)}` : 'Créer une mission'}</h3>
-    <p style="color:var(--texte-2);margin:0 0 14px">Ce que la CPTS entreprend, et qui le porte. La prochaine action et la fiche mission se complètent après.</p>
-    <label style="margin-bottom:10px"><span class="k">Intitulé *</span><input id="nm-titre" placeholder="Ex. Logistique de la collecte à la Foire Expo"></label>
-    <label style="margin-bottom:10px"><span class="k">En une phrase</span><textarea id="nm-detail" style="min-height:56px"></textarea></label>
-    <span class="k">Pilote</span>
-    ${choixPilote('nm-pilote', pilote)}
-    <label style="margin-bottom:10px"><input id="nm-pilote" value="${esc(pilote)}" placeholder="Prénom et nom, ou à désigner plus tard"></label>
-    <label style="margin-bottom:10px"><span class="k">Où consigner</span><select id="nm-espace">${opts}</select></label>
+    <p style="color:var(--texte-2);margin:0 0 14px">Ce qu'il y a à faire, et pour quand. Le reste se complète après, sur la fiche mission.</p>
+    <label style="margin-bottom:10px"><span class="k">La mission *</span>
+      <textarea id="nm-titre" style="min-height:62px" placeholder="Ex. Tenir la logistique de la collecte à la Foire Expo"></textarea></label>
+    <label style="margin-bottom:6px"><span class="k">Échéance ou délai</span>
+      <input id="nm-ech" type="date"></label>
+    <div class="delais">${DELAIS.map((d,i) =>
+      `<button type="button" onclick="poserDelai('nm-ech',${d.j})">${esc(d.l)}</button>`).join('')}</div>
+    ${pilote ? `<input type="hidden" id="nm-pilote" value="${esc(pilote)}">`
+             : `<span class="k">Pilote</span>
+                ${choixPilote('nm-pilote', '')}
+                <label style="margin-bottom:10px"><input id="nm-pilote" placeholder="Prénom et nom, ou à désigner plus tard"></label>`}
     <div class="actions"><button class="btn" onclick="validerMission()">${pilote ? 'Confier la mission' : 'Créer la mission'}</button><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
   ouvrirRideau();
   setTimeout(()=>{ const i = document.getElementById('nm-titre'); if(i) i.focus({preventScroll:true}); }, 60);
+}
+
+/* Une échéance se pose en un clic : en crise, personne n'ouvre un
+   calendrier pour dire « demain ». */
+const DELAIS = [{l:"Aujourd'hui", j:0}, {l:'Demain', j:1}, {l:'Sous 3 jours', j:3}, {l:'Sous une semaine', j:7}];
+function poserDelai(champ, jours){
+  const d = new Date();
+  d.setDate(d.getDate() + jours);
+  const p = n => String(n).padStart(2, '0');
+  const c = document.getElementById(champ);
+  if(c) c.value = `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
 }
 
 /* Renommer, réaffecter, clore : tout ce qui se corrige au fil de
@@ -4422,18 +4537,34 @@ async function validerModifMission(id){
 }
 async function validerMission(){
   const t = document.getElementById('nm-titre').value.trim();
-  if(!t){ toast("L'intitulé est obligatoire"); return; }
+  if(!t){ toast("Dites ce qu'il y a à faire"); return; }
   const p = document.getElementById('nm-pilote').value.trim();
+  const id = uid();
   etat.missions.push({
-    id:uid(), titre:t,
-    detail:document.getElementById('nm-detail').value.trim(),
+    id:id, titre:t, detail:'',
     pilote:p, suppleant:'', renforts:[],
-    prochaine:'', echeance:'',
-    statut:'À lancer', espace:document.getElementById('nm-espace').value,
+    prochaine:'', echeance:document.getElementById('nm-ech').value,
+    statut:'À lancer', espace:'courante',
     fiche:{but:'', faire:'', avec:'', pour:'', limite:''}, creePar:moi
   });
-  await sauver(); fermer(); rendre();
+  await sauver(); rendre();
   toast(p ? `Mission confiée à ${p}` : "Mission créée — reste à désigner un pilote");
+  /* Une mission se porte rarement seule : le renfort se propose
+     dans la foulée, sans avoir à retrouver la carte. */
+  proposerRenfort(id);
+}
+
+/* Juste après la création : ajouter un renfort en un bouton, ou
+   passer. C'est le seul moment où on sait encore qui devait
+   épauler. */
+function proposerRenfort(id){
+  const m = etat.missions.find(x => x.id === id); if(!m){ fermer(); return; }
+  document.getElementById('modale').innerHTML = `<h3>Mission créée</h3>
+    <p style="color:var(--texte-2);margin:0 0 6px">« ${esc(m.titre)} »${m.pilote ? ` — portée par ${esc(m.pilote)}` : ''}.</p>
+    <p style="color:var(--texte-2);margin:0 0 16px">Quelqu'un vient-il en renfort dessus&nbsp;?</p>
+    <div class="actions"><button class="btn" onclick="ajouterRenfort('${id}')">+ Ajouter un renfort</button>
+      <button class="btn sec" onclick="fermer()">Pas pour l'instant</button></div>`;
+  ouvrirRideau();
 }
 async function supprimerMission(id){
   const m = etat.missions.find(x => x.id === id); if(!m) return;
