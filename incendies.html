@@ -2013,6 +2013,16 @@ Rappeler aux relais la règle : le patient est informé et donne son accord au c
 
      La séance du 27/07 est dans ce cas : la CPTS y a assisté, son
      compte rendu n'a jamais été consigné. */
+  /* Le salon de la visio de crise, et rien d'autre : une adresse
+     qui ne bouge pas d'une séance à l'autre. Elle est vide tant
+     que personne ne l'a déposée — le cockpit ne l'invente pas. */
+  salleVisio: [
+    {id:'sv', url:'', horaire:'15:00', precision:'', maj:'', par:''}
+  ],
+  /* Qui se positionne sur le créneau du jour. Une ligne = un
+     prénom sur une date. C'est tout ce qu'on demande à quelqu'un
+     qui a la séance dans dix minutes. */
+  presencesVisio: [],
   visios: [
     {id:'vs-2607-15', date:'2026-07-27', heure:'15:00', instance:"Visio de crise de l'ARS Nouvelle-Aquitaine",
      represente:'Eva Poulmarch', points:[], consignes:'', pourNous:'',
@@ -2465,7 +2475,7 @@ function lancerSondage(){
    et qu'elle n'a pas été retirée à la main : ce qui a été saisi
    par le copil n'est jamais touché. C'est par là qu'arrivent les
    éléments consignés hors ligne, au téléphone notamment. */
-const SEEDS = ['missions','veille','ars','sources','rubriques','visios','lignes','offre','cpts','courante','materiel','stockage','points','contacts','referents','medecins','orientes','relais'];
+const SEEDS = ['missions','veille','ars','sources','rubriques','salleVisio','visios','lignes','offre','cpts','courante','materiel','stockage','points','contacts','referents','medecins','orientes','relais'];
 function fusionnerNouveautes(){
   etat.retires = etat.retires || [];
   SEEDS.forEach(k => {
@@ -4766,6 +4776,209 @@ function ouvrirVisio(id){ visioOuverte = (visioOuverte === id) ? null : id; rend
    s'y est dit. */
 function ouvrirVisioDepuisARS(id){ visioOuverte = id; aller('veille'); }
 
+/* =========================================================
+   LE RENDEZ-VOUS DE 15 H
+
+   Deux choses, et seulement deux, en tête de la situation
+   régionale :
+
+   1. Le lien du salon. Il est le même à chaque séance, il est
+      déposé une fois, et il s'ouvre d'un clic depuis n'importe
+      quel poste du cockpit. Avant, il circulait par mail et se
+      cherchait à 14h55.
+   2. Le créneau du jour. Chacun y pose son prénom pour dire
+      qu'il y sera : l'équipe sait qui la représente avant que
+      la séance commence, et personne n'y va à deux sans le
+      savoir — ou n'y va à zéro en croyant qu'un autre y est.
+
+   La présence annoncée n'est pas un compte rendu : ce qui s'est
+   dit se consigne dessous, séance par séance.
+   ========================================================= */
+const salleVisio = () => (etat.salleVisio || [])[0] || null;
+const presencesVisio = () => etat.presencesVisio || [];
+/* Le prénom en cours de frappe. La page se redessine toute seule
+   quand un autre poste enregistre quelque chose : sans ça, ce qui
+   était tapé disparaissait sous les doigts. */
+let saisiePresence = null;
+const presencesDuJour = d => presencesVisio().filter(p => (p.date || '') === d);
+
+/* Un lien collé à la va-vite arrive parfois sans « https:// », et
+   parfois noyé dans le texte de l'invitation. On en extrait
+   l'adresse, et on n'accepte qu'une adresse web : un bouton du
+   cockpit ne doit pas pouvoir déclencher autre chose qu'une
+   ouverture de page. */
+function lienVisioPropre(v){
+  const t = String(v || '').trim();
+  if(!t) return '';
+  const m = t.match(/https?:\/\/[^\s"'<>]+/i);
+  if(m) return m[0];
+  if(/^[\w.-]+\.[a-z]{2,}(\/[^\s"'<>]*)?$/i.test(t)) return 'https://' + t;
+  return '';
+}
+
+const heureVisio = () => (salleVisio() && salleVisio().horaire) || '15:00';
+const heureLisible = h => String(h || '').replace(':00', ' h').replace(':', ' h ');
+
+function jourLisible(d){
+  const p = String(d || '').split('-');
+  if(p.length !== 3) return frdateL(d);
+  const j = new Date(+p[0], +p[1] - 1, +p[2]);
+  return j.toLocaleDateString('fr-FR', {weekday:'long', day:'2-digit', month:'2-digit'});
+}
+
+function vueSalleVisio(){
+  const s = salleVisio() || {};
+  const url = lienVisioPropre(s.url);
+  const auj = aujourdhui();
+  const ici = presencesDuJour(auj);
+  const h = heureLisible(heureVisio());
+
+  let v = `<div class="salle-v">
+    <div class="haut">
+      <div class="q">
+        <span class="k">Rendez-vous quotidien</span>
+        <div class="n">Visio de crise de l'ARS Nouvelle-Aquitaine — tous les jours à ${esc(h)}</div>
+        <div class="s">${url
+          ? `Le lien du salon ne change pas d'une séance à l'autre : il s'ouvre d'ici, sans le demander à personne.${s.precision ? ' ' + esc(s.precision) : ''}`
+          : `Aucun lien déposé. Tant qu'il n'est pas là, chacun le cherche dans sa boîte mail à 14 h 55.`}</div>
+      </div>
+      ${url
+        ? `<a class="entrer" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Lien permanent visio ARS ${esc(h)}</a>`
+        : `<button class="entrer vide" onclick="ouvrirDepotVisio()">Déposer le lien permanent visio ARS ${esc(h)}</button>`}
+    </div>
+
+    <div class="petits">
+      ${url ? `<span class="adresse">${esc(url)}</span>
+        <button onclick="copierLienVisio()">Copier le lien</button>` : ''}
+      <button onclick="ouvrirDepotVisio()">${url ? 'Modifier le lien' : 'Déposer le lien'}</button>
+      ${url && s.maj ? `<span class="adresse" style="flex:0 0 auto">Déposé le ${esc(frdateL(s.maj))}${s.par ? ' par ' + esc(s.par) : ''}</span>` : ''}
+    </div>`;
+
+  /* --- le créneau du jour --- */
+  v += `<div class="creneau">
+    <span class="jourh">Qui y sera — créneau du jour, ${esc(jourLisible(auj))} à ${esc(h)}</span>
+    <div class="qui-v">${ici.length
+      ? ici.map(p => `<span class="nom">${esc(p.prenom)}
+          <button onclick="retirerPresenceVisio('${p.id}')" title="Retirer ${esc(p.prenom)} du créneau" aria-label="Retirer ${esc(p.prenom)} du créneau">×</button>
+        </span>`).join('')
+      : `<span class="personne">Personne ne s'est encore positionné sur la séance d'aujourd'hui.</span>`}</div>
+    <div class="poser">
+      <input id="pv-nom" value="${esc(saisiePresence !== null ? saisiePresence : (moi === 'Anonyme' ? '' : moi.split(' ')[0]))}"
+        placeholder="Votre prénom" oninput="saisiePresence=this.value"
+        onkeydown="if(event.key==='Enter')sePositionnerVisio()">
+      <button class="btn" onclick="sePositionnerVisio()">J'y serai</button>
+    </div>`;
+
+  /* Les jours d'avant, en une ligne : assez pour voir qui porte le
+     rendez-vous depuis le début, pas assez pour encombrer. */
+  const avant = [...new Set(presencesVisio().map(p => p.date).filter(d => d && d < auj))]
+    .sort().reverse().slice(0, 3);
+  if(avant.length) v += `<div class="avant">Les jours précédents · ` + avant.map(d =>
+    `<b>${esc(frdate(d))}</b> : ` + presencesDuJour(d).map(p => esc(p.prenom)).join(', ')).join(' · ') + `</div>`;
+
+  return v + `</div></div>`;
+}
+
+function ouvrirDepotVisio(){
+  const s = salleVisio() || {};
+  document.getElementById('modale').innerHTML = `<h3>Lien permanent de la visio de l'ARS</h3>
+  <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">L'adresse du salon, celle qui vaut pour toutes les séances. Déposée ici une fois, elle est à portée de clic pour tout le copil : plus personne n'a à la redemander avant l'heure.</p>
+  <label style="margin-bottom:12px"><span class="k">Lien du salon *</span>
+    <input id="sv-url" value="${esc(s.url || '')}" placeholder="https://…  — collez le lien reçu de l'ARS"></label>
+  <div class="form">
+    <label><span class="k">Heure de la séance</span><input id="sv-horaire" type="time" value="${esc(s.horaire || '15:00')}"></label>
+    <label><span class="k">Précision</span>
+      <input id="sv-precision" value="${esc(s.precision || '')}" placeholder="Plateforme, code d'accès, mot de passe…"></label>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="enregistrerLienVisio()">Enregistrer</button>
+    <button class="btn sec" onclick="fermer()">Annuler</button>
+    ${s.url ? `<button class="btn sec" style="margin-left:auto" onclick="retirerLienVisio()">Retirer le lien</button>` : ''}
+  </div>`;
+  ouvrirRideau();
+  setTimeout(()=>{ const i = document.getElementById('sv-url'); if(i) i.focus({preventScroll:true}); }, 60);
+}
+
+async function enregistrerLienVisio(){
+  const brut = document.getElementById('sv-url').value.trim();
+  const url = lienVisioPropre(brut);
+  if(brut && !url){ toast("Ce lien ne ressemble pas à une adresse web — il commence par https://"); return; }
+  if(!url){ toast("Collez le lien du salon"); return; }
+
+  etat.salleVisio = etat.salleVisio && etat.salleVisio.length ? etat.salleVisio : [{id:'sv'}];
+  const s = etat.salleVisio[0];
+  const change = lienVisioPropre(s.url) !== url;
+  s.url = url;
+  s.horaire = document.getElementById('sv-horaire').value || '15:00';
+  s.precision = document.getElementById('sv-precision').value.trim();
+  s.maj = horodate();
+  s.par = moi;
+
+  /* Le lien du rendez-vous quotidien est un fait de la journée :
+     qui l'a déposé, et quand, se lit en main courante comme le
+     reste. */
+  if(change){
+    etat.courante = etat.courante || [];
+    etat.courante.push({
+      id: uid(), type: 'Organisation', date: aujourdhui(), heure: maintenant(), source: '', qui: moi,
+      evenement: "Lien permanent de la visio de crise de l'ARS déposé dans le cockpit — séance quotidienne à "
+        + heureLisible(s.horaire) + (s.precision ? ' (' + s.precision + ')' : '') + ".",
+      suite: "Accessible à tout le copil en tête de « Situation régionale ». Chacun s'y positionne sur le créneau du jour avant la séance.",
+      auteur: moi, quand: new Date().toISOString()
+    });
+  }
+  await sauver(); fermer(); rendre();
+  toast(change ? "Lien de la visio déposé" : "Rendez-vous mis à jour");
+}
+
+async function retirerLienVisio(){
+  const s = salleVisio();
+  if(!s || !confirm("Retirer le lien du salon ?\n\nPlus personne ne pourra entrer dans la visio depuis le cockpit.")) return;
+  s.url = '';
+  s.maj = horodate();
+  s.par = moi;
+  await sauver(); fermer(); rendre();
+  toast("Lien retiré");
+}
+
+async function copierLienVisio(){
+  const url = lienVisioPropre((salleVisio() || {}).url);
+  if(!url) return;
+  try{
+    await navigator.clipboard.writeText(url);
+    toast("Lien copié — à coller dans le message");
+  }catch(e){
+    prompt("Copiez le lien de la visio :", url);
+  }
+}
+
+async function sePositionnerVisio(){
+  const c = document.getElementById('pv-nom');
+  const n = c ? c.value.trim() : '';
+  if(!n){ toast("Indiquez votre prénom"); return; }
+  const auj = aujourdhui();
+  if(presencesDuJour(auj).some(p => cleP(p.prenom) === cleP(n))){
+    toast(n + " est déjà positionné·e sur la séance du jour"); return;
+  }
+  etat.presencesVisio = presencesVisio();
+  etat.presencesVisio.push({
+    id: uid(), date: auj, heure: heureVisio(), prenom: n,
+    par: moi === 'Anonyme' ? n : moi, quand: new Date().toISOString()
+  });
+  saisiePresence = '';
+  await sauver(); rendre();
+  toast(n + " est attendu·e à la visio de " + heureLisible(heureVisio()));
+}
+
+async function retirerPresenceVisio(id){
+  const p = presencesVisio().find(x => x.id === id);
+  if(!p) return;
+  if(!confirm("Retirer " + p.prenom + " du créneau du jour ?")) return;
+  etat.presencesVisio = presencesVisio().filter(x => x.id !== id);
+  await sauver(); rendre();
+  toast(p.prenom + " retiré·e du créneau");
+}
+
 function vueVisios(){
   const l = visiosTriees();
   const derniere = l[0];
@@ -5091,7 +5304,10 @@ function vueVeille(){
   const arafraichir = rubriques().filter(pointARafraichir);
 
   let h = `<h1>Situation régionale</h1>
-  <p class="chapo">L'état de la région, tenu à jour par la CPTS Pau Béarn. Les visios de crise de l'ARS ouvrent la page : c'est la source la plus complète dont nous disposons. Viennent ensuite ${rubriques().length} points de situation, un par sujet, qu'il suffit de reprendre quand quelque chose bouge.</p>`;
+  <p class="chapo">L'état de la région, tenu à jour par la CPTS Pau Béarn. Le rendez-vous quotidien de l'ARS ouvre la page — son lien, et qui de l'équipe s'y positionne aujourd'hui — suivi des comptes rendus des séances : c'est la source la plus complète dont nous disposons. Viennent ensuite ${rubriques().length} points de situation, un par sujet, qu'il suffit de reprendre quand quelque chose bouge.</p>`;
+
+  /* --- le rendez-vous de 15 h : le lien du salon, et qui y sera --- */
+  h += vueSalleVisio();
 
   /* --- ce que l'ARS a dit à sa dernière visio --- */
   h += vueVisios();
@@ -5119,12 +5335,13 @@ function vueVeille(){
   h += `<div class="repli guide">
     <button class="tete" onclick="basculerGuide()">
       <div>
-        <div class="t">Tenir cette page : trois gestes</div>
+        <div class="t">Tenir cette page : quatre gestes</div>
         <div class="s">${guideVeille ? "À replier une fois la main prise" : "Déplier si vous prenez la veille pour la première fois"}</div>
       </div>
       <span class="chev">${guideVeille ? '▾' : '▸'}</span>
     </button>
     ${guideVeille ? `<div class="dedans"><ol class="gestes-g">
+      <li><b>Se positionner sur le créneau du jour.</b> En tête de page, le lien permanent du salon et le créneau de la séance : posez-y votre prénom avant l'heure, pour que l'équipe sache qui l'y représente — et pour que la CPTS n'y soit ni à deux sans le savoir, ni absente en croyant qu'un autre y est.</li>
       <li><b>Consigner la visio de l'ARS.</b> Après chaque séance, « Consigner une visio » en haut de page : un point par sujet abordé, dans l'ordre. Le copier-coller de vos notes suffit. Une séance à laquelle on a assisté sans rien en rapporter reste signalée en rouge.</li>
       <li><b>Reprendre les points qui ont bougé.</b> Ouvrir le feuillet concerné, coller ce qu'on a trouvé — communiqué, compte rendu, mail — et enregistrer. Pas besoin de reformuler : mieux vaut le texte brut de la source qu'un résumé approximatif.</li>
       <li><b>Laisser le reste tranquille.</b> Un point qui n'a pas bougé depuis ${SEUIL_POINT_H} h passe en orange : c'est un rappel, pas un reproche. Rien ne part aux adhérents depuis cette page — la diffusion se décide au copil.</li>
