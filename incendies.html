@@ -1894,12 +1894,6 @@ const etatInitial = {
     ]
   },
   missions: [
-    {id:'m1', titre:"Maintien des soins en ambulatoire sur le territoire", detail:"Limiter le recours aux urgences du CH de Pau et des cliniques.", pilote:'', suppleant:'', mandat:"Oui — mail ARS du 24/07", statut:'À lancer', prochaine:"Prendre contact avec la cellule de crise du CH de Pau : attentes, déprogrammation, volumes.", echeance:'', fiche:{but:`Éviter qu'un patient du territoire arrive aux urgences faute de solution en ville.`, faire:`Prendre contact avec la cellule de crise du CH de Pau.
-Recenser les cabinets ouverts et les créneaux non programmés d'ici fin août.
-Diffuser aux adhérents les recommandations ARS sur les fumées.`, avec:`CH de Pau, SAS, pharmacies, délégation départementale de l'ARS.`, pour:`Les patients du territoire et les professionnels qui les reçoivent.`, limite:`On ne monte ni garde ni permanence : on recense et on oriente.`}},
-    {id:'m2', titre:"Effets indirects sur le territoire béarnais", detail:"Ponction des transports sanitaires du 64, déprogrammations, patients évacués hébergés en Béarn.", pilote:'', suppleant:'', mandat:'Non', statut:'À lancer', prochaine:"Recenser les capacités de soins non programmés ouvertes en août.", echeance:'', fiche:{but:`Repérer tôt ce que la crise girondine casse dans les parcours béarnais.`, faire:`Vérifier l'impact sur les transports sanitaires programmés : dialyses, chimiothérapies, sorties d'hospitalisation.
-Suivre les déprogrammations du CH et des cliniques.
-Recueillir les situations de patients évacués hébergés en Béarn.`, avec:`Transporteurs sanitaires du 64, CH de Pau, adhérents.`, pour:`Les patients chroniques dont le parcours peut rompre sans que personne ne le voie.`, limite:`On documente et on alerte. On ne réorganise pas les transports.`}},
     {id:'m3', titre:"Collecte de matériel médical", detail:"Collecte ouverte le 27/07 sur une liste fermée de matériel, adossée au besoin exprimé par le centre d'accueil de Bordeaux.", pilote:'', suppleant:'', renforts:[{nom:'Patricia Benastre', role:"Phoning auprès des pharmaciens du territoire", par:'Eva Poulmarch'}], mandat:'En attente', statut:'En cours', prochaine:"Appel diffusé le 27/07 à 14h30, profession par profession, puis appel à volontaires pour la logistique à la Foire Expo de Pau à 15h30. Reporter les réponses du formulaire dans le registre des donateurs, confirmer le lieu de dépôt, et obtenir le point de livraison avant tout enlèvement.", echeance:'', fiche:{but:`Répondre à un besoin réel, pas à une envie d'aider.`, faire:`Collecte ouverte le 27/07 sur une liste fermée : lecteurs d'hémoglucotest, tensiomètres, thermomètres, saturomètres, stéthoscopes.
 Ne rien accepter au-delà de cette liste, et le dire clairement aux adhérents.
 Reporter chaque réponse dans le registre des donateurs et formaliser le don par un bordereau.
@@ -1907,23 +1901,9 @@ Nommer un point de collecte unique et un contact sur place avant d'organiser un 
     {id:'m4', titre:"Contact des CPTS des zones touchées", detail:"Identifier leurs besoins réels, sans placer d'offre.", pilote:'Eva Poulmarch', suppleant:'', mandat:"Non — initiative CPTS", statut:'En cours', prochaine:"Trois CPTS jointes le 27/07 : aucun besoin matériel exprimé à ce stade. Envoyer le mail de contact à Nord Bassin Océan, rappeler la ligne SB, attendre le rappel de Sud Bassin Val de l'Eyre. Reste à joindre Terre de Médoc et les CPTS landaises.", echeance:'', fiche:{but:`Savoir comment vont les CPTS touchées et ce dont elles ont réellement besoin.`, faire:`Appeler Claire (Agora Lib) pour fiabiliser la liste des CPTS à contacter.
 Dérouler les appels avec la même trame.
 Noter chaque appel, y compris quand la réponse est « rien ».`, avec:`Agora Lib, CPTS Nord Bassin Océan, Terre de Médoc, Sud Bassin Val de l'Eyre, Ouest Gironde, CPTS landaises.`, pour:`Les équipes de coordination sur place.`, limite:`On n'annonce pas de matériel disponible. Aucun engagement sans lieu de livraison nommé.`}},
-    {id:'m5', titre:"Relais de diffusion des appels à renfort", detail:"Uniquement les appels officiels (URPS, ARS, ordres). La CPTS Pau Béarn n'est opératrice d'aucun dispositif.", pilote:'', suppleant:'', mandat:"Non — relais uniquement", statut:'En cours', prochaine:"Préparer une réponse d'attente pour les professionnels hors kinésithérapie.", echeance:'', fiche:{but:`Faire circuler les appels officiels sans que la CPTS Pau Béarn soit prise pour l'opérateur.`, faire:`Relayer les appels URPS, ARS et ordres en nommant qui porte le dispositif.
-Préparer une réponse d'attente pour les professions sans canal ouvert.
-Consigner chaque diffusion en main courante : sa portée, son canal et le canal de retour indiqué.`, avec:`URPS, ordres professionnels, délégation départementale de l'ARS.`, pour:`Les 210 professionnels de santé des groupes de la CPTS Pau Béarn.`, limite:`On relaie sans se substituer à l'opérateur du dispositif. Le recensement mené en propre par la CPTS relève de la mission « Appel au renfort », et se distingue de ces relais.`}},
-    {id:'m6', titre:"Traçabilité et retour d'expérience", detail:"Alimenter ce cockpit en continu : c'est la matière du futur plan SSE.", pilote:'', suppleant:'', mandat:'Non', statut:'En cours', prochaine:"Rappeler la règle d'alimentation à chaque point quotidien.", echeance:'', fiche:{but:`Que cette semaine laisse une trace exploitable pour écrire le plan SSE.`, faire:`Consigner décisions et informations au fil de l'eau.
-Vérifier chaque soir que rien d'important n'est resté hors du cockpit.
-Rappeler la règle d'alimentation au point quotidien.`, avec:`Toute l'équipe de gestion de crise.`, pour:`La CPTS en septembre, et l'ARS au retour d'expérience.`, limite:`On ne rédige pas de fiches réflexe pendant la crise.`}}
-,
-    {id:'m7', titre:"Veille des sources et actualités", detail:"Passer en revue les canaux officiels et tenir à jour la situation régionale.", pilote:'', suppleant:'', mandat:'Non', statut:'À lancer', prochaine:'', echeance:'', espace:'veille', fiche:{but:`Savoir avant les adhérents ce qui sort sur les incendies et ce qui concerne la ville.`, faire:`Passer les sources en revue deux fois par jour, le matin et en fin d'après-midi.
-Marquer chaque canal comme vérifié après consultation.
-Retenir ce qui a un impact pour le territoire, avec le lien vers la source.`, avec:`ARS, préfectures, ATMO, URPS, presse régionale.`, pour:`L'équipe de gestion de crise, et indirectement les adhérents.`, limite:`On ne diffuse rien aux adhérents depuis cette mission : on alimente le fil, la diffusion se décide ailleurs.`}},
     {id:'m8', titre:"Participation à la visio de crise de l'ARS", detail:"Réunion de crise de l'ARS en visio à 15h : la CPTS Pau Béarn y assiste.", pilote:'Eva Poulmarch', suppleant:'', mandat:"Oui — visio de crise de l'ARS", statut:'En cours', prochaine:"Assister à la visio de 15h et consigner ce qui en sort dans « Échanges avec l'ARS » et la main courante.", echeance:'', espace:'ars', fiche:{but:`Entendre la consigne régionale de première main et faire remonter ce qui concerne le territoire béarnais.`, faire:`Assister à la visio de crise de l'ARS à 15h.
 Noter les consignes, les demandes et ce qui appelle une décision de la CPTS.
 Consigner le compte rendu dans « Échanges avec l'ARS » et en main courante après chaque séance.`, avec:`ARS Nouvelle-Aquitaine, délégation départementale 64.`, pour:`L'équipe de gestion de crise, qui décide à partir de ce qui s'y dit.`, limite:`On rapporte ce qui est dit. Rien n'est diffusé aux adhérents avant validation de la gouvernance.`}},
-    {id:'m9', titre:"Appel au renfort — recensement des professionnels volontaires", detail:"Recenser les professionnels de santé du territoire prêts à se déplacer, avant même de savoir ce qui sera demandé.", pilote:'', suppleant:'', mandat:"En attente — question posée à la DD ARS 64", statut:'À lancer', prochaine:"Ouvrir le formulaire de recensement et diffuser le lien aux professionnels de santé du territoire, profession par profession. Rappeler chaque inscrit pour vérifier assurance, statut et continuité des soins.", echeance:'', espace:'volontaires', fiche:{but:`Savoir sur qui l'on peut compter avant qu'on nous le demande. Une liste vérifiée le jour où l'ARS appelle vaut mieux qu'un appel lancé dans l'urgence.`, faire:`Diffuser le formulaire de recensement à l'ensemble des professionnels de santé du territoire, canal par canal.
-Recenser nom, prénom, profession, téléphone et disponibilités — et pour chacun, jusqu'où il peut se déplacer et pour quel type de renfort.
-Rappeler chaque inscrit : couverture d'assurance hors cabinet, continuité de sa patientèle, accord pour que ses coordonnées circulent.
-Tenir le registre à jour et ne transmettre que des noms vérifiés.`, avec:`ARS Nouvelle-Aquitaine et sa délégation départementale 64, URPS, ordres professionnels, CPTS des zones touchées.`, pour:`Les zones touchées et les hubs de santé qui demanderont des bras, et les professionnels du territoire qui veulent aider sans savoir comment.`, limite:`On recense, on ne réquisitionne pas et on n'affecte personne. Aucune promesse de mission n'est faite à l'inscription, et aucun nom ne sort du cockpit sans l'accord de la personne.`}},
     {id:'m10', titre:"Patients évacués — accès à un médecin généraliste", detail:"Constituer un vivier de généralistes volontaires pour les renouvellements d'ordonnance et les suites d'inhalation, et organiser le fléchage depuis les pharmacies et les structures de soins non programmés.", pilote:'Anne Latisnère', suppleant:'Eva Poulmarch', mandat:"Non — initiative CPTS, sur remontée du CMSI de Billère", statut:'À lancer', prochaine:"Ouvrir le recensement en ligne des généralistes et diffuser le lien aux médecins du territoire. Rappeler chaque médecin qui accepte pour confirmer ses créneaux, puis transmettre la liste aux pharmacies et aux structures de soins non programmés.", echeance:'', espace:'orientation', fiche:{but:`Qu'une personne évacuée qui se présente au comptoir d'une pharmacie ou dans une structure de soins non programmés trouve un médecin généraliste — et non les urgences, ou rien.`, faire:`Ouvrir le recensement en ligne et diffuser le lien aux médecins généralistes du territoire : qui accepte des patients évacués, pour quels motifs, combien, sur quelles demi-journées et à quelles conditions.
 Rappeler chaque médecin qui accepte pour confirmer ses créneaux avant de lui adresser quiconque.
 Tenir le vivier à jour avec les coordonnées, les créneaux cochés et l'accord de diffusion de chacun.
@@ -2513,6 +2493,30 @@ function lancerSondage(){
    par le copil n'est jamais touché. C'est par là qu'arrivent les
    éléments consignés hors ligne, au téléphone notamment. */
 const SEEDS = ['missions','veille','ars','sources','rubriques','salleVisio','visios','lignes','offre','cpts','courante','materiel','stockage','points','contacts','referents','medecins','orientes','relais'];
+/* Six missions d'amorçage que personne n'avait prises en main
+   occupaient l'organigramme : elles y figuraient comme du travail
+   en cours alors qu'aucun nom n'était en face. Elles sont retirées
+   du cockpit, ici comme sur les postes qui les ont déjà reçues.
+
+   Deux garde-fous : seuls ces six identifiants-là sont visés — ce
+   que le copil crée lui-même ne peut pas être emporté — et une
+   mission sur laquelle un nom a été posé depuis reste en place.
+   Une mission créée sans pilote n'est donc jamais concernée. */
+const MISSIONS_AMORCE_RETIREES = ['m1','m2','m5','m6','m7','m9'];
+function retirerMissionsDAmorcageNonPortees(){
+  etat.retires = etat.retires || [];
+  etat.missions = (etat.missions || []).filter(m => {
+    if(MISSIONS_AMORCE_RETIREES.indexOf(m.id) === -1) return true;
+    const portee = (m.pilote || '').trim() || (m.suppleant || '').trim() || renfortsDe(m).length;
+    if(portee) return true;
+    noterRetrait(m.id);
+    return false;
+  });
+  MISSIONS_AMORCE_RETIREES.forEach(id => {
+    if(!etat.missions.some(m => m.id === id)) noterRetrait(id);
+  });
+}
+
 function fusionnerNouveautes(){
   etat.retires = etat.retires || [];
   SEEDS.forEach(k => {
@@ -2522,26 +2526,13 @@ function fusionnerNouveautes(){
       if(!vus.has(o.id) && !etat.retires.includes(o.id)) etat[k].push(JSON.parse(JSON.stringify(o)));
     });
   });
+  retirerMissionsDAmorcageNonPortees();
   reverserDiffusions();
   apparierVisioARS();
   consignerPatientsHerites();
   consignerCollecteHeritee();
   consignerRegistresHerites();
   completerVeille();
-  corrigerRelaisRenfort();
-}
-
-/* La CPTS ne lançait aucun appel à volontaires en propre : c'était
-   écrit noir sur blanc dans la fiche du relais de diffusion. Elle
-   en lance un depuis l'ouverture de l'appel au renfort, et la
-   phrase est devenue fausse. On la corrige une fois, et seulement
-   si elle n'a pas déjà été réécrite à la main. */
-const ANCIENNE_LIMITE_M5 = "On ne lance pas d'appel à volontaires en propre.";
-function corrigerRelaisRenfort(){
-  const m = (etat.missions||[]).find(x => x.id === 'm5');
-  const ref = (etatInitial.missions||[]).find(x => x.id === 'm5');
-  if(!m || !m.fiche || !ref || m.fiche.limite !== ANCIENNE_LIMITE_M5) return;
-  m.fiche.limite = ref.fiche.limite;
 }
 
 /* « Ce qu'on a diffusé » faisait doublon avec la main courante et a été
@@ -2719,7 +2710,7 @@ function majBandeau(){
 /* =========================================================
    OUTILS
    ========================================================= */
-const ESPACES = {m1:'courante', m2:'courante', m3:'materiel', m4:'appels', m5:'courante', m6:'courante'};
+const ESPACES = {m3:'materiel', m4:'appels'};
 const espaceDe = m => m.espace || ESPACES[m.id] || 'courante';
 const nomEspace = id => (ONGLETS.find(o => o.id === id) || {}).nom || 'Main courante';
 const cleP = n => (n||'').trim().toLowerCase();
@@ -11875,11 +11866,11 @@ const DECLENCHEURS = [
   {id:'d2', q:"Une structure exprime un besoin en matériel",
    s:"Ce qu'on vérifie avant d'ouvrir quoi que ce soit : un besoin écrit, un lieu de livraison nommé, une liste fermée.", m:'m3'},
   {id:'d3', q:"Un appel à renfort circule",
-   s:"Distinguer le relais d'un dispositif porté par un autre du recensement mené en propre. Assurance, continuité des soins, accord de diffusion.", m:'m5'},
+   s:"Distinguer le relais d'un dispositif porté par un autre du recensement mené en propre. Assurance, continuité des soins, accord de diffusion.", m:''},
   {id:'d4', q:"Une personne déplacée se présente sans médecin traitant",
    s:"Le circuit depuis la pharmacie ou les soins non programmés vers le vivier de généralistes. Accord au comptoir, messagerie sécurisée.", m:'m10'},
   {id:'d5', q:"Un professionnel du territoire signale une situation",
-   s:"Où ça se consigne, qui rappelle, et à partir de quand ça remonte à l'ARS.", m:'m2'},
+   s:"Où ça se consigne, qui rappelle, et à partir de quand ça remonte à l'ARS.", m:''},
   {id:'d6', q:"Une CPTS voisine est touchée",
    s:"Prendre des nouvelles sans placer d'offre. Noter l'appel même quand la réponse est « rien ».", m:'m4'},
   {id:'d7', q:"Un adhérent ou la presse demande une position",
