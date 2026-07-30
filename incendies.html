@@ -425,6 +425,107 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .fil .sup{background:none;border:0;color:var(--texte-2);cursor:pointer;opacity:.4;font-size:14px;padding:0 2px;align-self:flex-start}
 .fil .sup:hover{opacity:1;color:var(--braise)}
 
+/* ---------- la main courante ----------
+   Elle se lit comme le fil qu'elle a remplacé : une ligne par
+   fait, l'heure en marge, la nature en pastille, et le nom de qui
+   s'en est chargé sous la ligne. Ce qui a été écrit en plus — le
+   texte entier, la suite donnée — ne s'ouvre qu'à la demande : on
+   parcourt d'abord, on lit ensuite.
+
+   Les outils ne s'affichent qu'au survol de l'entrée : trois cents
+   entrées portant chacune quatre boutons se liraient comme une
+   barre d'outils, pas comme un registre. Au doigt, faute de
+   survol, ils restent visibles. */
+.fil .tete{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:4px}
+.fil .venu{display:inline-flex;align-items:baseline;gap:6px;background:#FCF3E4;color:#8A5D12;
+  border-radius:20px;padding:2px 9px;font-size:11.5px;max-width:100%}
+.fil .venu .p{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;opacity:.75}
+.fil .out{margin-left:auto;display:flex;gap:1px;opacity:0;transition:opacity .12s}
+.fil li:hover .out, .fil li:focus-within .out{opacity:1}
+@media(hover:none){.fil .out{opacity:1}}
+.fil .out button{background:none;border:0;color:var(--texte-2);cursor:pointer;font-size:13px;
+  line-height:1;padding:3px 4px;border-radius:5px;font-family:inherit}
+.fil .out button:hover{background:var(--surface);color:var(--encre)}
+.fil .out button[disabled]{opacity:.25;cursor:default}
+.fil .out button.sup:hover{color:var(--braise)}
+/* La personne en charge se corrige là où elle se lit : le nom est
+   lui-même le bouton, et un crayon discret le dit. */
+.fil .qui{background:none;border:0;padding:0;margin:0;cursor:pointer;font-family:inherit;
+  font-size:11px;letter-spacing:.04em;color:var(--encre-2);border-bottom:1px dashed var(--trait)}
+.fil .qui:hover{color:var(--encre);border-bottom-color:var(--encre-2)}
+.fil .qui.vide{color:var(--texte-2);font-style:italic}
+.fil .qui::after{content:" ✎";opacity:.5;font-style:normal}
+.fil .plus{background:none;border:0;padding:0;cursor:pointer;font-family:inherit;font-size:11px;
+  letter-spacing:.04em;color:var(--encre-2);text-decoration:underline;text-underline-offset:2px}
+.fil .c .s .sep{opacity:.4;margin:0 6px}
+/* Le texte entier est toujours dans la page, replié seulement : à
+   l'écran on lit le résumé, mais un PDF de main courante ne tronque
+   rien — c'est la pièce qu'on joint au retour d'expérience. */
+.fil .plein{margin-top:6px;padding:8px 11px;background:var(--surface);border-radius:7px;
+  font-size:13.5px;line-height:1.5;color:var(--texte);white-space:pre-line}
+.fil .plein.plie{display:none}
+.fil .plein .k{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--encre-2);margin:9px 0 1px}
+.fil .plein .k:first-child{margin-top:0}
+.fil .jour{border-bottom:0;padding:14px 0 2px}
+.fil .jour:first-child{padding-top:2px}
+.fil .jour .n{font-family:var(--display);font-weight:600;font-size:13px;color:var(--encre)}
+.fil .jour .auj{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--braise);margin-left:8px}
+@media(max-width:600px){
+  .fil .out{opacity:1}
+}
+
+/* ---------- le rendez-vous de 15 h ----------
+   Le salon de la visio de l'ARS ne change pas d'une séance à
+   l'autre : le lien est déposé une fois et se retrouve en tête de
+   la situation régionale, pour que n'importe qui du copil entre
+   dans la séance sans avoir à le redemander avant 15 h. Dessous,
+   le créneau du jour : chacun y pose son prénom, et l'équipe sait
+   avant l'heure qui l'y représentera. */
+.salle-v{background:var(--carte);border:1px solid var(--trait);border-left:5px solid var(--ambre);
+  border-radius:12px;padding:16px 18px;margin-bottom:16px}
+.salle-v .haut{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.salle-v .haut > .q{flex:1;min-width:230px}
+.salle-v .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--texte-2);display:block;margin-bottom:3px}
+.salle-v .n{font-family:var(--display);font-weight:700;font-size:16px;line-height:1.25;color:var(--encre)}
+.salle-v .s{font-size:12.5px;color:var(--texte-2);margin-top:3px}
+.salle-v .entrer{display:inline-flex;align-items:center;gap:9px;background:var(--encre);color:#fff;
+  font-family:var(--display);font-weight:700;font-size:15px;border:0;border-radius:9px;
+  padding:13px 20px;min-height:50px;text-decoration:none;cursor:pointer}
+.salle-v .entrer:hover{background:var(--encre-2)}
+.salle-v .entrer.vide{background:#fff;color:var(--encre);border:1px dashed var(--encre-2);font-weight:600}
+.salle-v .petits{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.salle-v .petits button{background:none;border:1px solid var(--trait);border-radius:7px;color:var(--texte-2);
+  font-family:var(--corps);font-size:12.5px;padding:7px 11px;cursor:pointer;min-height:38px}
+.salle-v .petits button:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.salle-v .adresse{font-family:var(--mono);font-size:11px;color:var(--texte-2);word-break:break-all;
+  flex:1;min-width:160px}
+
+/* Le créneau du jour. Un prénom, un clic : c'est tout ce qu'on
+   demande à quelqu'un qui a la séance dans dix minutes. */
+.creneau{border-top:1px dashed var(--trait);margin-top:14px;padding-top:12px}
+.creneau .jourh{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--texte-2);display:block;margin-bottom:8px}
+.creneau .qui-v{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.creneau .qui-v .nom{display:inline-flex;align-items:center;gap:7px;background:var(--cobalt-clair);
+  color:var(--encre);border-radius:20px;padding:6px 6px 6px 13px;font-size:13.5px;font-weight:600;
+  font-family:var(--display)}
+.creneau .qui-v .nom button{background:none;border:0;color:var(--encre-2);opacity:.5;cursor:pointer;
+  font-size:14px;line-height:1;padding:3px 6px;border-radius:50%}
+.creneau .qui-v .nom button:hover{opacity:1;color:var(--braise);background:#FCF0EC}
+.creneau .qui-v .personne{font-size:13.5px;color:var(--texte-2);font-style:italic}
+.creneau .poser{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.creneau .poser input{flex:1;min-width:170px;max-width:280px;margin:0}
+.creneau .avant{font-size:12px;color:var(--texte-2);margin-top:10px;line-height:1.5}
+.creneau .avant b{font-weight:600;color:var(--texte)}
+@media(max-width:640px){
+  .salle-v{padding:14px}
+  .salle-v .entrer{width:100%;justify-content:center}
+  .creneau .poser input{max-width:none}
+}
+
 /* ---------- visios de crise de l'ARS ----------
    En tête de la situation régionale, et traitées comme telles :
    fond encré, séance la plus récente dépliée, les précédentes
@@ -699,56 +800,6 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .ent-r .lien-v{display:block;background:none;border:0;border-bottom:1px solid var(--trait);
   padding:0;cursor:pointer;font-family:inherit;text-align:left;width:fit-content}
 .ent-r .lien-v::after{content:" →";color:var(--texte-2)}
-/* Une entrée venue du dehors se reconnaît avant d'être lue : elle
-   porte le nom de qui l'a communiquée en tête, et un liseré ambre
-   à droite qui la distingue de tout ce que nous avons fait
-   nous-mêmes. */
-.ent-r .venu{display:inline-flex;align-items:baseline;gap:7px;background:#FCF3E4;color:#8A5D12;
-  border-radius:20px;padding:4px 11px;font-size:12.5px;max-width:100%}
-.ent-r .venu .p{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;opacity:.75}
-
-/* ---------- la main courante ----------
-   Une entrée n'a pas de statut à porter : elle atteste, elle ne se
-   pilote pas. Ce qui la distingue d'une autre, c'est sa provenance —
-   d'où le liseré, bleu quand c'est nous, ambre quand ça vient du
-   dehors — et la personne qui s'en est chargée, qui la signe.
-   Le texte, lui, est souvent un paragraphe entier : il se lit en
-   corps de lecture et non en titre gras.
-
-   Serré, et non aéré : la main courante se parcourt, trente entrées
-   à la suite, et chacune tenait le tiers d'un écran pour trois
-   lignes de texte. Ce qui a été resserré, ce sont les blancs — les
-   marges, la hauteur de ligne, la pastille de signature ramenée sur
-   une seule ligne. Le corps du texte, lui, n'a pas bougé : c'est ce
-   qu'on vient lire. */
-.ent-r.mc{border-left-color:var(--encre-2);padding:10px 15px 9px;margin-bottom:6px;
-  transition:box-shadow .14s,border-color .14s}
-.ent-r.mc:hover{box-shadow:0 3px 14px rgba(6,43,99,.07)}
-.ent-r.mc.dehors{border-left-color:var(--ambre);background:linear-gradient(90deg,#FFFDF8,var(--carte) 220px)}
-.ent-r.mc .haut{gap:8px;margin-bottom:5px}
-.ent-r.mc .hr{background:var(--surface);border-radius:5px;padding:2px 7px;font-size:11px;
-  letter-spacing:.03em;color:var(--encre)}
-.ent-r.mc .venu{padding:2px 9px;font-size:11.5px;gap:6px}
-.ent-r.mc .ti{font-family:var(--corps);font-weight:400;font-size:14.5px;line-height:1.5;
-  color:var(--texte)}
-/* La signature : initiales en pastille, nom à côté — sur une seule
-   ligne, le libellé et le nom côte à côte plutôt qu'empilés. */
-.ent-r.mc .par{display:inline-flex;align-items:center;gap:7px;margin-top:7px}
-.ent-r.mc .par .av{width:21px;height:21px;flex:none;border-radius:50%;background:var(--cobalt-clair);
-  color:var(--encre-2);font-family:var(--display);font-weight:700;font-size:9.5px;letter-spacing:.02em;
-  display:inline-flex;align-items:center;justify-content:center}
-.ent-r.mc .par .nn{display:flex;flex-direction:row;align-items:baseline;gap:6px;flex-wrap:wrap;
-  line-height:1.25;font-size:13px;color:var(--texte)}
-.ent-r.mc .par .k{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--texte-2)}
-/* La suite donnée n'est pas une remarque en marge : c'est ce qui
-   reste à faire. Elle se pose dans un cadre à elle. */
-.ent-r.mc .bloc{margin-top:7px;padding:6px 10px;border-left:0;border-radius:6px;
-  background:var(--surface)}
-.ent-r.mc .bloc .k{color:var(--encre-2);margin-bottom:1px}
-.ent-r.mc .bloc .v{font-size:13px;line-height:1.45;color:var(--texte-2)}
-.ent-r.mc .pied{margin-top:7px;padding-top:6px;border-top:1px solid var(--trait);opacity:.85}
-@media(max-width:600px){.ent-r.mc{padding:9px 12px 8px}}
 .ent-r .pied{margin-top:11px;padding-top:8px;border-top:1px dashed var(--trait);
   font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--texte-2);
   display:flex;gap:6px 16px;flex-wrap:wrap}
@@ -1636,7 +1687,14 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
   .carte,.tw,.mission,.pers,.ligne,.pt,.visio,.ent-r,.miss-pers,.miss-c,.apourvoir{border:1px solid #ccc;box-shadow:none;break-inside:avoid}
   .miss-pers .manquant,.miss-eq .qn.manque{text-decoration:none;color:#555}
   .visio .tete .chev{display:none}
-  .reg-jour{break-after:avoid}
+  .reg-jour,.fil .jour{break-after:avoid}
+  /* La main courante imprimée dit tout : les outils de l'écran
+     disparaissent, le nom de qui s'en est chargé reste, et le texte
+     replié se déplie. */
+  .fil .out,.fil .plus{display:none!important}
+  .fil .qui{border-bottom:0;color:#333}
+  .fil .qui::after{content:""}
+  .fil .plein.plie{display:block!important}
   .entete-print{display:block!important;border-bottom:2px solid #062B63;padding-bottom:8px;margin-bottom:16px}
   .entete-print .t{font-family:var(--display);font-weight:700;font-size:15pt;color:#062B63}
   .entete-print .d{font-family:var(--mono);font-size:9pt;color:#555;margin-top:3px}
@@ -1774,7 +1832,12 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
    ========================================================= */
 const CLE = 'cpts_pau_bearn_crise_2026';
 let moi = 'Anonyme';
-let filtreFil = 'Tout';
+/* La main courante se lit d'un bloc, et se filtre par nature
+   d'entrée quand on ne cherche qu'une chose. Les entrées dépliées
+   ne tiennent que le temps de la session : ce qu'on ouvre pour lire
+   n'a pas à rester ouvert pour les autres. */
+let filtreMC = 'Tout';
+let deplieesMC = new Set();
 let feuillet = null;
 let onglet = 'cockpit';
 
@@ -2416,6 +2479,7 @@ function fusionnerNouveautes(){
   apparierVisioARS();
   consignerPatientsHerites();
   consignerCollecteHeritee();
+  consignerRegistresHerites();
   completerVeille();
   corrigerRelaisRenfort();
 }
@@ -2463,7 +2527,7 @@ function reverserDiffusions(){
       d.retourCanal ? "Canal de retour indiqué : " + d.retourCanal : ''
     ].filter(Boolean).join(' · ');
     etat.courante.push({
-      id, date: d.date || '', heure: d.heure || '', source: 'Diffusion',
+      id, type: 'Diffusion', date: d.date || '', heure: d.heure || '', source: 'Diffusion',
       evenement: "Message diffusé — " + (d.objet || 'objet non renseigné') + (detail ? "\n" + detail : ''),
       suite: [d.retours ? "Retours reçus : " + d.retours : '', d.observation || ''].filter(Boolean).join(' '),
       auteur: d.auteur || '', quand: d.quand || ''
@@ -2849,11 +2913,26 @@ function exporterCSV(k){
     ent.splice(1, 0, "Appel aux dons");
     src.forEach((o, i) => lig[i].splice(1, 0, csvVal(o.campagne ? nomCampagne(o) : '')));
   }
+  /* La main courante porte de même une colonne qui n'est pas un
+     champ de saisie : la nature de l'entrée, c'est-à-dire la page du
+     cockpit d'où elle vient. C'est par elle qu'on trie un registre
+     qui reçoit tout. */
+  if(k === 'courante'){
+    ent.splice(0, 0, "Nature");
+    src.forEach((o, i) => lig[i].splice(0, 0, csvVal(typeMC(o))));
+  }
   telechargerCSV(cfg.titre, [ent.map(csvVal), ...lig]);
 }
+/* Tout ce que la CPTS a tracé, en un fichier : c'est la main
+   courante, puisqu'elle reçoit désormais ce que chaque page
+   enregistre. Elle remplace la recomposition à la volée qui lisait
+   tous les registres sans rien garder — celle-là exportait un
+   ordre que personne ne pouvait retrouver à l'écran. */
 function exporterTout(){
-  const rows = [['Onglet','Date','Heure','Nature','Contenu','Détail','Par'].map(csvVal)];
-  evenements().forEach(e => rows.push([e.type, e.date, e.heure, e.type, e.titre, e.detail, e.qui].map(csvVal)));
+  const rows = [['Nature','Date','Heure','Venu du dehors','Le fait','Suite donnée','Qui s\'en est chargé','Saisi par'].map(csvVal)];
+  chrono('courante', etat.courante).forEach(o => rows.push(
+    [typeMC(o), o.date || '', o.heure || '', o.source || '', o.evenement || '',
+     o.suite || '', o.qui || '', o.auteur || ''].map(csvVal)));
   telechargerCSV('Traçabilité complète', rows);
 }
 function imprimer(){ window.print(); }
@@ -2918,7 +2997,6 @@ const enChantier = id => EN_CONSTRUCTION.indexOf(id) >= 0 && !maquette;
 const ONGLETS = [
   {id:'cockpit',   nom:'Cockpit',            groupe:'Pilotage', cpt:null},
   {id:'missions',  nom:'Missions & organigramme', groupe:'Pilotage', cpt:null},
-  {id:'fil',       nom:'Fil d\'actualité',    groupe:'Suivi', cpt:null},
   {id:'veille',    nom:'Situation régionale', groupe:'Suivi', cpt:null},
   {id:'appels',    nom:'Contact avec les CPTS', groupe:'Suivi', cpt:null},
   {id:'rapports',  nom:'Rapports',           groupe:'Suivi', cpt:null},
@@ -3178,30 +3256,30 @@ const CHAMPS = {
   },
   courante: {
     titre:"Main courante",
-    chapo:"Tout ce qui est reçu, décidé ou fait, horodaté au moment du fait. C'est ici que tout se consigne, y compris ce qui remonte du terrain : une entrée répond à une question avant les autres — est-ce nous qui l'avons fait, ou est-ce quelqu'un du dehors qui nous l'a dit ? Dans le premier cas on nomme qui s'en est chargé ; dans le second on nomme qui a communiqué l'information, et l'entrée se signale d'elle-même comme venue du dehors. Le nom du rédacteur s'ajoute tout seul. C'est cette page qui documentera le retour d'expérience et le futur plan SSE.",
-    /* Le formulaire pose la question de la provenance en deux temps
-       séparés à l'écran, parce que c'est là que la main courante se
-       trompait : « Coordination » avait été mis en source par défaut,
-       alors qu'une décision prise entre nous ne vient de nulle part —
-       elle a seulement quelqu'un qui s'en est chargé. */
+    chapo:"Tout ce que la CPTS Pau Béarn a reçu, décidé ou fait depuis le début de sa mobilisation, du plus récent au plus ancien, une ligne par fait. Chaque page du cockpit y dépose d'elle-même ce qu'on y renseigne, en une phrase, avec le nom de qui s'en est chargé — nom qui se corrige d'un clic. C'est la page à ouvrir quand on reprend la main après une absence, et celle qui documentera le retour d'expérience et le futur plan SSE.",
+    /* Une entrée écrite à la main ne demande plus que quatre choses.
+       Ce que le formulaire posait en quatre temps séparés à l'écran
+       tient maintenant sur un écran sans intertitre : l'ajout à la
+       main est devenu l'exception — presque tout arrive du cockpit
+       lui-même — et une exception ne mérite pas un parcours.
+       « Venu du dehors » reste, et reste seul à porter une aide :
+       c'est là que la main courante se trompait, une décision prise
+       entre nous n'ayant pas de source. */
     f:[
-      {t:'titre', l:"Ce qui s'est passé",
-       sous:"L'information reçue, la décision prise ou l'action menée, horodatée au moment du fait."},
       {c:'heure', l:"Heure", t:'time', d:maintenant},
-      {c:'evenement', l:"Le fait", t:'textarea', large:true, req:true,
-       ph:"En quelques lignes, ce qui s'est passé."},
-      {t:'titre', l:"Est-ce nous qui l'avons fait ?",
-       sous:"Nommez la personne de la CPTS qui a mené l'action ou vécu l'événement. Laissez vide si personne n'a encore repris la main."},
-      {c:'qui', l:"Qui s'en est chargé", t:'personne', large:true},
-      {t:'titre', l:"Ou est-ce venu du dehors ?",
-       sous:"À ne remplir que si l'information nous a été communiquée de l'extérieur. Une décision prise entre nous n'a pas de source — on laisse vide."},
-      {c:'source', l:"Qui nous l'a communiquée", t:'text', large:true,
+      {c:'evenement', l:"Ce qui s'est passé", t:'textarea', large:true, req:true,
+       ph:"En une phrase si possible : l'information reçue, la décision prise, l'action menée."},
+      /* La session qui écrit est celle qui s'en est chargée, neuf
+         fois sur dix : le nom se pose tout seul et se corrige d'un
+         mot, plutôt que d'être à retaper à chaque entrée. */
+      {c:'qui', l:"Qui s'en est chargé", t:'personne', large:true,
+       d:() => moi === 'Anonyme' ? '' : moi},
+      {c:'source', l:"Venu du dehors — qui nous l'a dit", t:'text', large:true,
        ph:"Une pharmacie nommée, SOS Médecins, l'ARS, un établissement…", sugg:() => sourcesCourante(),
-       aide:"Renseignée, l'entrée se lit comme venue du dehors : c'est une remontée de terrain, et elle se compte comme telle."},
-      {t:'titre', l:"Ce que ça déclenche"},
+       aide:"À ne remplir que si l'information nous a été communiquée de l'extérieur : l'entrée se lit alors comme une remontée de terrain, et se compte comme telle. Une décision prise entre nous n'a pas de source."},
       {c:'suite', l:"Suite donnée", t:'textarea', large:true, ph:"Facultatif — ce que ça déclenche, ou ce qui reste à faire."}
     ],
-    cols:['date','heure','evenement','qui','source','suite','auteur']
+    cols:['type','date','heure','evenement','qui','source','suite','auteur']
   },
   appels: {
     titre:"Appels aux CPTS des zones touchées",
@@ -3717,10 +3795,13 @@ async function enregistrer(k, id, mode){
     if(estManuel(k)) o.rang = Math.min(...etat[k].map(x => typeof x.rang === 'number' ? x.rang : 0)) - 1;
     etat[k].unshift(o);
   }
-  /* Un besoin en matériel identifié est un fait de la journée : il se
-     consigne en main courante en même temps qu'à son registre. */
+  /* Règle du cockpit : ce qui est renseigné quelque part se
+     consigne en main courante, en plus de sa rubrique. Un besoin en
+     matériel a son texte à lui, plus précis ; les autres registres
+     passent par la règle générale. */
   if(k === 'materiel') consignerBesoinEnCourante(o);
-  const enCourante = k === 'materiel';
+  else consignerRegistreEnCourante(k, o);
+  const enCourante = k === 'materiel' || !!MC_REG[k];
   await sauver(); fermer(); rendre();
   toast(enCourante ? (existant ? "Modifié, et repris en main courante" : "Enregistré et consigné en main courante")
                    : (existant ? "Modifié" : "Enregistré"));
@@ -3842,20 +3923,11 @@ function fleches(k, id, i, n){
    une phrase. Le tableau reste dans le dossier de traçabilité,
    où il sert à l'impression et à l'export.
    --------------------------------------------------------- */
+/* La main courante n'y figure plus : elle reçoit désormais tout ce
+   que le cockpit enregistre, et une carte par entrée n'aurait plus
+   tenu à l'écran. Elle se lit en fil — une ligne par fait, le
+   détail à la demande — dans vueCourante(). */
 const JOURNAL = {
-  /* La provenance ne se lit pas au milieu des autres mentions : une
-     entrée venue du dehors le dit en tête, à côté de l'heure, parce
-     que c'est ce qui la distingue de tout ce que nous avons fait
-     nous-mêmes. */
-  /* Pas de statut : une entrée de main courante ne se pilote pas,
-     elle atteste. Ce qui reste à faire se dit dans la suite donnée,
-     et ce qui se pilote a sa mission. Le liseré de la carte parle
-     alors de provenance — c'est la seule chose qui distingue deux
-     entrées entre elles. */
-  courante: {
-    marque:'mc', titre:'evenement', venu:'source', personne:'qui',
-    blocs:[{c:'suite', l:"Suite donnée"}]
-  },
   ars: {
     titre:'objet', etiq:['sens','statut'],
     chips:[{c:'canal', l:"Canal"},{c:'interlocuteur', l:"Interlocuteur"}],
@@ -4055,12 +4127,18 @@ function vueCockpit(){
   if(!derniers.length){
     h += `<p class="vide">Rien de consigné pour l'instant. <a href="#" onclick="aller('courante');return false;">Ouvrir la main courante</a></p>`;
   }else{
+    /* Le même coup d'œil qu'en main courante, en six lignes : la
+       nature en pastille, le fait en une phrase, qui s'en est
+       chargé. Le détail se lit là où il est écrit. */
     h += `<ul class="fil">` + derniers.map(e =>
       `<li><div class="h">${frdate(e.date)} ${esc(e.heure||'')}</div>
-       <div class="c"><div class="t">${esc(e.evenement)}</div>
-       ${e.suite?`<div class="d">${esc(e.suite)}</div>`:''}
-       <div class="s">${esc([e.qui ? 'Pris en charge par ' + e.qui : '', e.source ? 'source : ' + e.source : '',
-              e.auteur ? 'saisi par ' + e.auteur : ''].filter(Boolean).join(' · ')) || '—'}</div></div></li>`).join('') + `</ul>`;
+       <div class="c">
+       <div class="tete"><span class="etiq ${MC_COUL(typeMC(e))}">${esc(typeMC(e))}</span>${
+         e.source ? `<span class="venu"><span class="p">Du dehors</span>${esc(e.source)}</span>` : ''}</div>
+       <div class="t">${esc(resumeMC(e.evenement))}</div>
+       <div class="s">${esc([e.qui || 'personne nommée',
+              e.auteur ? 'saisi par ' + e.auteur : ''].filter(Boolean).join(' · '))}</div></div></li>`).join('') + `</ul>`
+      + `<div class="actions"><button class="btn sec" onclick="aller('courante')">Ouvrir la main courante</button></div>`;
   }
   return h + `</div>`;
 }
@@ -4974,7 +5052,7 @@ function consignerVisioEnCourante(v){
   etat.courante = etat.courante || [];
   const corps = (v.points||[]).map(p => '· ' + p.titre + (p.texte ? ' : ' + p.texte : '')).join('\n');
   etat.courante.unshift({
-    id: uid(), date: v.date, heure: v.heure || '', source: 'ARS Nouvelle-Aquitaine',
+    id: uid(), type: 'Visio ARS', date: v.date, heure: v.heure || '', source: 'ARS Nouvelle-Aquitaine',
     evenement: (v.instance || "Visio de crise de l'ARS")
       + (v.represente ? ` — la CPTS Pau Béarn y était représentée par ${v.represente}` : '')
       + (corps ? '.\n' + corps : '.')
@@ -5165,6 +5243,7 @@ function consignerPointSituationEnCourante(r, motif){
   etat.courante = etat.courante || [];
   etat.courante.unshift({
     id: uid(),
+    type: 'Situation',
     date: aujourdhui(),
     heure: maintenant(),
     source: '',
@@ -5180,82 +5259,220 @@ function consignerPointSituationEnCourante(r, motif){
   });
 }
 
-function evenements(){
-  const e = [];
-  const push = (o, type, titre, detail, qui) => {
-    if(!titre) return;
-    e.push({date:o.date||'', heure:o.heure||'', type, titre, detail:detail||'', qui:qui||o.auteur||''});
-  };
-  (etat.ars||[]).forEach(o => push(o,'ARS',o.objet,
-    [o.sens,o.interlocuteur,o.statut].filter(Boolean).join(' · '), o.auteur));
-  (etat.courante||[]).forEach(o => push(o,'Consigné',o.evenement,
-    [o.qui ? 'Pris en charge par ' + o.qui : '', o.source, o.suite].filter(Boolean).join(' · '), o.auteur));
-  (etat.cpts||[]).forEach(c => (c.appels||[]).forEach(a =>
-    push(a,'Appel CPTS', c.nom, [a.qui, a.dit].filter(Boolean).join(' · '), a.par)));
-  (etat.materiel||[]).forEach(o => push(o,'Matériel',o.nature,
-    [o.demandeur,o.quantite,o.statut].filter(Boolean).join(' · '), o.auteur));
-  (etat.dons||[]).forEach(o => {
-    push(o,'Collecte', o.structure,
-      [o.reponse ? 'Réponse : ' + o.reponse : '', o.commune, o.reponse==='Oui' ? o.materiel : '', o.interlocuteur]
-        .filter(Boolean).join(' · '), o.par || o.auteur);
-    (o.suivi||[]).forEach(s => push(s,'Collecte', o.structure + ' — relance', s.texte, s.par));
-  });
-  (etat.renforts||[]).forEach(o => push(o,'Collecte', nomRenfort(o) + ' — volontaire pour la collecte',
-    [o.tel, o.profession, o.commune, o.taches, o.note].filter(Boolean).join(' · '), o.auteur));
-  (etat.volontaires||[]).forEach(o => {
-    push(o,'Renfort', nomVol(o) + ' — volontaire au renfort',
-      [o.profession, o.commune, o.renforts, o.dispo, o.zone, o.statut].filter(Boolean).join(' · '),
-      o.par || o.auteur);
-    (o.suivi||[]).forEach(s => push(s,'Renfort', nomVol(o) + ' — appel', s.texte, s.par));
-  });
-  (etat.medecins||[]).forEach(o => push(o,'Évacués', nomMed(o) + ' — médecin généraliste sondé',
-    [o.statut, o.commune, o.motifs, o.capacite].filter(Boolean).join(' · '), o.par || o.auteur));
-  (etat.orientes||[]).forEach(o => push(o,'Évacués', (refPatient(o) || 'Patient') + ' — demande d\'orientation',
-    [o.provenance, o.relais, o.motif, o.medecin ? 'orienté vers ' + o.medecin : '', o.statut]
-      .filter(Boolean).join(' · '), o.par || o.auteur));
-  (etat.relais||[]).forEach(o => push(o,'Évacués', o.structure + ' — structure relais',
-    [o.type, o.commune, o.info].filter(Boolean).join(' · '), o.par || o.auteur));
-  (etat.lieux||[]).forEach(o => push(o,'Évacués', o.lieu + " — lieu d'accueil",
-    [o.type, o.commune, o.dispo, o.soins, o.places ? o.places + ' places' : '']
-      .filter(Boolean).join(' · '), o.par || o.auteur));
-  (etat.veille||[]).forEach(o => push(o,'Veille',o.titre, [o.source,o.resume].filter(Boolean).join(' · '), o.auteur));
-  (etat.visios||[]).forEach(o => push(o,'Visio ARS',
-    (o.instance || "Visio de crise de l'ARS") + (visioVide(o) ? ' — compte rendu non consigné' : ''),
-    (o.points||[]).map(p => p.titre).join(' · ') || o.manquant || '',
-    o.represente || o.auteur));
-  return e.sort((a,b) => ((b.date+' '+(b.heure||'00:00')).localeCompare(a.date+' '+(a.heure||'00:00'))));
+/* =========================================================
+   LA MAIN COURANTE
+   =========================================================
+   Elle est le seul journal du cockpit. Le « Fil d'actualité »
+   qui recomposait la même chose à côté d'elle, en lisant tous
+   les registres et sans rien garder, a été supprimé : deux pages
+   disaient la même journée en deux mots différents, et personne
+   ne savait laquelle faisait foi. C'est la main courante qui fait
+   foi — elle est écrite, exportée, imprimée, et c'est d'elle que
+   les rapports tirent leur matière.
+
+   Ce que le fil avait de juste, en revanche, c'est sa forme : une
+   ligne par fait, l'heure en marge, la nature en pastille, et rien
+   de plus tant qu'on n'a pas demandé à lire. La main courante la
+   reprend telle quelle. Trois cents entrées se parcourent ainsi
+   d'un coup d'œil, là où trois cents cartes demandaient dix
+   écrans.
+   --------------------------------------------------------- */
+
+/* La nature d'une entrée : d'où elle vient dans le cockpit. Elle
+   est posée à l'écriture, et sert à ne lire que la collecte, ou
+   que les patients évacués, dans un registre qui reçoit tout.
+   L'ordre ci-dessous est celui des pastilles de filtre. */
+const MC_TYPES = [
+  ['Consigné',  'e-lancer'],
+  ['ARS',       'e-attente'],
+  ['Visio ARS', 'e-attente'],
+  ['Situation', 'e-fini'],
+  ['Collecte',  'e-cours'],
+  ['Matériel',  'e-attente'],
+  ['Renfort',   'e-cours'],
+  ['Évacués',   'e-cours'],
+  ['Diffusion', 'e-lancer'],
+  ['Rapport',   'e-fini']
+];
+const MC_COUL = t => (MC_TYPES.find(x => x[0] === t) || [,'e-lancer'])[1];
+
+/* Les entrées écrites avant que la nature n'existe la retrouvent
+   à leur identifiant : c'est lui qui dit de quel registre elles
+   sont nées. Celles saisies à la main n'ont ni l'un ni l'autre —
+   elles sont « consignées », et c'est exact. */
+const MC_PREFIXES = [
+  ['mcpt-',  'Collecte'], ['mcbm-',  'Matériel'],
+  ['mcpat-', 'Évacués'],  ['mcd-',   'Diffusion']
+];
+function typeMC(o){
+  if(o.type && MC_TYPES.some(x => x[0] === o.type)) return o.type;
+  const id = String(o.id || '');
+  if(id.startsWith('mcr-')){
+    const k = id.slice(4).split('-')[0];
+    if(MC_REG[k]) return MC_REG[k].type;
+  }
+  const p = MC_PREFIXES.find(x => id.startsWith(x[0]));
+  return p ? p[1] : 'Consigné';
 }
 
-const COUL = {'ARS':'e-attente','Consigné':'e-lancer','Terrain':'e-bloque','Appel CPTS':'e-lancer','Matériel':'e-attente','Collecte':'e-cours','Renfort':'e-cours','Évacués':'e-cours','Visio ARS':'e-attente','Veille':'e-fini'};
+/* Une entrée se lit en une ligne : sa première phrase, ou ce qui
+   tient en cent soixante-dix signes. Les entrées venues du cockpit
+   sont écrites pour tenir ainsi ; celles écrites à la main sont
+   parfois des paragraphes entiers, et c'est le dépliage qui les
+   rend. On ne coupe pas sur un point trop précoce — « Dr. Martin »
+   n'est pas une fin de phrase. */
+function resumeMC(t){
+  const s = String(t || '').replace(/\s+/g, ' ').trim();
+  if(!s) return '—';
+  const m = s.match(/^.{40,}?[.!?](?=\s|$)/);
+  let r = m ? m[0] : s;
+  if(r.length > 170) r = r.slice(0, 168).replace(/\s+\S*$/, '') + '…';
+  return r;
+}
+/* Y a-t-il quelque chose de plus à lire que la ligne ? Sans quoi
+   le bouton « Détail » ne mènerait nulle part. */
+const plusQueLeResumeMC = o =>
+  String(o.suite || '').trim() !== '' ||
+  resumeMC(o.evenement) !== String(o.evenement || '').replace(/\s+/g, ' ').trim();
 
-function vueFil(){
-  let ev = evenements();
-  const types = ['Tout', ...new Set(ev.map(x => x.type))];
-  if(filtreFil !== 'Tout') ev = ev.filter(x => x.type === filtreFil);
+function vueCourante(){
+  const toutes = chrono('courante', etat.courante);
+  const presents = MC_TYPES.map(x => x[0]).filter(t => toutes.some(o => typeMC(o) === t));
+  if(filtreMC !== 'Tout' && presents.indexOf(filtreMC) < 0) filtreMC = 'Tout';
+  const lignes = filtreMC === 'Tout' ? toutes : toutes.filter(o => typeMC(o) === filtreMC);
+  const dh = venuesDuDehors().length;
+  const n = toutes.length;
 
-  let h = `<h1>Fil d'actualité</h1>
-  <p class="chapo">Tout ce que la CPTS Pau Béarn a mené, tracé, communiqué ou reçu depuis le début de sa mobilisation, du plus récent au plus ancien. C'est la page à ouvrir quand on reprend la main après une absence.</p>
-  <div class="filtres">${types.map(t=>`<button class="${filtreFil===t?'on':''}" onclick="filtrerFil('${t}')">${esc(t)}</button>`).join('')}</div>`;
+  let h = `<h1>Main courante</h1>
+  <p class="chapo">${CHAMPS.courante.chapo}</p>
+  <div class="barre-h">
+    <span class="cpt-h">${n} entrée${n > 1 ? 's' : ''} · de la plus récente à la plus ancienne${
+      dh ? ` · ${dh} venue${dh > 1 ? 's' : ''} du dehors` : ''}</span>
+    <button class="btn sec" onclick="exporterCSV('courante')">Excel</button>
+    <button class="btn sec" onclick="imprimer()">PDF</button>
+    <button class="btn" onclick="ouvrirAjout('courante')">Ajouter une entrée</button>
+  </div>`;
 
-  if(!ev.length) return h + `<div class="carte"><p class="vide">Rien n'a encore été enregistré. Le fil se construit à partir de toutes les autres pages.</p></div>`;
+  if(presents.length > 1)
+    h += `<div class="filtres">${['Tout', ...presents].map(t =>
+      `<button class="${filtreMC === t ? 'on' : ''}" onclick="filtrerMC('${esc(t)}')">${esc(t)}${
+        t === 'Tout' ? '' : ` <span style="opacity:.6">${toutes.filter(o => typeMC(o) === t).length}</span>`
+      }</button>`).join('')}</div>`;
 
-  let jour = '';
+  h += barreOrdre('courante');
+
+  if(!lignes.length)
+    return h + `<div class="carte"><p class="vide">${n
+      ? "Aucune entrée de cette nature. <a href=\"#\" onclick=\"filtrerMC('Tout');return false;\">Tout afficher</a>."
+      : "Rien de consigné pour l'instant. La main courante se remplit d'elle-même dès qu'une page du cockpit enregistre quelque chose ; le bouton « Ajouter une entrée » sert à ce qui n'a pas de page."}</p></div>`;
+
+  /* Classée à la main, la main courante ne suit plus les jours :
+     les intertitres de journée n'ont plus rien à séparer, et
+     chaque ligne porte alors sa date entière. */
+  const manuel = estManuel('courante');
+  let jour = null;
   h += `<div class="carte"><ul class="fil">`;
-  ev.forEach(x => {
-    if(x.date !== jour){
-      jour = x.date;
-      h += `<li style="border-bottom:0;padding-bottom:2px"><div class="h"></div><div class="c"><div class="s" style="font-weight:600;color:var(--encre)">${frdate(x.date)}</div></div></li>`;
+  lignes.forEach((o, i) => {
+    if(!manuel && o.date !== jour){
+      jour = o.date;
+      h += `<li class="jour"><div class="h"></div><div class="c"><span class="n">${esc(frdateJour(jour))}</span>${
+        jour === aujourdhui() ? `<span class="auj">aujourd'hui</span>` : ''}</div></li>`;
     }
-    h += `<li><div class="h">${esc(x.heure||'—')}</div><div class="c">
-      <div><span class="etiq ${COUL[x.type]||'e-lancer'}">${esc(x.type)}</span></div>
-      <div class="t" style="margin-top:5px">${esc(x.titre)}</div>
-      ${x.detail?`<div class="d">${esc(x.detail)}</div>`:''}
-      ${x.qui?`<div class="s">${esc(x.qui)}</div>`:''}
-    </div></li>`;
+
+    const t = typeMC(o);
+    const src = String(o.source || '').trim();
+    const ouvert = deplieesMC.has(o.id);
+    const saisiLe = horodateSaisie(o.quand);
+
+    /* Le nom de qui s'en est chargé est lui-même le bouton qui le
+       corrige : personne n'a à chercher où se change une
+       attribution faite automatiquement. Sans nom, le bouton le dit
+       et attend qu'on le nomme. */
+    const qui = String(o.qui || '').trim();
+    const signature = `<button class="qui${qui ? '' : ' vide'}" onclick="ouvrirQui('${o.id}')"
+      title="Changer la personne en charge">${esc(qui || 'personne nommée')}</button>`;
+
+    const pied = [o.auteur ? 'saisi par ' + o.auteur + (saisiLe ? ' le ' + saisiLe : '')
+                           : (saisiLe ? 'saisi le ' + saisiLe : ''),
+                  o.modifiePar ? 'modifié par ' + o.modifiePar : '']
+      .filter(Boolean).map(x => `<span class="sep">·</span>${esc(x)}`).join('');
+
+    h += `<li><div class="h">${esc(manuel ? [frdate(o.date), o.heure].filter(Boolean).join(' ') : (o.heure || '—'))}</div>
+      <div class="c">
+        <div class="tete">
+          <span class="etiq ${MC_COUL(t)}">${esc(t)}</span>
+          ${src ? `<span class="venu"><span class="p">Du dehors</span>${esc(src)}</span>` : ''}
+          <span class="out">
+            ${/* Pas de flèches ici : une main courante est datée, et
+                 c'est la date qui la classe. Les monter et descendre
+                 une à une au milieu de trois cents entrées ferait
+                 perdre le regroupement par journée, qui est ce qu'on
+                 vient lire. Le bandeau d'ordre manuel reste affiché
+                 pour qui aurait déjà déplacé quelque chose, et permet
+                 de revenir au tri par date. */''}
+            ${boutonRetenu('courante', o)}
+            <button title="Modifier l'entrée" onclick="ouvrirEdition('courante','${o.id}')">✎</button>
+            <button class="sup" title="Supprimer" onclick="supprimer('courante','${o.id}')">×</button>
+          </span>
+        </div>
+        <div class="t">${esc(resumeMC(o.evenement))}</div>
+        <div class="s">${signature}${pied}${plusQueLeResumeMC(o)
+          ? `<span class="sep">·</span><button class="plus" onclick="deplierMC('${o.id}')">${
+              ouvert ? 'replier' : 'détail'}</button>` : ''}</div>
+        ${plusQueLeResumeMC(o) ? `<div class="plein${ouvert ? '' : ' plie'}">
+          <span class="k">Ce qui s'est passé</span>${esc(o.evenement || '—')}${
+          String(o.suite || '').trim() ? `<span class="k">Suite donnée</span>${esc(o.suite)}` : ''}</div>` : ''}
+        ${marqueRetenue(o)}
+      </div></li>`;
   });
   return h + `</ul></div>`;
 }
-function filtrerFil(t){ filtreFil = t; rendre(); }
+
+function filtrerMC(t){ filtreMC = t; rendre(); }
+function deplierMC(id){
+  if(deplieesMC.has(id)) deplieesMC.delete(id); else deplieesMC.add(id);
+  rendre();
+}
+
+/* ---- corriger la personne en charge -----------------------
+   Une entrée déposée par le cockpit porte le nom de la session
+   qui l'a créée : c'est juste dans la plupart des cas, et faux
+   dès qu'une personne saisit ce qu'une autre a fait. Le nom se
+   change donc partout, y compris sur les entrées automatiques —
+   et une fois changé à la main il ne se laisse plus réécrire par
+   la fiche d'origine, ce que dit « quiFixe ». */
+function ouvrirQui(id){
+  const o = (etat.courante || []).find(x => x.id === id);
+  if(!o) return;
+  const noms = nomsMissionnes();
+  document.getElementById('modale').innerHTML = `<h3>Qui s'en est chargé</h3>
+  <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">${esc(resumeMC(o.evenement))}</p>
+  <div class="form">
+    <label class="large"><span class="k">Personne en charge</span>
+      <input type="text" id="qui-nom" list="qui-l" autocomplete="off" value="${esc(o.qui || '')}"
+        placeholder="Prénom et nom">
+      <datalist id="qui-l">${noms.map(x => `<option value="${esc(x)}"></option>`).join('')}</datalist>
+      <span class="aide">Laissé vide, l'entrée reste sans personne nommée. Un nom saisi ici tient : la fiche d'origine ne le réécrira plus.</span></label>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="validerQui('${id}')">Enregistrer</button>
+    <button class="btn sec" onclick="fermer()">Annuler</button>
+  </div>`;
+  ouvrirRideau();
+  setTimeout(() => { const i = document.getElementById('qui-nom'); if(i) i.focus({preventScroll:true}); }, 60);
+}
+
+async function validerQui(id){
+  const o = (etat.courante || []).find(x => x.id === id);
+  if(!o) return;
+  const champ = document.getElementById('qui-nom');
+  const nom = champ ? champ.value.trim() : '';
+  o.qui = nom;
+  o.quiFixe = true;
+  o.modifiePar = moi;
+  await sauver(); fermer(); rendre();
+  toast(nom ? "Entrée attribuée à " + nom : "L'entrée ne nomme plus personne");
+}
 
 function vueAppels(){
   const l = etat.cpts || [];
@@ -5863,7 +6080,7 @@ function consignerCampagneEnCourante(c, ouvre){
   const recues = donsDeCampagne(c.id).length;
   etat.courante = etat.courante || [];
   etat.courante.unshift({
-    id: uid(), date: aujourdhui(), heure: maintenant(), source: '',
+    id: uid(), type: 'Collecte', date: aujourdhui(), heure: maintenant(), source: '',
     evenement: ouvre
       ? "Lancement de l'appel aux dons « " + (c.titre || 'sans titre') + " » : le formulaire en ligne est accessible à qui en a le lien."
         + (c.suite ? "\nRelance de « " + ((campagne(c.suite) || {}).titre || c.suiteTitre || 'un appel précédent') + " »." : '')
@@ -7208,6 +7425,7 @@ function poserEnCourante(id, t){
   const deja = etat.courante.find(x => x.id === id);
   const ligne = {
     id,
+    type: t.type || (deja && deja.type) || 'Consigné',
     date: t.date || (deja && deja.date) || aujourdhui(),
     /* L'heure vient de la fiche d'origine quand celle-ci en porte une
        — corriger l'heure d'une remontée corrige son entrée de main
@@ -7215,12 +7433,132 @@ function poserEnCourante(id, t){
        l'heure notée à la main dans la main courante. */
     heure: t.heure || (deja ? deja.heure : ''),
     source: t.source || '', evenement: t.evenement, suite: t.suite,
-    qui: t.qui || (deja && deja.qui) || (moi === 'Anonyme' ? '' : moi),
+    /* Une attribution corrigée à la main tient : la fiche d'origine
+       ne la réécrit plus, même si elle est enregistrée à nouveau
+       depuis une autre session. C'est ce que dit « quiFixe », posé
+       par la correction et jamais par le cockpit.
+
+       À défaut de nom sur la fiche, c'est la session qui écrit qui
+       s'en est chargée — sauf quand la fiche est formelle : une
+       inscription arrivée par le formulaire public n'a été menée
+       par personne de la CPTS, et l'attribuer à qui ouvre le
+       cockpit serait faux. « quiStrict » le dit, et l'entrée
+       attend alors qu'on la nomme. */
+    qui: (deja && deja.quiFixe) ? deja.qui
+       : (t.qui || (deja && deja.qui)
+          || (t.quiStrict ? '' : (moi === 'Anonyme' ? '' : moi))),
     auteur: (deja && deja.auteur) || (moi === 'Anonyme' ? '' : moi),
     quand: (deja && deja.quand) || ''
   };
   if(deja) Object.assign(deja, ligne);
   else etat.courante.unshift(ligne);
+}
+
+/* ---- ce que chaque registre laisse en main courante --------
+   Règle du cockpit : ce qui est renseigné quelque part se retrouve
+   en main courante, en plus de sa rubrique. Ce qui se saisissait
+   ailleurs sans y laisser de trace — un volontaire au renfort, un
+   médecin généraliste recensé, un donateur appelé, un lieu
+   d'accueil — y laisse désormais une ligne, une seule, écrite pour
+   tenir sur une ligne.
+
+   Chaque registre ne dit ici que trois choses : sa nature, le nom
+   de qui s'en est chargé, et la phrase qui résume la fiche. Le
+   reste — l'idempotence, l'heure du fait, l'attribution corrigée à
+   la main — est l'affaire de poserEnCourante(). Les registres qui
+   avaient déjà leur consignation propre n'y figurent pas : les
+   besoins en matériel, les patients signalés et les structures qui
+   orientent gardent la leur, plus précise que ce qu'une règle
+   générale saurait écrire. */
+const MC_REG = {
+  dons: {
+    type:'Collecte', personne:o => o.par,
+    phrase:o => `Donateur sollicité : ${o.structure}`
+      + (o.commune ? ` (${o.commune})` : '') + '. '
+      + (o.reponse === 'Oui' ? `Accepte de donner${o.materiel ? ' : ' + o.materiel : ''}.`
+        : o.reponse === 'Non' ? "Ne donne pas."
+        : o.reponse === 'À rappeler' ? "À rappeler."
+        : "Réponse en attente.")
+  },
+  renforts: {
+    type:'Collecte', personne:o => o.auteur,
+    phrase:o => `${nomRenfort(o)} se porte volontaire pour faire tourner la collecte`
+      + (o.taches ? ` : ${o.taches}` : '') + '.'
+  },
+  stockage: {
+    type:'Collecte', personne:o => o.auteur,
+    phrase:o => `Point de collecte ${(o.statut || 'proposé').toLowerCase()} : ${o.nom}`
+      + (o.adresse ? `, ${o.adresse}` : '')
+      + (o.referent ? `. Référent : ${o.referent}` : '') + '.'
+  },
+  volontaires: {
+    type:'Renfort', personne:o => o.par,
+    phrase:o => `${nomVol(o)}, ${(o.profession || 'profession non précisée').toLowerCase()}`
+      + (o.commune ? ` à ${o.commune}` : '') + ', se déclare volontaire au renfort'
+      + (o.renforts ? ` : ${o.renforts}` : '') + '.'
+  },
+  medecins: {
+    type:'Évacués', personne:o => o.par,
+    phrase:o => `${nomMed(o)}, médecin généraliste`
+      + (o.commune ? ` à ${o.commune}` : '') + ' — '
+      + (o.statut === 'Indisponible' ? "ne peut pas recevoir de personnes évacuées."
+        : "accepte de recevoir des personnes évacuées"
+          + (o.capacite ? ` (${o.capacite})` : '') + '.')
+  },
+  lieux: {
+    type:'Évacués', personne:o => o.par,
+    phrase:o => `Lieu d'accueil recensé : ${o.lieu}`
+      + (o.commune ? ` (${o.commune})` : '') + ' — '
+      + (o.dispo || 'à solliciter').toLowerCase()
+      + (o.places ? `, ${o.places} places` : '')
+      + (o.soins ? `, ${o.soins.toLowerCase()}` : '') + '.'
+  },
+  /* Un échange né d'une visio de crise en est déjà sorti consigné,
+     avec son compte rendu : on ne le réécrit pas ici, où il ne
+     dirait rien de plus et ferait doublon. */
+  ars: {
+    type:'ARS', personne:o => o.auteur,
+    phrase:o => o.visio ? '' :
+      `${o.sens || "Échange avec l'ARS"} — ${o.objet || 'objet non renseigné'}`
+      + (o.interlocuteur ? ` (${o.interlocuteur})` : '') + '.'
+  }
+};
+
+const idMCReg = (k, o) => 'mcr-' + k + '-' + o.id;
+
+function consignerRegistreEnCourante(k, o){
+  const cfg = MC_REG[k];
+  if(!cfg || !o || !o.id) return;
+  let phrase = '';
+  try{ phrase = cfg.phrase(o); }catch(e){ return; }
+  if(!String(phrase || '').trim()) return;
+  poserEnCourante(idMCReg(k, o), {
+    type: cfg.type,
+    date: o.date || '',
+    heure: o.heure || '',
+    qui: (cfg.personne ? cfg.personne(o) : '') || '',
+    quiStrict: true,
+    /* Pas de source : ces fiches sont notre propre recensement, pas
+       une information qu'on nous a communiquée. Celles qui viennent
+       vraiment du dehors — un donateur, une structure — le disent
+       dans leur phrase, et non par un bandeau qui les compterait à
+       tort comme remontées de terrain. */
+    source: '',
+    evenement: phrase,
+    suite: ''
+  });
+}
+
+/* Les fiches arrivées sans passer par le cockpit — le formulaire
+   public en ligne, la saisie d'une autre session — n'ont pas
+   déclenché leur consignation. On les y porte une fois, à
+   l'ouverture, à la date du fait. Une entrée déjà là est réécrite
+   plutôt que doublée ; une entrée retirée à la main ne revient
+   pas. */
+function consignerRegistresHerites(){
+  Object.keys(MC_REG).forEach(k => {
+    (etat[k] || []).forEach(o => consignerRegistreEnCourante(k, o));
+  });
 }
 
 /* Une collecte, c'est un lieu, un créneau et quelqu'un sur
@@ -7288,11 +7626,11 @@ function texteMCBesoin(b){
 
 function consignerPointEnCourante(p){
   if(!p || !p.id || !p.lieu) return;
-  poserEnCourante(idMCPoint(p), texteMCPoint(p));
+  poserEnCourante(idMCPoint(p), Object.assign({type:'Collecte'}, texteMCPoint(p)));
 }
 function consignerBesoinEnCourante(b){
   if(!b || !b.id) return;
-  poserEnCourante(idMCBesoin(b), texteMCBesoin(b));
+  poserEnCourante(idMCBesoin(b), Object.assign({type:'Matériel'}, texteMCBesoin(b)));
 }
 
 /* Les points et les besoins saisis avant que la main courante ne
@@ -7388,7 +7726,7 @@ async function cloturerPoint(id){
      main courante en même temps qu'ici, avec ses chiffres. */
   etat.courante = etat.courante || [];
   etat.courante.push({
-    id: uid(), date: p.date || aujourdhui(), heure: p.cloture, source: '', qui: p.responsable || moi,
+    id: uid(), type: 'Collecte', date: p.date || aujourdhui(), heure: p.cloture, source: '', qui: p.responsable || moi,
     evenement: "Clôture de la collecte tenue à " + p.lieu
       + (p.debut || p.fin ? ", ouverte de " + (p.debut||'—') + " à " + (p.fin||'—') : '')
       + (p.responsable ? ", sous la responsabilité de " + p.responsable : '') + ". "
@@ -7595,7 +7933,7 @@ async function basculerRenfort(){
 function consignerRenfortEnCourante(ouvre){
   etat.courante = etat.courante || [];
   etat.courante.unshift({
-    id: uid(), date: aujourdhui(), heure: maintenant(), source: '',
+    id: uid(), type: 'Renfort', date: aujourdhui(), heure: maintenant(), source: '',
     evenement: ouvre
       ? "Ouverture de l'appel au renfort : le formulaire de recensement des professionnels volontaires est accessible aux professionnels de santé du territoire."
         + ((etat.renfort && etat.renfort.cadre) ? "\nCadre annoncé : " + etat.renfort.cadre : '')
@@ -8169,7 +8507,7 @@ async function basculerConsult(){
 function consignerConsultEnCourante(ouvre){
   etat.courante = etat.courante || [];
   etat.courante.unshift({
-    id: uid(), date: aujourdhui(), heure: maintenant(), source: '',
+    id: uid(), type: 'Évacués', date: aujourdhui(), heure: maintenant(), source: '',
     evenement: ouvre
       ? "Ouverture du recensement des médecins généralistes volontaires pour recevoir en consultation les personnes évacuées des zones incendiées : le formulaire en ligne est accessible aux généralistes du territoire."
         + ((etat.consultations && etat.consultations.cadre) ? "\nCadre annoncé : " + etat.consultations.cadre : '')
@@ -9602,7 +9940,7 @@ function consignerRelaisEnCourante(r, quoi){
   const ou = [r.type, r.commune].filter(Boolean).join(', ');
   const qui = `${r.structure}${ou ? ` (${ou})` : ''}`;
   etat.courante.unshift({
-    id: uid(), date: aujourdhui(), heure: maintenant(), source: r.structure,
+    id: uid(), type: 'Évacués', date: aujourdhui(), heure: maintenant(), source: r.structure,
     evenement: quoi === 'nouvelle'
       ? `${qui} signale une personne évacuée et entre au recensement des structures qui orientent.`
         + (r.interlocuteur ? ` Interlocuteur : ${r.interlocuteur}.` : '')
@@ -9704,9 +10042,13 @@ function consignerPatientEnCourante(o, quoi, opts){
   const deja = etat.courante.find(x => x.id === id);
   const ligne = {
     id,
+    type: 'Évacués',
     date: (opts && opts.date) || (deja && deja.date) || aujourdhui(),
     heure: (opts && opts.heure) || (deja && deja.heure) || maintenant(),
-    source: t.source, evenement: t.evenement, qui,
+    source: t.source, evenement: t.evenement,
+    /* Comme partout : une attribution corrigée à la main dans la
+       main courante ne se laisse plus réécrire par la fiche. */
+    qui: (deja && deja.quiFixe) ? deja.qui : qui,
     /* L'anonymisation ne réécrit que ce qui nomme le patient : la
        suite donnée reste celle qui avait été consignée, sans quoi
        une entrée d'hier se relirait à l'état d'aujourd'hui. */
@@ -10516,11 +10858,15 @@ const DOSSIER = ['ars','courante','materiel','dons','stockage','renforts','volon
 function tableauFige(k){
   const cfg = CHAMPS[k], lignes = chrono(k, etat[k]);
   if(!lignes.length) return `<p class="vide">Aucune ligne.</p>`;
-  const ent = cfg.cols.map(c => c==='date' ? 'Date' : c==='auteur' ? 'Saisi par' : ((cfg.f.find(x=>x.c===c)||{}).l || c));
+  const ent = cfg.cols.map(c => c==='date' ? 'Date' : c==='auteur' ? 'Saisi par'
+    : c==='type' ? 'Nature' : ((cfg.f.find(x=>x.c===c)||{}).l || c));
   let h = `<div class="tw"><table><thead><tr>${ent.map(e=>`<th>${esc(e)}</th>`).join('')}</tr></thead><tbody>`;
   lignes.forEach(l => {
     h += '<tr>' + cfg.cols.map(c => {
-      let v = l[c] ?? '';
+      /* La nature d'une entrée de main courante n'est pas toujours
+         écrite sur elle : les plus anciennes la tiennent de leur
+         identifiant. C'est typeMC() qui sait la lire. */
+      let v = c === 'type' && k === 'courante' ? typeMC(l) : (l[c] ?? '');
       if(c === 'date' || c === 'rappel' || c === 'rdvle' || c === 'infoLe' || c === 'apartir'
          || c === 'verifieLe') v = frdate(v);
       return `<td>${esc(v) || '—'}</td>`;
@@ -10942,7 +11288,7 @@ async function arreterSituation(){
 
   const n = s.faits.length, sp = s.suspens.length;
   etat.courante.unshift({
-    id: uid(), date: aujourdhui(), heure: new Date().toTimeString().slice(0,5), source:'',
+    id: uid(), type: 'Rapport', date: aujourdhui(), heure: new Date().toTimeString().slice(0,5), source:'',
     evenement: `Point de situation ${s.ref} arrêté : ${n} fait${n>1?'s':''} marquant${n>1?'s':''} retenu${n>1?'s':''}, ${
       s.missions.filter(m => m.statut === 'En cours').length} missions en cours, ${sp} point${sp>1?'s':''} en suspens.`,
     suite: "Le document est figé et archivé dans « Rapports », feuillet « Points de situation ». Il ne se recalcule plus : le prochain point repartira de cette date.",
@@ -11327,7 +11673,7 @@ function rendre(){
   if(onglet === 'cockpit') v.innerHTML = vueCockpit();
   else if(onglet === 'missions') v.innerHTML = vueMissions();
   else if(onglet === 'veille') v.innerHTML = vueVeille();
-  else if(onglet === 'fil') v.innerHTML = vueFil();
+  else if(onglet === 'courante') v.innerHTML = vueCourante();
   else if(onglet === 'lignes') v.innerHTML = vueLignes();
   else if(onglet === 'offre') v.innerHTML = vueOffre();
   else if(onglet === 'appels') v.innerHTML = vueAppels();
