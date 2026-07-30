@@ -511,10 +511,30 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
   flex:1;min-width:160px}
 
 /* Le créneau du jour. Un prénom, un clic : c'est tout ce qu'on
-   demande à quelqu'un qui a la séance dans dix minutes. */
+   demande à quelqu'un qui a la séance dans dix minutes.
+
+   Les séances à venir tiennent sur une seule ligne qui défile :
+   une pastille par jour jusqu'à la fin du mois suivant, le nombre
+   d'inscrits dessus. On voit d'un coup d'œil quels jours sont
+   couverts et lesquels ne le sont pas, et on s'y pose à l'avance
+   sans que la page y gagne un centimètre. */
 .creneau{border-top:1px dashed var(--trait);margin-top:14px;padding-top:12px}
 .creneau .jourh{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
   color:var(--texte-2);display:block;margin-bottom:8px}
+.creneau .jours{display:flex;gap:5px;overflow-x:auto;padding-bottom:5px;margin-bottom:11px;
+  scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.creneau .jours button{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
+  background:var(--carte);border:1px solid var(--trait);border-radius:7px;padding:0 9px;min-height:34px;
+  font-family:var(--mono);font-size:11px;color:var(--texte-2);cursor:pointer}
+.creneau .jours button:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.creneau .jours button.we{opacity:.5}
+.creneau .jours button.pris{background:var(--cobalt-clair);border-color:#C3D8F2;color:var(--encre)}
+.creneau .jours button.on{background:var(--encre);border-color:var(--encre);color:#fff;opacity:1}
+.creneau .jours button .nb{background:var(--encre-2);color:#fff;border-radius:9px;padding:1px 5px;
+  font-size:9.5px;font-weight:600}
+.creneau .jours button.on .nb{background:#fff;color:var(--encre)}
+.creneau .jours .mois{flex:0 0 auto;align-self:center;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--texte-2);padding:0 5px}
 .creneau .qui-v{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .creneau .qui-v .nom{display:inline-flex;align-items:center;gap:7px;background:var(--cobalt-clair);
   color:var(--encre);border-radius:20px;padding:6px 6px 6px 13px;font-size:13.5px;font-weight:600;
@@ -4820,18 +4840,50 @@ function lienVisioPropre(v){
 const heureVisio = () => (salleVisio() && salleVisio().horaire) || '15:00';
 const heureLisible = h => String(h || '').replace(':00', ' h').replace(':', ' h ');
 
+const dateJour = d => { const p = String(d || '').split('-'); return p.length === 3 ? new Date(+p[0], +p[1] - 1, +p[2]) : null; };
+const isoJour = j => j.getFullYear() + '-' + String(j.getMonth() + 1).padStart(2,'0') + '-' + String(j.getDate()).padStart(2,'0');
+
 function jourLisible(d){
-  const p = String(d || '').split('-');
-  if(p.length !== 3) return frdateL(d);
-  const j = new Date(+p[0], +p[1] - 1, +p[2]);
+  const j = dateJour(d);
+  if(!j) return frdateL(d);
   return j.toLocaleDateString('fr-FR', {weekday:'long', day:'2-digit', month:'2-digit'});
+}
+
+/* Les séances sur lesquelles on peut se poser : d'aujourd'hui à la
+   fin du mois suivant. Assez loin pour qu'on organise les congés
+   d'août sans y revenir chaque semaine, et sans date en dur qui
+   se périmerait toute seule si la crise dure. */
+function joursCreneaux(){
+  const dep = dateJour(aujourdhui());
+  if(!dep) return [];
+  const fin = isoJour(new Date(dep.getFullYear(), dep.getMonth() + 2, 0));
+  const l = [];
+  const j = new Date(dep);
+  while(isoJour(j) <= fin && l.length < 80){ l.push(isoJour(j)); j.setDate(j.getDate() + 1); }
+  return l;
+}
+
+/* Le créneau affiché. Aujourd'hui par défaut : c'est la séance de
+   tout à l'heure qu'on vient voir neuf fois sur dix. Une date
+   choisie hier et devenue passée retombe sur aujourd'hui. */
+let creneauChoisi = null;
+const creneauVu = () => (creneauChoisi && creneauChoisi >= aujourdhui()) ? creneauChoisi : aujourdhui();
+/* La page se redessine à chaque choix : la bande repart de son
+   début, et le jour qu'on vient de choisir sortait de l'écran
+   quand il était loin dans le mois. On le ramène sous les yeux. */
+function choisirCreneau(d){
+  creneauChoisi = d;
+  rendre();
+  setTimeout(() => {
+    const b = document.querySelector('.creneau .jours button.on');
+    if(b) b.scrollIntoView({block:'nearest', inline:'center'});
+  }, 0);
 }
 
 function vueSalleVisio(){
   const s = salleVisio() || {};
   const url = lienVisioPropre(s.url);
   const auj = aujourdhui();
-  const ici = presencesDuJour(auj);
   const h = heureLisible(heureVisio());
 
   let v = `<div class="salle-v">
@@ -4855,19 +4907,35 @@ function vueSalleVisio(){
       ${url && s.maj ? `<span class="adresse" style="flex:0 0 auto">Déposé le ${esc(frdateL(s.maj))}${s.par ? ' par ' + esc(s.par) : ''}</span>` : ''}
     </div>`;
 
-  /* --- le créneau du jour --- */
+  /* --- le créneau choisi, et la bande des séances à venir --- */
+  const jour = creneauVu();
+  const ici = presencesDuJour(jour);
+  let mois = '';
+  const bande = joursCreneaux().map(d => {
+    const j = dateJour(d);
+    const nb = presencesDuJour(d).length;
+    const we = j.getDay() === 0 || j.getDay() === 6;
+    let pre = '';
+    const m = j.toLocaleDateString('fr-FR', {month:'short'}).replace('.','');
+    if(m !== mois){ if(mois) pre = `<span class="mois">${esc(m)}</span>`; mois = m; }
+    return pre + `<button class="${[d === jour ? 'on' : '', nb ? 'pris' : '', we ? 'we' : ''].filter(Boolean).join(' ')}"
+      onclick="choisirCreneau('${d}')" title="${esc(jourLisible(d))}${nb ? ' — ' + presencesDuJour(d).map(p => p.prenom).join(', ') : ' — personne'}">
+      ${esc(j.toLocaleDateString('fr-FR', {weekday:'short'}).replace('.',''))} ${j.getDate()}${nb ? `<span class="nb">${nb}</span>` : ''}</button>`;
+  }).join('');
+
   v += `<div class="creneau">
-    <span class="jourh">Qui y sera — créneau du jour, ${esc(jourLisible(auj))} à ${esc(h)}</span>
+    <span class="jourh">Qui y sera — ${esc(jourLisible(jour))} à ${esc(h)}${jour === auj ? ' · aujourd\'hui' : ''}</span>
+    <div class="jours">${bande}</div>
     <div class="qui-v">${ici.length
       ? ici.map(p => `<span class="nom">${esc(p.prenom)}
           <button onclick="retirerPresenceVisio('${p.id}')" title="Retirer ${esc(p.prenom)} du créneau" aria-label="Retirer ${esc(p.prenom)} du créneau">×</button>
         </span>`).join('')
-      : `<span class="personne">Personne ne s'est encore positionné sur la séance d'aujourd'hui.</span>`}</div>
+      : `<span class="personne">Personne ne s'est encore positionné sur la séance ${jour === auj ? "d'aujourd'hui" : 'du ' + esc(frdate(jour))}.</span>`}</div>
     <div class="poser">
       <input id="pv-nom" value="${esc(saisiePresence !== null ? saisiePresence : (moi === 'Anonyme' ? '' : moi.split(' ')[0]))}"
         placeholder="Votre prénom" oninput="saisiePresence=this.value"
         onkeydown="if(event.key==='Enter')sePositionnerVisio()">
-      <button class="btn" onclick="sePositionnerVisio()">J'y serai</button>
+      <button class="btn" onclick="sePositionnerVisio()">${jour === auj ? "J'y serai" : "J'y serai le " + esc(frdate(jour))}</button>
     </div>`;
 
   /* Les jours d'avant, en une ligne : assez pour voir qui porte le
@@ -4957,24 +5025,24 @@ async function sePositionnerVisio(){
   const c = document.getElementById('pv-nom');
   const n = c ? c.value.trim() : '';
   if(!n){ toast("Indiquez votre prénom"); return; }
-  const auj = aujourdhui();
-  if(presencesDuJour(auj).some(p => cleP(p.prenom) === cleP(n))){
-    toast(n + " est déjà positionné·e sur la séance du jour"); return;
+  const jour = creneauVu();
+  if(presencesDuJour(jour).some(p => cleP(p.prenom) === cleP(n))){
+    toast(n + " est déjà positionné·e sur la séance du " + frdate(jour)); return;
   }
   etat.presencesVisio = presencesVisio();
   etat.presencesVisio.push({
-    id: uid(), date: auj, heure: heureVisio(), prenom: n,
+    id: uid(), date: jour, heure: heureVisio(), prenom: n,
     par: moi === 'Anonyme' ? n : moi, quand: new Date().toISOString()
   });
   saisiePresence = '';
   await sauver(); rendre();
-  toast(n + " est attendu·e à la visio de " + heureLisible(heureVisio()));
+  toast(n + " est attendu·e à la visio du " + frdate(jour) + " à " + heureLisible(heureVisio()));
 }
 
 async function retirerPresenceVisio(id){
   const p = presencesVisio().find(x => x.id === id);
   if(!p) return;
-  if(!confirm("Retirer " + p.prenom + " du créneau du jour ?")) return;
+  if(!confirm("Retirer " + p.prenom + " de la séance du " + frdate(p.date) + " ?")) return;
   etat.presencesVisio = presencesVisio().filter(x => x.id !== id);
   await sauver(); rendre();
   toast(p.prenom + " retiré·e du créneau");
