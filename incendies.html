@@ -5025,14 +5025,35 @@ async function sePositionnerVisio(){
   if(presencesDuJour(jour).some(p => cleP(p.prenom) === cleP(n))){
     toast(n + " est déjà positionné·e sur la séance du " + frdate(jour)); return;
   }
+  const id = uid();
   etat.presencesVisio = presencesVisio();
   etat.presencesVisio.push({
-    id: uid(), date: jour, heure: heureVisio(), prenom: n,
+    id, date: jour, heure: heureVisio(), prenom: n,
     par: moi === 'Anonyme' ? n : moi, quand: new Date().toISOString()
   });
+  consignerPresenceEnCourante(id, n, jour);
   saisiePresence = '';
   await sauver(); rendre();
   toast(n + " est attendu·e à la visio du " + frdate(jour) + " à " + heureLisible(heureVisio()));
+}
+
+/* Qui représente la CPTS à une visio de crise est un fait de la
+   journée, au même titre qu'un appel reçu : il se consigne en main
+   courante comme le reste. L'entrée porte un identifiant dérivé de
+   celui de la présence — c'est par là qu'un désistement retrouve la
+   ligne qu'il vient contredire, au lieu d'en écrire une seconde. */
+function consignerPresenceEnCourante(id, prenom, jour){
+  const autres = presencesDuJour(jour).map(p => p.prenom).filter(x => cleP(x) !== cleP(prenom));
+  etat.courante = etat.courante || [];
+  etat.courante.push({
+    id: 'mcv-' + id, type: 'Visio ARS', date: aujourdhui(), heure: maintenant(), source: '',
+    qui: moi === 'Anonyme' ? prenom : moi,
+    evenement: prenom + " se positionne sur la visio de crise de l'ARS du " + frdateL(jour)
+      + " à " + heureLisible(heureVisio()) + "."
+      + (autres.length ? " Y sont également attendu·es : " + autres.join(', ') + "." : ''),
+    suite: "La CPTS Pau Béarn y sera représentée. Le compte rendu de la séance se consigne dans « Situation régionale » le jour même.",
+    auteur: moi, quand: new Date().toISOString()
+  });
 }
 
 async function retirerPresenceVisio(id){
@@ -5040,8 +5061,34 @@ async function retirerPresenceVisio(id){
   if(!p) return;
   if(!confirm("Retirer " + p.prenom + " de la séance du " + frdate(p.date) + " ?")) return;
   etat.presencesVisio = presencesVisio().filter(x => x.id !== id);
+
+  /* Le désistement s'écrit à la suite de l'engagement, sur la même
+     ligne : deux entrées pour un aller-retour feraient deux fois le
+     bruit d'un fait qui n'a pas eu lieu. Une présence posée avant
+     que la main courante s'en mêle n'a pas de ligne à compléter :
+     celle-là s'écrit pour elle-même. */
+  const mc = (etat.courante || []).find(x => x.id === 'mcv-' + id);
+  const reste = presencesDuJour(p.date).map(x => x.prenom);
+  const dit = p.prenom + " ne représentera pas la CPTS à la visio du " + frdateL(p.date) + "."
+    + (reste.length ? " Reste attendu·e sur cette séance : " + reste.join(', ') + "."
+                    : " Plus personne n'est positionné sur cette séance.");
+  if(mc){
+    mc.suite = (mc.suite ? mc.suite + '\n' : '')
+      + "Désistement le " + frdateL(aujourdhui()) + " à " + maintenant()
+      + (moi === 'Anonyme' ? '' : ', par ' + moi) + " : " + dit;
+    mc.modifiePar = moi;
+  }else{
+    etat.courante = etat.courante || [];
+    etat.courante.push({
+      id: uid(), type: 'Visio ARS', date: aujourdhui(), heure: maintenant(), source: '',
+      qui: moi === 'Anonyme' ? p.prenom : moi, evenement: dit,
+      suite: "Retiré du créneau dans « Situation régionale ».",
+      auteur: moi, quand: new Date().toISOString()
+    });
+  }
+
   await sauver(); rendre();
-  toast(p.prenom + " retiré·e du créneau");
+  toast(p.prenom + " retiré·e du créneau — désistement consigné en main courante");
 }
 
 function vueVisios(){
