@@ -359,20 +359,21 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .miss-pers .manquant{background:none;border:0;padding:0;color:var(--braise);
   font-family:inherit;font-size:13px;font-style:italic;cursor:pointer;text-decoration:underline}
 
-/* Ce qu'une personne porte, ligne par ligne, quand on ouvre le
-   crayon : le rôle, et les deux gestes — le confier à quelqu'un
-   d'autre, ou le retirer. */
-.aff{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:11px 0;
-  border-bottom:1px solid var(--trait)}
-.aff .t{flex:1 1 170px;min-width:0;font-size:14.5px;line-height:1.3;color:var(--encre)}
-.aff .t .r{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--texte-2);margin-bottom:2px}
-.aff .t .r.manque{color:var(--braise)}
-.aff .b{display:flex;gap:6px;flex:0 0 auto;flex-wrap:wrap}
-.aff .b button{background:none;border:1px solid var(--trait);border-radius:6px;color:var(--encre-2);
-  font-family:inherit;font-size:12.5px;padding:6px 11px;cursor:pointer;min-height:34px}
-.aff .b button:hover{border-color:var(--encre-2);background:var(--cobalt-clair)}
-.aff .b .ret:hover{border-color:var(--braise);color:var(--braise);background:#FBEDE9}
+/* L'écran du crayon : une ligne par mission, et le rôle de la
+   personne en quatre cases dont une seule est allumée. On clique
+   la case voulue — il n'y a rien d'autre à comprendre. */
+.rl{padding:11px 0;border-bottom:1px solid var(--trait)}
+.rl .t{font-size:15px;line-height:1.3;color:var(--encre)}
+.rl .t .s{display:block;font-size:12.5px;color:var(--texte-2);margin-top:2px}
+.rl .ch2{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:8px}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--trait);
+  border-radius:8px;padding:3px;gap:2px}
+.seg button{background:none;border:0;border-radius:6px;padding:7px 12px;font-family:inherit;
+  font-size:13px;color:var(--texte-2);cursor:pointer;min-height:36px}
+.seg button.on{background:var(--encre);color:#fff;font-weight:600}
+.seg button:not(.on):hover{background:var(--cobalt-clair);color:var(--encre-2)}
+.passe{background:none;border:0;padding:0;color:var(--encre-2);font-family:inherit;
+  font-size:13px;cursor:pointer;text-decoration:underline}
 .sst{font-family:var(--mono);font-size:10px;letter-spacing:.11em;text-transform:uppercase;
   color:var(--texte-2);margin:20px 0 2px}
 .miss-neuf{background:none;border:2px dashed var(--trait);border-radius:11px;padding:20px 17px;
@@ -4355,43 +4356,43 @@ function blocMissionPers(o, personne){
    confie à quelqu'un d'autre, ou on lui en ajoute.
    ========================================================= */
 
-/* Tout ce qu'une personne porte, avec le rôle exact et de quoi le
-   défaire. Le renfort est repéré par son rang dans la liste : deux
-   renforts peuvent porter le même nom sur deux missions. */
-function affectationsDe(nom){
-  const l = [];
-  etat.missions.forEach(m => {
-    if(cleP(m.pilote)    === cleP(nom)) l.push({m:m, role:'pilote',    i:-1, libelle:'Pilote'});
-    if(cleP(m.suppleant) === cleP(nom)) l.push({m:m, role:'suppleant', i:-1, libelle:'Suppléant'});
-    renfortsDe(m).forEach((r, i) => {
-      if(cleP(r.nom) === cleP(nom)) l.push({m:m, role:'renfort', i:i, libelle:'Renfort'});
-    });
-  });
-  return l;
+/* Le rôle d'une personne sur une mission, un seul mot : c'est ce
+   qui s'affiche et ce qui se change. Rien = elle n'y est pas. */
+function roleSur(nom, m){
+  if(cleP(m.pilote)    === cleP(nom)) return 'pilote';
+  if(cleP(m.suppleant) === cleP(nom)) return 'suppleant';
+  if(renfortsDe(m).some(r => cleP(r.nom) === cleP(nom))) return 'renfort';
+  return '';
 }
 
+const ROLES = [{c:'', l:'Rien'}, {c:'pilote', l:'Pilote'},
+               {c:'suppleant', l:'Suppléant'}, {c:'renfort', l:'Renfort'}];
+
+/* Une seule liste : toutes les missions, et pour chacune le rôle
+   de la personne, en quatre cases dont une seule est allumée. On
+   clique la case voulue, c'est fait — pas de bouton « ajouter »,
+   pas de bouton « retirer », pas de second écran. Ce qu'elle porte
+   remonte en tête, le reste suit. */
 function modifierPersonne(nom){
-  const l = affectationsDe(nom);
   const nEsc = esc(nom).replace(/'/g, "\\'");
-  const ailleurs = etat.missions.filter(m => !l.some(x => x.m.id === m.id));
+  const lignes = etat.missions.map(m => ({m:m, r:roleSur(nom, m)}));
+  const porte = lignes.filter(x => x.r);
+  const reste = lignes.filter(x => !x.r);
+
+  const ligne = x => `<div class="rl">
+    <div class="t">${esc(x.m.titre)}
+      ${x.r !== 'pilote' ? `<span class="s">${x.m.pilote
+        ? 'pilotée par ' + esc(x.m.pilote) : "personne ne la pilote"}</span>` : ''}</div>
+    <div class="ch2">
+      <div class="seg">${ROLES.map(o => `<button class="${x.r === o.c ? 'on' : ''}"
+        onclick="poserRole('${nEsc}','${x.m.id}','${o.c}')">${o.l}</button>`).join('')}</div>
+      ${x.r === 'pilote' ? `<button class="passe" onclick="passerLaMain('${nEsc}','${x.m.id}')">passer la main à…</button>` : ''}
+    </div></div>`;
+
   document.getElementById('modale').innerHTML = `<h3>${esc(nom)}</h3>
-    <p style="color:var(--texte-2);margin:0 0 14px">Ce que cette personne porte. On le retire, on le confie à quelqu'un d'autre, ou on lui en ajoute.</p>
-    ${l.length ? l.map(x => `<div class="aff">
-      <div class="t"><span class="r">${esc(x.libelle)}</span>${esc(x.m.titre)}</div>
-      <div class="b">
-        <button onclick="reaffecter('${nEsc}','${x.m.id}','${x.role}',${x.i})">Confier à…</button>
-        <button class="ret" onclick="retirerAffectation('${nEsc}','${x.m.id}','${x.role}',${x.i})">Retirer</button>
-      </div></div>`).join('')
-      : `<p style="color:var(--texte-2);margin:0">Aucune mission pour l'instant.</p>`}
-
-    ${ailleurs.length ? `<p class="sst">Lui confier une mission de plus</p>
-      ${ailleurs.map(m => `<div class="aff">
-        <div class="t"><span class="r${m.pilote ? '' : ' manque'}">${m.pilote ? 'Pilote : ' + esc(m.pilote) : 'sans pilote'}</span>${esc(m.titre)}</div>
-        <div class="b">
-          <button onclick="confier('${nEsc}','${m.id}','pilote')">${m.pilote ? 'Reprendre le pilotage' : 'Pilote'}</button>
-          <button onclick="confier('${nEsc}','${m.id}','renfort')">Renfort</button>
-        </div></div>`).join('')}` : ''}
-
+    <p style="color:var(--texte-2);margin:0 0 6px">Son rôle sur chaque mission. Un clic suffit, c'est enregistré aussitôt.</p>
+    ${porte.length ? `<p class="sst">Ce qu'elle ou il porte</p>${porte.map(ligne).join('')}` : ''}
+    ${reste.length ? `<p class="sst">Les autres missions</p>${reste.map(ligne).join('')}` : ''}
     <div class="actions">
       <button class="btn" onclick="nouvelleMission('${nEsc}')">+ Nouvelle mission</button>
       <button class="btn sec" onclick="editerContact('${nEsc}')">Fiche et coordonnées</button>
@@ -4399,73 +4400,58 @@ function modifierPersonne(nom){
   ouvrirRideau();
 }
 
-/* Retirer ne supprime rien d'autre que le nom : la mission reste,
-   sans personne en face — et la bande « missions que personne ne
-   porte » le dit aussitôt. */
-async function retirerAffectation(nom, mid, role, i){
+/* Poser un rôle, c'est d'abord défaire celui d'avant : une même
+   personne n'est jamais pilote et renfort de la même mission. */
+async function poserRole(nom, mid, role){
   const m = etat.missions.find(x => x.id === mid); if(!m) return;
-  if(role === 'pilote')    m.pilote = '';
-  if(role === 'suppleant') m.suppleant = '';
-  if(role === 'renfort'){ const r = renfortsDe(m).slice(); r.splice(i, 1); m.renforts = r; }
+  const avant = roleSur(nom, m);
+  if(avant === role){ modifierPersonne(nom); return; }
+
+  if(cleP(m.pilote)    === cleP(nom)) m.pilote = '';
+  if(cleP(m.suppleant) === cleP(nom)) m.suppleant = '';
+  m.renforts = renfortsDe(m).filter(r => cleP(r.nom) !== cleP(nom));
+
+  /* Le nom qu'on remplace n'est pas perdu de vue : il est dit. */
+  let remplace = '';
+  if(role === 'pilote'){    remplace = (m.pilote || '').trim();    m.pilote = nom; }
+  if(role === 'suppleant'){ remplace = (m.suppleant || '').trim(); m.suppleant = nom; }
+  if(role === 'renfort')    m.renforts = renfortsDe(m).concat([{nom:nom, role:'', par:moi}]);
+
   m.modifiePar = moi;
   await sauver(); rendre(); modifierPersonne(nom);
-  toast(role === 'pilote' ? `${nom} ne pilote plus « ${m.titre} » — la mission est sans pilote`
-                          : `${nom} retiré·e de « ${m.titre} »`);
+
+  const dit = {pilote:'pilote', suppleant:'supplée', renfort:'vient en renfort sur'}[role];
+  toast(!role ? `${nom} ne figure plus sur « ${m.titre} »`
+      : `${nom} ${dit} « ${m.titre} »` + (remplace ? ` à la place de ${remplace}` : ''));
 }
 
-/* Passer la main : le même rôle, sur la même mission, à quelqu'un
-   d'autre. Les noms déjà connus se cliquent. */
-function reaffecter(nom, mid, role, i){
+/* Passer la main : le pilotage change de nom sans passer par la
+   carte de l'autre. Les noms déjà connus se cliquent. */
+function passerLaMain(nom, mid){
   const m = etat.missions.find(x => x.id === mid); if(!m) return;
   const nEsc = esc(nom).replace(/'/g, "\\'");
-  const quoi = {pilote:'Le pilotage de', suppleant:'La suppléance de', renfort:'Le renfort sur'}[role];
-  document.getElementById('modale').innerHTML = `<h3>Confier à quelqu'un d'autre</h3>
-    <p style="color:var(--texte-2);margin:0 0 14px">${quoi} « ${esc(m.titre)} » passe de ${esc(nom)} à&nbsp;:</p>
+  document.getElementById('modale').innerHTML = `<h3>Passer la main</h3>
+    <p style="color:var(--texte-2);margin:0 0 14px">« ${esc(m.titre)} » passe de ${esc(nom)} à&nbsp;:</p>
     ${choixPilote('ra-nom', '', nom)}
     <label><span class="k">Prénom et nom</span>
       <input id="ra-nom" placeholder="Prénom et nom"
-        onkeydown="if(event.key==='Enter')validerReaffectation('${nEsc}','${mid}','${role}',${i})"></label>
+        onkeydown="if(event.key==='Enter')validerPassation('${nEsc}','${mid}')"></label>
     <div class="actions">
-      <button class="btn" onclick="validerReaffectation('${nEsc}','${mid}','${role}',${i})">Confier</button>
+      <button class="btn" onclick="validerPassation('${nEsc}','${mid}')">Confier le pilotage</button>
       <button class="btn sec" onclick="modifierPersonne('${nEsc}')">Annuler</button></div>`;
   ouvrirRideau();
   setTimeout(()=>{ const c = document.getElementById('ra-nom'); if(c) c.focus({preventScroll:true}); }, 60);
 }
 
-async function validerReaffectation(nom, mid, role, i){
+async function validerPassation(nom, mid){
   const m = etat.missions.find(x => x.id === mid); if(!m) return;
   const v = document.getElementById('ra-nom').value.trim();
-  if(!v){ toast("Indiquez à qui vous le confiez"); return; }
-  if(role === 'pilote')    m.pilote = v;
-  if(role === 'suppleant') m.suppleant = v;
-  if(role === 'renfort'){ const r = renfortsDe(m).slice(); if(r[i]) r[i] = Object.assign({}, r[i], {nom:v}); m.renforts = r; }
+  if(!v){ toast("Indiquez à qui vous passez la main"); return; }
+  m.pilote = v;
+  m.renforts = renfortsDe(m).filter(r => cleP(r.nom) !== cleP(v));
   m.modifiePar = moi;
   await sauver(); rendre(); modifierPersonne(nom);
-  toast(`« ${m.titre} » confiée à ${v}`);
-}
-
-/* Ajouter une mission à quelqu'un depuis sa carte. Reprendre un
-   pilotage déjà tenu ne fait pas disparaître le nom d'avant : il
-   redescend en renfort, pour qu'on sache qui connaît le dossier. */
-async function confier(nom, mid, role){
-  const m = etat.missions.find(x => x.id === mid); if(!m) return;
-  let repris = '';
-  if(role === 'pilote'){
-    const avant = (m.pilote || '').trim();
-    m.pilote = nom;
-    if(avant && cleP(avant) !== cleP(nom)){
-      m.renforts = renfortsDe(m).concat([{nom:avant, role:'A piloté la mission avant', par:moi}]);
-      repris = avant;
-    }
-  }else{
-    if(renfortsDe(m).some(r => cleP(r.nom) === cleP(nom))){ toast(`${nom} est déjà en renfort dessus`); return; }
-    m.renforts = renfortsDe(m).concat([{nom:nom, role:'', par:moi}]);
-  }
-  m.modifiePar = moi;
-  await sauver(); rendre(); modifierPersonne(nom);
-  toast(role !== 'pilote' ? `${nom} en renfort sur « ${m.titre} »`
-        : repris ? `${nom} pilote « ${m.titre} » — ${repris} y reste en renfort`
-                 : `${nom} pilote « ${m.titre} »`);
+  toast(`${v} pilote « ${m.titre} » — ${nom} n'y figure plus`);
 }
 
 /* Ce que personne ne porte n'est pas quelqu'un : la bande descend
