@@ -4227,10 +4227,12 @@ function equipeDeCrise(){
                 || a.nom.localeCompare(b.nom, 'fr'));
 }
 
-/* Le feuillet d'arrivée : le nom, et ce que la personne porte.
-   Rien d'autre. Le statut, la prochaine action et les renforts se
-   lisent dans « Par mission » — la même liste n'est jamais
-   affichée deux fois sur le même écran. */
+/* Le feuillet d'arrivée, dans l'ordre où la carte se lit : le nom
+   en grand, la profession, le statut dans l'association, la mission
+   portée, les renforts positionnés dessus, et la fiche mission en
+   bas. Le statut d'avancement et la prochaine action se lisent dans
+   « Par mission » — la même liste n'est jamais affichée deux fois
+   sur le même écran. */
 function vuePersonnes(){
   const liste = equipeDeCrise();
   let h = `<div class="miss-gens">`;
