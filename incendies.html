@@ -294,8 +294,12 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .miss-trou .l button{background:none;border:0;padding:0;color:var(--encre-2);
   font-family:inherit;font-size:12.5px;cursor:pointer;text-decoration:underline}
 
+/* L'angle de lecture à gauche, la sortie papier à droite : le PDF
+   ne dépend pas du feuillet ouvert, il les porte tous les deux. */
+.miss-angle{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 20px}
+.miss-angle .btn{margin-left:auto}
 .miss-lunettes{display:flex;background:var(--surface);border:1px solid var(--trait);
-  border-radius:9px;padding:4px;width:max-content;max-width:100%;margin:0 0 20px}
+  border-radius:9px;padding:4px;width:max-content;max-width:100%;margin:0}
 .miss-lunettes button{background:none;border:0;border-radius:6px;padding:9px 17px;
   font-size:14px;color:var(--texte-2);font-weight:600;min-height:40px;cursor:pointer}
 .miss-lunettes button.on{background:var(--carte);color:var(--encre);box-shadow:0 1px 3px rgba(6,43,99,.13)}
@@ -1710,7 +1714,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 @media print{
   @page{margin:14mm}
   body{background:#fff;font-size:10.5pt}
-  .rail,.bandeau,.filtres,.feuillets,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.pt .b,.guide,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve,.ref .b,.ref.neuf,.tamis,.retour-f,.voies,.sugg,.miss-lunettes,.miss-neuf,.miss-c .barre-m,.miss-pers .modif,.apourvoir li .designer,.pt .modif-p,.pt .chev,.ent-r .lien-v{display:none!important}
+  .rail,.bandeau,.filtres,.feuillets,.barre-h,.actions,.crayon,.sup,.modif,.retirer,.pt .b,.guide,.pers .modif,.mission .barre,.toast,.carte.formulaire,.renforts .rplus,.renforts .rx,.ent-r .outils,.note.ordre-manuel .btn,.crayon-m,.confier,.neuve,.ref .b,.ref.neuf,.tamis,.retour-f,.voies,.sugg,.miss-angle,.miss-neuf,.miss-c .barre-m,.miss-pers .modif,.apourvoir li .designer,.pt .modif-p,.pt .chev,.ent-r .lien-v{display:none!important}
   td.act,th:last-child{display:none!important}
   /* Un feuillet replié à l'écran s'imprime déplié : un dossier de
      traçabilité ne tronque rien. */
@@ -4543,14 +4547,35 @@ function vueMissions(){
       <div class="l">mission${etat.missions.length > 1 ? 's' : ''} ouverte${etat.missions.length > 1 ? 's' : ''}</div></div>
   </div>
 
-  <div class="miss-lunettes" role="group" aria-label="Angle de lecture">
-    <button class="${feuilletMissions === 'personne' ? 'on' : ''}"
-      onclick="allerFeuilletMissions('personne')">Par personne</button>
-    <button class="${feuilletMissions === 'mission' ? 'on' : ''}"
-      onclick="allerFeuilletMissions('mission')">Par mission</button>
+  <div class="miss-angle">
+    <div class="miss-lunettes" role="group" aria-label="Angle de lecture">
+      <button class="${feuilletMissions === 'personne' ? 'on' : ''}"
+        onclick="allerFeuilletMissions('personne')">Par personne</button>
+      <button class="${feuilletMissions === 'mission' ? 'on' : ''}"
+        onclick="allerFeuilletMissions('mission')">Par mission</button>
+    </div>
+    <button class="btn sec" onclick="imprimerMissions()">PDF</button>
   </div>`;
 
+  /* Sur papier, l'organigramme et la liste des missions ne se
+     choisissent pas : c'est la pièce qu'on joint à un point de
+     situation ou qu'on tend à l'ARS, et elle doit dire qui est là
+     et ce que chacun porte. */
+  if(missionsSurPapier) return h
+    + `<h2>Organigramme — qui est engagé</h2>` + vuePersonnes()
+    + `<h2 style="margin-top:22px">Missions — où elles en sont</h2>` + vueParMission();
+
   return h + (feuilletMissions === 'personne' ? vuePersonnes() : vueParMission());
+}
+
+/* Le temps de l'impression, l'onglet se déplie en entier, puis
+   l'écran revient sur le feuillet où on l'avait laissé. */
+let missionsSurPapier = false;
+function imprimerMissions(){
+  missionsSurPapier = true;
+  rendre();
+  window.print();
+  setTimeout(() => { missionsSurPapier = false; rendre(); }, 800);
 }
 
 /* Les missions groupées par statut. « Terminé » ferme la page,
