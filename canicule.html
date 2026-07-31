@@ -1896,9 +1896,88 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 /* ---------- réhydratation à domicile ----------
    Trois cartes qui se lisent dans l'ordre : ce qu'on fait, avec
    quelles officines, et pour qui. */
-.proc{margin:0;padding-left:22px;font-size:14px;line-height:1.55;color:var(--texte)}
-.proc li{margin-bottom:9px}
-.proc li:last-child{margin-bottom:0}
+/* ---------- les deux procédures en vigueur ----------
+   Le module « Procédure » ne porte pas un texte, il porte deux
+   documents : celui des demandes qui partent d'un médecin de ville,
+   celui des demandes qui partent de SOS Médecins. On choisit
+   d'abord, on lit ensuite — et ce qu'on lit doit se comprendre du
+   premier coup, à une heure où l'on décroche un téléphone.
+
+   Le déroulé reprend la forme des schémas validés : une colonne
+   d'étapes, et à chaque question un embranchement OUI / NON qu'on
+   distingue de loin — le vert continue, le rouge sort du circuit. */
+.pr-choix{display:flex;flex-direction:column;gap:12px}
+.pr-choix .pr-b{text-align:left;font-family:inherit;cursor:pointer;background:var(--carte);
+  border:1px solid var(--trait);border-left:4px solid var(--ambre);border-radius:10px;
+  padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.pr-choix .pr-b:hover{border-color:var(--ambre);border-left-color:var(--ambre-fonce);
+  box-shadow:0 2px 16px rgba(58,42,16,.13)}
+.pr-choix .pr-b:focus-visible{outline:3px solid var(--ambre);outline-offset:2px}
+.pr-choix .rang{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ambre-fonce)}
+.pr-choix .nom{font-family:var(--display);font-weight:700;font-size:17px;color:var(--encre);line-height:1.25}
+.pr-choix .quand{font-size:13.5px;line-height:1.5;color:var(--texte)}
+.pr-choix .quand b{color:var(--encre)}
+.pr-choix .pied-b{display:flex;gap:14px;flex-wrap:wrap;align-items:center;
+  font-size:12.5px;color:var(--texte-2)}
+.pr-choix .entrer{color:var(--ambre-fonce);font-weight:700;font-size:13px}
+
+/* Le déroulé lui-même. */
+.pr-tete{background:var(--ambre-clair);border:1px solid #EBD6AC;border-radius:10px;
+  padding:15px 17px;margin-bottom:16px;display:flex;flex-direction:column;gap:9px}
+.pr-tete .rang{font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;color:#8A5D12}
+.pr-tete .l{font-size:13.5px;line-height:1.5;color:#4A3208}
+.pr-tete .l .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:#8A5D12;display:block;margin-bottom:2px}
+.pr-tete a{color:#6E4A0E;font-weight:700;text-decoration:none}
+
+.pr-flux{display:flex;flex-direction:column;align-items:stretch;gap:0}
+.pr-fl{align-self:center;color:var(--texte-2);font-size:17px;line-height:1;padding:5px 0}
+.pr-et{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--encre-2);
+  border-radius:9px;padding:13px 16px;display:flex;gap:13px;align-items:flex-start}
+.pr-et .n{flex:0 0 auto;width:27px;height:27px;border-radius:50%;background:var(--cobalt-clair);
+  color:var(--encre);font-family:var(--mono);font-size:12.5px;font-weight:600;
+  display:flex;align-items:center;justify-content:center}
+.pr-et .c{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:5px}
+.pr-et .qui{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--encre-2);background:var(--cobalt-clair);border-radius:4px;padding:2px 7px;align-self:flex-start}
+.pr-et .t{font-family:var(--display);font-weight:700;font-size:15.5px;color:var(--encre);line-height:1.25}
+.pr-et .d{font-size:13.5px;line-height:1.55;color:var(--texte)}
+.pr-et .d a{color:var(--encre-2);font-weight:700;text-decoration:none}
+.pr-et .rq{font-size:12.5px;line-height:1.45;color:#8A5D12;background:#FCF3E4;
+  border:1px solid #EBD6AC;border-radius:6px;padding:8px 10px}
+/* L'étape qui pose une question se signale avant qu'on la lise. */
+.pr-et.q{border-left-color:var(--ambre)}
+.pr-et.q .qui{background:var(--ambre-clair);color:#8A5D12}
+
+/* Les deux réponses, côte à côte tant que la place le permet. */
+.pr-br{display:grid;gap:11px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  margin:9px 0 0 40px}
+.pr-r{border-radius:9px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;
+  border:1px solid var(--trait);background:var(--carte)}
+.pr-r .rep{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;font-weight:700}
+.pr-r .t{font-family:var(--display);font-weight:700;font-size:14.5px;line-height:1.25}
+.pr-r .d{font-size:13px;line-height:1.5}
+.pr-r .d a{font-weight:700;text-decoration:none;color:inherit}
+.pr-r.oui{background:#EAF4EF;border-color:#BFDDCF;color:#1F5B47}
+.pr-r.oui .rep,.pr-r.oui .t{color:#1F5B47}
+.pr-r.non{background:#FBEDEA;border-color:#EAC4BB;color:#8C3020}
+.pr-r.non .rep,.pr-r.non .t{color:#8C3020}
+/* Une branche qui s'arrête : la mention se lit sans la chercher. */
+.pr-r .fin{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;
+  border-top:1px dashed currentColor;padding-top:7px;margin-top:1px;opacity:.85}
+.pr-r .fin.vers::before{content:'▼ '}
+/* Le rattrapage d'une branche « non » qui rebondit avant de sortir. */
+.pr-r .suite{border-top:1px solid currentColor;border-color:inherit;padding-top:8px;margin-top:2px;
+  display:flex;flex-direction:column;gap:4px}
+.pr-r .suite .st{font-weight:700;font-size:13px}
+.pr-r .suite .sd{font-size:12.5px;line-height:1.45}
+
+/* Un déroulé sur papier ne se coupe pas au milieu d'une étape. */
+@media print{
+  .pr-et,.pr-r,.pr-tete,.pr-choix .pr-b{break-inside:avoid;page-break-inside:avoid}
+  .pr-choix .entrer{display:none}
+}
 .rh-l{display:flex;flex-direction:column;gap:11px}
 .rh-c{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--trait);
   border-radius:9px;padding:14px 16px;display:flex;flex-direction:column;gap:9px}
@@ -1996,6 +2075,27 @@ let deplieesMC = new Set();
 let feuillet = null;
 let onglet = 'cockpit';
 
+/* Les consignes que les deux procédures de réhydratation à domicile
+   imposent d'elles-mêmes. Elles sont écrites une fois ici, entrent
+   dans les consignes du moment affichées en tête du cockpit, et se
+   posent aussi sur les cockpits déjà en service — un cockpit ouvert
+   depuis des semaines n'aurait sinon jamais vu passer la procédure.
+   Une fois posées, elles se corrigent et se retirent comme les
+   autres : ce sont des consignes, pas du mobilier. */
+const CONSIGNES_PROC = {
+  faire: [
+    "Réhydratation à domicile : devant une indication de réhydratation IV ou sous-cutanée, vérifier d'abord qu'un cabinet infirmier suit déjà la personne. Si c'est le cas, la prise en charge se fait avec lui et la CPTS n'est pas appelée.",
+    "Quand aucun cabinet infirmier n'est identifié, réorienter la demande vers la CPTS — 06 29 82 29 10 : elle fait venir le matériel, puis cherche le cabinet qui passera.",
+    "Cabinet infirmier qui accepte une demande transmise par la CPTS : la rappeler au numéro dédié. C'est cet appel qui clôt la demande et permet de noter le passage.",
+    "Si aucune pharmacie partenaire ne peut livrer, ou si aucun cabinet infirmier ne peut passer, renvoyer la demande au médecin ou à SOS Médecins pour appel au 15. Une demande ne reste jamais sans issue."
+  ],
+  eviter: [
+    "Ne pas engager la procédure de réhydratation à domicile sans indication médicale de réhydratation IV ou sous-cutanée : elle part du médecin, jamais du signalement d'un proche.",
+    "Ne pas appeler soi-même la pharmacie ou le prestataire de matériel une fois la demande passée à la CPTS : c'est elle qui appelle, pour ne pas doubler les demandes.",
+    "Ne pas confondre les deux procédures. Demande d'un médecin de ville : tout le matériel vient de la pharmacie partenaire. Demande de SOS Médecins : le médecin dépose le set et le soluté, et seul le pied à perfusion est loué au prestataire."
+  ]
+};
+
 const etatInitial = {
   entete: {
     niveau: 'Vigilance à renseigner',
@@ -2003,20 +2103,25 @@ const etatInitial = {
     maj: ''
   },
   /* Ce qui s'affiche en tête du cockpit, et que chacun lit en
-     arrivant. Ces quatre lignes valent pour n'importe quel épisode
-     caniculaire : elles se réécrivent dès que la vice-présidence a
-     tranché la doctrine de celui-ci. */
+     arrivant. Les premières lignes valent pour n'importe quel
+     épisode caniculaire ; celles qui suivent sont la traduction en
+     consignes des deux procédures de réhydratation à domicile —
+     ce qui s'y décide en marchant doit se lire ici sans avoir à
+     ouvrir le schéma. Elles se réécrivent depuis la page dès que
+     la vice-présidence a tranché autrement. */
   consignes: {
     faire: [
       "Repérer les patients à risque de sa patientèle — personnes âgées isolées, pathologies chroniques, traitements sensibles à la chaleur — et vérifier qu'un contact est prévu.",
       "Relayer aux patients fragiles et à leur entourage les consignes de prévention : hydratation, pièce fraîche, signes d'alerte.",
       "Signaler ici toute situation liée à la chaleur rencontrée sur le territoire, même mineure.",
-      "Orienter vers le SAS (116 117) plutôt que vers les urgences quand la situation le permet."
+      "Orienter vers le SAS (116 117) plutôt que vers les urgences quand la situation le permet.",
+      ...CONSIGNES_PROC.faire
     ],
     eviter: [
       "Ne rien diffuser aux adhérents qui n'ait été validé par la gouvernance.",
       "Ne pas se substituer au registre communal des personnes vulnérables : il est tenu par les CCAS, pas par la CPTS.",
-      "Ne pas constituer de liste nominative de patients dans le cockpit."
+      "Ne pas constituer de liste nominative de patients dans le cockpit.",
+      ...CONSIGNES_PROC.eviter
     ]
   },
   /* Les missions de cet épisode s'arrêtent avec la vice-présidence :
@@ -2054,18 +2159,10 @@ Quand aucun cabinet infirmier n'est identifié, rappeler le médecin à l'origin
   cpts: [],
 
   /* --- Réhydratation à domicile -------------------------------
-     La procédure telle qu'elle s'affiche en tête de l'espace : une
-     ligne par étape, dans l'ordre où on les fait. Elle est écrite
-     ici pour que l'espace ne s'ouvre pas vide, et se corrige depuis
-     la page — c'est la vice-présidence qui l'arrête, pas ce
-     fichier. */
-  rehydProc: [
-    "Recenser les pharmacies du territoire prêtes à délivrer les solutions de réhydratation orale : ce qu'elles tiennent, leurs horaires, qui décroche. Elles se renseignent dans la carte « Recensement des pharmacies partenaires » et se posent d'elles-mêmes sur le fond de carte.",
-    "Faire connaître le circuit aux médecins généralistes du territoire : c'est le médecin qui repère la personne à risque dans sa patientèle et qui la signale à la CPTS.",
-    "Recueillir le signalement dans la carte « Patients signalés / orientés » : initiales, âge, commune, motif, numéro pour rappeler, et les coordonnées du médecin qui déclare. Aucun élément clinique au-delà du motif, aucun nom en clair.",
-    "Désigner le cabinet infirmier libéral qui assurera le passage à domicile. S'il est connu, il est renseigné sur la fiche et la personne lui est affectée. S'il n'est pas connu, c'est le médecin à l'origine de la demande qu'on rappelle : lui sait quel cabinet suit la personne.",
-    "Prévenir le cabinet infirmier désigné et la pharmacie la plus proche, puis noter le passage effectué sur la fiche. Tant que le passage n'est pas noté, la personne reste en attente sur la carte."
-  ],
+     Les deux procédures en vigueur ne sont pas dans l'état : elles
+     ne se saisissent pas au fil de l'eau, elles sont arrêtées par
+     la CPTS et se lisent telles quelles. Elles vivent dans la
+     constante PROC_REHYD, plus bas — voir l'espace du même nom. */
   /* Les officines qui délivrent. L'adresse sert à deux choses : la
      lire au téléphone, et poser la pharmacie sur la carte — c'est
      elle qui dit laquelle est la plus proche d'une personne
@@ -2113,6 +2210,10 @@ Quand aucun cabinet infirmier n'est identifié, rappeler le médecin à l'origin
     {id:'l14', cat:"Appui local", nom:"Registres des personnes vulnérables — autres communes du territoire", org:"CCAS et mairies", quoi:"Chaque commune tient le sien. Pour orienter un patient isolé, c'est le CCAS de sa commune qu'on appelle. Liste des contacts à constituer.", tel:'', mail:'', dispo:"Heures ouvrées", url:'', verif:true}
   ],
   retires: [],
+  /* Marqueur de pose des consignes tirées des procédures de
+     réhydratation à domicile : il n'y a rien à afficher, seulement
+     à ne pas reposer deux fois ce qu'on a pu retirer. */
+  consProc: false,
   personnes: {},
   referents: [
     {id:'r1', nom:"Anne Latisnère", profession:"Infirmière — vice-présidente de la CPTS", tel:'', auteur:'', quand:''},
@@ -2482,9 +2583,25 @@ function fusionnerNouveautes(){
     });
   });
   reprendreEbauche();
+  poserConsignesProcedure();
   apparierVisioARS();
   consignerRegistresHerites();
   completerVeille();
+}
+
+/* Les consignes tirées des deux procédures de réhydratation à
+   domicile, posées une fois sur un cockpit déjà en service. Les
+   consignes n'ont pas d'identifiant — la comparaison se fait donc
+   sur le texte, et le marqueur « consProc » garantit qu'un poste ne
+   les repose pas après qu'on les a retirées à la main. */
+function poserConsignesProcedure(){
+  if(etat.consProc) return;
+  const c = etat.consignes || (etat.consignes = {faire:[], eviter:[]});
+  ['faire','eviter'].forEach(k => {
+    c[k] = Array.isArray(c[k]) ? c[k] : [];
+    CONSIGNES_PROC[k].forEach(x => { if(!c[k].includes(x)) c[k].push(x); });
+  });
+  etat.consProc = true;
 }
 
 /* La première version de ce cockpit n'avait que deux rubriques :
@@ -7184,7 +7301,7 @@ const telLien = t => `tel:${String(t || '').replace(/[^0-9+]/g,'')}`;
 /* '' = le palier. Le module ouvert tient d'un rendu à l'autre :
    revenir à l'onglet, c'est retrouver l'écran qu'on y a laissé. */
 let moduleRehyd = '';
-function allerModuleRehyd(m){ moduleRehyd = m; rendre(); window.scrollTo(0,0); }
+function allerModuleRehyd(m){ moduleRehyd = m; procOuverte = null; rendre(); window.scrollTo(0,0); }
 
 function vueRehydratation(){
   const ph = etat.pharmacies || [], pat = etat.rehyd || [];
@@ -7204,7 +7321,7 @@ const retourRehyd = () =>
 function palierRehyd(ph, pat){
   const m = (etat.missions || []).find(x => espaceDe(x) === 'rehydratation');
   const pil = m ? String(m.pilote || '').trim() : '';
-  const proc = (etat.rehydProc || []).length;
+  const proc = PROC_REHYD.length;
   const parts = ph.filter(p => p.statut === 'Partenaire').length;
   const aFaire = ph.filter(p => !p.statut || p.statut === 'À contacter').length;
   const attente = pat.filter(enAttenteIdel).length;
@@ -7218,10 +7335,11 @@ function palierRehyd(ph, pat){
 
   <div class="modules">
     <button class="module" onclick="allerModuleRehyd('procedure')">
-      <div class="titre-m">Procédure</div>
-      <p class="sous-m">Les étapes du dispositif, dans l'ordre où elles se font : qui recense, qui signale, qui désigne le cabinet infirmier, et ce qu'on fait quand aucun n'est identifié. C'est la page à lire avant de décrocher, et celle qu'on relit quand on reprend la main après une absence.</p>
+      <div class="titre-m">Procédures en vigueur</div>
+      <p class="sous-m">Les deux procédures arrêtées par la CPTS, dans leur déroulé complet : celle des demandes qui partent d'un médecin de ville, celle des demandes qui partent de SOS Médecins. Chacune se lit étape par étape, avec ce qu'on fait à chaque réponse. C'est la page à lire avant de décrocher, et celle qu'on donne à un professionnel qui demande la marche à suivre.</p>
       <div class="chiffres">
-        <div><strong>${proc}</strong> étape${proc > 1 ? 's' : ''} écrite${proc > 1 ? 's' : ''}</div>
+        <div><strong>${proc}</strong> procédures</div>
+        <div><strong>${PROC_REHYD.reduce((n,p) => n + p.etapes.length, 0)}</strong> étapes détaillées</div>
       </div>
       <div class="entrer">Ouvrir le module →</div>
     </button>
@@ -7250,46 +7368,209 @@ function palierRehyd(ph, pat){
   </div>`;
 }
 
-/* --- Module 1 : la procédure -----------------------------
-   Ce qu'on fait, dans l'ordre. Écrite dans le cockpit et corrigée
-   depuis la page : c'est la vice-présidence qui l'arrête, et elle
-   n'a pas à passer par un fichier pour la changer. */
+/* --- Module 1 : les procédures en vigueur ------------------
+   Deux procédures, et deux seulement. Elles se distinguent par un
+   seul point — d'où part la demande — et tout le reste en découle :
+   qui a le consommable en main, qui fait venir le pied à perfusion,
+   qui rappelle qui à la fin. C'est pour cette raison qu'elles ne
+   sont pas fondues en un texte unique : devant un téléphone, on
+   choisit d'abord la bonne, puis on la suit.
+
+   Elles sont reprises telles quelles des deux schémas arrêtés par
+   la CPTS. Elles ne se saisissent pas depuis la page — ce ne sont
+   pas des notes de travail, ce sont les documents en vigueur, et
+   les modifier suppose de refaire passer le schéma. C'est aussi
+   pourquoi chacune s'imprime seule : elle a vocation à être
+   affichée en cabinet et à circuler sur papier.
+
+   Un champ « note » sur une étape signale un point que le schéma
+   ne tranche pas : mieux vaut l'écrire que le combler. */
+const PROC_REHYD = [
+  {
+    id:'ville',
+    rang:'Procédure 1',
+    nom:"Demande d'un médecin de ville",
+    quand:"La personne est vue <b>par son médecin</b>, au cabinet ou à domicile, et le médecin pose l'indication de réhydratation.",
+    appel:"06 29 82 29 10",
+    materiel:"Tout le matériel vient de la pharmacie : c'est <b>l'officine partenaire la plus proche du domicile</b> qui livre le pied à perfusion, le soluté et le set de perfusion, en 30 à 45 minutes.",
+    role:"La CPTS appelle les pharmacies, puis les IDEL. Elle est au centre de la procédure.",
+    etapes:[
+      {qui:"Médecin", t:"Visite au cabinet ou à domicile par le médecin",
+       d:"La personne est vue par son médecin — au cabinet ou chez elle. C'est le point d'entrée : cette procédure vaut pour toute demande qui part d'un médecin de ville."},
+      {qui:"Médecin", t:"Indication de réhydratation par voie IV ou sous-cutanée",
+       d:"L'indication est posée par le médecin qui voit la personne. Sans elle, rien de ce qui suit ne s'engage : la procédure ne se déclenche pas sur la seule inquiétude d'un proche."},
+      {qui:"Médecin", t:"Le médecin rédige les ordonnances — matériel + IDEL",
+       d:"Deux ordonnances : l'une pour le matériel (pied à perfusion, soluté, set de perfusion), l'autre pour les soins infirmiers. Le médecin de ville n'a pas de consommable à laisser sur place — tout viendra de la pharmacie."},
+      {qui:"Médecin", t:"Le médecin s'assure de la présence d'un cabinet IDEL",
+       d:"Avant tout appel à la CPTS : la personne est-elle déjà suivie par un cabinet infirmier libéral ?",
+       q:"Un cabinet IDEL suit-il déjà la personne ?",
+       oui:{t:"STOP PROCÉDURE — gestion avec le cabinet IDEL en place",
+            d:"Le cabinet infirmier qui suit déjà la personne assure la pose et la surveillance. La CPTS n'est pas sollicitée.",
+            fin:"La procédure s'arrête ici."},
+      non:{t:"Le médecin réoriente la demande vers la CPTS",
+            d:"Aucun cabinet infirmier n'est identifié. Le médecin appelle la CPTS au <a href=\"tel:+33629822910\">06 29 82 29 10</a> : c'est elle qui prend la suite, matériel puis infirmiers.",
+            vers:"On continue à l'étape 5."}},
+      {qui:"CPTS", t:"La CPTS appelle la pharmacie la plus proche du domicile du patient",
+       d:"La CPTS cherche l'officine partenaire la plus proche de chez la personne, et lui demande si elle peut livrer. Le module « Recensement des pharmacies partenaires » donne cette officine sur la carte, avec son numéro.",
+       q:"L'officine peut-elle livrer ?",
+       oui:{t:"La pharmacie livre le matériel à domicile en 30 à 45 minutes",
+            d:"Pied à perfusion, soluté et set de perfusion. Le domicile a alors tout ce qu'il faut pour la pose.",
+            vers:"On continue à l'étape 6."},
+       non:{t:"La CPTS appelle une autre pharmacie partenaire",
+            d:"L'officine la plus proche ne peut pas livrer : la CPTS descend la liste des autres partenaires du secteur. Si l'une d'elles livre, le circuit reprend à l'étape 6.",
+            suite:{t:"Si aucune officine partenaire ne peut livrer",
+                   d:"La CPTS réoriente la demande vers le médecin, pour appel au 15. La réhydratation à domicile n'est plus tenable dans les délais, et la régulation prend le relais."}}},
+      {qui:"CPTS", t:"La CPTS transmet la demande aux IDEL",
+       d:"Le matériel est en route ou livré. La CPTS sollicite les cabinets infirmiers libéraux du secteur pour trouver qui passera poser la perfusion.",
+       q:"Un cabinet infirmier prend-il la demande ?",
+       oui:{t:"Prise en charge par l'IDEL",
+            d:"Le cabinet infirmier assure la pose et la surveillance au domicile.",
+            fin:"La demande est aboutie."},
+       non:{t:"La CPTS réoriente la demande vers le médecin, pour appel au 15",
+            d:"Aucun cabinet ne peut passer. La demande revient au médecin à l'origine de la demande, qui appelle le 15.",
+            fin:"La demande sort du circuit CPTS."}}
+    ]
+  },
+  {
+    id:'sos',
+    rang:'Procédure 2',
+    nom:"Demande de SOS Médecins",
+    quand:"La personne est vue <b>chez elle par SOS Médecins</b>, en visite non programmée, et le médecin pose l'indication de réhydratation.",
+    appel:"Numéro dédié CPTS",
+    materiel:"Le set de perfusion et le soluté sont <b>déposés sur place par le médecin de SOS Médecins</b>. Seul le pied à perfusion reste à faire venir — il est loué auprès d'un prestataire de location de matériel, et non délivré par une pharmacie.",
+    role:"SOS Médecins tient le début de la procédure et transmet ensuite à la CPTS, qui cherche l'IDEL.",
+    etapes:[
+      {qui:"SOS Médecins", t:"Visite à domicile SOS Médecins",
+       d:"La personne est vue chez elle par SOS Médecins, en visite non programmée. C'est le point d'entrée : cette procédure ne vaut que pour les demandes qui partent de SOS Médecins."},
+      {qui:"SOS Médecins", t:"Indication de réhydratation par voie IV ou sous-cutanée",
+       d:"L'indication est posée par le médecin qui voit la personne. Sans elle, rien de ce qui suit ne s'engage."},
+      {qui:"SOS Médecins", t:"SOS Médecins rédige les ordonnances",
+       d:"Les ordonnances nécessaires — matériel et soins infirmiers — sont rédigées et laissées au domicile."},
+      {qui:"SOS Médecins", t:"Dépôt sur place d'un set de perfusion et d'un soluté de réhydratation",
+       d:"Le médecin de SOS Médecins a le consommable dans sa sacoche et le laisse au domicile. C'est ce qui distingue cette procédure de l'autre : il ne reste plus à faire venir que le pied à perfusion, et aucune pharmacie n'est appelée."},
+      {qui:"SOS Médecins", t:"S'assure de la présence d'un cabinet IDEL",
+       d:"Avant toute réorientation : la personne est-elle déjà suivie par un cabinet infirmier libéral ?",
+       q:"Un cabinet IDEL suit-il déjà la personne ?",
+       oui:{t:"STOP PROCÉDURE",
+            d:"Le cabinet infirmier en place assure la pose et la surveillance. La CPTS n'est pas sollicitée.",
+            fin:"La procédure s'arrête ici."},
+       non:{t:"Réorientation de la demande vers la CPTS",
+            d:"Aucun cabinet infirmier n'est identifié : la demande passe à la CPTS.",
+            vers:"On continue à l'étape 6."}},
+      {qui:"CPTS", t:"Appel au prestataire de location de matériel",
+       d:"Le pied à perfusion n'est pas déposé par le médecin et ne passe pas par l'officine : il est loué auprès d'un prestataire de location de matériel médical.",
+       note:"Le schéma ne dit pas qui passe cet appel. L'étape suivant la réorientation vers la CPTS, elle est portée ici par la CPTS — à faire confirmer par la vice-présidence, et à corriger ici si c'est SOS Médecins qui appelle."},
+      {qui:"Prestataire", t:"Le prestataire livre le pied à perfusion à domicile en 30 à 45 minutes",
+       d:"Avec le set et le soluté déjà déposés par le médecin, le domicile a alors tout ce qu'il faut pour la pose."},
+      {qui:"SOS Médecins", t:"SOS Médecins transmet la demande à la CPTS",
+       d:"La demande de passage infirmier est transmise à la CPTS, avec ce qu'il faut pour rappeler : la commune, le motif, et le contact."},
+      {qui:"CPTS", t:"La CPTS transmet la demande aux IDEL",
+       d:"La CPTS sollicite les cabinets infirmiers libéraux du secteur pour trouver qui passera poser la perfusion."},
+      {qui:"IDEL", t:"Prise en charge par IDEL",
+       d:"Un cabinet infirmier accepte-t-il de passer au domicile ?",
+       q:"Un cabinet infirmier prend-il la demande ?",
+       oui:{t:"L'IDEL appelle la CPTS au numéro dédié",
+            d:"Le cabinet qui prend la personne en charge le fait savoir à la CPTS en appelant le numéro dédié. C'est cet appel qui clôt la demande et permet de noter le passage sur la fiche de la personne.",
+            fin:"La demande est aboutie."},
+       non:{t:"La CPTS réoriente la demande vers SOS Médecins, pour appel au 15",
+            d:"Aucun cabinet ne peut passer. La demande revient à SOS Médecins, qui appelle le 15 : la réhydratation à domicile n'est plus possible et la régulation prend le relais.",
+            fin:"La demande sort du circuit CPTS."}}
+    ]
+  }
+];
+
+const procDe = id => PROC_REHYD.find(p => p.id === id);
+
+/* null = la liste des deux procédures ; un identifiant = le déroulé
+   de celle-là. Ouvrir une procédure et revenir à la liste ne change
+   pas de module : on reste dans « Procédure ». */
+let procOuverte = null;
+function ouvrirProc(id){ procOuverte = id; rendre(); window.scrollTo(0,0); }
+
 function carteProcedure(){
-  const l = etat.rehydProc || [];
-  return `<h2>Procédure <span class="cpt-h">${l.length} étape${l.length>1?'s':''}</span></h2>
-  <p class="sous-h">Les étapes du dispositif, dans l'ordre où elles se font. C'est la page à lire avant de décrocher, et celle qu'on relit quand on reprend la main.</p>
-  <div class="carte">
-    ${l.length ? `<ol class="proc">${l.map(x => `<li>${esc(x)}</li>`).join('')}</ol>`
-      : `<p class="vide">La procédure n'est pas encore écrite. Le bouton ci-dessous l'ouvre à la saisie.</p>`}
+  return procOuverte ? derouleProc(procDe(procOuverte)) : listeProc();
+}
+
+/* La liste : ce qui doit suffire à choisir sans ouvrir. La question
+   posée est toujours la même — d'où part la demande. */
+function listeProc(){
+  return `<h2>Procédures en vigueur <span class="cpt-h">${PROC_REHYD.length} procédures</span></h2>
+  <p class="sous-h">Deux procédures de réhydratation à domicile sont en vigueur sur le territoire. Elles se choisissent sur un seul critère : <strong>d'où part la demande</strong>. Le reste en découle — qui a le matériel en main, qui le fait venir, et qui rappelle qui à la fin. Ouvrir une procédure, c'est en avoir le déroulé complet, étape par étape, avec ce qu'on fait à chaque réponse.</p>
+  <div class="pr-choix">
+    ${PROC_REHYD.map(p => `
+      <button class="pr-b" onclick="ouvrirProc('${p.id}')">
+        <div class="rang">${esc(p.rang)}</div>
+        <div class="nom">${esc(p.nom)}</div>
+        <div class="quand">${p.quand}</div>
+        <div class="pied-b">
+          <span>${p.etapes.length} étapes</span>
+          <span>${p.etapes.filter(e => e.q).length} décisions</span>
+        </div>
+        <div class="entrer">Lire la procédure en détail →</div>
+      </button>`).join('')}
   </div>
-  <div class="barre-h">
-    <button class="btn sec" onclick="imprimer()">PDF</button>
-    <button class="btn" onclick="editerProc()">Modifier la procédure</button>
+  <div class="carte" style="margin-top:16px">
+    <p style="font-size:13.5px;line-height:1.55;margin:0">Dans les deux cas, la CPTS n'est appelée qu'à une condition : <strong>qu'aucun cabinet infirmier ne suive déjà la personne</strong>. Si un cabinet IDEL est en place, la procédure s'arrête chez le médecin et la prise en charge se fait avec lui. Ce que la CPTS reçoit se note dans le module « Patients signalés / orientés », en initiales et sans élément clinique au-delà du motif.</p>
   </div>`;
 }
 
-function editerProc(){
-  const l = etat.rehydProc || [];
-  document.getElementById('modale').innerHTML = `<h3>Procédure de la réhydratation à domicile</h3>
-    <p class="chapo" style="margin:-6px 0 14px">Une étape par ligne, dans l'ordre où on les fait. Une ligne vide se retire d'elle-même.</p>
-    <label><span class="k">Les étapes</span>
-      <textarea id="pr-txt" style="min-height:260px">${esc(l.join('\n'))}</textarea></label>
-    <div class="actions"><button class="btn" onclick="validerProc()">Enregistrer</button>
-      <button class="btn sec" onclick="fermer()">Annuler</button></div>`;
-  ouvrirRideau();
+/* Le déroulé. Une étape par bloc, dans l'ordre du schéma, et à
+   chaque question les deux réponses en regard : ce qu'on fait si
+   oui, ce qu'on fait si non. Rien n'est laissé implicite — une
+   branche qui s'arrête le dit. */
+function derouleProc(p){
+  if(!p) return listeProc();
+  return `<button class="retour-m" onclick="ouvrirProc(null)">Revenir aux deux procédures</button>
+  <h2>${esc(p.nom)}</h2>
+  <p class="sous-h">${p.quand}</p>
+  <div class="pr-tete">
+    <div class="rang">${esc(p.rang)} — réhydratation à domicile</div>
+    <div class="l"><span class="k">Le matériel</span>${p.materiel}</div>
+    <div class="l"><span class="k">Le rôle de la CPTS</span>${esc(p.role)}</div>
+    <div class="l"><span class="k">Numéro à appeler</span>${
+      /[0-9]{6}/.test(p.appel) ? `<a href="${telLien(p.appel)}">${esc(p.appel)}</a>` : esc(p.appel)}</div>
+  </div>
+  <div class="pr-flux">
+    ${p.etapes.map((e,i) => (i ? '<div class="pr-fl">▼</div>' : '') + etapeProc(e, i + 1)).join('')}
+  </div>
+  <div class="barre-h" style="margin-top:16px">
+    <button class="btn sec" onclick="imprimer()">PDF</button>
+    <button class="btn sec" onclick="ouvrirProc(null)">Voir l'autre procédure</button>
+  </div>`;
 }
 
-async function validerProc(){
-  const l = lignes(document.getElementById('pr-txt').value);
-  etat.rehydProc = l;
-  /* Règle du cockpit : ce qui se décide quelque part se consigne en
-     main courante, en plus de sa rubrique. */
-  poserEnCourante('mcr-rehydproc', {
-    type:'Réhydratation', date: aujourdhui(), source:'',
-    evenement:`Procédure de la réhydratation à domicile arrêtée — ${l.length} étape${l.length>1?'s':''}.`,
-    suite:"Consultable en tête de l'espace « Réhydratation à domicile »."
-  });
-  await sauver(); fermer(); rendre(); toast("Procédure enregistrée, et reprise en main courante");
+/* Le bas d'une réponse dit toujours ce qu'elle devient : ou bien
+   elle sort du circuit, ou bien elle rejoint la suite du déroulé.
+   Une flèche verticale ne suffirait pas à le dire — elle ne montre
+   pas laquelle des deux branches la traverse. */
+function issueBranche(b){
+  if(b.fin)  return `<div class="fin">${esc(b.fin)}</div>`;
+  if(b.vers) return `<div class="fin vers">${esc(b.vers)}</div>`;
+  return '';
+}
+
+function etapeProc(e, n){
+  const branches = e.q ? `
+    <div class="pr-br">
+      <div class="pr-r oui"><div class="rep">Oui</div><div class="t">${e.oui.t}</div>
+        <div class="d">${e.oui.d}</div>
+        ${issueBranche(e.oui)}</div>
+      <div class="pr-r non"><div class="rep">Non</div><div class="t">${e.non.t}</div>
+        <div class="d">${e.non.d}</div>
+        ${e.non.suite ? `<div class="suite"><div class="st">${esc(e.non.suite.t)}</div>
+          <div class="sd">${esc(e.non.suite.d)}</div></div>` : ''}
+        ${issueBranche(e.non)}</div>
+    </div>` : '';
+  return `<div class="pr-et${e.q ? ' q' : ''}">
+    <div class="n">${n}</div>
+    <div class="c">
+      <span class="qui">${esc(e.qui)}</span>
+      <div class="t">${esc(e.t)}</div>
+      <div class="d">${e.d}</div>
+      ${e.q ? `<div class="d"><strong>${esc(e.q)}</strong></div>` : ''}
+      ${e.note ? `<div class="rq">${esc(e.note)}</div>` : ''}
+    </div>
+  </div>${branches}`;
 }
 
 /* --- Module 2 : les officines ----------------------------
