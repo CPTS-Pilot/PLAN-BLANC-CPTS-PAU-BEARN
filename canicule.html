@@ -3723,7 +3723,7 @@ const CHAMPS = {
      C'est la consigne du cockpit, et elle ne se négocie pas. */
   rehyd: {
     titre:"Patients signalés / orientés",
-    chapo:"Chaque personne signalée par un médecin du territoire pour une réhydratation à domicile, et ce qu'elle est devenue. Le registre est tenu en initiales, sans aucun élément clinique au-delà du motif. La commune sert à situer la personne sur la carte et à trouver la pharmacie partenaire la plus proche — l'adresse exacte n'est jamais demandée.",
+    chapo:"Chaque personne signalée par un médecin du territoire pour une réhydratation à domicile, et ce qu'elle est devenue. Le registre est tenu en initiales, sans aucun élément clinique au-delà du motif. L'adresse sert à situer la personne sur la carte et à trouver la pharmacie partenaire la plus proche de chez elle : c'est là qu'on livre.",
     f:[
       {c:'heure', l:"Heure du signalement", t:'time', d:maintenant},
       {c:'voie', l:"D'où vient le signalement", t:'choix', o:RH_VOIES,
@@ -3732,8 +3732,11 @@ const CHAMPS = {
        sous:"Des initiales, jamais un nom en clair."},
       {c:'nom', l:"Nom du patient — initiales", t:'text', req:true, ph:"D. M."},
       {c:'age', l:"Âge", t:'text', ph:"82"},
-      {c:'commune', l:"Commune", t:'text', ph:"Pau", ev:"majPharmaProches()",
-       aide:"C'est la commune qui situe la personne sur la carte, et rien d'autre : ni la rue, ni le numéro. C'est elle aussi qui range les officines partenaires par proximité, plus bas dans ce formulaire."},
+      {c:'adresse', l:"Adresse — numéro et rue", t:'text', large:true, ph:"12 rue Montpensier",
+       ev:"majPharmaProches()",
+       aide:"C'est d'ici que se mesure le trajet des officines, plus bas dans ce formulaire. Sans rue, la personne se pose sur le bourg de sa commune et le classement reste approximatif."},
+      {c:'codePostal', l:"Code postal", t:'text', ph:"64000", ev:"majPharmaProches()"},
+      {c:'commune', l:"Commune", t:'text', ph:"Pau", ev:"majPharmaProches()"},
       {c:'tel', l:"Numéro de téléphone", t:'text', ph:"06 12 34 56 78"},
       {c:'motif', l:"Motif", t:'text', large:true, sugg:RH_MOTIFS},
       {t:'titre', l:"Le médecin qui déclare",
@@ -3802,7 +3805,7 @@ const CHAMPS = {
       {c:'statut', l:"Où en est la personne", t:'choix', o:RH_STATUTS, d:() => 'À orienter'},
       {c:'note', l:"Observation", t:'textarea', large:true}
     ],
-    cols:['date','heure','voie','nom','age','commune','tel','motif','decNom','decAdresse','decTel',
+    cols:['date','heure','voie','nom','age','adresse','codePostal','commune','tel','motif','decNom','decAdresse','decTel',
           'indication','idel','idelNom','idelTel','relaisIdel','phNom','phCommune','phTel','phHors',
           'suiteCpts','misePar','miseLe','statut','note','auteur'],
     /* Le statut ne se déduit plus de la présence d'un cabinet : il
@@ -3905,9 +3908,11 @@ function ouvrirAjout(k, mode){
    « P », puis « Pa », puis « Pau ». */
 let pharmaMinuteur = 0;
 
-const communeSaisie = () => {
-  const el = document.getElementById('f-rehyd-commune');
-  return el ? String(el.value || '').trim().replace(/\s+/g, ' ') : '';
+/* Le domicile tel qu'il est saisi à l'instant dans le formulaire :
+   la rue si elle est là, la commune sinon. */
+const domicileSaisi = () => {
+  const lu = id => { const el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; };
+  return {adresse: lu('f-rehyd-adresse'), commune: lu('f-rehyd-commune')};
 };
 
 function majPharmaProches(){
@@ -3921,17 +3926,18 @@ function rendrePharmaProches(){
 }
 
 function blocPharmaProches(){
-  const commune = communeSaisie();
-  if(!commune) return `<div class="note-dep">Renseigner la commune ci-dessus : les officines partenaires s'y rangeront de la plus proche à la plus lointaine, avec le temps de route à prévoir pour la livraison.</div>`;
+  const chez = domicileSaisi();
+  const ou = libelleDomicile(chez);
+  if(!ou) return `<div class="note-dep">Renseigner l'adresse ci-dessus : les officines partenaires s'y rangeront de la plus proche à la plus lointaine du domicile, avec le temps de route à prévoir pour la livraison.</div>`;
 
-  const l = officinesProches(commune, rendrePharmaProches);
-  if(l === undefined) return `<div class="note-dep">Recherche des officines les plus proches de ${esc(commune)}…</div>`;
-  if(l === null) return `<div class="note-dep">La commune « ${esc(commune)} » n'a pas été reconnue : les officines ne peuvent pas être classées par proximité. Vérifier l'orthographe, ou nommer l'officine à la main ci-dessus.</div>`;
+  const l = officinesProches(chez, rendrePharmaProches);
+  if(l === undefined) return `<div class="note-dep">Recherche des officines les plus proches de ${esc(ou)}…</div>`;
+  if(l === null) return `<div class="note-dep">L'adresse « ${esc(ou)} » n'a pas été reconnue : les officines ne peuvent pas être classées par proximité. Vérifier l'orthographe, ou nommer l'officine à la main ci-dessus.</div>`;
   if(!l.length) return `<div class="note-dep">Aucune officine partenaire n'est encore située sur la carte. Le classement par proximité s'ouvrira dès qu'une adresse sera renseignée au module « Recensement des pharmacies partenaires ».</div>`;
 
   const posee = String((document.getElementById('f-rehyd-phNom') || {}).value || '').trim().toLowerCase();
   return `<div class="proches">
-    <div class="t">Officines partenaires les plus proches de ${esc(commune)}</div>
+    <div class="t">Officines partenaires les plus proches de ${esc(ou)}</div>
     ${l.slice(0, 6).map((x, i) => `<button type="button" class="pr${
       String(x.nom || '').trim().toLowerCase() === posee && posee ? ' on' : ''}" onclick="choisirPharma(${i})">
       <span class="n">${esc(x.nom || 'Officine non nommée')}${i === 0 ? `<span class="b">la plus proche</span>` : ''}</span>
@@ -3944,8 +3950,8 @@ function blocPharmaProches(){
 }
 
 function choisirPharma(i){
-  const commune = communeSaisie();
-  const l = officinesProches(commune);
+  const chez = domicileSaisi();
+  const l = officinesProches(chez);
   const x = l && l[i]; if(!x) return;
   const n = document.getElementById('f-rehyd-phNom');
   const t = document.getElementById('f-rehyd-phTel');
@@ -3958,7 +3964,7 @@ function choisirPharma(i){
     t.dataset.officine = '1';
   }
   rendrePharmaProches();
-  toast(`${x.nom || 'Officine'} — ${fmtTrajet(x.km)} depuis ${commune}`);
+  toast(`${x.nom || 'Officine'} — ${fmtTrajet(x.km)} depuis ${libelleDomicile(chez)}`);
 }
 
 /* --- Un champ qui dépend d'une réponse précédente -------------
@@ -6889,7 +6895,7 @@ const MC_REG = {
   rehyd: {
     type:'Réhydratation', personne:o => o.auteur,
     phrase:o => `Personne signalée pour une réhydratation à domicile — ${o.nom || 'initiales non renseignées'}`
-      + (o.age ? `, ${o.age} ans` : '') + (o.commune ? `, ${o.commune}` : '')
+      + (o.age ? `, ${o.age} ans` : '') + (libelleDomicile(o) ? `, ${libelleDomicile(o)}` : '')
       + (o.motif ? ` : ${o.motif}` : '')
       + (o.voie ? `. ${o.voie}` : '')
       + (o.decNom ? `, signalée par ${o.decNom}` : '')
@@ -7776,12 +7782,33 @@ function cleGeo(o){
   const q = a && c && a.toLowerCase().indexOf(c.toLowerCase()) < 0 ? a + ', ' + c : (a || c);
   return q.replace(/\s+/g, ' ');
 }
-/* Une personne n'est jamais située à son adresse : seule sa commune
-   part au service d'adresses, et c'est sur le bourg qu'elle se pose.
-   Le registre porte de quoi la rappeler — il n'a pas à la faire
-   sortir du cockpit pour autant, et la commune suffit largement à
-   dire quelle officine est la plus près. */
-const cleGeoPat = o => String(o.commune || '').trim().replace(/\s+/g, ' ');
+/* L'adresse complète de la personne, telle qu'on la soumet — et
+   telle qu'elle sert de témoin : tant qu'elle n'a pas changé, le
+   point calculé reste valable.
+
+   Le registre a longtemps tenu la seule commune, pour ne pas faire
+   sortir du cockpit où quelqu'un habite. Il porte maintenant
+   l'adresse : c'est chez cette personne qu'une officine livre, et
+   ranger les officines depuis le bourg pouvait désigner la mauvaise
+   dans une commune étendue. Ce que ça engage est réel — l'adresse
+   part au service public d'adresses comme celle des officines, et
+   elle s'affiche sur la carte et à l'export. La commune seule reste
+   acceptée : une fiche qui n'a qu'elle se pose sur le bourg comme
+   avant. */
+const cleGeoPat = o => {
+  const a = String(o.adresse || '').trim();
+  const cp = String(o.codePostal || '').trim();
+  const c = String(o.commune || '').trim();
+  if(!a && !c) return '';
+  const fin = [cp, c].filter(Boolean).join(' ');
+  const q = a && fin && a.toLowerCase().indexOf(c.toLowerCase()) < 0 ? a + ', ' + fin : (a || fin);
+  return q.replace(/\s+/g, ' ');
+};
+/* Sans rue, on ne demande au service que la commune : une recherche
+   libre sur « Gan » pourrait répondre par une rue de Gan ailleurs.
+   Avec une rue, au contraire, brider la recherche à la commune
+   ramènerait toujours le bourg. */
+const typeGeoPat = o => String(o.adresse || '').trim() ? '' : 'municipality';
 
 const nombreOuNul = v => typeof v === 'number' && isFinite(v) ? v
   : (v !== '' && v !== null && v !== undefined && isFinite(Number(v)) ? Number(v) : null);
@@ -7847,7 +7874,7 @@ function pointsPatients(pat, vivier){
     const proche = bon && enAttenteIdel(o) ? plusProche(lat, lon, vivier) : null;
     return {
       id: o.id, nom: o.nom || 'Personne signalée', statut: o.statut || 'À orienter',
-      lieu: [o.motif, o.commune].filter(Boolean).join(' · '),
+      lieu: [o.motif, libelleDomicile(o)].filter(Boolean).join(' · '),
       age: o.age || '', idelNom: o.idelNom || '', phNom: o.phNom || '', decNom: o.decNom || '',
       rappel: !estAffecte(o) && o.idel === 'Non',
       couleur: CARTO_PAT[RH_ETAT(o)], proche,
@@ -7917,26 +7944,51 @@ function fmtTrajet(km){
    Trois réponses possibles, et l'appelant les distingue : un point,
    `undefined` tant que la recherche court, `null` quand la commune
    n'a pas été reconnue. */
-const pointsCommunes = {};   // commune en minuscules -> {lat, lon} | null
+const pointsCommunes = {};   // adresse en minuscules -> {lat, lon} | null
 const communesEnVol = {};
 
-function pointCommune(commune, quandPret){
-  const cle = String(commune || '').trim().toLowerCase();
+/* Le point d'où l'on mesure : le domicile quand on en a la rue, le
+   bourg de la commune sinon. Sans repasser par le service quand on
+   l'a déjà — la fiche elle-même le porte une fois géocodée, une
+   autre personne à la même adresse l'a déjà cherché, une officine
+   installée dans la commune le donne à quelques centaines de mètres
+   près. Le service n'est appelé qu'en dernier, une fois par adresse.
+
+   Trois réponses possibles, et l'appelant les distingue : un point,
+   `undefined` tant que la recherche court, `null` quand l'adresse
+   n'a pas été reconnue. */
+function pointDomicile(o, quandPret){
+  const q = cleGeoPat(o);
+  const cle = q.toLowerCase();
   if(!cle) return null;
+
+  /* La fiche déjà située fait foi : c'est le même service qui l'a
+     posée, et son point est celui de la carte. */
+  if(o.geoCle === q && nombreOuNul(o.lat) !== null)
+    return {lat: nombreOuNul(o.lat), lon: nombreOuNul(o.lon)};
+
   if(Object.prototype.hasOwnProperty.call(pointsCommunes, cle)) return pointsCommunes[cle];
 
-  const situe = (etat.rehyd || []).find(o => cleGeoPat(o).toLowerCase() === cle
-    && o.geoCle === cleGeoPat(o) && nombreOuNul(o.lat) !== null);
+  const situe = (etat.rehyd || []).find(x => cleGeoPat(x).toLowerCase() === cle
+    && x.geoCle === cleGeoPat(x) && nombreOuNul(x.lat) !== null);
   if(situe) return (pointsCommunes[cle] = {lat: nombreOuNul(situe.lat), lon: nombreOuNul(situe.lon)});
 
-  const off = (etat.pharmacies || []).find(p => String(p.commune || '').trim().toLowerCase() === cle
-    && nombreOuNul(p.lat) !== null);
-  if(off) return (pointsCommunes[cle] = {lat: nombreOuNul(off.lat), lon: nombreOuNul(off.lon)});
+  /* Faute de rue reconnue, une officine de la même commune situe au
+     moins le secteur : c'est moins précis, mais ça range les
+     officines dans le bon ordre plutôt que pas du tout. */
+  const commune = String(o.commune || '').trim().toLowerCase();
+  if(commune){
+    const off = (etat.pharmacies || []).find(p => String(p.commune || '').trim().toLowerCase() === commune
+      && nombreOuNul(p.lat) !== null);
+    if(off && !String(o.adresse || '').trim())
+      return (pointsCommunes[cle] = {lat: nombreOuNul(off.lat), lon: nombreOuNul(off.lon)});
+  }
 
   if(communesEnVol[cle]) return undefined;
   if(navigator.onLine === false) return null;
   communesEnVol[cle] = true;
-  fetch(CARTO_BAN + encodeURIComponent(commune) + '&type=municipality')
+  const type = typeGeoPat(o);
+  fetch(CARTO_BAN + encodeURIComponent(q) + (type ? '&type=' + type : ''))
     .then(r => r.ok ? r.json() : null)
     .then(d => {
       const f = d && d.features && d.features[0];
@@ -7949,13 +8001,21 @@ function pointCommune(commune, quandPret){
   return undefined;
 }
 
+/* L'adresse telle qu'on l'écrit à l'écran. */
+const libelleDomicile = o => {
+  const a = String(o.adresse || '').trim();
+  const fin = [String(o.codePostal || '').trim(), String(o.commune || '').trim()]
+    .filter(Boolean).join(' ');
+  return [a, fin].filter(Boolean).join(', ');
+};
+
 /* Les officines partenaires rangées de la plus proche à la plus
    lointaine. Seules les partenaires sont proposées : une officine
    qu'on n'a pas encore appelée n'a rien promis, et l'envoyer
    livrer sur la foi d'une distance serait la mettre devant le fait
    accompli. */
-function officinesProches(commune, quandPret){
-  const p = pointCommune(commune, quandPret);
+function officinesProches(cible, quandPret){
+  const p = pointDomicile(cible, quandPret);
   if(!p) return p;
   return (etat.pharmacies || [])
     .filter(x => x.statut === 'Partenaire' && nombreOuNul(x.lat) !== null)
@@ -7969,13 +8029,13 @@ function officinesProches(commune, quandPret){
    revient s'écrit sur la fiche et part au serveur en une seule fois
    à la fin — pas un enregistrement par adresse.
 
-   Deux registres à situer, et pas de la même façon : l'officine
-   part avec sa rue, la personne signalée part avec sa seule
-   commune, et le service est prié de ne chercher qu'une commune.
-   C'est la ligne de partage à ne pas franchir. */
+   Deux registres à situer, et de la même façon depuis que le
+   registre porte les adresses : chacun part avec sa rue quand il en
+   a une. Une fiche qui n'a que sa commune le dit par son type, et
+   se pose sur le bourg. */
 const A_SITUER = [
-  {k:'pharmacies', cle: cleGeo,    type:'',             quoi:'officine située', quoiP:'officines situées'},
-  {k:'rehyd',      cle: cleGeoPat, type:'municipality', quoi:'personne située', quoiP:'personnes situées'}
+  {k:'pharmacies', cle: cleGeo,    type:'',          quoi:'officine située', quoiP:'officines situées'},
+  {k:'rehyd',      cle: cleGeoPat, type: typeGeoPat, quoi:'personne située', quoiP:'personnes situées'}
 ];
 
 let geoEnCours = false;
@@ -7997,10 +8057,14 @@ async function geocoderFiches(){
     if(coupure) break;
     for(const o of l.slice(0, 30)){
       const cle = r.cle(o);
+      /* Le type peut dépendre de la fiche : une personne dont on a
+         la rue se cherche autrement qu'une personne dont on n'a que
+         la commune. */
+      const type = typeof r.type === 'function' ? r.type(o) : r.type;
       let d = null;
       try{
         const r2 = await fetch(CARTO_BAN + encodeURIComponent(cle)
-          + (r.type ? '&type=' + r.type : ''));
+          + (type ? '&type=' + type : ''));
         if(!r2.ok) throw new Error(r2.status);
         d = await r2.json();
       }catch(e){
@@ -8942,7 +9006,7 @@ function cartePatients(pat, ph){
 
   return `<h2>Patients signalés / orientés
     <span class="cpt-h">${pat.length} personne${pat.length>1?'s':''} au registre</span></h2>
-  <p class="sous-h">Chaque personne signalée par un médecin du territoire, et ce qu'elle est devenue. Le registre est tenu en initiales, sans élément clinique au-delà du motif : la commune sert à situer la personne sur la carte et à trouver l'officine la plus proche, l'adresse exacte n'est jamais demandée.</p>
+  <p class="sous-h">Chaque personne signalée par un médecin du territoire, et ce qu'elle est devenue. Le registre est tenu en initiales, sans élément clinique au-delà du motif : l'adresse sert à situer la personne sur la carte et à trouver l'officine la plus proche de chez elle, puisque c'est à son domicile qu'on livre.</p>
     <div class="actions" style="margin:0 0 14px">
       <button class="btn" onclick="ouvrirParcours()">Signaler un patient</button>
     </div>
@@ -8956,7 +9020,7 @@ function cartePatients(pat, ph){
     ${rappels ? `<div class="note">${rappels} personne${rappels>1?'s':''} pour ${rappels>1?'lesquelles':'laquelle'} aucun cabinet infirmier n'est identifié : c'est le médecin à l'origine de la demande qu'il faut rappeler — lui sait quel cabinet ${rappels>1?'les':'la'} suit.</div>` : ''}
     ${blocCarte('carte-patients', [...pts, ...autour], {
       titre:"Les personnes signalées, et les officines autour d'elles",
-      sous:"Chaque personne est posée sur le bourg de sa commune, jamais à son adresse. Les croix sont les officines : toucher un point donne la pharmacie partenaire la plus proche, et de quoi désigner le cabinet infirmier sans quitter la carte.",
+      sous:"Chaque personne est posée à son adresse, sur le bourg de sa commune quand on n'a pas la rue. Les croix sont les officines : toucher un point donne la pharmacie partenaire la plus proche, et de quoi désigner le cabinet infirmier sans quitter la carte.",
       compte:"personnes situées",
       legende:[
         {c:CARTO_PAT.attente, l:"À orienter"},
@@ -8970,7 +9034,7 @@ function cartePatients(pat, ph){
       alerte: alertePatients(pts),
       videSansFiche:"Aucune personne signalée pour l'instant. Le premier signalement d'un médecin ouvre la carte.",
       videSansPoint:"Aucune commune renseignée sur les personnes signalées : la carte s'affichera dès qu'une fiche en portera une.",
-      source:"Personnes signalées par les médecins du territoire, situées à la commune."
+      source:"Personnes signalées par les médecins du territoire, situées à leur adresse."
     })}
     <div class="barre-h">
       <span class="cpt-h">${attente ? attente + ' en attente d\'un cabinet' : 'toutes affectées'}</span>
@@ -9014,7 +9078,7 @@ function fichePatient(o){
       <div class="nom">${esc(o.nom || 'Initiales non renseignées')}${o.age ? ` <span class="a">${esc(o.age)} ans</span>` : ''}</div>
       <span class="etiq ${RH_ET[st] || 'e-attente'}">${esc(st)}</span>
     </div>
-    <div class="meta">${esc([o.commune, o.motif].filter(Boolean).join(' · ')) || 'Ni commune ni motif renseignés'}${
+    <div class="meta">${esc([libelleDomicile(o), o.motif].filter(Boolean).join(' · ')) || 'Ni adresse ni motif renseignés'}${
       o.date ? ` · signalée le ${frdateL(o.date)}${o.heure ? ` à ${esc(o.heure)}` : ''}` : ''}${
       o.voie ? ` · ${esc(o.voie)}` : ''}</div>
     <div class="champs">
@@ -9037,10 +9101,10 @@ function fichePatient(o){
     ${o.note ? `<div class="meta">${esc(o.note)}</div>` : ''}
     <div class="barre">
       <div class="actes">
-        ${aFinaliser(o) ? `<button class="btn" onclick="ouvrirFinalisation('${o.id}')"
+        ${!estOriente(o) && o.statut !== 'Sans suite' ? `<button class="btn" onclick="ouvrirParcours('${o.id}')"
+          title="Reprendre le parcours de signalement là où il s'est arrêté">Reprendre la saisie</button>` : ''}
+        ${aFinaliser(o) ? `<button class="btn sec" onclick="ouvrirFinalisation('${o.id}')"
           title="Dire qui a posé la réhydratation, et clore le parcours">Confirmer la mise en place</button>` : ''}
-        ${!estOriente(o) && !aFinaliser(o) ? `<button class="btn" onclick="ouvrirParcours('${o.id}')"
-          title="Reprendre le parcours de signalement là où il s'est arrêté">Reprendre le parcours</button>` : ''}
         <button class="btn sec" onclick="ouvrirIdel('${o.id}')">${estAffecte(o) ? 'Changer le cabinet IDEL' : 'Désigner le cabinet IDEL'}</button>
         ${situable ? `<button class="btn sec" onclick="situerPatient('${o.id}')">Situer sur la carte ci-dessus</button>` : ''}
       </div>
@@ -9247,17 +9311,17 @@ let parc = null;
    n'en aura que quatre. */
 const PARC_RANG = {
   personne:1, voie:2,
-  sosIdel:3, sosMateriel:4,
-  medecin:3, indication:4, relais:5, pharma:6, suite:7, sansPharma:7,
+  sosIdel:3, sosCabinet:4, sosMateriel:4,
+  medecin:3, indication:4, relais:5, relaisCabinet:6, pharma:6, suite:7, sansPharma:7,
   bilan:0
 };
 function parcTotal(){
   if(!parc) return 0;
   const o = parc.o;
   if(!o.voie) return 8;                                  // la voie la plus longue, faute de mieux
-  if(estSOS(o)) return o.idel === 'Oui' ? 4 : 5;
+  if(estSOS(o)) return 5;
   if(o.indication === 'Non') return 5;
-  if(o.relaisIdel === 'Oui') return 6;
+  if(o.relaisIdel === 'Oui') return 7;
   return 8;
 }
 
@@ -9272,6 +9336,14 @@ function ouvrirParcours(id){
       date: aujourdhui(), heure: maintenant(), statut: 'À orienter'
     }
   };
+  /* Une saisie enregistrée en cours de route se reprend là où elle
+     s'est arrêtée, avec le chemin qu'elle avait pris : rouvrir au
+     premier écran obligerait à retraverser des questions déjà
+     répondues, et « Précédent » ne mènerait nulle part. */
+  if(src && src.parcEtape && PARC_RANG[src.parcEtape] !== undefined){
+    parc.etape = src.parcEtape;
+    parc.pile = Array.isArray(src.parcPile) ? [...src.parcPile] : [];
+  }
   rendreParcours();
   ouvrirRideau();
 }
@@ -9315,7 +9387,8 @@ function parcRelire(){
   const v = id => { const el = document.getElementById(id); return el ? String(el.value || '').trim() : null; };
   const poser = (id, champ) => { const x = v(id); if(x !== null) parc.o[champ] = x; };
   poser('pc-date','date'); poser('pc-heure','heure');
-  poser('pc-nom','nom'); poser('pc-age','age'); poser('pc-commune','commune');
+  poser('pc-nom','nom'); poser('pc-age','age');
+  poser('pc-adresse','adresse'); poser('pc-codePostal','codePostal'); poser('pc-commune','commune');
   poser('pc-tel','tel'); poser('pc-motif','motif');
   poser('pc-decNom','decNom'); poser('pc-decAdresse','decAdresse'); poser('pc-decTel','decTel');
   poser('pc-idelNom','idelNom'); poser('pc-idelTel','idelTel');
@@ -9338,10 +9411,17 @@ function teteParcours(titre, sous){
 
 /* Les boutons du bas, toujours au même endroit : avancer à droite,
    revenir à gauche. */
+/* Un appel s'interrompt, une personne rappelle plus tard, le
+   médecin doit vérifier quelque chose : à n'importe quel écran, la
+   saisie s'enregistre telle quelle et se reprend depuis la ligne de
+   la personne au registre. C'est ce qui distingue « Abandonner »,
+   qui ne laisse rien, d'un enregistrement qui garde ce qu'on a. */
 function piedParcours(suivant, action){
   return `<div class="actions actions-r">
     ${suivant ? `<button class="btn" onclick="${action}">${esc(suivant)}</button>` : ''}
     <button class="btn sec" onclick="parcRetour()">${parc.pile.length ? 'Précédent' : 'Annuler'}</button>
+    <button class="btn sec" onclick="enregistrerParcours(true)"
+      title="Garde ce qui est saisi ; la suite se reprend depuis la ligne de la personne">Enregistrer et reprendre plus tard</button>
     ${parc.pile.length ? `<button class="btn sec" onclick="fermerParcours()">Abandonner</button>` : ''}
   </div>`;
 }
@@ -9361,14 +9441,17 @@ function ecranParcours(){
   case 'personne':
     return `<div class="recueil">
     ${teteParcours("La personne signalée",
-      "Des initiales, jamais un nom en clair. La commune situe la personne sur la carte et sert à ranger les officines par proximité — ni la rue, ni le numéro ne sont demandés.")}
+      "Des initiales, jamais un nom en clair. L'adresse complète situe la personne sur la carte et sert à ranger les officines par proximité de son domicile : c'est chez elle qu'on livre.")}
     <div class="form">
       ${f('pc-date', "Date du signalement", o.date, {t:'date'})}
       ${f('pc-heure', "Heure du signalement", o.heure, {t:'time'})}
       ${f('pc-nom', "Nom du patient — initiales", o.nom, {ph:"D. M.", large:true})}
       ${f('pc-age', "Âge", o.age, {ph:"82"})}
-      ${f('pc-commune', "Commune", o.commune, {ph:"Pau"})}
       ${f('pc-tel', "Numéro de téléphone", o.tel, {ph:"06 12 34 56 78"})}
+      ${f('pc-adresse', "Adresse — numéro et rue", o.adresse, {large:true, ph:"12 rue Montpensier",
+        aide:"C'est d'ici que se mesure le trajet des officines. Sans rue, la personne se pose sur le bourg de sa commune et le classement reste approximatif."})}
+      ${f('pc-commune', "Commune", o.commune, {ph:"Pau"})}
+      ${f('pc-codePostal', "Code postal", o.codePostal, {ph:"64000"})}
       <label class="large"><span class="k">Motif</span>
         <input type="text" id="pc-motif" value="${esc(o.motif || '')}">
         ${pastilles('pc-motif', RH_MOTIFS, '', o.motif || '')}</label>
@@ -9402,31 +9485,43 @@ function ecranParcours(){
     <div class="voies">
       <button onclick="parcSosIdel('Oui')">
         <span class="t">Oui, un cabinet le suit</span>
-        <span class="d">La procédure s'arrête. Il restera à confirmer, depuis sa ligne au registre, que la réhydratation a bien été mise en place.</span>
+        <span class="d">Reste à le nommer, et l'orientation se clôt.</span>
       </button>
       <button onclick="parcSosIdel('Non')">
         <span class="t">Non, aucun cabinet</span>
         <span class="d">La CPTS devra appeler le prestataire de location de matériel.</span>
       </button>
     </div>
-    <div class="form" style="margin-top:18px">
-      ${f('pc-idelNom', "Nom du cabinet infirmier, s'il est connu", o.idelNom, {large:true, ph:"Cabinet infirmier…"})}
-      ${f('pc-idelTel', "Téléphone du cabinet", o.idelTel)}
-    </div>
     ${piedParcours('', '')}
   </div>`;
 
-  /* ---- A4. Le prestataire de matériel -------------------- */
+  /* ---- A4a. Le cabinet qui suit la personne --------------
+     Nommer le cabinet et clore tiennent dans le même écran : c'est
+     un seul geste dans la tête de qui a SOS Médecins au téléphone,
+     et le couper en deux ferait chercher un bouton « suivant » pour
+     rien. */
+  case 'sosCabinet':
+    return `<div class="recueil">
+    ${teteParcours("Le cabinet infirmier qui suit la personne",
+      "Le nom et le numéro s'il sont connus — ils ne sont pas obligatoires, la procédure s'arrête de toute façon là. Clôturer marque la personne comme orientée.")}
+    <div class="form">
+      ${f('pc-idelNom', "Nom du cabinet infirmier, s'il est connu", o.idelNom, {large:true, ph:"Cabinet infirmier…"})}
+      ${f('pc-idelTel', "Téléphone du cabinet", o.idelTel)}
+    </div>
+    ${piedParcours("Clôturer l'orientation", "parcClore()")}
+  </div>`;
+
+  /* ---- A4b. Le prestataire de matériel -------------------- */
   case 'sosMateriel':
     return `<div class="recueil">
     ${teteParcours("Aucun cabinet infirmier ne suit cette personne")}
     <div class="note-dep" style="font-size:15px">
       <strong>La CPTS doit appeler le prestataire de location de matériel.</strong>
       C'est lui qui fournira de quoi poser la réhydratation, puisqu'aucun cabinet ne l'a en charge.
-      Passer cet appel, puis enregistrer le signalement : il restera en attente de finalisation
-      jusqu'à ce que la mise en place soit confirmée.
+      Passer cet appel, puis « OK » : la saisie reste en attente, et se reprend depuis la ligne
+      de la personne au registre — bouton « Reprendre la saisie ».
     </div>
-    ${piedParcours("Suivant", "parcVers('bilan')")}
+    ${piedParcours("OK", "parcVers('bilan')")}
   </div>`;
 
   /* ---- B3. Le médecin qui déclare ------------------------ */
@@ -9469,23 +9564,37 @@ function ecranParcours(){
   /* ---- B5. Le relais vers le cabinet du patient ---------- */
   case 'relais':
     return `<div class="recueil">
-    ${teteParcours("Le relais vers le cabinet infirmier libéral du patient est-il fait ?",
-      "Si le médecin l'a déjà organisé, la CPTS n'a rien à reprendre : l'orientation est faite.")}
+    ${teteParcours("La personne est-elle suivie par un cabinet infirmier libéral ?",
+      "Si un cabinet la suit, c'est le médecin généraliste qui opère le relais vers lui : la CPTS n'a rien à organiser. Sinon, il reste à organiser le passage d'un infirmier.")}
     <div class="voies">
       <button onclick="parcRelais('Oui')">
-        <span class="t">Oui, le relais est fait</span>
-        <span class="d">Le cabinet du patient prend la suite. Le signalement se clôt, orienté.</span>
+        <span class="t">Oui, un cabinet la suit</span>
+        <span class="d">Reste à le nommer. Le médecin généraliste opère le relais, et l'orientation se clôt.</span>
       </button>
       <button onclick="parcRelais('Non')">
-        <span class="t">Non, il reste à organiser</span>
-        <span class="d">Les officines partenaires vont être proposées, de la plus proche à la plus lointaine.</span>
+        <span class="t">Non, aucun cabinet ne la suit</span>
+        <span class="d">Il reste à organiser le passage d'un infirmier : les officines partenaires vont être proposées, de la plus proche à la plus lointaine.</span>
       </button>
     </div>
-    <div class="form" style="margin-top:18px">
+    ${piedParcours('', '')}
+  </div>`;
+
+  /* ---- B6a. Le cabinet qui suit la personne --------------
+     Le médecin fera le relais lui-même : on note vers qui, et on
+     clôt. La CPTS n'a rien à organiser, et le dire en une phrase
+     évite qu'on cherche ce qu'il resterait à faire. */
+  case 'relaisCabinet':
+    return `<div class="recueil">
+    ${teteParcours("Le cabinet infirmier qui suit la personne",
+      "Le nom et le numéro s'ils sont connus — ils ne sont pas obligatoires.")}
+    <div class="note-dep" style="font-size:14.5px">
+      On estime que le médecin généraliste opère le relais vers ce cabinet. La CPTS n'a rien à organiser de plus.
+    </div>
+    <div class="form" style="margin-top:14px">
       ${f('pc-idelNom', "Nom du cabinet infirmier, s'il est connu", o.idelNom, {large:true, ph:"Cabinet infirmier…"})}
       ${f('pc-idelTel', "Téléphone du cabinet", o.idelTel)}
     </div>
-    ${piedParcours('', '')}
+    ${piedParcours("Clôturer l'orientation", "parcClore()")}
   </div>`;
 
   /* ---- B6. Les officines par proximité -------------------- */
@@ -9552,7 +9661,7 @@ function parcSosIdel(rep){
   parcRelire();
   parc.o.idel = rep;
   if(rep === 'Non'){ parc.o.idelNom = ''; parc.o.idelTel = ''; }
-  parcVers(rep === 'Oui' ? 'bilan' : 'sosMateriel');
+  parcVers(rep === 'Oui' ? 'sosCabinet' : 'sosMateriel');
 }
 
 /* Reprendre un médecin du carnet ramène ce qu'on avait noté pour le
@@ -9585,35 +9694,42 @@ function parcIndication(rep){
 function parcRelais(rep){
   parcRelire();
   parc.o.relaisIdel = rep;
-  parcVers(rep === 'Oui' ? 'bilan' : 'pharma');
+  parcVers(rep === 'Oui' ? 'relaisCabinet' : 'pharma');
+}
+
+/* Clore depuis un écran de saisie du cabinet : ce qui vient d'être
+   tapé se relit, et on passe au bilan qui l'annoncera orienté. */
+function parcClore(){
+  parcRelire();
+  parcVers('bilan');
 }
 
 /* Les officines de l'écran, rangées, et le bloc qui les montre. Le
-   point de la commune peut se faire attendre : le bloc se redessine
+   point du domicile peut se faire attendre : le bloc se redessine
    quand il arrive. */
 function rendreParcoursPharma(){
   const hote = document.getElementById('parc-pharma');
   if(!hote || !parc) return;
-  const commune = String(parc.o.commune || '').trim();
+  const ou = libelleDomicile(parc.o);
 
   /* La liste des partenaires, quand elle peut se faire. Chacun des
-     empêchements dit lequel il est : une commune absente ne se
+     empêchements dit lequel il est : une adresse absente ne se
      répare pas au même endroit qu'un recensement vide. */
   let liste;
-  if(!commune){
-    liste = `<div class="note-dep">Aucune commune n'a été renseignée pour cette personne : les officines ne peuvent pas être rangées par proximité. Revenir au premier écran pour l'ajouter — ou renseigner l'officine à la main ci-dessous.</div>`;
+  if(!ou){
+    liste = `<div class="note-dep">Aucune adresse n'a été renseignée pour cette personne : les officines ne peuvent pas être rangées par proximité. Revenir au premier écran pour l'ajouter — ou renseigner l'officine à la main ci-dessous.</div>`;
   }else{
-    const l = officinesProches(commune, rendreParcoursPharma);
+    const l = officinesProches(parc.o, rendreParcoursPharma);
     if(l === undefined){
-      liste = `<div class="note-dep">Recherche des officines les plus proches de ${esc(commune)}…</div>`;
+      liste = `<div class="note-dep">Recherche des officines les plus proches de ${esc(ou)}…</div>`;
     }else if(l === null){
-      liste = `<div class="note-dep">La commune « ${esc(commune)} » n'a pas été reconnue : les officines ne peuvent pas être rangées par proximité.</div>`;
+      liste = `<div class="note-dep">L'adresse « ${esc(ou)} » n'a pas été reconnue : les officines ne peuvent pas être rangées par proximité.</div>`;
     }else if(!l.length){
       liste = `<div class="note-dep">Aucune officine partenaire n'est encore située sur la carte. Le classement par proximité s'ouvrira dès qu'une adresse sera renseignée au module « Recensement des pharmacies partenaires ».</div>`;
     }else{
       const posee = !parc.o.phHors && String(parc.o.phNom || '').trim().toLowerCase();
       liste = `<div class="proches">
-        <div class="t">Officines partenaires les plus proches de ${esc(commune)}</div>
+        <div class="t">Officines partenaires les plus proches de ${esc(ou)}</div>
         ${l.slice(0, 8).map((x, i) => `<button type="button" class="pr${
           posee && String(x.nom || '').trim().toLowerCase() === posee ? ' on' : ''}" onclick="parcChoisirPharma(${i})">
           <span class="n">${esc(x.nom || 'Officine non nommée')}${i === 0 ? `<span class="b">la plus proche</span>` : ''}</span>
@@ -9691,7 +9807,7 @@ function parcPharmaHors(el){
 }
 
 function parcChoisirPharma(i){
-  const l = officinesProches(String(parc.o.commune || '').trim());
+  const l = officinesProches(parc.o);
   const x = l && l[i]; if(!x) return;
   /* Retoucher l'officine déjà retenue la retire : c'est le geste
      attendu quand on s'est trompé de ligne. Retenir une partenaire
@@ -9737,7 +9853,7 @@ function parcSuite(i){
    trompé de branche, et « Précédent » remonte le chemin pris. */
 function lignesBilan(o){
   const l = [["La personne", [String(o.nom || '').trim() || 'initiales non renseignées',
-    o.age ? o.age + ' ans' : '', o.commune, o.motif].filter(Boolean).join(' · ')]];
+    o.age ? o.age + ' ans' : '', libelleDomicile(o), o.motif].filter(Boolean).join(' · ')]];
   if(o.tel) l.push(["Téléphone", o.tel]);
   l.push(["Voie du signalement", o.voie || 'non renseignée']);
   if(o.decNom) l.push(["Médecin qui déclare", [o.decNom, o.decTel, o.decAdresse].filter(Boolean).join(' — ')]);
@@ -9763,7 +9879,12 @@ function lignesBilan(o){
    issue. */
 function statutParcours(o){
   if(o.statut === 'Sans suite') return 'Sans suite';
-  if(estSOS(o)) return 'En attente de finalisation';
+  /* Une visite à domicile dont le patient a déjà un cabinet est
+     réglée : ce cabinet prend le relais, la CPTS n'organise rien.
+     Sans cabinet, elle attend au contraire l'appel au prestataire
+     de matériel, et la saisie se reprend depuis la ligne. */
+  if(estSOS(o)) return o.idel === 'Oui' ? 'Orienté'
+               : o.idel === 'Non' ? 'En attente de finalisation' : 'À orienter';
   if(o.relaisIdel === 'Oui') return 'Orienté';
   if(o.suiteCpts || o.pharmaRelais === 'Non') return 'Orienté';
   return 'À orienter';
@@ -9793,10 +9914,20 @@ function ecranBilanParcours(){
   </div>`;
 }
 
-async function enregistrerParcours(){
+/* `enCours` marque un enregistrement fait au milieu du parcours : la
+   fiche garde alors l'écran où l'on s'est arrêté, et le chemin qui
+   y menait. Au bilan, on efface ces deux repères — le parcours est
+   allé au bout, il n'y a plus rien à reprendre. */
+async function enregistrerParcours(enCours){
   parcRelire();
   const o = parc.o;
   o.statut = statutParcours(o);
+  if(enCours){
+    o.parcEtape = parc.etape;
+    o.parcPile = [...parc.pile];
+  }else{
+    delete o.parcEtape; delete o.parcPile;
+  }
   /* Le cabinet et l'officine s'horodatent au moment où le parcours
      les retient, comme partout ailleurs dans le cockpit. */
   if(String(o.idelNom || '').trim()){
@@ -9808,7 +9939,14 @@ async function enregistrerParcours(){
 
   etat.rehyd = etat.rehyd || [];
   const existant = etat.rehyd.find(x => x.id === o.id);
-  if(existant){ Object.assign(existant, o); existant.modifiePar = moi; }
+  if(existant){
+    Object.assign(existant, o);
+    existant.modifiePar = moi;
+    /* Object.assign ne retire rien : les repères de reprise doivent
+       s'effacer sur la fiche elle-même, sinon une saisie menée à
+       terme continuerait de proposer qu'on la reprenne. */
+    if(!enCours){ delete existant.parcEtape; delete existant.parcPile; }
+  }
   else etat.rehyd.unshift(o);
   const fiche = existant || o;
 
@@ -9816,8 +9954,9 @@ async function enregistrerParcours(){
   const etait = parc.ed;
   parc = null;
   await sauver(); fermer(); rendre();
-  toast(etait ? "Parcours repris, et consigné en main courante"
-              : "Signalement enregistré et consigné en main courante");
+  toast(enCours ? "Saisie enregistrée — elle se reprend depuis la ligne de la personne"
+       : etait ? "Parcours repris, et consigné en main courante"
+               : "Signalement enregistré et consigné en main courante");
 }
 
 /* --- Confirmer la mise en place --------------------------
