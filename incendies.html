@@ -5737,7 +5737,7 @@ const MC_COUL = t => (MC_TYPES.find(x => x[0] === t) || [,'e-lancer'])[1];
    sont nées. Celles saisies à la main n'ont ni l'un ni l'autre —
    elles sont « consignées », et c'est exact. */
 const MC_PREFIXES = [
-  ['mcpt-',  'Collecte'], ['mcbm-',  'Matériel'],
+  ['mcpt-',  'Collecte'], ['mcptc-', 'Collecte'], ['mcbm-',  'Matériel'],
   ['mcpat-', 'Évacués'],  ['mcd-',   'Diffusion']
 ];
 function typeMC(o){
@@ -7846,9 +7846,13 @@ function ouvrirPoint(id){
    c'est ce qui permet de réécrire l'entrée quand la fiche est
    corrigée plutôt que d'en empiler une seconde, et de ne pas la
    recréer une fois retirée à la main. La clôture d'un point garde
-   son entrée propre : c'est un autre fait, avec ses chiffres. */
-const idMCPoint  = p => 'mcpt-' + p.id;
-const idMCBesoin = b => 'mcbm-' + b.id;
+   son entrée propre : c'est un autre fait, avec ses chiffres. Elle
+   a donc son identifiant à elle, dérivé lui aussi de la fiche —
+   une collecte clôturée deux fois, par le bouton puis par le
+   formulaire, ne laisse qu'une entrée de clôture. */
+const idMCPoint   = p => 'mcpt-' + p.id;
+const idMCCloture = p => 'mcptc-' + p.id;
+const idMCBesoin  = b => 'mcbm-' + b.id;
 
 /* L'entrée garde la date et l'heure du fait, pas celles de la
    frappe : une fiche corrigée le lendemain ne doit pas remonter en
@@ -8060,9 +8064,35 @@ function texteMCBesoin(b){
   };
 }
 
+/* La clôture est l'autre moitié du fait : elle dit à quelle heure
+   on a fermé et ce que la journée a rapporté. Elle se lit à
+   l'heure de clôture, pas à celle de l'ouverture — sans quoi les
+   deux entrées se superposeraient au même rang de la journée. */
+function texteMCCloture(p){
+  const s = synthesePoint(p);
+  return {
+    date: p.date || '',
+    heure: p.cloture || p.fin || '',
+    qui: p.responsable || '',
+    evenement: "Clôture de la collecte tenue à " + p.lieu
+      + (p.debut || p.fin ? ", ouverte de " + (p.debut||'—') + " à " + (p.fin||'—') : '')
+      + (p.responsable ? ", sous la responsabilité de " + p.responsable : '') + ". "
+      + s.unites + " unités collectées auprès de " + s.deposants.length + " déposants distincts, en "
+      + s.lignes + " lignes de dépôt"
+      + (s.parMat.length ? " : " + s.parMat.map(m => m.quantite + ' ' + m.materiel.toLowerCase()).join(', ') : '') + ".",
+    suite: "Détail ligne à ligne et récapitulatif imprimable dans « Collecte de matériel », section « Collectes réalisées »."
+      + (p.destination ? " Destination : " + p.destination + "." : " Destination du matériel à nommer.")
+      + (p.colis ? '' : " Nombre de colis à compléter au conditionnement.")
+  };
+}
+
 function consignerPointEnCourante(p){
   if(!p || !p.id || !p.lieu) return;
   poserEnCourante(idMCPoint(p), Object.assign({type:'Collecte'}, texteMCPoint(p)));
+}
+function consignerClotureEnCourante(p){
+  if(!p || !p.id || !p.lieu) return;
+  poserEnCourante(idMCCloture(p), Object.assign({type:'Collecte'}, texteMCCloture(p)));
 }
 function consignerBesoinEnCourante(b){
   if(!b || !b.id) return;
@@ -8128,15 +8158,27 @@ async function validerPoint(id){
   };
   etat.points = etat.points || [];
   const o = id ? etat.points.find(x => x.id === id) : null;
+  /* Le statut d'avant l'enregistrement : c'est le passage à
+     « Clôturé » qui est le fait, pas le fait d'être clôturé. Une
+     collecte close qu'on rouvre pour ajouter un dépôt oublié ne
+     reconsigne donc pas sa clôture. */
+  const avant = o ? o.statut : '';
   const p = o || Object.assign({id:uid(), pieces:[], auteur:moi, quand:new Date().toISOString()}, champs);
   if(o){ Object.assign(o, champs); o.modifiePar = moi; }
   else etat.points.push(p);
   /* Ouvrir un point est un fait de la journée : il se consigne en
      main courante en même temps qu'ici. */
   consignerPointEnCourante(p);
+  /* Et le formulaire clôture aussi, pas seulement le bouton
+     « Clôturer » : on y passe le statut à « Clôturé » et on met
+     l'heure de clôture effective. La main courante doit le voir
+     par ce chemin-là comme par l'autre. */
+  const clot = p.statut === 'Clôturé' && avant !== 'Clôturé';
+  if(clot) consignerClotureEnCourante(p);
   await sauver(); fermer(); rendre();
   toast(neuves.length
     ? "Collecte mise à jour — " + neuves.length + " ligne" + (neuves.length>1?'s':'') + " arrivée" + (neuves.length>1?'s':'') + " de la saisie sur place ont été conservées"
+    : clot ? "Collecte clôturée et consignée en main courante"
     : o ? "Collecte mise à jour" : "Collecte enregistrée et consignée en main courante");
 }
 
@@ -8159,21 +8201,11 @@ async function cloturerPoint(id){
   if(!p.cloture) p.cloture = p.fin || maintenant();
   p.modifiePar = moi;
   /* Une clôture est un fait de la journée : elle se consigne en
-     main courante en même temps qu'ici, avec ses chiffres. */
-  etat.courante = etat.courante || [];
-  etat.courante.push({
-    id: uid(), type: 'Collecte', date: p.date || aujourdhui(), heure: p.cloture, source: '', qui: p.responsable || moi,
-    evenement: "Clôture de la collecte tenue à " + p.lieu
-      + (p.debut || p.fin ? ", ouverte de " + (p.debut||'—') + " à " + (p.fin||'—') : '')
-      + (p.responsable ? ", sous la responsabilité de " + p.responsable : '') + ". "
-      + s.unites + " unités collectées auprès de " + s.deposants.length + " déposants distincts, en "
-      + s.lignes + " lignes de dépôt"
-      + (s.parMat.length ? " : " + s.parMat.map(m => m.quantite + ' ' + m.materiel.toLowerCase()).join(', ') : '') + ".",
-    suite: "Détail ligne à ligne et récapitulatif imprimable dans « Collecte de matériel », section « Collectes réalisées »."
-      + (p.destination ? " Destination : " + p.destination + "." : " Destination du matériel à nommer.")
-      + (p.colis ? '' : " Nombre de colis à compléter au conditionnement."),
-    auteur: moi, quand: new Date().toISOString()
-  });
+     main courante en même temps qu'ici, avec ses chiffres. Et la
+     fiche elle-même est reprise : elle disait « Ouverture d'une
+     collecte », elle dit maintenant une collecte tenue. */
+  consignerClotureEnCourante(p);
+  consignerPointEnCourante(p);
   await sauver(); rendre();
   toast("Collecte clôturée et consignée en main courante");
 }
