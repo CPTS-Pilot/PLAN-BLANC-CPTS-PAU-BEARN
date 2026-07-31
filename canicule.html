@@ -1978,6 +1978,77 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
   .pr-et,.pr-r,.pr-tete,.pr-choix .pr-b{break-inside:avoid;page-break-inside:avoid}
   .pr-choix .entrer{display:none}
 }
+
+/* ---------- la fiche de synthèse d'une procédure ----------
+   Une page, et une seule : c'est la contrainte qui commande tout
+   le reste. On garde de chaque étape son intitulé — celui du
+   schéma, déjà écrit en langue d'action — et on laisse le détail
+   à l'écran. Ce qui reste tient dans une colonne étroite qu'on
+   parcourt du doigt, pliée dans une poche ou punaisée au mur.
+
+   Les tailles sont en points, pas en pixels : elles ne valent que
+   sur du papier, et un point reste un point d'une imprimante à
+   l'autre. Rien de cette feuille ne s'affiche à l'écran. */
+.feuille-proc{display:none}
+@media print{
+  body.impr-proc > .shell,
+  body.impr-proc > .toast,
+  body.impr-proc > .rideau{display:none!important}
+  body.impr-proc > .feuille-proc{display:block!important}
+  body.impr-proc{background:#fff}
+
+  /* Une page, mais pas une page illisible : la plus longue des deux
+     procédures tient sur un peu plus de la moitié d'un A4 à ces
+     tailles. Le reste est de l'air, et l'air ne se rogne pas tant
+     qu'on n'en a pas besoin — la fiche se lit debout, souvent mal
+     éclairée, parfois par-dessus l'épaule de quelqu'un. */
+  .fp{font-family:var(--corps);color:#000;font-size:10pt;line-height:1.32}
+  .fp + .fp{page-break-before:always}
+  .fp .ch{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+    border-bottom:1.8pt solid #062B63;padding-bottom:3.5pt;margin-bottom:6pt}
+  .fp .ch .org{font-family:var(--display);font-weight:700;font-size:9pt;letter-spacing:.06em;
+    text-transform:uppercase;color:#062B63}
+  .fp .ch .cr{font-family:var(--mono);font-size:7.6pt;letter-spacing:.05em;text-transform:uppercase;color:#555}
+  .fp h1{font-family:var(--display);font-weight:700;font-size:17pt;line-height:1.15;
+    color:#062B63;margin:0 0 3pt}
+  .fp .st{font-size:9.6pt;color:#333;margin:0 0 7pt}
+  /* Les deux ou trois choses à savoir avant de suivre le déroulé.
+     Sur une feuille unique, elles ne peuvent pas être ailleurs. */
+  .fp .cadre{border:.7pt solid #999;border-left:3pt solid #E8A33D;border-radius:2pt;
+    padding:6pt 8pt;margin-bottom:8pt;display:flex;flex-direction:column;gap:4pt}
+  .fp .cadre .k{font-family:var(--mono);font-size:7pt;letter-spacing:.07em;text-transform:uppercase;
+    color:#666;display:block;margin-bottom:1pt}
+  .fp .cadre .l{font-size:9.4pt;line-height:1.3}
+  /* Le numéro est ce qu'on cherche du regard en premier : il tient
+     sa ligne, et la réserve qui l'accompagne passe dessous. */
+  .fp .cadre .tel{font-family:var(--display);font-weight:700;font-size:14pt;color:#062B63;
+    letter-spacing:.02em;display:block;line-height:1.15}
+  .fp .cadre .tel + .l{font-size:8.4pt;color:#666;margin-top:1pt}
+
+  .fp .e{display:grid;grid-template-columns:13pt 1fr;gap:0 6pt;
+    padding:3.4pt 0;border-top:.4pt solid #DDD;break-inside:avoid;page-break-inside:avoid}
+  .fp .e:first-of-type{border-top:0}
+  .fp .e .n{font-family:var(--mono);font-size:8.6pt;font-weight:600;color:#062B63;padding-top:.8pt}
+  .fp .e .qui{font-family:var(--mono);font-size:7pt;letter-spacing:.07em;text-transform:uppercase;
+    color:#0B4FA8}
+  .fp .e .t{font-size:10.4pt;font-weight:600;line-height:1.25;color:#111}
+  /* Les deux issues d'une question : la colonne de gauche reste
+     vide, elles se lisent comme un retrait sous leur étape. */
+  .fp .b{grid-column:2;display:grid;grid-template-columns:19pt 1fr;gap:2.5pt 5pt;margin-top:3pt}
+  .fp .b .r{font-family:var(--mono);font-size:8pt;font-weight:700;letter-spacing:.05em;padding-top:.8pt}
+  .fp .b .r.o{color:#1F5B47}
+  .fp .b .r.n{color:#8C3020}
+  .fp .b .v{font-size:9.6pt;line-height:1.3}
+  .fp .b .v .o{color:#1F5B47;font-weight:600}
+  .fp .b .v .n{color:#8C3020;font-weight:600}
+  .fp .b .v .s{color:#8C3020}
+  .fp .b .v .f{font-family:var(--mono);font-size:7.6pt;letter-spacing:.05em;text-transform:uppercase;
+    color:#444;white-space:nowrap}
+  .fp .nb{font-size:8.2pt;line-height:1.32;color:#8A5D12;border-top:.4pt solid #DDD;
+    margin-top:7pt;padding-top:5pt}
+  .fp .pied{font-size:7.8pt;line-height:1.3;color:#555;border-top:.8pt solid #062B63;
+    margin-top:7pt;padding-top:4.5pt;display:flex;justify-content:space-between;gap:12px}
+}
 .rh-l{display:flex;flex-direction:column;gap:11px}
 .rh-c{background:var(--carte);border:1px solid var(--trait);border-left:4px solid var(--trait);
   border-radius:9px;padding:14px 16px;display:flex;flex-direction:column;gap:9px}
@@ -2059,6 +2130,12 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 
 <div class="toast" id="toast"></div>
 <div class="rideau" id="rideau"><div class="modale" id="modale"></div></div>
+
+<!-- La fiche de synthèse d'une procédure, remplie le temps d'une
+     impression puis vidée. Elle ne s'affiche jamais à l'écran : le
+     cockpit reste le cockpit, et ceci n'est qu'une feuille de
+     papier qui sort. -->
+<div class="feuille-proc" id="feuille-proc"></div>
 
 <script>
 /* =========================================================
@@ -7436,7 +7513,12 @@ const PROC_REHYD = [
     rang:'Procédure 2',
     nom:"Demande de SOS Médecins",
     quand:"La personne est vue <b>chez elle par SOS Médecins</b>, en visite non programmée, et le médecin pose l'indication de réhydratation.",
-    appel:"Numéro dédié CPTS",
+    appel:"06 29 82 29 10",
+    /* Le schéma SOS Médecins parle d'un « numéro dédié » sans le
+       donner. Une fiche de terrain sans numéro à composer ne sert à
+       rien : on porte donc celui que l'autre procédure publie, en
+       disant que c'est une reprise et non une lecture du schéma. */
+    appelNote:"Le schéma SOS Médecins parle d'un « numéro dédié » sans le donner. C'est le numéro canicule de la CPTS qui est repris ici — à confirmer par la vice-présidence.",
     materiel:"Le set de perfusion et le soluté sont <b>déposés sur place par le médecin de SOS Médecins</b>. Seul le pied à perfusion reste à faire venir — il est loué auprès d'un prestataire de location de matériel, et non délivré par une pharmacie.",
     role:"SOS Médecins tient le début de la procédure et transmet ensuite à la CPTS, qui cherche l'IDEL.",
     etapes:[
@@ -7509,6 +7591,10 @@ function listeProc(){
         <div class="entrer">Lire la procédure en détail →</div>
       </button>`).join('')}
   </div>
+  <div class="barre-h" style="margin-top:14px">
+    <button class="btn" onclick="pdfProc(PROC_REHYD.map(p => p.id))"
+      title="Ouvre la boîte d'impression : choisir « Enregistrer au format PDF »">Télécharger les deux en PDF — 1 page chacune</button>
+  </div>
   <div class="carte" style="margin-top:16px">
     <p style="font-size:13.5px;line-height:1.55;margin:0">Dans les deux cas, la CPTS n'est appelée qu'à une condition : <strong>qu'aucun cabinet infirmier ne suive déjà la personne</strong>. Si un cabinet IDEL est en place, la procédure s'arrête chez le médecin et la prise en charge se fait avec lui. Ce que la CPTS reçoit se note dans le module « Patients signalés / orientés », en initiales et sans élément clinique au-delà du motif.</p>
   </div>`;
@@ -7527,16 +7613,120 @@ function derouleProc(p){
     <div class="rang">${esc(p.rang)} — réhydratation à domicile</div>
     <div class="l"><span class="k">Le matériel</span>${p.materiel}</div>
     <div class="l"><span class="k">Le rôle de la CPTS</span>${esc(p.role)}</div>
-    <div class="l"><span class="k">Numéro à appeler</span>${
-      /[0-9]{6}/.test(p.appel) ? `<a href="${telLien(p.appel)}">${esc(p.appel)}</a>` : esc(p.appel)}</div>
+    <div class="l"><span class="k">Numéro à appeler</span><a href="${telLien(p.appel)}">${esc(p.appel)}</a>${
+      p.appelNote ? ` — ${esc(p.appelNote)}` : ''}</div>
   </div>
   <div class="pr-flux">
     ${p.etapes.map((e,i) => (i ? '<div class="pr-fl">▼</div>' : '') + etapeProc(e, i + 1)).join('')}
   </div>
   <div class="barre-h" style="margin-top:16px">
-    <button class="btn sec" onclick="imprimer()">PDF</button>
+    <button class="btn" onclick="pdfProc('${p.id}')"
+      title="Ouvre la boîte d'impression : choisir « Enregistrer au format PDF »">Télécharger en PDF — 1 page</button>
+    <button class="btn sec" onclick="imprimer()">Imprimer le déroulé détaillé</button>
     <button class="btn sec" onclick="ouvrirProc(null)">Voir l'autre procédure</button>
   </div>`;
+}
+
+/* --- La fiche de synthèse, sur une page -------------------
+   Le déroulé de l'écran ne s'imprime pas bien : il est écrit pour
+   être lu assis, et il fait quatre feuilles. Celle-ci est écrite
+   pour être tenue debout — l'intitulé de chaque étape, l'acteur
+   qui agit, et les deux issues de chaque question. Rien de plus.
+
+   Elle ne redit rien : les intitulés sont ceux du schéma, déjà
+   courts parce qu'ils décrivent un geste. Ce qui saute, c'est
+   l'explication — elle reste à l'écran, où on a le temps.
+
+   Le passage par la boîte d'impression du navigateur est voulu :
+   c'est là qu'on choisit « Enregistrer au format PDF », et c'est
+   la seule façon de sortir un PDF sans embarquer une librairie
+   dans un cockpit qui doit s'ouvrir hors ligne. */
+const sansBalises = s => String(s || '').replace(/<[^>]+>/g, '');
+const numEtape = s => (String(s || '').match(/\d+/) || [''])[0];
+
+function feuilleProc(p){
+  /* Les notes d'incertitude sont renvoyées en bas de page : elles
+     comptent, mais elles ne doivent pas grossir une ligne d'étape. */
+  const notes = [];
+  p.etapes.forEach((e, i) => { if(e.note) notes.push({n:i + 1, txt:e.note}); });
+
+  const issue = b =>
+    b.fin  ? `<span class="f"> — ${esc(b.fin.replace(/\.$/, ''))}</span>` :
+    b.vers ? `<span class="f"> → étape ${esc(numEtape(b.vers))}</span>` : '';
+
+  const ligne = (e, n) => {
+    const marque = e.note ? `<sup>${notes.findIndex(x => x.n === n) + 1}</sup>` : '';
+    return `<div class="e">
+      <div class="n">${n}</div>
+      <div>
+        <div class="qui">${esc(e.qui)}</div>
+        <div class="t">${esc(e.t)}${marque}</div>
+        ${e.q ? `<div class="b">
+          <div class="r o">OUI</div><div class="v"><span class="o">${esc(sansBalises(e.oui.t))}</span>${issue(e.oui)}</div>
+          <div class="r n">NON</div><div class="v"><span class="n">${esc(sansBalises(e.non.t))}</span>${issue(e.non)}${
+            e.non.suite ? `<span class="s"> — ${esc(sansBalises(e.non.suite.t))} : ${
+              esc(sansBalises(e.non.suite.d).replace(/\..*$/, ''))}.</span>` : ''}</div>
+        </div>` : ''}
+      </div>
+    </div>`;
+  };
+
+  return `<div class="fp">
+    <div class="ch">
+      <span class="org">CPTS Pau Béarn — plan canicule</span>
+      <span class="cr">Réhydratation à domicile · ${esc(p.rang)}</span>
+    </div>
+    <h1>${esc(p.nom)}</h1>
+    <p class="st">${esc(sansBalises(p.quand))}</p>
+    <div class="cadre">
+      <div><span class="k">Quand appeler la CPTS</span>
+        <span class="l">Seulement si <strong>aucun cabinet IDEL</strong> ne suit déjà la personne. Sinon, la procédure s'arrête chez le médecin.</span></div>
+      <div><span class="k">Matériel</span><span class="l">${esc(sansBalises(p.materiel))}</span></div>
+      <div><span class="k">Numéro CPTS</span><span class="tel">${esc(p.appel)}</span>${
+        p.appelNote ? `<span class="l">${esc(p.appelNote)}</span>` : ''}</div>
+    </div>
+    ${p.etapes.map((e, i) => ligne(e, i + 1)).join('')}
+    ${notes.length ? `<div class="nb">${notes.map((x, i) =>
+      `<sup>${i + 1}</sup> Étape ${x.n} — ${esc(x.txt)}`).join('<br>')}</div>` : ''}
+    <div class="pied">
+      <span>Procédure arrêtée par la CPTS Pau Béarn. Le déroulé détaillé est dans le cockpit de crise, espace « Réhydratation à domicile ».</span>
+      <span>Si rien n'aboutit : appel au 15.</span>
+    </div>
+  </div>`;
+}
+
+/* Une feuille ne se compose que le temps de sortir, et la page
+   reprend son état juste après : un cockpit resté en mode
+   impression parce qu'on a annulé la boîte de dialogue serait
+   inutilisable, et personne ne saurait pourquoi. */
+function pdfProc(ids){
+  const l = (Array.isArray(ids) ? ids : [ids]).map(procDe).filter(Boolean);
+  if(!l.length) return;
+  const zone = document.getElementById('feuille-proc');
+  zone.innerHTML = l.map(feuilleProc).join('');
+  /* La marge de page du cockpit est confortable ; celle d'une fiche
+     à tenir sur une feuille l'est moins. La règle ne vaut que le
+     temps de cette impression, et repart avec elle. */
+  const marge = document.createElement('style');
+  marge.textContent = '@page{margin:9mm}';
+  document.head.appendChild(marge);
+  document.body.classList.add('impr-proc');
+
+  let fini = false;
+  const nettoyer = () => {
+    if(fini) return;
+    fini = true;
+    document.body.classList.remove('impr-proc');
+    marge.remove();
+    zone.innerHTML = '';
+    window.removeEventListener('afterprint', nettoyer);
+  };
+  window.addEventListener('afterprint', nettoyer);
+  window.print();
+  /* Tous les navigateurs n'émettent pas « afterprint » — quelques
+     mobiles notamment. Ce filet remet la page d'aplomb sans quoi
+     elle resterait blanche. */
+  setTimeout(nettoyer, 1200);
 }
 
 /* Le bas d'une réponse dit toujours ce qu'elle devient : ou bien
