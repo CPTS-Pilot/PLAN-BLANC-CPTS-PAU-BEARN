@@ -8152,6 +8152,10 @@ function texteMCCloture(p){
     suite: (s.lignes ? "" : "Les dépôts restent à saisir pour que le récapitulatif dise ce qui a été recueilli. ")
       + "Détail ligne à ligne et récapitulatif imprimable dans « Collecte de matériel », section « Collectes réalisées »."
       + (p.destination ? " Destination : " + p.destination + "." : " Destination du matériel à nommer.")
+      /* Où va le matériel et comment il y va sont deux questions
+         différentes, et c'est la seconde qu'on se repose six mois
+         après : par qui est-il parti, et quand. */
+      + (p.acheminement ? " Acheminement : " + p.acheminement + "." : '')
       + (p.colis ? '' : " Nombre de colis à compléter au conditionnement.")
       /* Ce qu'on a observé à la clôture — un écart de comptage, un
          matériel refusé, une référence à confirmer — est la seule
