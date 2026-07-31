@@ -8070,17 +8070,30 @@ function texteMCBesoin(b){
    deux entrées se superposeraient au même rang de la journée. */
 function texteMCCloture(p){
   const s = synthesePoint(p);
+  /* L'heure de fermeture d'une collecte, c'est sa clôture effective
+     quand la fermeture annoncée n'a pas été notée : « ouverte de 9h
+     à — » se lit mal dans une entrée qui dit justement qu'on a
+     fermé, et l'heure était sous la main. */
+  const fin = p.fin || p.cloture || '';
+  /* Une collecte dont les dépôts n'ont pas été saisis ligne à ligne
+     ne se solde pas par « 0 unités » : le zéro se lirait au RETEX
+     comme une collecte qui n'a rien rapporté, alors qu'il dit
+     seulement que personne n'a encore consigné le détail. */
+  const chiffres = s.lignes
+    ? s.unites + " unités collectées auprès de " + s.deposants.length + " déposants distincts, en "
+      + s.lignes + " lignes de dépôt"
+      + (s.parMat.length ? " : " + s.parMat.map(m => m.quantite + ' ' + m.materiel.toLowerCase()).join(', ') : '') + "."
+    : "Aucun dépôt n'y est saisi à ce stade : ce qui a été recueilli reste à consigner ligne à ligne.";
   return {
     date: p.date || '',
     heure: p.cloture || p.fin || '',
     qui: p.responsable || '',
     evenement: "Clôture de la collecte tenue à " + p.lieu
-      + (p.debut || p.fin ? ", ouverte de " + (p.debut||'—') + " à " + (p.fin||'—') : '')
+      + (p.debut || fin ? ", ouverte de " + (p.debut||'—') + " à " + (fin||'—') : '')
       + (p.responsable ? ", sous la responsabilité de " + p.responsable : '') + ". "
-      + s.unites + " unités collectées auprès de " + s.deposants.length + " déposants distincts, en "
-      + s.lignes + " lignes de dépôt"
-      + (s.parMat.length ? " : " + s.parMat.map(m => m.quantite + ' ' + m.materiel.toLowerCase()).join(', ') : '') + ".",
-    suite: "Détail ligne à ligne et récapitulatif imprimable dans « Collecte de matériel », section « Collectes réalisées »."
+      + chiffres,
+    suite: (s.lignes ? "" : "Les dépôts restent à saisir pour que le récapitulatif dise ce qui a été recueilli. ")
+      + "Détail ligne à ligne et récapitulatif imprimable dans « Collecte de matériel », section « Collectes réalisées »."
       + (p.destination ? " Destination : " + p.destination + "." : " Destination du matériel à nommer.")
       + (p.colis ? '' : " Nombre de colis à compléter au conditionnement.")
   };
