@@ -983,7 +983,9 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 /* ---------- choix d'un module dans un onglet ----------
    Un onglet qui porte deux métiers distincts ne les empile pas :
    il fait choisir. On entre dans l'un ou dans l'autre, et on
-   revient au palier par le lien du haut. */
+   revient au palier par le lien du haut. Empilés, ces mêmes
+   écrans demandaient cinq défilements avant la liste qu'on
+   venait voir. */
 .modules{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));margin-bottom:20px}
 .module{background:var(--carte);border:1px solid var(--trait);border-left:5px solid var(--encre-2);
   border-radius:10px;padding:20px 22px;text-align:left;font-family:inherit;color:inherit;
@@ -1733,12 +1735,12 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .carto .tete-c .plier{background:none;border:1px solid var(--trait);border-radius:7px;color:var(--texte-2);
   font-family:inherit;font-size:12.5px;padding:7px 12px;cursor:pointer;min-height:36px}
 .carto .tete-c .plier:hover{border-color:var(--encre-2);color:var(--encre-2)}
-.carto .tete-c .plier.on{background:var(--cobalt-clair);border-color:var(--encre-2);
+.carto .tete-c .plier.on{background:var(--ambre-clair);border-color:var(--ambre-fonce);
   color:var(--encre);font-weight:600}
 /* z-index:0 enferme les couches de Leaflet — elles montent jusqu'à
    800 — sous les fenêtres du cockpit, qui sont à 50. Sans cela, la
    carte passerait par-dessus la modale de saisie. */
-.carto-hote,.carto-vide{height:330px;border-top:1px solid var(--trait);background:var(--cobalt-clair);
+.carto-hote,.carto-vide{height:330px;border-top:1px solid var(--trait);background:var(--ambre-clair);
   position:relative;z-index:0;isolation:isolate}
 .carto-hote.court,.carto-vide.court{height:260px}
 .carto-toile{height:100%}
@@ -1750,15 +1752,15 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .carto .legende i{width:11px;height:11px;border-radius:50%;display:inline-block;
   border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.22)}
 .carto .legende i.approx{opacity:.45}
-/* La légende reprend la forme du cabinet sur la carte : une maison,
-   quand la personne signalée est un disque plein. */
-.carto .legende i.maison{width:15px;height:15px;border:none;border-radius:0;box-shadow:none;
+/* La légende reprend la forme de l'officine sur la carte : une
+   croix, quand la personne signalée est un disque plein. */
+.carto .legende i.croix{width:15px;height:15px;border:none;border-radius:0;box-shadow:none;
   display:inline-flex;align-items:center}
-/* Le repère du cabinet est une image, pas une pastille : la boîte que
-   Leaflet lui donne ne doit ni fond ni cadre, juste une ombre portée
-   qui le décolle du fond de carte. */
-.carto-maison{background:none;border:none;line-height:0;
-  filter:drop-shadow(0 1px 2px rgba(11,30,58,.4))}
+/* Le repère d'une officine est une image, pas une pastille : la boîte
+   que Leaflet lui donne ne doit ni fond ni cadre, juste une ombre
+   portée qui le décolle du fond de carte. */
+.carto-croix{background:none;border:none;line-height:0;
+  filter:drop-shadow(0 1px 2px rgba(58,42,16,.42))}
 .carto .manquants{padding:11px 16px;border-top:1px solid var(--trait);font-size:12.5px;
   color:#8A5D12;background:#FCF3E4;line-height:1.45}
 .carto .source{padding:9px 16px;border-top:1px solid var(--trait);font-size:11px;color:var(--texte-2);line-height:1.4}
@@ -1768,9 +1770,9 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .carto-popup .n .urg{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
   background:#F7E3DE;color:var(--braise);border-radius:4px;padding:2px 6px;margin-left:7px;
   vertical-align:2px;font-weight:400}
-/* Le cabinet le plus proche est la réponse qu'on vient chercher en
-   touchant un point : il se détache du reste de la bulle. */
-.carto-popup .pres{margin-top:9px;background:var(--cobalt-clair);border-radius:7px;padding:8px 10px;
+/* L'officine la plus proche est la réponse qu'on vient chercher en
+   touchant un point : elle se détache du reste de la bulle. */
+.carto-popup .pres{margin-top:9px;background:var(--ambre-clair);border-radius:7px;padding:8px 10px;
   font-size:13px;line-height:1.4;color:var(--encre)}
 .carto-popup .pres .k{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
   color:var(--texte-2);display:block;margin-bottom:2px}
@@ -1818,66 +1820,18 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
    ambre reste lisible dessus. */
 .feuillets{border-top-color:var(--brou)}
 .feuillets button.on{background:var(--brou);border-color:var(--brou)}
-
-/* ---------- cartographie ----------
-   Une commune écrite dans une colonne ne dit pas si la pharmacie
-   partenaire est à cinq minutes de la personne qu'il faut
-   réhydrater. La carte le dit. Elle ne remplace pas la liste :
-   elle se lit à côté d'elle, et se replie quand on n'en a pas
-   besoin. */
-.carto{background:var(--carte);border:1px solid var(--trait);border-radius:9px;margin-bottom:16px;overflow:hidden}
-.carto .tete-c{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 16px}
-.carto .tete-c .t{font-family:var(--display);font-weight:700;font-size:16px;color:var(--encre);line-height:1.2}
-.carto .tete-c .s{font-size:12.5px;color:var(--texte-2);flex:1 1 220px;line-height:1.35;margin:0}
-/* Une carte qui se passe de phrase d'explication garde ses boutons
-   à droite : l'écart tient la place que le texte occupait. */
-.carto .tete-c .ecart{flex:1 1 auto}
-.carto .tete-c .plier{background:none;border:1px solid var(--trait);border-radius:7px;color:var(--texte-2);
-  font-family:inherit;font-size:12.5px;padding:7px 12px;cursor:pointer;min-height:36px}
-.carto .tete-c .plier:hover{border-color:var(--encre-2);color:var(--encre-2)}
-.carto .tete-c .plier.on{background:var(--ambre-clair);border-color:var(--ambre-fonce);
-  color:var(--encre);font-weight:600}
-/* z-index:0 enferme les couches de Leaflet — elles montent jusqu'à
-   800 — sous les fenêtres du cockpit, qui sont à 50. Sans cela, la
-   carte passerait par-dessus la modale de saisie. */
-.carto-hote,.carto-vide{height:330px;border-top:1px solid var(--trait);background:var(--ambre-clair);
-  position:relative;z-index:0;isolation:isolate}
-.carto-hote.court,.carto-vide.court{height:260px}
-.carto-toile{height:100%}
-.carto-vide,.carto .attente{display:flex;align-items:center;justify-content:center;height:100%;
-  font-size:13px;color:var(--texte-2);font-style:italic;text-align:center;padding:22px;line-height:1.45}
-.carto .legende{display:flex;flex-wrap:wrap;gap:7px 15px;padding:11px 16px;border-top:1px solid var(--trait);
-  font-size:12px;color:var(--texte-2)}
-.carto .legende span{display:inline-flex;align-items:center;gap:6px}
-.carto .legende i{width:11px;height:11px;border-radius:50%;display:inline-block;
-  border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.22)}
-.carto .legende i.approx{opacity:.45}
-/* La légende reprend la forme de la pharmacie sur la carte : une
-   croix, quand la personne signalée est un disque plein. */
-.carto .legende i.croix{width:15px;height:15px;border:none;border-radius:0;box-shadow:none;
-  display:inline-flex;align-items:center}
-/* Le repère d'une pharmacie est une image, pas une pastille : la
-   boîte que Leaflet lui donne ne doit ni fond ni cadre, juste une
-   ombre portée qui le décolle du fond de carte. */
-.carto-croix{background:none;border:none;line-height:0;
-  filter:drop-shadow(0 1px 2px rgba(58,42,16,.42))}
-.carto .manquants{padding:11px 16px;border-top:1px solid var(--trait);font-size:12.5px;
-  color:#8A5D12;background:#FCF3E4;line-height:1.45}
-.carto .source{padding:9px 16px;border-top:1px solid var(--trait);font-size:11px;color:var(--texte-2);line-height:1.4}
-.carto-popup{font-family:var(--corps);font-size:13.5px;line-height:1.45;min-width:180px}
-.carto-popup .n{font-family:var(--display);font-weight:700;font-size:15px;color:var(--encre);line-height:1.2}
-.carto-popup .l{color:var(--texte-2);font-size:12.5px;margin-top:2px}
-/* La pharmacie la plus proche est la réponse qu'on vient chercher
-   en touchant un point : elle se détache du reste de la bulle. */
-.carto-popup .pres{margin-top:9px;background:var(--ambre-clair);border-radius:7px;padding:8px 10px;
-  font-size:13px;line-height:1.4;color:var(--encre)}
-.carto-popup .pres .k{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;
-  color:var(--texte-2);display:block;margin-bottom:2px}
-.carto-popup a{display:block;margin-top:7px;color:var(--encre-2);font-weight:600;text-decoration:none}
-.carto-popup button{margin-top:9px;background:none;border:1px solid var(--trait);border-radius:7px;
-  color:var(--texte-2);font-family:inherit;font-size:12.5px;padding:6px 11px;cursor:pointer}
-.carto-popup button:hover{border-color:var(--encre-2);color:var(--encre-2)}
-@media print{.carto{display:none!important}}
+/* Les cartes d'un palier prennent l'ambre plutôt que le cobalt :
+   c'est la seule chose qui change d'un cockpit à l'autre, et elle
+   se voit du coin de l'œil. Le bouton de retour, lui, reste bleu
+   comme tous les boutons du cockpit. */
+.module{border-left-color:var(--ambre)}
+.module:hover{border-color:var(--ambre);border-left-color:var(--ambre-fonce);
+  box-shadow:0 2px 16px rgba(58,42,16,.13)}
+.module:focus-visible{outline:3px solid var(--ambre);outline-offset:2px}
+.module .entrer{color:var(--ambre-fonce)}
+/* Un chiffre qui appelle un geste — ce qui reste à appeler, ce qui
+   attend quelqu'un — se détache des totaux qui n'appellent rien. */
+.module .chiffres strong.alerte{color:var(--ambre-fonce)}
 
 /* ---------- réhydratation à domicile ----------
    Trois cartes qui se lisent dans l'ordre : ce qu'on fait, avec
@@ -1910,13 +1864,6 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .rh-idel.pose{background:#EAF4EF;border-color:#BFDDCF;color:#1F5B47}
 .rh-idel.rappel{background:#FCF3E4;border-color:#EBD6AC;color:#8A5D12}
 .rh-idel a{color:inherit;font-weight:700;text-decoration:none}
-/* Le titre d'une des trois cartes de l'espace, et son numéro : on
-   les lit dans l'ordre, et l'ordre se voit. */
-.rh-t{font-family:var(--display);font-weight:700;font-size:19px;color:var(--encre);
-  margin:0 0 6px;line-height:1.25;display:flex;align-items:baseline;gap:10px}
-.rh-t .n{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ambre-fonce);
-  background:var(--ambre-clair);border-radius:5px;padding:3px 7px;flex:0 0 auto}
-.rh-s{font-size:13.5px;color:var(--texte-2);line-height:1.5;margin:0 0 16px;max-width:78ch}
 /* Le message qui s'affiche sous une réponse « Non » : il ne se
    saisit pas, il se lit. */
 .note-dep{border-radius:8px;padding:11px 13px;font-size:13.5px;line-height:1.45;
@@ -4460,8 +4407,10 @@ function ouvrirVisio(id){ visioOuverte = (visioOuverte === id) ? null : id; rend
 
 /* Depuis le registre ARS, on retombe sur la séance dépliée : le
    registre dit qu'elle a eu lieu, la situation régionale dit ce qui
-   s'y est dit. */
-function ouvrirVisioDepuisARS(id){ visioOuverte = id; aller('veille'); }
+   s'y est dit. Un lien profond venu d'ailleurs ouvre le module qui
+   porte ce qu'il vise, jamais le palier — sinon on retombe devant
+   deux cartes, à recommencer le chemin. */
+function ouvrirVisioDepuisARS(id){ visioOuverte = id; moduleVeille = 'ars'; aller('veille'); }
 
 /* =========================================================
    LE RENDEZ-VOUS DE 15 H
@@ -4984,20 +4933,36 @@ async function supprimerVisio(id){
   await sauver(); rendre(); toast("Séance retirée");
 }
 
+/* --- La situation régionale, en deux modules ---------------
+   Même principe que la réhydratation, et que les onglets d'action
+   du cockpit des incendies : la page portait deux métiers empilés
+   — le rendez-vous quotidien de l'ARS d'un côté, les points de
+   situation de l'autre — et il fallait traverser le premier pour
+   atteindre le second. Le palier garde ce qui vaut pour les deux :
+   qui tient la page, quand elle a bougé, et le mode d'emploi. */
+let moduleVeille = '';
+function allerModuleVeille(m){ moduleVeille = m; rendre(); window.scrollTo(0,0); }
+
+const retourVeille = () =>
+  `<button class="retour-m" onclick="allerModuleVeille('')">Revenir à la situation régionale</button>`;
+
 function vueVeille(){
+  if(moduleVeille === 'ars')    return retourVeille() + vueSalleVisio() + vueVisios();
+  if(moduleVeille === 'points') return retourVeille() + vuePoints(rubriques().filter(pointARafraichir).length);
+  return palierVeille();
+}
+
+function palierVeille(){
   const m = missionVeille();
   const pilote = m && m.pilote ? m.pilote : '';
   const maj = derniereActualisation();
   const arafraichir = rubriques().filter(pointARafraichir);
+  const l = visios();
+  const aConsigner = l.filter(visioVide).length;
+  const inscrits = presencesDuJour(aujourdhui()).length;
 
   let h = `<h1>Situation régionale</h1>
-  <p class="chapo">L'état de la région, tenu à jour par la CPTS Pau Béarn. Le rendez-vous quotidien de l'ARS ouvre la page — son lien, et qui de l'équipe s'y positionne aujourd'hui — suivi des comptes rendus des séances : c'est la source la plus complète dont nous disposons. Viennent ensuite ${rubriques().length} points de situation, un par sujet, qu'il suffit de reprendre quand quelque chose bouge.</p>`;
-
-  /* --- le rendez-vous de 15 h : le lien du salon, et qui y sera --- */
-  h += vueSalleVisio();
-
-  /* --- ce que l'ARS a dit à sa dernière visio --- */
-  h += vueVisios();
+  <p class="chapo">L'état de la région, tenu à jour par la CPTS Pau Béarn. Deux choses distinctes, et deux écrans : le rendez-vous quotidien de l'ARS — son lien, qui de l'équipe s'y positionne aujourd'hui, et le compte rendu des séances — d'un côté ; les ${rubriques().length} points de situation, un par sujet, qu'il suffit de reprendre quand quelque chose bouge, de l'autre.</p>`;
 
   /* --- qui tient la page, et depuis quand elle n'a pas bougé --- */
   h += `<div class="poste ${pilote ? '' : 'vacant'}">
@@ -5028,17 +4993,39 @@ function vueVeille(){
       <span class="chev">${guideVeille ? '▾' : '▸'}</span>
     </button>
     ${guideVeille ? `<div class="dedans"><ol class="gestes-g">
-      <li><b>Se positionner sur le créneau du jour.</b> En tête de page, le lien permanent du salon et le créneau de la séance : posez-y votre prénom avant l'heure, pour que l'équipe sache qui l'y représente — et pour que la CPTS n'y soit ni à deux sans le savoir, ni absente en croyant qu'un autre y est.</li>
-      <li><b>Consigner la visio de l'ARS.</b> Après chaque séance, « Consigner une visio » en haut de page : un point par sujet abordé, dans l'ordre. Le copier-coller de vos notes suffit. Une séance à laquelle on a assisté sans rien en rapporter reste signalée en rouge.</li>
-      <li><b>Reprendre les points qui ont bougé.</b> Ouvrir le feuillet concerné, coller ce qu'on a trouvé — communiqué, compte rendu, mail — et enregistrer. Pas besoin de reformuler : mieux vaut le texte brut de la source qu'un résumé approximatif.</li>
+      <li><b>Se positionner sur le créneau du jour.</b> Dans « Le rendez-vous de l'ARS », le lien permanent du salon et le créneau de la séance : posez-y votre prénom avant l'heure, pour que l'équipe sache qui l'y représente — et pour que la CPTS n'y soit ni à deux sans le savoir, ni absente en croyant qu'un autre y est.</li>
+      <li><b>Consigner la visio de l'ARS.</b> Après chaque séance, « Consigner une visio », dans le même module : un point par sujet abordé, dans l'ordre. Le copier-coller de vos notes suffit. Une séance à laquelle on a assisté sans rien en rapporter reste signalée en rouge.</li>
+      <li><b>Reprendre les points qui ont bougé.</b> Dans « Les points de situation », ouvrir le feuillet concerné, coller ce qu'on a trouvé — communiqué, compte rendu, mail — et enregistrer. Pas besoin de reformuler : mieux vaut le texte brut de la source qu'un résumé approximatif.</li>
       <li><b>Laisser le reste tranquille.</b> Un point qui n'a pas bougé depuis ${SEUIL_POINT_H} h passe en orange : c'est un rappel, pas un reproche. Rien ne part aux adhérents depuis cette page — la diffusion se décide au copil.</li>
     </ol>
     <p class="apres">Chaque enregistrement laisse sa trace en <a href="#" onclick="aller('courante');return false;">Main courante</a>. Les échanges avec l'ARS — mails, appels, questions posées — ont leur propre onglet, <a href="#" onclick="aller('ars');return false;">Échanges avec l'ARS</a>.</p>
     </div>` : ''}
   </div>`;
 
-  /* --- les points de situation --- */
-  h += vuePoints(arafraichir.length);
+  /* --- les deux portes --- */
+  h += `<div class="modules">
+    <button class="module" onclick="allerModuleVeille('ars')">
+      <div class="titre-m">Le rendez-vous de l'ARS</div>
+      <p class="sous-m">Le lien permanent du salon, qui de l'équipe s'y positionne aujourd'hui, et le compte rendu de chaque séance, point par point. C'est la source la plus complète dont dispose la CPTS : elle passe avant tout le reste.</p>
+      <div class="chiffres">
+        <div><strong>${l.length}</strong> séances consignées</div>
+        <div><strong${inscrits ? '' : ' class="alerte"'}>${inscrits}</strong> inscrits aujourd'hui</div>
+        ${aConsigner ? `<div><strong class="alerte">${aConsigner}</strong> à consigner</div>` : ''}
+      </div>
+      <div class="entrer">Ouvrir le module →</div>
+    </button>
+
+    <button class="module" onclick="allerModuleVeille('points')">
+      <div class="titre-m">Les points de situation</div>
+      <p class="sous-m">Un feuillet par sujet : ce qu'on sait à l'instant, ce qu'on y suit, et où on va le chercher. C'est ce qui se lit au copil, et prendre la veille, c'est reprendre ceux qui ont vieilli.</p>
+      <div class="chiffres">
+        <div><strong>${rubriques().length}</strong> feuillets</div>
+        ${arafraichir.length ? `<div><strong class="alerte">${arafraichir.length}</strong> à rafraîchir</div>`
+                             : `<div><strong>0</strong> à rafraîchir</div>`}
+      </div>
+      <div class="entrer">Ouvrir le module →</div>
+    </button>
+  </div>`;
 
   return h;
 }
@@ -5055,7 +5042,7 @@ function ouvrirPointSit(id){ pointSitOuvert = (pointSitOuvert === id) ? null : i
 
 function vuePoints(nbRafraichir){
   const l = rubriques();
-  let h = `<h2 style="margin-top:26px">Les points de situation
+  let h = `<h2>Les points de situation
     <span class="cpt-h">${l.length} feuillet${l.length > 1 ? 's' : ''}${nbRafraichir ? ' · ' + nbRafraichir + ' à rafraîchir' : ' · tous à jour'}</span></h2>
   <p class="sous-h">C'est ce qui se lit au copil. Chaque point se réécrit à partir de ce que la veille a retenu — au présent, en quelques lignes.</p>
   <div class="points">`;
@@ -7009,45 +6996,100 @@ function situerPatient(id){
 }
 
 /* =========================================================
-   L'ESPACE, EN TROIS CARTES
+   L'ESPACE, EN TROIS MODULES
+
+   Le palier fait choisir : la procédure, les officines, les
+   personnes signalées. Chaque carte dit déjà où en est son module —
+   on entre en connaissance de cause, et on ne défile pas à travers
+   deux écrans pour atteindre le troisième.
    ========================================================= */
 
 const telLien = t => `tel:${String(t || '').replace(/[^0-9+]/g,'')}`;
 
+/* '' = le palier. Le module ouvert tient d'un rendu à l'autre :
+   revenir à l'onglet, c'est retrouver l'écran qu'on y a laissé. */
+let moduleRehyd = '';
+function allerModuleRehyd(m){ moduleRehyd = m; rendre(); window.scrollTo(0,0); }
+
 function vueRehydratation(){
   const ph = etat.pharmacies || [], pat = etat.rehyd || [];
-  const m = (etat.missions || []).find(x => espaceDe(x) === 'rehydratation');
-  const pil = m ? String(m.pilote || '').trim() : '';
-
-  let h = `<h1>Réhydratation à domicile</h1>
-  <p class="chapo">Faire parvenir de quoi se réhydrater aux personnes qui ne peuvent pas aller le chercher, et faire passer quelqu'un chez elles. Le médecin repère la personne à risque dans sa patientèle et la signale ; la CPTS tient la liste des officines qui délivrent, désigne le cabinet infirmier qui passera, et suit ce qui a effectivement été fait.</p>
-  <div class="barre-h">
-    <span class="cpt-h">${pil ? `Pilote : ${esc(pil)}` : 'Pilote à désigner'}${m && m.statut ? ` · ${esc(m.statut)}` : ''} · ${ph.length} officine${ph.length>1?'s':''} recensée${ph.length>1?'s':''} · ${pat.length} personne${pat.length>1?'s':''} signalée${pat.length>1?'s':''}</span>
-    ${m ? `<button class="btn sec" onclick="voirFiche('${m.id}')">Fiche mission</button>` : ''}
-    <button class="btn sec" onclick="imprimer()">PDF</button>
-  </div>`;
-
-  h += carteProcedure();
-  h += cartePharmacies(ph);
-  h += cartePatients(pat, ph);
-  return h;
+  if(moduleRehyd === 'procedure')  return retourRehyd() + carteProcedure();
+  if(moduleRehyd === 'pharmacies') return retourRehyd() + cartePharmacies(ph);
+  if(moduleRehyd === 'patients')   return retourRehyd() + cartePatients(pat, ph);
+  return palierRehyd(ph, pat);
 }
 
-/* --- Carte 1 : la procédure ------------------------------
+const retourRehyd = () =>
+  `<button class="retour-m" onclick="allerModuleRehyd('')">Revenir à la réhydratation à domicile</button>`;
+
+/* Le palier : ce que fait le dispositif, qui le pilote, et les
+   trois portes. Les chiffres portés par chaque carte sont ceux
+   qu'on vient chercher — ce qui reste à appeler, ce qui attend
+   quelqu'un — et non des totaux qui n'appellent rien. */
+function palierRehyd(ph, pat){
+  const m = (etat.missions || []).find(x => espaceDe(x) === 'rehydratation');
+  const pil = m ? String(m.pilote || '').trim() : '';
+  const proc = (etat.rehydProc || []).length;
+  const parts = ph.filter(p => p.statut === 'Partenaire').length;
+  const aFaire = ph.filter(p => !p.statut || p.statut === 'À contacter').length;
+  const attente = pat.filter(enAttenteIdel).length;
+
+  return `<h1>Réhydratation à domicile</h1>
+  <p class="chapo">Faire parvenir de quoi se réhydrater aux personnes qui ne peuvent pas aller le chercher, et faire passer quelqu'un chez elles. Le médecin repère la personne à risque dans sa patientèle et la signale ; la CPTS tient la liste des officines qui délivrent, désigne le cabinet infirmier qui passera, et suit ce qui a effectivement été fait.</p>
+  <div class="barre-h">
+    <span class="cpt-h">${pil ? `Pilote : ${esc(pil)}` : 'Pilote à désigner'}${m && m.statut ? ` · ${esc(m.statut)}` : ''}</span>
+    ${m ? `<button class="btn sec" onclick="voirFiche('${m.id}')">Fiche mission</button>` : ''}
+  </div>
+
+  <div class="modules">
+    <button class="module" onclick="allerModuleRehyd('procedure')">
+      <div class="titre-m">Procédure</div>
+      <p class="sous-m">Les étapes du dispositif, dans l'ordre où elles se font : qui recense, qui signale, qui désigne le cabinet infirmier, et ce qu'on fait quand aucun n'est identifié. C'est la page à lire avant de décrocher, et celle qu'on relit quand on reprend la main après une absence.</p>
+      <div class="chiffres">
+        <div><strong>${proc}</strong> étape${proc > 1 ? 's' : ''} écrite${proc > 1 ? 's' : ''}</div>
+      </div>
+      <div class="entrer">Ouvrir le module →</div>
+    </button>
+
+    <button class="module" onclick="allerModuleRehyd('pharmacies')">
+      <div class="titre-m">Recensement des pharmacies partenaires</div>
+      <p class="sous-m">Les officines du territoire prêtes à délivrer les solutions de réhydratation orale, ce qu'elles tiennent et qui y décroche. La carte les pose sur le territoire : c'est elle qui montre les secteurs où il n'y a encore personne, et elle qui dit quelle officine est la plus proche d'une personne signalée.</p>
+      <div class="chiffres">
+        <div><strong>${parts}</strong> partenaires</div>
+        <div><strong>${ph.length}</strong> officines recensées</div>
+        ${aFaire ? `<div><strong class="alerte">${aFaire}</strong> à appeler</div>` : ''}
+      </div>
+      <div class="entrer">Ouvrir le module →</div>
+    </button>
+
+    <button class="module" onclick="allerModuleRehyd('patients')">
+      <div class="titre-m">Patients signalés / orientés</div>
+      <p class="sous-m">Chaque personne signalée par un médecin du territoire, et ce qu'elle est devenue. Le registre est tenu en initiales, sans élément clinique au-delà du motif. La carte les situe à la commune, avec les officines autour d'elles, et permet de désigner le cabinet infirmier sans quitter l'écran.</p>
+      <div class="chiffres">
+        <div><strong>${pat.length}</strong> personnes signalées</div>
+        ${attente ? `<div><strong class="alerte">${attente}</strong> sans cabinet IDEL</div>`
+                  : `<div><strong>${pat.filter(estAffecte).length}</strong> cabinets désignés</div>`}
+      </div>
+      <div class="entrer">Ouvrir le module →</div>
+    </button>
+  </div>`;
+}
+
+/* --- Module 1 : la procédure -----------------------------
    Ce qu'on fait, dans l'ordre. Écrite dans le cockpit et corrigée
    depuis la page : c'est la vice-présidence qui l'arrête, et elle
    n'a pas à passer par un fichier pour la changer. */
 function carteProcedure(){
   const l = etat.rehydProc || [];
-  return `<div class="carte">
-    <div class="rh-t"><span class="n">1</span>Procédure</div>
-    <p class="rh-s">Les étapes du dispositif, dans l'ordre où elles se font. C'est la page à lire avant de décrocher, et celle qu'on relit quand on reprend la main.</p>
+  return `<h2>Procédure <span class="cpt-h">${l.length} étape${l.length>1?'s':''}</span></h2>
+  <p class="sous-h">Les étapes du dispositif, dans l'ordre où elles se font. C'est la page à lire avant de décrocher, et celle qu'on relit quand on reprend la main.</p>
+  <div class="carte">
     ${l.length ? `<ol class="proc">${l.map(x => `<li>${esc(x)}</li>`).join('')}</ol>`
       : `<p class="vide">La procédure n'est pas encore écrite. Le bouton ci-dessous l'ouvre à la saisie.</p>`}
-    <div class="barre-h" style="margin-top:16px;margin-bottom:0">
-      <span class="cpt-h">${l.length} étape${l.length>1?'s':''}</span>
-      <button class="btn sec" onclick="editerProc()">Modifier la procédure</button>
-    </div>
+  </div>
+  <div class="barre-h">
+    <button class="btn sec" onclick="imprimer()">PDF</button>
+    <button class="btn" onclick="editerProc()">Modifier la procédure</button>
   </div>`;
 }
 
@@ -7075,7 +7117,7 @@ async function validerProc(){
   await sauver(); fermer(); rendre(); toast("Procédure enregistrée, et reprise en main courante");
 }
 
-/* --- Carte 2 : les officines -----------------------------
+/* --- Module 2 : les officines ----------------------------
    Le recensement, et la carte qui le rend lisible : c'est elle qui
    dit où le maillage est trop clair. */
 function cartePharmacies(ph){
@@ -7093,9 +7135,9 @@ function cartePharmacies(ph){
     || String(a.commune||'').localeCompare(String(b.commune||''), 'fr')
     || String(a.nom||'').localeCompare(String(b.nom||''), 'fr'));
 
-  return `<div class="carte">
-    <div class="rh-t"><span class="n">2</span>Recensement des pharmacies partenaires</div>
-    <p class="rh-s">Les officines du territoire prêtes à délivrer les solutions de réhydratation orale, ce qu'elles tiennent et qui y décroche. L'adresse renseignée pose la pharmacie sur la carte : c'est ce qui permet, pour une personne signalée, de dire quelle officine est la plus proche de chez elle.</p>
+  return `<h2>Recensement des pharmacies partenaires
+    <span class="cpt-h">${ph.length} officine${ph.length>1?'s':''} recensée${ph.length>1?'s':''}</span></h2>
+  <p class="sous-h">Les officines du territoire prêtes à délivrer les solutions de réhydratation orale, ce qu'elles tiennent et qui y décroche. L'adresse renseignée pose la pharmacie sur la carte : c'est ce qui permet, pour une personne signalée, de dire quelle officine est la plus proche de chez elle.</p>
     <div class="compteurs" style="margin-bottom:16px">
       <div class="compteur"><div class="n">${parts}</div><div class="l">partenaires</div></div>
       <div class="compteur"><div class="n">${contact}</div><div class="l">contactées, réponse à venir</div></div>
@@ -7117,13 +7159,13 @@ function cartePharmacies(ph){
       source:"Officines recensées par la CPTS Pau Béarn."
     })}
     <div class="barre-h">
-      <span class="cpt-h">${ph.length} officine${ph.length>1?'s':''} au recensement</span>
+      <span class="cpt-h">${parts} partenaire${parts>1?'s':''} sur ${ph.length}</span>
       ${ph.length ? `<button class="btn sec" onclick="exporterCSV('pharmacies')">Excel</button>` : ''}
+      <button class="btn sec" onclick="imprimer()">PDF</button>
       <button class="btn" onclick="ouvrirAjout('pharmacies')">Ajouter une pharmacie</button>
     </div>
     ${ph.length ? `<div class="rh-l">${rangees.map(fichePharma).join('')}</div>`
-      : `<p class="vide">Rien à afficher pour le moment. La première officine appelée ouvre le recensement.</p>`}
-  </div>`;
+      : `<p class="vide">Rien à afficher pour le moment. La première officine appelée ouvre le recensement.</p>`}`;
 }
 
 function fichePharma(p){
@@ -7155,7 +7197,7 @@ function fichePharma(p){
   </div>`;
 }
 
-/* --- Carte 3 : les personnes signalées -------------------
+/* --- Module 3 : les personnes signalées ------------------
    Le recueil, la carte, et l'affectation du cabinet infirmier. La
    carte porte les deux populations : les personnes signalées, et
    autour d'elles les officines — c'est la seule façon de voir d'un
@@ -7180,9 +7222,9 @@ function cartePatients(pat, ph){
     || String(b.date||'').localeCompare(String(a.date||''))
     || String(b.heure||'').localeCompare(String(a.heure||'')));
 
-  return `<div class="carte">
-    <div class="rh-t"><span class="n">3</span>Patients signalés / orientés</div>
-    <p class="rh-s">Chaque personne signalée par un médecin du territoire, et ce qu'elle est devenue. Le registre est tenu en initiales, sans élément clinique au-delà du motif : la commune sert à situer la personne sur la carte et à trouver l'officine la plus proche, l'adresse exacte n'est jamais demandée.</p>
+  return `<h2>Patients signalés / orientés
+    <span class="cpt-h">${pat.length} personne${pat.length>1?'s':''} au registre</span></h2>
+  <p class="sous-h">Chaque personne signalée par un médecin du territoire, et ce qu'elle est devenue. Le registre est tenu en initiales, sans élément clinique au-delà du motif : la commune sert à situer la personne sur la carte et à trouver l'officine la plus proche, l'adresse exacte n'est jamais demandée.</p>
     <div class="compteurs" style="margin-bottom:16px">
       <div class="compteur"><div class="n">${pat.length}</div><div class="l">personnes signalées</div></div>
       <div class="compteur"><div class="n">${attente}</div><div class="l">sans cabinet IDEL désigné</div></div>
@@ -7209,13 +7251,13 @@ function cartePatients(pat, ph){
       source:"Personnes signalées par les médecins du territoire, situées à la commune."
     })}
     <div class="barre-h">
-      <span class="cpt-h">${pat.length} personne${pat.length>1?'s':''} au registre</span>
+      <span class="cpt-h">${attente ? attente + ' en attente d\'un cabinet' : 'toutes affectées'}</span>
       ${pat.length ? `<button class="btn sec" onclick="exporterCSV('rehyd')">Excel</button>` : ''}
+      <button class="btn sec" onclick="imprimer()">PDF</button>
       <button class="btn" onclick="ouvrirAjout('rehyd')">Signaler un patient</button>
     </div>
     ${pat.length ? `<div class="rh-l">${rangees.map(fichePatient).join('')}</div>`
-      : `<p class="vide">Rien à afficher pour le moment. Le premier signalement ouvre le registre.</p>`}
-  </div>`;
+      : `<p class="vide">Rien à afficher pour le moment. Le premier signalement ouvre le registre.</p>`}`;
 }
 
 function fichePatient(o){
