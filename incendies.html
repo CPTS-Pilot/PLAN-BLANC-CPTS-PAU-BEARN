@@ -761,6 +761,27 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
   .info-a .q{flex:0 0 auto}
 }
 
+/* ---------- les documents joints ----------
+   Un communiqué de l'ARS arrive le plus souvent en pièce d'un
+   mail. Le retaper n'a pas de sens, le résumer encore moins :
+   c'est la pièce elle-même qui fera foi au copil. Elle se pose
+   donc à côté du texte, avec deux gestes et pas un de plus —
+   l'ouvrir sous les yeux, ou l'emporter. */
+.pj{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.pj .p{display:flex;gap:11px;align-items:center;flex-wrap:wrap;font-size:13px;
+  background:var(--cobalt-clair);border-radius:7px;padding:8px 11px}
+.pj .p .n{font-weight:600;color:var(--encre);flex:1;min-width:130px;word-break:break-word}
+.pj .p .q{font-family:var(--mono);font-size:10.5px;color:var(--texte-2)}
+.pj .p a{color:var(--encre-2);font-weight:600;font-size:12.5px;text-decoration:none;
+  border-bottom:1px solid var(--trait);white-space:nowrap}
+.pj .p a:hover{border-color:var(--encre-2)}
+.pj .p .ret{background:none;border:0;cursor:pointer;color:var(--texte-2);opacity:.45;font-size:14px;padding:0 2px}
+.pj .p .ret:hover{opacity:1;color:var(--braise)}
+.pj-champ > .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--texte-2);display:block;margin-bottom:4px}
+.pj .p.attente{background:var(--surface);border:1px dashed var(--trait)}
+.pj .p.attente .q{color:#8A5D12}
+
 /* Le poste de veille : qui la tient, et quand la page a bougé
    pour la dernière fois. Ce que le copil lit sans demander. */
 .poste{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--encre-2);border-radius:11px;padding:18px 20px;margin-bottom:16px;display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
@@ -5605,6 +5626,115 @@ const infosARS = () => antechrono((etat.ars || []).filter(a => !a.visio && a.can
 let infoARSOuverte = null;
 function ouvrirInfoARS(id){ infoARSOuverte = (infoARSOuverte === id) ? null : id; rendre(); }
 
+/* --- Les documents joints à une information ---------------
+   Le PDF d'un communiqué, la capture d'un tableau : le fichier
+   part sur l'hébergement par la même porte que les récapitulatifs
+   des points de collecte — voir plus bas — et y reste. L'état
+   partagé, relu en entier toutes les quinze secondes par chaque
+   poste, n'en garde que le nom, le poids et l'identifiant.
+
+   L'adresse rendue est stable et le serveur sert le document en
+   « inline » : le PDF s'ouvre dans l'onglet, l'image s'affiche,
+   sans rien télécharger. Le second lien, lui, l'emporte sur le
+   poste sous son nom d'origine. Les deux valent pour tout le
+   copil, du moment que la session est ouverte : le code d'accès
+   voyage dans l'adresse, faute de quoi un onglet neuf n'aurait
+   aucun moyen de se présenter. */
+const PIECE_FORMATS = '.pdf,.jpg,.jpeg,.png,.webp,.heic,.csv,.xlsx,.docx';
+const portePiece = id => API + (API.indexOf('?') >= 0 ? '&' : '?')
+  + 'piece' + (id ? '=' + encodeURIComponent(id) : '');
+
+/* Envoi d'un fichier. Rend sa fiche — identifiant, nom, poids —
+   ou rien du tout, en ayant dit pourquoi. */
+async function envoyerPiece(f){
+  if(!modeServeur){ toast("Le serveur ne répond pas : un document ne peut être joint que depuis le cockpit partagé"); return null; }
+  if(f.size > PIECE_MAX_MO * 1000000){ toast("« " + f.name + " » est trop lourd — " + PIECE_MAX_MO + " Mo au maximum"); return null; }
+  const lu = await new Promise(res => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result || ''));
+    r.onerror = () => res('');
+    r.readAsDataURL(f);
+  });
+  if(!lu){ toast("« " + f.name + " » est illisible"); return null; }
+  let r;
+  try{
+    r = await fetch(portePiece(), {
+      method: 'POST',
+      headers: {'X-Code-Acces': codeAcces, 'Content-Type': 'application/json'},
+      body: JSON.stringify({nom: f.name, donnees: lu, par: moi})
+    });
+  }catch(e){ toast("Serveur injoignable — « " + f.name + " » n'a pas été envoyé"); return null; }
+  let d = null;
+  try{ d = await r.json(); }catch(e){}
+  if(!r.ok || !d || !d.id){ toast((d && d.erreur) || "Envoi de « " + f.name + " » impossible"); return null; }
+  return {id: d.id, nom: d.nom, taille: d.taille, le: d.le, par: moi};
+}
+
+/* Le fichier lui-même, effacé de l'hébergement. Sans bruit : on
+   l'appelle quand la ligne qui le portait s'en va. */
+async function effacerPiece(idp){
+  try{
+    await fetch(portePiece(idp), {
+      method: 'POST',
+      headers: {'X-Code-Acces': codeAcces, 'Content-Type': 'application/json'},
+      body: JSON.stringify({supprimer: true})
+    });
+  }catch(e){}
+}
+
+/* La liste telle qu'elle se lit sous une information. Le retrait
+   n'apparaît que si on dit à quelle fiche ces pièces appartiennent. */
+function vuePieces(pieces, idInfo){
+  const l = (pieces || []).filter(p => p && p.id);
+  if(!l.length) return '';
+  return `<div class="pj">` + l.map(p => `<div class="p">
+    <span class="n">${esc(p.nom || 'Document')}</span>
+    <span class="q">${[poids(p.taille || 0), p.par].filter(Boolean).map(esc).join(' · ')}</span>
+    <a href="${esc(lienPiece(p.id))}" target="_blank" rel="noopener noreferrer">Ouvrir ↗</a>
+    <a href="${esc(lienPiece(p.id))}" download="${esc(p.nom || 'document')}">Télécharger</a>
+    ${idInfo ? `<button class="ret" title="Retirer ce document"
+      onclick="retirerPieceInfoARS('${idInfo}','${p.id}')">✕</button>` : ''}
+  </div>`).join('') + `</div>`;
+}
+
+/* Joindre un document à une information déjà consignée : le
+   communiqué arrive parfois après le mail qui l'annonçait. */
+function choisirPieceInfoARS(id){
+  if(!modeServeur){ toast("Le serveur ne répond pas : un document ne peut être joint que depuis le cockpit partagé"); return; }
+  const i = document.getElementById('pj-ars-' + id);
+  if(i) i.click();
+}
+async function joindrePieceInfoARS(id, input){
+  const fs = [...(input.files || [])];
+  input.value = '';
+  const a = (etat.ars || []).find(x => x.id === id);
+  if(!a || !fs.length) return;
+  toast(fs.length > 1 ? "Envoi de " + fs.length + " documents…" : "Envoi de « " + fs[0].name + " »…");
+  const mises = [];
+  for(const f of fs){ const m = await envoyerPiece(f); if(m) mises.push(m); }
+  if(!mises.length) return;
+  a.pieces = Array.isArray(a.pieces) ? a.pieces : [];
+  a.pieces.push(...mises);
+  a.modifiePar = moi;
+  /* La ligne de main courante nomme les documents : elle se
+     réécrit, sinon celui joint après coup n'y figurerait pas. */
+  consignerRegistreEnCourante('ars', a);
+  infoARSOuverte = a.id;
+  await sauver(); rendre();
+  toast(mises.length > 1 ? mises.length + " documents joints à l'information"
+                         : "« " + mises[0].nom + " » joint à l'information");
+}
+async function retirerPieceInfoARS(id, idp){
+  const a = (etat.ars || []).find(x => x.id === id); if(!a) return;
+  const p = (a.pieces || []).find(x => x.id === idp);
+  if(!confirm("Retirer « " + ((p && p.nom) || 'ce document') + " » ?\n\nLe fichier est supprimé de l'hébergement, et son lien ne s'ouvrira plus.")) return;
+  await effacerPiece(idp);
+  a.pieces = (a.pieces || []).filter(x => x.id !== idp);
+  a.modifiePar = moi;
+  consignerRegistreEnCourante('ars', a);
+  await sauver(); rendre(); toast("Document retiré");
+}
+
 function vueInfosARS(){
   const l = infosARS();
 
@@ -5628,12 +5758,14 @@ function vueInfosARS(){
     const sous = [a.sens, a.canal, a.interlocuteur,
                   a.auteur ? 'saisi par ' + a.auteur : ''].filter(Boolean).map(esc).join(' · ');
 
+    const npj = (a.pieces || []).filter(p => p && p.id).length;
+
     let c = `<div class="info-a ${ouvert ? 'ouverte' : ''}">
       <button class="tete" onclick="ouvrirInfoARS('${a.id}')" aria-expanded="${ouvert}">
         <span class="q">${quand}</span>
         <span class="i">
           <span class="n">${esc(a.objet || 'Sans objet')}</span>
-          <span class="s">${sous}</span>
+          <span class="s">${[sous, npj ? '📎 ' + npj + ' document' + (npj > 1 ? 's' : '') : ''].filter(Boolean).join(' · ')}</span>
         </span>
         <span class="chev">${ouvert ? '▲' : '▼'}</span>
       </button>`;
@@ -5645,12 +5777,19 @@ function vueInfosARS(){
         : `<div class="bloc"><div class="d" style="color:var(--texte-2);font-style:italic">Le contenu n'a pas été collé — seul l'objet a été noté.</div></div>`;
       if(a.reponse) c += `<div class="bloc reponse"><span class="k">Notre réponse ou action</span><div class="d">${esc(a.reponse)}</div></div>`;
       if(a.attendu) c += `<div class="bloc implique"><span class="k">Ce que ça implique pour la CPTS</span><div class="d">${esc(a.attendu)}</div></div>`;
+      /* Les documents déposés sur le cockpit : ils s'ouvrent dans
+         l'onglet et s'emportent, sans repasser par la boîte mail
+         de qui les a reçus. */
+      c += vuePieces(a.pieces, a.id);
       const lien = lienVisioPropre(a.lien);
       if(lien) c += `<a class="doc" href="${esc(lien)}" target="_blank" rel="noopener noreferrer">Ouvrir le document ↗</a>`;
       c += `<div class="meta">${[a.statut ? 'Statut : ' + a.statut : '',
         a.auteur ? 'Saisi par ' + a.auteur : 'Saisi sans nom'].filter(Boolean).map(esc).join(' · ')}</div>`;
       c += `<div class="bas">
+        <input type="file" id="pj-ars-${a.id}" multiple accept="${PIECE_FORMATS}"
+          style="display:none" onchange="joindrePieceInfoARS('${a.id}', this)">
         <button class="btn sec" onclick="ouvrirEdition('ars','${a.id}')">Modifier</button>
+        <button class="btn sec" onclick="choisirPieceInfoARS('${a.id}')">Joindre un document</button>
         <button class="btn sec" onclick="aller('ars')">Voir dans les échanges avec l'ARS</button>
         <button class="btn sec sup" onclick="retirerInfoARS('${a.id}')">Retirer</button>
       </div></div>`;
@@ -5665,8 +5804,17 @@ function vueInfosARS(){
 /* Quatre champs, et rien de plus : la date, l'heure, l'objet et le
    texte du message. Le nom de qui saisit se pose tout seul — c'est
    la session ouverte, et le demander une fois de plus n'apprendrait
-   rien à personne. */
+   rien à personne. À quoi s'ajoute, quand il y en a un, le document
+   reçu : un communiqué en PDF ne se recopie pas, et le copil doit
+   pouvoir le lire à la source.
+
+   Les fichiers choisis attendent ici sans partir : ils ne montent
+   sur l'hébergement qu'à l'enregistrement, pour qu'une fenêtre
+   refermée en chemin ne laisse pas de pièces orphelines. */
+let pjEnAttente = [];
+
 function ouvrirSaisieInfoARS(){
+  pjEnAttente = [];
   const m = document.getElementById('modale');
   m.classList.add('large');
   m.innerHTML = `<h3>Information donnée par l'ARS</h3>
@@ -5679,26 +5827,79 @@ function ouvrirSaisieInfoARS(){
     <label class="large"><span class="k">Contenu du message</span>
       <textarea id="ia-contenu" rows="12" placeholder="Collez ici le message entier, tel qu'il a été reçu."></textarea>
       <span class="aide">Rien à raccourcir : à l'écran, la ligne ne montrera que l'objet, et le texte ne s'ouvrira que si on clique dessus.</span></label>
+    <div class="large pj-champ">
+      <span class="k">Document reçu</span>
+      <div id="ia-pj"></div>
+      <input type="file" id="ia-fichier" multiple accept="${PIECE_FORMATS}"
+        style="display:none" onchange="ajouterPJEnAttente(this)">
+      <button class="btn sec" type="button" style="margin-top:6px"
+        onclick="document.getElementById('ia-fichier').click()">Choisir un document…</button>
+      <span class="aide">PDF, image, tableau ou document Word — ${PIECE_MAX_MO} Mo par fichier. Le document reste sur le cockpit : tout le copil pourra l'ouvrir dans son onglet ou l'enregistrer, sans repasser par la boîte mail de qui l'a reçu.</span>
+    </div>
   </div>
   <div class="rappel" style="margin:14px 0 0">Cette information rejoint « Échanges avec l'ARS » et laisse sa ligne en <a href="#" onclick="fermer();aller('courante');return false;">Main courante</a>, au nom de ${esc(moi === 'Anonyme' ? 'la session en cours' : moi)}.</div>
   <div class="actions">
-    <button class="btn" onclick="validerInfoARS()">Enregistrer</button>
+    <button class="btn" id="ia-valider" onclick="validerInfoARS()">Enregistrer</button>
     <button class="btn sec" onclick="fermer()">Annuler</button>
   </div>`;
   ouvrirRideau();
+  rendrePJEnAttente();
   setTimeout(()=>{ const i = document.getElementById('ia-objet'); if(i) i.focus({preventScroll:true}); }, 60);
 }
+
+/* La liste des fichiers en attente, dans la fenêtre. Elle se
+   redessine seule : rendre() reconstruirait la page derrière la
+   fenêtre ouverte et effacerait la saisie en cours. */
+function rendrePJEnAttente(){
+  const d = document.getElementById('ia-pj');
+  if(!d) return;
+  d.innerHTML = pjEnAttente.length
+    ? `<div class="pj">` + pjEnAttente.map((f, i) => `<div class="p attente">
+        <span class="n">${esc(f.name)}</span>
+        <span class="q">${esc(poids(f.size))} · à envoyer</span>
+        <button class="ret" title="Retirer de la liste" onclick="oterPJEnAttente(${i})">✕</button>
+      </div>`).join('') + `</div>`
+    : '';
+}
+function ajouterPJEnAttente(input){
+  [...(input.files || [])].forEach(f => {
+    if(f.size > PIECE_MAX_MO * 1000000){ toast("« " + f.name + " » est trop lourd — " + PIECE_MAX_MO + " Mo au maximum"); return; }
+    pjEnAttente.push(f);
+  });
+  input.value = '';
+  rendrePJEnAttente();
+}
+function oterPJEnAttente(i){ pjEnAttente.splice(i, 1); rendrePJEnAttente(); }
 
 async function validerInfoARS(){
   const g = c => ((document.getElementById('ia-' + c) || {}).value || '').trim();
   const objet = g('objet');
   if(!objet){ toast("L'objet est obligatoire"); document.getElementById('ia-objet')?.focus(); return; }
 
+  /* Les documents montent d'abord : si l'hébergement refuse, on le
+     dit avant d'avoir écrit quoi que ce soit, et rien n'est perdu —
+     la fenêtre est encore là, avec son texte et ses fichiers. */
+  const pieces = [];
+  if(pjEnAttente.length){
+    const b = document.getElementById('ia-valider');
+    if(b){ b.disabled = true; b.textContent = 'Envoi du document…'; }
+    for(const f of pjEnAttente){
+      const m = await envoyerPiece(f);
+      if(!m){
+        if(b){ b.disabled = false; b.textContent = 'Enregistrer'; }
+        return;
+      }
+      pieces.push(m);
+    }
+    if(b){ b.disabled = false; b.textContent = 'Enregistrer'; }
+  }
+
   const o = {
     id: uid(), auteur: moi === 'Anonyme' ? '' : moi, quand: new Date().toISOString(),
     date: g('date') || aujourdhui(), heure: g('heure'),
     sens: "Reçu de l'ARS", canal: 'Mail', interlocuteur: "ARS Nouvelle-Aquitaine",
-    objet, demande: g('contenu'), reponse: '', attendu: '', lien: '', echeance: '', statut: 'En cours'
+    objet, demande: g('contenu'), reponse: '', attendu: '', lien: '', echeance: '', statut: 'En cours',
+    pieces
   };
 
   etat.ars = etat.ars || [];
@@ -5709,14 +5910,24 @@ async function validerInfoARS(){
   consignerRegistreEnCourante('ars', o);
 
   infoARSOuverte = o.id;
+  pjEnAttente = [];
   await sauver(); fermer(); rendre();
-  toast("Information consignée, dans les échanges avec l'ARS et en main courante");
+  toast(pieces.length
+    ? "Information consignée avec son document, dans les échanges avec l'ARS et en main courante"
+    : "Information consignée, dans les échanges avec l'ARS et en main courante");
 }
 
 async function retirerInfoARS(id){
   const a = (etat.ars || []).find(x => x.id === id);
   if(!a) return;
-  if(!confirm(`Retirer « ${a.objet || 'cette information'} » ?\n\nElle disparaît aussi des échanges avec l'ARS. Sa ligne de main courante, elle, reste.`)) return;
+  const npj = (a.pieces || []).filter(p => p && p.id).length;
+  if(!confirm(`Retirer « ${a.objet || 'cette information'} » ?\n\nElle disparaît aussi des échanges avec l'ARS.`
+    + (npj ? `\nLe${npj > 1 ? 's' : ''} ${npj} document${npj > 1 ? 's' : ''} joint${npj > 1 ? 's' : ''} ${npj > 1 ? 'sont supprimés' : 'est supprimé'} de l'hébergement.` : '')
+    + `\nSa ligne de main courante, elle, reste.`)) return;
+  /* Le fichier ne survit pas à la ligne qui le portait : personne
+     n'aurait plus d'adresse pour le retrouver, et il tiendrait la
+     place sur l'hébergement. */
+  for(const p of (a.pieces || [])){ if(p && p.id) await effacerPiece(p.id); }
   await supprimer('ars', id);
 }
 
@@ -7992,9 +8203,16 @@ const MC_REG = {
      dirait rien de plus et ferait doublon. */
   ars: {
     type:'ARS', personne:o => o.auteur,
-    phrase:o => o.visio ? '' :
-      `${o.sens || "Échange avec l'ARS"} — ${o.objet || 'objet non renseigné'}`
-      + (o.interlocuteur ? ` (${o.interlocuteur})` : '') + '.'
+    phrase:o => {
+      if(o.visio) return '';
+      /* Le document reçu se nomme dans la ligne : c'est par la main
+         courante qu'on retrouve, trois jours après, de quel jour
+         datait le communiqué qu'on cherche. */
+      const pj = (o.pieces || []).filter(p => p && p.nom).map(p => p.nom);
+      return `${o.sens || "Échange avec l'ARS"} — ${o.objet || 'objet non renseigné'}`
+        + (o.interlocuteur ? ` (${o.interlocuteur})` : '') + '.'
+        + (pj.length ? ` Document${pj.length > 1 ? 's' : ''} joint${pj.length > 1 ? 's' : ''} : ${pj.join(', ')}.` : '');
+    }
   }
 };
 
