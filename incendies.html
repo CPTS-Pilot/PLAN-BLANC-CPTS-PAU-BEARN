@@ -7470,6 +7470,15 @@ function feuilletBesoins(){
    ========================================================= */
 
 const CAT_MAT = ['Dispositif médical', 'Consommable', 'Autre'];
+/* Les mêmes catégories, dites dans une phrase : « 2 dispositifs
+   médicals » n'existe pas, et une main courante se lit. */
+const CAT_PLURIEL = {'Dispositif médical':'dispositifs médicaux', 'Consommable':'consommables', 'Autre':'autres matériels'};
+const catDite = (c, q) => q > 1 ? (CAT_PLURIEL[c] || c.toLowerCase()) : c.toLowerCase();
+/* Un matériel se dit en minuscules au fil d'une phrase — sauf s'il
+   porte une majuscule ailleurs qu'en tête : c'est alors une marque
+   ou une référence commerciale, et « mepilex border flex » ne se
+   retrouve dans aucun catalogue. */
+const ditMat = m => /[A-ZÀ-ÝŒ]/.test(String(m).slice(1)) ? String(m) : String(m).toLowerCase();
 const MAT_SUGGERES = ['Thermomètre','Hémoglucotest','Tensiomètre','Saturomètre','Stéthoscope',
                       'Masques FFP2','Gel hydroalcoolique'];
 /* La désignation courante suffit à l'écran ; le document, lui,
@@ -8049,7 +8058,12 @@ function texteMCPoint(p){
       + (p.responsable ? ` Sous la responsabilité de ${p.responsable}.` : '')
       + (p.equipe ? ` Avec ${p.equipe}.` : '')
       + (p.destination ? ` Matériel destiné à ${p.destination}.` : '')
-      + (s.lignes ? ` ${s.unites} unités déposées à ce stade, par ${s.deposants.length} déposant${s.deposants.length > 1 ? 's' : ''}.` : ''),
+      /* Le nombre de déposants ne se dit que s'ils sont nommés :
+         une collecte dont les dépôts sont saisis en bloc, à partir
+         d'un bordereau qui ne porte pas les noms, en compterait
+         zéro — et « par 0 déposants » se lirait comme une erreur. */
+      + (s.lignes ? ` ${s.unites} unités déposées à ce stade`
+          + (s.deposants.length ? `, par ${s.deposants.length} déposant${s.deposants.length > 1 ? 's' : ''}` : '') + '.' : ''),
     suite: p.statut === 'Annulé'
       ? "Prévenir les professionnels à qui le point avait été annoncé."
       : (reste ? reste + ' ' : '')
@@ -8104,10 +8118,28 @@ function texteMCCloture(p){
      ne se solde pas par « 0 unités » : le zéro se lirait au RETEX
      comme une collecte qui n'a rien rapporté, alors qu'il dit
      seulement que personne n'a encore consigné le détail. */
+  /* Une collecte de cinq matériels s'énumère ; une collecte de
+     soixante références ne s'énumère pas — l'entrée deviendrait la
+     liste elle-même, qui se lit au récapitulatif. Au-delà de huit,
+     on dit les grandes masses par catégorie, puis les cinq
+     matériels les plus nombreux, et rien de plus. */
+  const detaille = s.parMat.length <= 8
+    ? s.parMat.map(m => m.quantite + ' ' + ditMat(m.materiel)).join(', ')
+    /* Les grandes masses d'abord, la plus grosse en tête : c'est
+       ce qu'on retient d'une collecte six mois après. Les
+       références portent des virgules et des tirets dans leur nom
+       même — elles se séparent donc au point médian, sans quoi la
+       phrase ne se découpe plus à la lecture. */
+    : s.parCat.slice().sort((a,b) => b.quantite - a.quantite)
+        .map(c => c.quantite + ' ' + catDite(c.categorie, c.quantite)).join(', ')
+      + ", sur " + s.parMat.length + " références. Les plus nombreuses : "
+      + s.parMat.slice().sort((a,b) => b.quantite - a.quantite).slice(0, 5)
+          .map(m => m.quantite + ' ' + ditMat(m.materiel)).join(' · ');
   const chiffres = s.lignes
-    ? s.unites + " unités collectées auprès de " + s.deposants.length + " déposants distincts, en "
-      + s.lignes + " lignes de dépôt"
-      + (s.parMat.length ? " : " + s.parMat.map(m => m.quantite + ' ' + m.materiel.toLowerCase()).join(', ') : '') + "."
+    ? s.unites + " unités collectées"
+      + (s.deposants.length ? " auprès de " + s.deposants.length + " déposants distincts" : '')
+      + ", en " + s.lignes + " lignes de dépôt"
+      + (s.parMat.length ? " : " + detaille : '') + "."
     : "Aucun dépôt n'y est saisi à ce stade : ce qui a été recueilli reste à consigner ligne à ligne.";
   return {
     date: p.date || '',
@@ -8121,6 +8153,11 @@ function texteMCCloture(p){
       + "Détail ligne à ligne et récapitulatif imprimable dans « Collecte de matériel », section « Collectes réalisées »."
       + (p.destination ? " Destination : " + p.destination + "." : " Destination du matériel à nommer.")
       + (p.colis ? '' : " Nombre de colis à compléter au conditionnement.")
+      /* Ce qu'on a observé à la clôture — un écart de comptage, un
+         matériel refusé, une référence à confirmer — est la seule
+         chose que les chiffres ne diront jamais. C'est aussi ce
+         qu'un RETEX cherche en premier : l'entrée le porte. */
+      + (p.observations ? " Observations : " + String(p.observations).replace(/\s*\n+\s*/g, ' ') : '')
   };
 }
 
