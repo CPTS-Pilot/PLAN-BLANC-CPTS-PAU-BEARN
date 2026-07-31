@@ -2438,99 +2438,102 @@ Quand aucun cabinet infirmier n'est identifié, rappeler le médecin à l'origin
      lire au téléphone, et poser la pharmacie sur la carte — c'est
      elle qui dit laquelle est la plus proche d'une personne
      signalée. */
-  /* Les douze officines partenaires de l'action « réhydratation à
-     domicile », telles que la CPTS les a listées le 31/07/2026. La
-     liste transmise ne portait que les courriels : le nom de
-     l'officine a été retrouvé derrière chaque adresse, puis
-     l'adresse postale et le numéro repris du fichier départemental
-     des pharmacies (OPENDATA64, data.le64.fr). Les horaires
-     viennent d'annuaires en ligne et n'engagent personne — ils se
-     confirment au premier appel, comme le stock et le portage, qui
-     restent vides tant qu'on ne les a pas demandés. */
+  /* Les quinze officines partenaires de l'action « réhydratation à
+     domicile », telles que la CPTS les a listées le 31/07/2026 :
+     douze par leurs courriels, trois de plus par la vice-présidente.
+     Le nom de l'officine a été retrouvé derrière chaque adresse
+     électronique, puis l'adresse postale et le numéro repris du
+     fichier départemental des pharmacies (OPENDATA64, data.le64.fr).
+     Les horaires viennent d'annuaires en ligne et n'engagent
+     personne — ils se confirment au premier appel, comme le stock et
+     le portage, qui restent vides tant qu'on ne les a pas demandés.
+     Cette provenance se dit ici, une fois : l'observation de chaque
+     fiche ne porte plus que ce qui lui est propre, et reste vide
+     quand il n'y a rien à signaler. */
   pharmacies: [
     {id:'ph1', date:'2026-07-31', nom:"Pharmacie du Soleil", commune:'Pau',
      adresse:"92 rue Émile Guichenné, 64000 Pau", tel:"05 59 27 43 64",
      mail:'pharmaciedusoleil.pau@gmail.com', interlocuteur:'', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi 14h-19h · mardi au vendredi 8h30-19h · samedi 9h-19h · fermée le dimanche",
-     note:"Officine partenaire portée sur la liste du 31/07/2026. Coordonnées reprises du fichier départemental des pharmacies ; horaires relevés en annuaire, à confirmer au premier appel. Reste à demander ce qu'elle tient en solutions de réhydratation et si elle porte à domicile.",
+     note:"",
      auteur:''},
     {id:'ph2', date:'2026-07-31', nom:"Aprium Pharmacie de la Paix", commune:'Pau',
      adresse:"155 boulevard de la Paix, 64000 Pau", tel:"05 59 02 66 47",
      mail:'fredericpinot64@gmail.com', interlocuteur:'Frédéric Pinot', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi au vendredi 8h30-20h · samedi 8h30-19h · fermée le dimanche",
-     note:"Officine partenaire portée sur les deux listes du 31/07/2026 — celle des courriels et celle de la vice-présidente, qui la nomme « Aprium pharmacie de la Paix (Frédéric) » : même officine, même interlocuteur, l'enseigne Aprium est reprise dans le nom. Coordonnées reprises du fichier départemental des pharmacies ; horaires relevés en annuaire, à confirmer au premier appel.",
+     note:"",
      auteur:''},
     {id:'ph3', date:'2026-07-31', nom:"Pharmacie Tourasse", commune:'Pau',
      adresse:"53 boulevard Tourasse, 64000 Pau", tel:"05 59 02 60 17",
      mail:'mariemarchelotossun@gmail.com', interlocuteur:'Marie Marchelot', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi au vendredi 8h30-19h30 · samedi 9h-13h et 14h-19h · fermée le dimanche",
-     note:"Officine partenaire portée sur la liste du 31/07/2026. L'officine est aussi connue sous le nom de Pharmacie Marchelot, du nom de sa titulaire Marie Marchelot — c'est ce qui a permis de la retrouver derrière le courriel. Nom de l'officine à confirmer avec elle. Horaires relevés en annuaire, divergents sur le jeudi.",
+     note:"Aussi connue sous le nom de Pharmacie Marchelot, du nom de sa titulaire — nom d'enseigne à confirmer avec elle. Les annuaires divergent sur les horaires du jeudi.",
      auteur:''},
     {id:'ph4', date:'2026-07-31', nom:"Pharmacie des 7 Cantons", commune:'Pau',
      adresse:"1 rue Montpensier, 64000 Pau", tel:"05 59 27 71 91",
      mail:'julie@7cantons.fr', interlocuteur:'Julie', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi au samedi 8h30-19h30 · fermée le dimanche",
-     note:"Officine partenaire portée sur la liste du 31/07/2026. À vérifier de près : le domaine 7cantons.fr couvre trois officines du territoire — Pau (1 rue Montpensier), Lons (169 avenue Jean Mermoz, 05 59 32 25 93) et Gan (4 avenue d'Aspe, 05 59 21 55 92). La fiche est posée sur celle de Pau ; demander à Julie si les trois délivrent, auquel cas ouvrir une fiche par officine — la carte cherche la plus proche du domicile, elle a besoin des trois points.",
+     note:"À vérifier de près : le domaine 7cantons.fr couvre trois officines du territoire — Pau (1 rue Montpensier), Lons (169 avenue Jean Mermoz, 05 59 32 25 93) et Gan (4 avenue d'Aspe, 05 59 21 55 92). La fiche est posée sur celle de Pau ; demander à Julie si les trois délivrent, auquel cas ouvrir une fiche par officine — la carte cherche la plus proche du domicile, elle a besoin des trois points.",
      auteur:''},
     {id:'ph5', date:'2026-07-31', nom:"Pharmacie Lassartesse", commune:'Pau',
      adresse:"28 boulevard du Recteur Jean Sarrailh, 64000 Pau", tel:"05 59 02 70 13",
      mail:'marie.lassartesse@gmail.com', interlocuteur:'Marie Lassartesse', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi au vendredi 8h30-12h30 et 13h30-19h30 · samedi 9h-12h30 et 14h-19h · fermée le dimanche",
-     note:"Officine partenaire portée sur la liste du 31/07/2026. Le courriel est celui de la titulaire, Marie Lassartesse. Coordonnées reprises du fichier départemental des pharmacies ; horaires relevés en annuaire, à confirmer au premier appel.",
+     note:"",
      auteur:''},
     {id:'ph6', date:'2026-07-31', nom:"Pharmacie Les Apothicaires", commune:'Pau',
      adresse:"21 avenue de l'Europe, 64000 Pau", tel:"05 59 30 78 65",
      mail:'Alix@lesapothicaires.fr', interlocuteur:'Alix Gastelu', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi, mardi, mercredi, vendredi et samedi 9h-12h30 et 14h-19h30 · jeudi 8h30-12h30 et 14h-19h30 · fermée le dimanche",
-     note:"Officine partenaire portée sur la liste du 31/07/2026. Officine adhérente du réseau Totum, comme la Pharmacie Pilar. Coordonnées reprises du fichier départemental des pharmacies ; horaires relevés en annuaire, à confirmer au premier appel.",
+     note:"Officine adhérente du réseau Totum, comme la Pharmacie Pilar.",
      auteur:''},
     {id:'ph7', date:'2026-07-31', nom:"Pharmacie de l'Agora", commune:'Pau',
      adresse:"41 ter avenue du Loup, 64000 Pau", tel:"05 59 27 22 78",
      mail:'pharmadelagora@hotmail.com', interlocuteur:'', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Du lundi au samedi — horaires à confirmer, les annuaires divergent (9h-12h30 / 14h-19h d'un côté, 8h30-20h de l'autre). Second numéro : 05 59 27 25 28.",
-     note:"Officine partenaire portée sur la liste du 31/07/2026. Coordonnées reprises du fichier départemental des pharmacies. Les horaires sont le seul point vraiment incertain de cette fiche : à demander au premier appel.",
+     note:"Les horaires sont le point incertain de cette fiche : les annuaires se contredisent, à trancher au premier appel.",
      auteur:''},
     {id:'ph8', date:'2026-07-31', nom:"Pharmacie du Centre Berlioz", commune:'Pau',
      adresse:"38 rue Berlioz, 64000 Pau", tel:"05 59 02 68 94",
      mail:'comptapharmaberlioz64@gmail.com', interlocuteur:'Sophie Maréchal', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi au vendredi 8h30-12h30 et 14h-19h30 · samedi 8h30-12h30 · fermée le dimanche",
-     note:"Officine partenaire portée sur les deux listes du 31/07/2026. C'est la vice-présidente qui donne l'interlocutrice, Sophie Maréchal. Le courriel transmis, lui, est celui de la comptabilité : lui demander la boîte qui convient pour une demande de réhydratation, et sa ligne directe. Coordonnées reprises du fichier départemental des pharmacies.",
+     note:"Le courriel connu est celui de la comptabilité : demander à Sophie Maréchal la boîte qui convient pour une demande de réhydratation, et sa ligne directe.",
      auteur:''},
     {id:'ph9', date:'2026-07-31', nom:"Pharmacie Cayla-Bernadotte", commune:'Jurançon',
      adresse:"29 rue Ollé Laprune, 64110 Jurançon", tel:"05 59 06 24 23",
      mail:'secretariat@caylabernadotte.fr', interlocuteur:'', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi au vendredi 9h-12h30 et 14h-19h30 · samedi 9h-12h30 · fermée le dimanche",
-     note:"Officine partenaire portée sur la liste du 31/07/2026. Attention aux annuaires qui la donnent encore 39 rue du Général Leclerc : elle a déménagé rue Ollé Laprune en 2019, et c'est cette adresse-là qui la pose au bon endroit sur la carte. Le courriel transmis est celui du secrétariat — demander le nom de l'interlocuteur.",
+     note:"Attention aux annuaires qui la donnent encore 39 rue du Général Leclerc : elle a déménagé rue Ollé Laprune en 2019, et c'est cette adresse-là qui la pose au bon endroit sur la carte. Le courriel connu est celui du secrétariat — demander le nom de l'interlocuteur.",
      auteur:''},
     {id:'ph10', date:'2026-07-31', nom:"Pharmacie Merivot-Jouanne", commune:'Jurançon',
      adresse:"15 rue Gaston Cambot, 64110 Jurançon", tel:"05 59 06 24 32",
      mail:'merivot.jouanne@wanadoo.fr', interlocuteur:'Marie-Claude Merivot', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi au vendredi 9h-12h30 et 14h-19h30 · samedi 9h-12h30 · fermée le dimanche",
-     note:"Officine partenaire portée sur la liste du 31/07/2026. Un annuaire la situe au 17 avenue Gaston Cambot : le fichier départemental dit 15 rue Gaston Cambot, c'est ce qui est retenu. Second numéro : 05 59 06 59 78.",
+     note:"Un annuaire la situe au 17 avenue Gaston Cambot : le fichier départemental dit 15 rue Gaston Cambot, c'est ce qui est retenu. Second numéro : 05 59 06 59 78.",
      auteur:''},
     {id:'ph11', date:'2026-07-31', nom:"Pharmacie de Plaisance", commune:'Lescar',
      adresse:"2 rue Séverin Lacoste, 64230 Lescar", tel:"05 59 81 10 13",
      mail:'pharmacieplaisance@outlook.fr', interlocuteur:'', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi au samedi 8h30-19h30 · fermée le dimanche",
-     note:"Officine partenaire portée sur la liste du 31/07/2026. Seule officine de Lescar sur la liste : c'est elle qui couvre le nord-ouest du territoire, à surveiller sur la carte. Coordonnées reprises du fichier départemental des pharmacies.",
+     note:"L'une des deux officines de Lescar avec la Pharmacie Duizabo — et la seule ouverte tant que Duizabo est en congés. C'est elle qui couvre le nord-ouest du territoire.",
      auteur:''},
     {id:'ph12', date:'2026-07-31', nom:"Pharmacie Gantoise", commune:'Gan',
      adresse:"148 rue d'Ossau, 64290 Gan", tel:"05 59 21 61 18",
      mail:'Pharmaciegantoise@gmail.com', interlocuteur:'', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi au vendredi 9h-12h30 et 14h-19h30 · samedi 9h-12h30 et 14h-18h · fermée le dimanche",
-     note:"Officine partenaire portée sur la liste du 31/07/2026. Seule officine de Gan sur la liste : c'est elle qui couvre le sud du territoire. Coordonnées reprises du fichier départemental des pharmacies.",
+     note:"Seule officine de Gan au recensement : c'est elle qui couvre le sud du territoire.",
      auteur:''},
     /* Les trois suivantes ne viennent pas de la liste des courriels
        mais de celle de la vice-présidente, le même jour. Elles n'ont
@@ -2541,21 +2544,21 @@ Quand aucun cabinet infirmier n'est identifié, rappeler le médecin à l'origin
      mail:'', interlocuteur:'Jibran Benassar', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi au vendredi 9h-12h30 et 14h-19h30 · samedi 9h-12h30 · fermée le dimanche",
-     note:"Portée par la liste de la vice-présidente sous le nom « Totum Benassar (Jibran) », et absente de la liste des courriels. C'est la Pharmacie Pilar, à Billère, tenue par Jibran et Anne Benassar et adhérente du réseau Totum — d'où le nom transmis. Nom d'enseigne et courriel à confirmer avec Jibran Benassar. Seule officine de Billère au recensement.",
+     note:"Tenue par Jibran et Anne Benassar, adhérente du réseau Totum. Nom d'enseigne et courriel à confirmer avec Jibran Benassar. Seule officine de Billère au recensement.",
      auteur:''},
     {id:'ph14', date:'2026-07-31', nom:"Pharmacie Duizabo", commune:'Lescar',
      adresse:"23 rue Sainte-Catherine, 64230 Lescar", tel:"05 59 81 20 88",
      mail:'', interlocuteur:'Audrey Duizabo', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"FERMÉE POUR CONGÉS JUSQU'AU 3 AOÛT 2026 — ne pas l'appeler d'ici là. Ensuite : lundi au vendredi 8h30-12h30 et 14h-19h30 · samedi 8h30-12h30 et 14h-19h · fermée le dimanche",
-     note:"Portée par la liste de la vice-présidente, et absente de la liste des courriels : adresse électronique à recueillir. L'interlocutrice, Audrey Duizabo, porte le nom de l'officine — c'est la titulaire. Elle est en congés jusqu'au 3 août 2026 : d'ici là, c'est la Pharmacie de Plaisance qui couvre Lescar. Date exacte de réouverture à confirmer avec elle. Coordonnées reprises du fichier départemental des pharmacies.",
+     note:"Courriel à recueillir. En congés jusqu'au 3 août 2026 : d'ici là, c'est la Pharmacie de Plaisance qui couvre Lescar. Date exacte de réouverture à confirmer avec Audrey Duizabo, qui est la titulaire.",
      auteur:''},
     {id:'ph15', date:'2026-07-31', nom:"Pharmacie La Croix du Prince", commune:'Pau',
      adresse:"55 bis rue du 14 Juillet, 64000 Pau", tel:"05 59 06 23 59",
      mail:'', interlocuteur:'Florie Clavé', telInterlocuteur:'',
      statut:'Partenaire', stock:'', portage:'À préciser',
      horaires:"Lundi au vendredi 9h-12h30 et 14h-19h30 · samedi 9h-12h30 et 14h-19h · fermée le dimanche",
-     note:"Portée par la liste de la vice-présidente, et absente de la liste des courriels. Un annuaire donne pharmaciecroixduprince@yahoo.fr : à faire confirmer par Florie Clavé avant de s'en servir, il ne vient pas de la CPTS. Second numéro : 05 59 06 86 18. Le fichier départemental écrit 55 rue du 14 Juillet, l'officine 55 bis — c'est le bis qui est retenu.",
+     note:"Courriel à recueillir : un annuaire donne pharmaciecroixduprince@yahoo.fr, à faire confirmer par Florie Clavé avant de s'en servir. Second numéro : 05 59 06 86 18. Le fichier départemental écrit 55 rue du 14 Juillet, l'officine 55 bis — c'est le bis qui est retenu.",
      auteur:''}
   ],
   /* Les personnes signalées par les médecins, en initiales. Le
