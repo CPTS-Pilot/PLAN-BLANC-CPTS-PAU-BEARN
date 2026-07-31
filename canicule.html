@@ -487,31 +487,51 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
    dans la séance sans avoir à le redemander avant 15 h. Dessous,
    le créneau du jour : chacun y pose son prénom, et l'équipe sait
    avant l'heure qui l'y représentera. */
+/* L'en-tête tient sur une ligne : le nom du rendez-vous, l'heure,
+   et le bouton d'entrée. Ce qui l'expliquait tenait quatre lignes
+   de plus, alors que le bouton se lit seul — et cette page est
+   celle qu'on ouvre en courant. L'adresse en clair et la mention
+   du dépôt sont passées en infobulle du bouton « Modifier ». */
 .salle-v{background:var(--carte);border:1px solid var(--trait);border-left:5px solid var(--ambre);
-  border-radius:12px;padding:16px 18px;margin-bottom:16px}
-.salle-v .haut{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.salle-v .haut > .q{flex:1;min-width:230px}
-.salle-v .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--texte-2);display:block;margin-bottom:3px}
-.salle-v .n{font-family:var(--display);font-weight:700;font-size:16px;line-height:1.25;color:var(--encre)}
-.salle-v .s{font-size:12.5px;color:var(--texte-2);margin-top:3px}
-.salle-v .entrer{display:inline-flex;align-items:center;gap:9px;background:var(--encre);color:#fff;
-  font-family:var(--display);font-weight:700;font-size:15px;border:0;border-radius:9px;
-  padding:13px 20px;min-height:50px;text-decoration:none;cursor:pointer}
+  border-radius:10px;padding:11px 14px;margin-bottom:14px}
+.salle-v .haut{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.salle-v .n{font-family:var(--display);font-weight:700;font-size:14.5px;line-height:1.3;color:var(--encre);
+  flex:1;min-width:180px}
+.salle-v .n small{font-family:var(--corps);font-weight:400;font-size:12.5px;color:var(--texte-2)}
+.salle-v .entrer{display:inline-flex;align-items:center;background:var(--encre);color:#fff;
+  font-family:var(--display);font-weight:600;font-size:13.5px;border:0;border-radius:8px;
+  padding:0 15px;min-height:40px;text-decoration:none;cursor:pointer;white-space:nowrap}
 .salle-v .entrer:hover{background:var(--encre-2)}
-.salle-v .entrer.vide{background:#fff;color:var(--encre);border:1px dashed var(--encre-2);font-weight:600}
-.salle-v .petits{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:10px}
-.salle-v .petits button{background:none;border:1px solid var(--trait);border-radius:7px;color:var(--texte-2);
-  font-family:var(--corps);font-size:12.5px;padding:7px 11px;cursor:pointer;min-height:38px}
-.salle-v .petits button:hover{border-color:var(--encre-2);color:var(--encre-2)}
-.salle-v .adresse{font-family:var(--mono);font-size:11px;color:var(--texte-2);word-break:break-all;
-  flex:1;min-width:160px}
+.salle-v .entrer.vide{background:#fff;color:var(--encre);border:1px dashed var(--encre-2)}
+.salle-v .mini{background:none;border:1px solid var(--trait);border-radius:7px;color:var(--texte-2);
+  font-family:var(--corps);font-size:12px;padding:0 10px;min-height:40px;cursor:pointer}
+.salle-v .mini:hover{border-color:var(--encre-2);color:var(--encre-2)}
 
 /* Le créneau du jour. Un prénom, un clic : c'est tout ce qu'on
-   demande à quelqu'un qui a la séance dans dix minutes. */
-.creneau{border-top:1px dashed var(--trait);margin-top:14px;padding-top:12px}
+   demande à quelqu'un qui a la séance dans dix minutes.
+
+   Les séances à venir tiennent sur une seule ligne qui défile :
+   une pastille par jour jusqu'à la fin du mois suivant, le nombre
+   d'inscrits dessus. On voit d'un coup d'œil quels jours sont
+   couverts et lesquels ne le sont pas, et on s'y pose à l'avance
+   sans que la page y gagne un centimètre. */
+.creneau{border-top:1px dashed var(--trait);margin-top:11px;padding-top:10px}
 .creneau .jourh{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--texte-2);display:block;margin-bottom:8px}
+  color:var(--texte-2);display:block;margin-bottom:7px}
+.creneau .jours{display:flex;gap:5px;overflow-x:auto;padding-bottom:5px;margin-bottom:9px;
+  scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.creneau .jours button{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;
+  background:var(--carte);border:1px solid var(--trait);border-radius:7px;padding:0 9px;min-height:34px;
+  font-family:var(--mono);font-size:11px;color:var(--texte-2);cursor:pointer}
+.creneau .jours button:hover{border-color:var(--encre-2);color:var(--encre-2)}
+.creneau .jours button.we{opacity:.5}
+.creneau .jours button.pris{background:var(--cobalt-clair);border-color:#C3D8F2;color:var(--encre)}
+.creneau .jours button.on{background:var(--encre);border-color:var(--encre);color:#fff;opacity:1}
+.creneau .jours button .nb{background:var(--encre-2);color:#fff;border-radius:9px;padding:1px 5px;
+  font-size:9.5px;font-weight:600}
+.creneau .jours button.on .nb{background:#fff;color:var(--encre)}
+.creneau .jours .mois{flex:0 0 auto;align-self:center;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--texte-2);padding:0 5px}
 .creneau .qui-v{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
 .creneau .qui-v .nom{display:inline-flex;align-items:center;gap:7px;background:var(--cobalt-clair);
   color:var(--encre);border-radius:20px;padding:6px 6px 6px 13px;font-size:13.5px;font-weight:600;
@@ -525,8 +545,8 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .creneau .avant{font-size:12px;color:var(--texte-2);margin-top:10px;line-height:1.5}
 .creneau .avant b{font-weight:600;color:var(--texte)}
 @media(max-width:640px){
-  .salle-v{padding:14px}
-  .salle-v .entrer{width:100%;justify-content:center}
+  .salle-v{padding:11px 12px}
+  .salle-v .entrer{flex:1;justify-content:center}
   .creneau .poser input{max-width:none}
 }
 
@@ -728,6 +748,42 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
 .pt .b button{flex:1;min-width:130px;min-height:38px;border-radius:7px;font-size:13px;cursor:pointer;border:1px solid var(--trait);background:#fff;color:var(--texte);font-family:inherit;padding:8px 11px}
 .pt .b .maj{background:var(--encre-2);border-color:var(--encre-2);color:#fff;font-family:var(--display);font-weight:600}
 .pt .b .maj:hover{background:var(--encre)}
+
+/* ---------- informations données par l'ARS ----------
+   Un communiqué de l'ARS fait trois écrans, et trois communiqués
+   dépliés font une page que plus personne ne parcourt. La liste ne
+   montre donc que la date, l'objet et qui l'a saisi ; le texte
+   s'ouvre au clic, un à la fois. */
+.infos-a{margin-top:26px}
+.infos-a .tete-i{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px}
+.infos-a .tete-i > div{flex:1;min-width:250px}
+.infos-a .sous-i{color:var(--texte-2);font-size:13.5px;margin:4px 0 0;max-width:78ch}
+.info-a{background:var(--carte);border:1px solid var(--trait);border-radius:9px;margin-bottom:7px;overflow:hidden}
+.info-a.ouverte{border-color:var(--encre-2)}
+.info-a > .tete{display:flex;gap:13px;align-items:center;width:100%;padding:12px 15px;background:none;border:0;
+  text-align:left;font-family:inherit;font-size:inherit;color:inherit;cursor:pointer}
+.info-a > .tete:hover{background:var(--cobalt-clair)}
+.info-a .q{font-family:var(--mono);font-size:11.5px;color:var(--texte-2);flex:0 0 98px}
+.info-a .i{flex:1;min-width:180px}
+.info-a .i .n{display:block;font-family:var(--display);font-weight:700;font-size:15px;line-height:1.25;color:var(--encre)}
+.info-a .i .s{display:block;font-size:12.5px;color:var(--texte-2);margin-top:2px}
+.info-a .chev{font-family:var(--mono);font-size:12px;color:var(--texte-2);flex:0 0 14px;text-align:center}
+.info-a .dedans{padding:2px 15px 15px;border-top:1px dashed var(--trait)}
+.info-a .bloc{margin-top:12px;border-left:3px solid var(--encre-2);border-radius:0 7px 7px 0;
+  background:var(--surface);padding:9px 12px}
+.info-a .bloc.reponse{border-left-color:var(--stable)}
+.info-a .bloc.implique{border-left-color:var(--ambre);background:#FCF3E4}
+.info-a .bloc .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--texte-2);display:block;margin-bottom:3px}
+.info-a .bloc .d{font-size:13.5px;line-height:1.5;white-space:pre-line}
+.info-a .doc{display:inline-block;margin-top:12px;font-size:13px;color:var(--encre-2)}
+.info-a .meta{font-family:var(--mono);font-size:9.5px;color:var(--texte-2);margin-top:12px}
+.info-a .bas{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.info-a .bas .sup{margin-left:auto}
+@media(max-width:640px){
+  .info-a > .tete{padding:12px 13px;gap:9px}
+  .info-a .q{flex:0 0 auto}
+}
 
 /* Le poste de veille : qui la tient, et quand la page a bougé
    pour la dernière fois. Ce que le copil lit sans demander. */
@@ -2099,11 +2155,13 @@ Quand aucun cabinet infirmier n'est identifié, rappeler le médecin à l'origin
   ],
   /* Le salon de la visio de crise, et rien d'autre : une adresse
      qui ne bouge pas d'une séance à l'autre. Elle est vide tant
-     que personne ne l'a déposée — le cockpit ne l'invente pas, et
-     l'horaire de la canicule n'a pas de raison d'être celui des
-     incendies. */
+     que personne ne l'a déposée — le cockpit ne l'invente pas.
+     Le rythme, lui, est connu : l'ARS réunit ses partenaires sur
+     la canicule le jeudi à 12 h, là où les incendies demandaient
+     une séance par jour. Il est donc posé d'avance, et se change
+     en deux clics le jour où l'ARS resserre la cadence. */
   salleVisio: [
-    {id:'sv', url:'', horaire:'', precision:'', maj:'', par:''}
+    {id:'sv', url:'', horaire:'12:00', recurrence:'4', precision:'', maj:'', par:''}
   ],
   /* Qui se positionne sur le créneau du jour. Une ligne = un
      prénom sur une date. C'est tout ce qu'on demande à quelqu'un
@@ -2485,6 +2543,16 @@ function completerVeille(){
     const r = refR.get(o.id);
     combler(o, {quoi: r ? r.quoi : '', ou: r ? r.ou : '', etat:'', maj:'', par:''});
   });
+  /* La salle de visio a été ouverte avant que le rythme des
+     séances puisse se déclarer : elle n'a ni horaire ni cadence.
+     On les pose une fois — jeudi 12 h, ce que l'ARS tient sur la
+     canicule — sans toucher à ce qui aurait déjà été déposé par
+     le copil. */
+  const sv = (etat.salleVisio || [])[0];
+  if(sv){
+    if(!sv.horaire) sv.horaire = '12:00';
+    if(sv.recurrence === undefined || sv.recurrence === null || sv.recurrence === '') sv.recurrence = '4';
+  }
 }
 /* Rattrapage des anciennes catégories saisies à la main. */
 function familleDeCat(c){
@@ -4339,32 +4407,27 @@ async function majMission(id, champ, val){
 /* =========================================================
    SITUATION RÉGIONALE — le poste de veille
 
-   La page ne fait plus qu'une chose : dire l'état de la région, et
-   le tenir à jour. Deux objets, dans cet ordre :
+   La page ne fait plus qu'une chose : dire ce que l'ARS nous a dit,
+   et quand. Trois objets, dans cet ordre :
 
-   1. Les visios de crise de l'ARS — la source la plus dense dont
-      dispose la CPTS. Elles ouvrent la page.
-   2. Les points de situation — les feuillets qu'on maintient à
-      jour : niveau de vigilance, tension sur les structures,
-      situation sanitaire, consignes aux libéraux… C'est ce qui se
-      lit au copil.
+   1. Qui tient la veille, et quand la page a bougé pour la dernière
+      fois. C'est ce qu'on lit avant de croire ce qui suit.
+   2. Le rendez-vous de l'ARS — le lien du salon, le rythme des
+      séances, qui se positionne sur la prochaine, et le compte
+      rendu de chacune.
+   3. Les informations données par l'ARS hors visio — mails et
+      communiqués, collés tels quels, la liste repliée et le texte à
+      la demande.
 
-   Le carnet de canaux, le tour de veille et le fil des informations
-   retenues ont été retirés : ils demandaient un parcours que
-   personne n'a le temps de faire en crise. Le geste attendu tient
-   désormais en un copier-coller dans le bon feuillet. Les données
-   correspondantes restent dans l'état partagé, sans affichage.
+   Le carnet de canaux, le tour de veille, le fil des informations
+   retenues, le mode d'emploi en quatre gestes et les dix points de
+   situation ont été retirés l'un après l'autre : ils demandaient un
+   parcours que personne n'a le temps de faire en crise. Le geste
+   attendu tient en un copier-coller. Les données correspondantes
+   restent dans l'état partagé, sans affichage — les points de
+   situation continuent de nommer les rubriques des sources.
    ========================================================= */
-const SEUIL_POINT_H  = 12;  // au-delà, un point de situation est à rafraîchir
-let brouillonPoint = null;
-/* Le mode d'emploi reste ouvert tant qu'on ne l'a pas replié soi-même :
-   c'est la première chose que voit qui prend la veille. */
-let guideVeille = (() => { try{ return localStorage.getItem('cpts64_guide_veille') !== 'ferme'; }catch(e){ return true; } })();
-function basculerGuide(){
-  guideVeille = !guideVeille;
-  try{ localStorage.setItem('cpts64_guide_veille', guideVeille ? 'ouvert' : 'ferme'); }catch(e){}
-  rendre();
-}
+const SEUIL_POINT_H  = 12;  // au-delà, la page est réputée ne plus être fraîche
 
 const horodate = () => aujourdhui() + ' ' + maintenant();
 function heuresDepuis(q){
@@ -4372,26 +4435,32 @@ function heuresDepuis(q){
   const t = new Date(q.slice(0,10) + 'T' + (q.slice(11,16) || '00:00') + ':00');
   return isNaN(t) ? Infinity : (Date.now() - t) / 36e5;
 }
+/* Les points de situation ne s'affichent plus nulle part. Ce qui en
+   a été écrit reste dans l'état partagé — rien n'est effacé — et ces
+   trois lignes restent la seule façon d'y accéder le jour où on
+   voudrait les ressortir. */
 const rubriques = () => etat.rubriques || [];
 const rubriqueDe = id => rubriques().find(r => r.id === id);
 const nomPoint = id => { const r = rubriqueDe(id); return r ? r.nom : ''; };
-/* Un point non réécrit depuis un demi-tour d'horloge est à
-   rafraîchir : c'est ce qui donne sa liste de travail à qui prend
-   la veille. Un point jamais écrit l'est toujours. */
-const pointARafraichir = r => !r.maj || heuresDepuis(r.maj) >= SEUIL_POINT_H;
 /* La dernière trace laissée sur cette page, quelle qu'en soit la
-   nature : réécriture d'un point ou compte rendu de visio. C'est
-   elle qui dit si ce qu'on lit ici est encore frais. */
+   nature : compte rendu de visio ou information de l'ARS consignée.
+   C'est elle qui dit si ce qu'on lit ici est encore frais. Les
+   points de situation n'y comptent plus depuis qu'ils ne s'affichent
+   plus : dater la page d'après un texte que personne ne voit la
+   ferait passer pour tenue alors qu'elle ne l'est pas. */
 function derniereActualisation(){
   let d = null;
   const retenir = (quand, par, quoi) => {
     const q = quandNormalise(quand);
     if(q && (!d || q > d.quand)) d = {quand:q, par: par || '', quoi};
   };
-  rubriques().forEach(r => retenir(r.maj, r.par, 'Point « ' + r.nom + ' »'));
   (etat.visios||[]).forEach(v => retenir(v.quand, v.auteur, 'Compte rendu de la visio du ' + frdate(v.date)));
+  infosARS().forEach(a => retenir(a.quand, a.auteur, "Information de l'ARS : " + tronquer(a.objet || 'sans objet', 60)));
   return d;
 }
+/* Un objet de mail tient parfois sur deux lignes : dans la case
+   « dernière actualisation », il déborderait sur le reste. */
+const tronquer = (t, n) => String(t || '').length > n ? String(t).slice(0, n - 1).trim() + '…' : String(t || '');
 /* Les points sont datés « AAAA-MM-JJ HH:MM », les visios en ISO :
    on ramène les deux à la même forme locale avant de les comparer. */
 function quandNormalise(q){
@@ -4432,25 +4501,23 @@ function ouvrirVisio(id){ visioOuverte = (visioOuverte === id) ? null : id; rend
 
 /* Depuis le registre ARS, on retombe sur la séance dépliée : le
    registre dit qu'elle a eu lieu, la situation régionale dit ce qui
-   s'y est dit. Un lien profond venu d'ailleurs ouvre le module qui
-   porte ce qu'il vise, jamais le palier — sinon on retombe devant
-   deux cartes, à recommencer le chemin. */
-function ouvrirVisioDepuisARS(id){ visioOuverte = id; moduleVeille = 'ars'; aller('veille'); }
+   s'y est dit. */
+function ouvrirVisioDepuisARS(id){ visioOuverte = id; aller('veille'); }
 
 /* =========================================================
-   LE RENDEZ-VOUS DE 15 H
+   LE RENDEZ-VOUS DE L'ARS
 
    Deux choses, et seulement deux, en tête de la situation
    régionale :
 
-   1. Le lien du salon. Il est le même à chaque séance, il est
-      déposé une fois, et il s'ouvre d'un clic depuis n'importe
-      quel poste du cockpit. Avant, il circulait par mail et se
-      cherchait à 14h55.
-   2. Le créneau du jour. Chacun y pose son prénom pour dire
-      qu'il y sera : l'équipe sait qui la représente avant que
-      la séance commence, et personne n'y va à deux sans le
-      savoir — ou n'y va à zéro en croyant qu'un autre y est.
+   1. Le lien du salon, et le rythme des séances. Le lien est le
+      même à chaque séance, il est déposé une fois, et il s'ouvre
+      d'un clic depuis n'importe quel poste du cockpit. Avant, il
+      circulait par mail et se cherchait cinq minutes avant.
+   2. Le créneau de la prochaine séance. Chacun y pose son prénom
+      pour dire qu'il y sera : l'équipe sait qui la représente
+      avant que la séance commence, et personne n'y va à deux sans
+      le savoir — ou n'y va à zéro en croyant qu'un autre y est.
 
    La présence annoncée n'est pas un compte rendu : ce qui s'est
    dit se consigne dessous, séance par séance.
@@ -4477,57 +4544,135 @@ function lienVisioPropre(v){
   return '';
 }
 
-const heureVisio = () => (salleVisio() && salleVisio().horaire) || '15:00';
+const heureVisio = () => (salleVisio() && salleVisio().horaire) || '12:00';
 const heureLisible = h => String(h || '').replace(':00', ' h').replace(':', ' h ');
 
+const dateJour = d => { const p = String(d || '').split('-'); return p.length === 3 ? new Date(+p[0], +p[1] - 1, +p[2]) : null; };
+const isoJour = j => j.getFullYear() + '-' + String(j.getMonth() + 1).padStart(2,'0') + '-' + String(j.getDate()).padStart(2,'0');
+
+/* À quelle cadence la séance revient. L'ARS ne réunit pas ses
+   partenaires au même rythme d'une crise à l'autre : tous les
+   jours quand la situation bouge d'heure en heure, une fois par
+   semaine quand la vague de chaleur s'installe et qu'il n'y a
+   plus qu'à en suivre la courbe. Le rythme se dépose avec le
+   lien, et c'est lui qui décide des jours proposés sur la bande
+   des créneaux : poser son prénom sur un mercredi quand la
+   séance est le jeudi n'aurait dit à personne qu'on y serait.
+   Rien de déposé vaut « tous les jours » — c'est ce qu'était le
+   rendez-vous avant que la question se pose. */
+const JOURS_SEM = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+const recurrenceVisio = () => {
+  const r = (salleVisio() || {}).recurrence;
+  return (r === undefined || r === null || r === '') ? 'quotidien' : String(r);
+};
+const recurrenceLisible = () => {
+  const r = recurrenceVisio();
+  return r === 'quotidien' ? 'tous les jours' : 'tous les ' + JOURS_SEM[+r] + 's';
+};
+const jourDeSeance = d => {
+  const r = recurrenceVisio();
+  if(r === 'quotidien') return true;
+  const j = dateJour(d);
+  return !!j && j.getDay() === +r;
+};
+
 function jourLisible(d){
-  const p = String(d || '').split('-');
-  if(p.length !== 3) return frdateL(d);
-  const j = new Date(+p[0], +p[1] - 1, +p[2]);
+  const j = dateJour(d);
+  if(!j) return frdateL(d);
   return j.toLocaleDateString('fr-FR', {weekday:'long', day:'2-digit', month:'2-digit'});
+}
+
+/* Les séances sur lesquelles on peut se poser : d'aujourd'hui à la
+   fin du mois suivant. Assez loin pour qu'on organise les congés
+   d'août sans y revenir chaque semaine, et sans date en dur qui
+   se périmerait toute seule si la crise dure. */
+function joursCreneaux(){
+  const dep = dateJour(aujourdhui());
+  if(!dep) return [];
+  const fin = isoJour(new Date(dep.getFullYear(), dep.getMonth() + 2, 0));
+  const l = [];
+  const j = new Date(dep);
+  while(isoJour(j) <= fin && l.length < 80){
+    if(jourDeSeance(isoJour(j))) l.push(isoJour(j));
+    j.setDate(j.getDate() + 1);
+  }
+  return l;
+}
+
+/* Le créneau affiché : la prochaine séance. Quand l'ARS réunit
+   tous les jours, c'est aujourd'hui — la séance de tout à l'heure,
+   celle qu'on vient voir neuf fois sur dix. Quand elle ne réunit
+   que le jeudi, c'est le jeudi qui vient : ouvrir sur aujourd'hui
+   aurait fait poser des prénoms sur un jour sans séance. Une date
+   choisie hier, ou devenue passée, y retombe. */
+let creneauChoisi = null;
+const prochaineSeance = () => joursCreneaux()[0] || aujourdhui();
+const creneauVu = () => (creneauChoisi && creneauChoisi >= aujourdhui() && jourDeSeance(creneauChoisi))
+  ? creneauChoisi : prochaineSeance();
+/* La page se redessine à chaque choix : la bande repart de son
+   début, et le jour qu'on vient de choisir sortait de l'écran
+   quand il était loin dans le mois. On le ramène sous les yeux. */
+function choisirCreneau(d){
+  creneauChoisi = d;
+  rendre();
+  setTimeout(() => {
+    const b = document.querySelector('.creneau .jours button.on');
+    if(b) b.scrollIntoView({block:'nearest', inline:'center'});
+  }, 0);
 }
 
 function vueSalleVisio(){
   const s = salleVisio() || {};
   const url = lienVisioPropre(s.url);
   const auj = aujourdhui();
-  const ici = presencesDuJour(auj);
   const h = heureLisible(heureVisio());
+
+  /* L'adresse en clair et la mention du dépôt tenaient deux lignes
+     pour une information qu'on ne lit jamais : elles sont passées
+     en infobulle du bouton qui sert à les changer. */
+  const infobulle = url
+    ? url + (s.maj ? ` — déposé le ${frdateL(s.maj)}${s.par ? ' par ' + s.par : ''}` : '')
+    : "Aucun lien déposé : chacun le cherche dans sa boîte mail avant la séance.";
 
   let v = `<div class="salle-v">
     <div class="haut">
-      <div class="q">
-        <span class="k">Rendez-vous quotidien</span>
-        <div class="n">Visio de crise de l'ARS Nouvelle-Aquitaine — tous les jours à ${esc(h)}</div>
-        <div class="s">${url
-          ? `Le lien du salon ne change pas d'une séance à l'autre : il s'ouvre d'ici, sans le demander à personne.${s.precision ? ' ' + esc(s.precision) : ''}`
-          : `Aucun lien déposé. Tant qu'il n'est pas là, chacun le cherche dans sa boîte mail à 14 h 55.`}</div>
-      </div>
+      <div class="n">Visio de crise de l'ARS — ${esc(recurrenceLisible())} à ${esc(h)}${s.precision ? `<small> · ${esc(s.precision)}</small>` : ''}</div>
       ${url
-        ? `<a class="entrer" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Lien permanent visio ARS ${esc(h)}</a>`
-        : `<button class="entrer vide" onclick="ouvrirDepotVisio()">Déposer le lien permanent visio ARS ${esc(h)}</button>`}
-    </div>
-
-    <div class="petits">
-      ${url ? `<span class="adresse">${esc(url)}</span>
-        <button onclick="copierLienVisio()">Copier le lien</button>` : ''}
-      <button onclick="ouvrirDepotVisio()">${url ? 'Modifier le lien' : 'Déposer le lien'}</button>
-      ${url && s.maj ? `<span class="adresse" style="flex:0 0 auto">Déposé le ${esc(frdateL(s.maj))}${s.par ? ' par ' + esc(s.par) : ''}</span>` : ''}
+        ? `<a class="entrer" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Lien permanent visio ARS ${esc(h)}</a>
+           <button class="mini" onclick="copierLienVisio()" title="Copier ${esc(url)}">Copier</button>
+           <button class="mini" onclick="ouvrirDepotVisio()" title="${esc(infobulle)}">Modifier</button>`
+        : `<button class="entrer vide" onclick="ouvrirDepotVisio()" title="${esc(infobulle)}">Déposer le lien permanent visio ARS ${esc(h)}</button>`}
     </div>`;
 
-  /* --- le créneau du jour --- */
+  /* --- le créneau choisi, et la bande des séances à venir --- */
+  const jour = creneauVu();
+  const ici = presencesDuJour(jour);
+  let mois = '';
+  const bande = joursCreneaux().map(d => {
+    const j = dateJour(d);
+    const nb = presencesDuJour(d).length;
+    const we = j.getDay() === 0 || j.getDay() === 6;
+    let pre = '';
+    const m = j.toLocaleDateString('fr-FR', {month:'short'}).replace('.','');
+    if(m !== mois){ if(mois) pre = `<span class="mois">${esc(m)}</span>`; mois = m; }
+    return pre + `<button class="${[d === jour ? 'on' : '', nb ? 'pris' : '', we ? 'we' : ''].filter(Boolean).join(' ')}"
+      onclick="choisirCreneau('${d}')" title="${esc(jourLisible(d))}${nb ? ' — ' + presencesDuJour(d).map(p => p.prenom).join(', ') : ' — personne'}">
+      ${esc(j.toLocaleDateString('fr-FR', {weekday:'short'}).replace('.',''))} ${j.getDate()}${nb ? `<span class="nb">${nb}</span>` : ''}</button>`;
+  }).join('');
+
   v += `<div class="creneau">
-    <span class="jourh">Qui y sera — créneau du jour, ${esc(jourLisible(auj))} à ${esc(h)}</span>
+    <span class="jourh">Qui y sera — ${esc(jourLisible(jour))} à ${esc(h)}${jour === auj ? ' · aujourd\'hui' : ''}</span>
+    <div class="jours">${bande}</div>
     <div class="qui-v">${ici.length
       ? ici.map(p => `<span class="nom">${esc(p.prenom)}
           <button onclick="retirerPresenceVisio('${p.id}')" title="Retirer ${esc(p.prenom)} du créneau" aria-label="Retirer ${esc(p.prenom)} du créneau">×</button>
         </span>`).join('')
-      : `<span class="personne">Personne ne s'est encore positionné sur la séance d'aujourd'hui.</span>`}</div>
+      : `<span class="personne">Personne ne s'est encore positionné sur la séance ${jour === auj ? "d'aujourd'hui" : 'du ' + esc(frdate(jour))}.</span>`}</div>
     <div class="poser">
       <input id="pv-nom" value="${esc(saisiePresence !== null ? saisiePresence : (moi === 'Anonyme' ? '' : moi.split(' ')[0]))}"
         placeholder="Votre prénom" oninput="saisiePresence=this.value"
         onkeydown="if(event.key==='Enter')sePositionnerVisio()">
-      <button class="btn" onclick="sePositionnerVisio()">J'y serai</button>
+      <button class="btn" onclick="sePositionnerVisio()">${jour === auj ? "J'y serai" : "J'y serai le " + esc(frdate(jour))}</button>
     </div>`;
 
   /* Les jours d'avant, en une ligne : assez pour voir qui porte le
@@ -4547,8 +4692,16 @@ function ouvrirDepotVisio(){
   <label style="margin-bottom:12px"><span class="k">Lien du salon *</span>
     <input id="sv-url" value="${esc(s.url || '')}" placeholder="https://…  — collez le lien reçu de l'ARS"></label>
   <div class="form">
-    <label><span class="k">Heure de la séance</span><input id="sv-horaire" type="time" value="${esc(s.horaire || '15:00')}"></label>
-    <label><span class="k">Précision</span>
+    <label><span class="k">Rythme des séances</span>
+      <select id="sv-recurrence">${
+        [['quotidien','Tous les jours'],['1','Tous les lundis'],['2','Tous les mardis'],
+         ['3','Tous les mercredis'],['4','Tous les jeudis'],['5','Tous les vendredis'],
+         ['6','Tous les samedis'],['0','Tous les dimanches']]
+        .map(o => `<option value="${o[0]}" ${recurrenceVisio() === o[0] ? 'selected' : ''}>${o[1]}</option>`).join('')
+      }</select>
+      <span class="aide">Seuls les jours de séance sont proposés sur la bande des créneaux.</span></label>
+    <label><span class="k">Heure de la séance</span><input id="sv-horaire" type="time" value="${esc(s.horaire || '12:00')}"></label>
+    <label class="large"><span class="k">Précision</span>
       <input id="sv-precision" value="${esc(s.precision || '')}" placeholder="Plateforme, code d'accès, mot de passe…"></label>
   </div>
   <div class="actions">
@@ -4568,28 +4721,38 @@ async function enregistrerLienVisio(){
 
   etat.salleVisio = etat.salleVisio && etat.salleVisio.length ? etat.salleVisio : [{id:'sv'}];
   const s = etat.salleVisio[0];
-  const change = lienVisioPropre(s.url) !== url;
+  /* Ce qui vaut d'être consigné, c'est que le rendez-vous a changé
+     — pas seulement son lien. Un passage du quotidien au jeudi
+     midi déplace toute l'organisation de la semaine : il se lit en
+     main courante au même titre qu'un lien déposé. */
+  const avant = {url: lienVisioPropre(s.url), rec: recurrenceVisio(), heure: s.horaire || ''};
   s.url = url;
-  s.horaire = document.getElementById('sv-horaire').value || '15:00';
+  s.recurrence = (document.getElementById('sv-recurrence') || {}).value || 'quotidien';
+  s.horaire = document.getElementById('sv-horaire').value || '12:00';
   s.precision = document.getElementById('sv-precision').value.trim();
   s.maj = horodate();
   s.par = moi;
+  const change = avant.url !== url;
+  const bouge = change || avant.rec !== recurrenceVisio() || avant.heure !== s.horaire;
 
-  /* Le lien du rendez-vous quotidien est un fait de la journée :
-     qui l'a déposé, et quand, se lit en main courante comme le
-     reste. */
-  if(change){
+  /* Le rendez-vous de l'ARS — son lien, son rythme, son heure —
+     est un fait de la journée : qui l'a déposé, et quand, se lit
+     en main courante comme le reste. */
+  if(bouge){
     etat.courante = etat.courante || [];
     etat.courante.push({
       id: uid(), type: 'Organisation', date: aujourdhui(), heure: maintenant(), source: '', qui: moi,
-      evenement: "Lien permanent de la visio de crise de l'ARS déposé dans le cockpit — séance quotidienne à "
-        + heureLisible(s.horaire) + (s.precision ? ' (' + s.precision + ')' : '') + ".",
-      suite: "Accessible à tout le copil en tête de « Situation régionale ». Chacun s'y positionne sur le créneau du jour avant la séance.",
+      evenement: (change
+        ? "Lien permanent de la visio de crise de l'ARS déposé dans le cockpit"
+        : "Rendez-vous de la visio de crise de l'ARS mis à jour")
+        + " — séance " + recurrenceLisible() + " à " + heureLisible(s.horaire)
+        + (s.precision ? ' (' + s.precision + ')' : '') + ".",
+      suite: "Accessible à tout le copil en tête de « Situation régionale ». Chacun s'y positionne sur le créneau de la prochaine séance avant l'heure.",
       auteur: moi, quand: new Date().toISOString()
     });
   }
   await sauver(); fermer(); rendre();
-  toast(change ? "Lien de la visio déposé" : "Rendez-vous mis à jour");
+  toast(change ? "Lien de la visio déposé" : "Rendez-vous mis à jour — séance " + recurrenceLisible() + " à " + heureLisible(s.horaire));
 }
 
 async function retirerLienVisio(){
@@ -4617,27 +4780,74 @@ async function sePositionnerVisio(){
   const c = document.getElementById('pv-nom');
   const n = c ? c.value.trim() : '';
   if(!n){ toast("Indiquez votre prénom"); return; }
-  const auj = aujourdhui();
-  if(presencesDuJour(auj).some(p => cleP(p.prenom) === cleP(n))){
-    toast(n + " est déjà positionné·e sur la séance du jour"); return;
+  const jour = creneauVu();
+  if(presencesDuJour(jour).some(p => cleP(p.prenom) === cleP(n))){
+    toast(n + " est déjà positionné·e sur la séance du " + frdate(jour)); return;
   }
+  const id = uid();
   etat.presencesVisio = presencesVisio();
   etat.presencesVisio.push({
-    id: uid(), date: auj, heure: heureVisio(), prenom: n,
+    id, date: jour, heure: heureVisio(), prenom: n,
     par: moi === 'Anonyme' ? n : moi, quand: new Date().toISOString()
   });
+  consignerPresenceEnCourante(id, n, jour);
   saisiePresence = '';
   await sauver(); rendre();
-  toast(n + " est attendu·e à la visio de " + heureLisible(heureVisio()));
+  toast(n + " est attendu·e à la visio du " + frdate(jour) + " à " + heureLisible(heureVisio()));
+}
+
+/* Qui représente la CPTS à une visio de crise est un fait de la
+   journée, au même titre qu'un appel reçu : il se consigne en main
+   courante comme le reste. L'entrée porte un identifiant dérivé de
+   celui de la présence — c'est par là qu'un désistement retrouve la
+   ligne qu'il vient contredire, au lieu d'en écrire une seconde. */
+function consignerPresenceEnCourante(id, prenom, jour){
+  const autres = presencesDuJour(jour).map(p => p.prenom).filter(x => cleP(x) !== cleP(prenom));
+  etat.courante = etat.courante || [];
+  etat.courante.push({
+    id: 'mcv-' + id, type: 'Visio ARS', date: aujourdhui(), heure: maintenant(), source: '',
+    qui: moi === 'Anonyme' ? prenom : moi,
+    evenement: prenom + " se positionne sur la visio de crise de l'ARS du " + frdateL(jour)
+      + " à " + heureLisible(heureVisio()) + "."
+      + (autres.length ? " Y sont également attendu·es : " + autres.join(', ') + "." : ''),
+    suite: "La CPTS Pau Béarn y sera représentée. Le compte rendu de la séance se consigne dans « Situation régionale » le jour même.",
+    auteur: moi, quand: new Date().toISOString()
+  });
 }
 
 async function retirerPresenceVisio(id){
   const p = presencesVisio().find(x => x.id === id);
   if(!p) return;
-  if(!confirm("Retirer " + p.prenom + " du créneau du jour ?")) return;
+  if(!confirm("Retirer " + p.prenom + " de la séance du " + frdate(p.date) + " ?")) return;
   etat.presencesVisio = presencesVisio().filter(x => x.id !== id);
+
+  /* Le désistement s'écrit à la suite de l'engagement, sur la même
+     ligne : deux entrées pour un aller-retour feraient deux fois le
+     bruit d'un fait qui n'a pas eu lieu. Une présence posée avant
+     que la main courante s'en mêle n'a pas de ligne à compléter :
+     celle-là s'écrit pour elle-même. */
+  const mc = (etat.courante || []).find(x => x.id === 'mcv-' + id);
+  const reste = presencesDuJour(p.date).map(x => x.prenom);
+  const dit = p.prenom + " ne représentera pas la CPTS à la visio du " + frdateL(p.date) + "."
+    + (reste.length ? " Reste attendu·e sur cette séance : " + reste.join(', ') + "."
+                    : " Plus personne n'est positionné sur cette séance.");
+  if(mc){
+    mc.suite = (mc.suite ? mc.suite + '\n' : '')
+      + "Désistement le " + frdateL(aujourdhui()) + " à " + maintenant()
+      + (moi === 'Anonyme' ? '' : ', par ' + moi) + " : " + dit;
+    mc.modifiePar = moi;
+  }else{
+    etat.courante = etat.courante || [];
+    etat.courante.push({
+      id: uid(), type: 'Visio ARS', date: aujourdhui(), heure: maintenant(), source: '',
+      qui: moi === 'Anonyme' ? p.prenom : moi, evenement: dit,
+      suite: "Retiré du créneau dans « Situation régionale ».",
+      auteur: moi, quand: new Date().toISOString()
+    });
+  }
+
   await sauver(); rendre();
-  toast(p.prenom + " retiré·e du créneau");
+  toast(p.prenom + " retiré·e du créneau — désistement consigné en main courante");
 }
 
 function vueVisios(){
@@ -4739,7 +4949,7 @@ function ouvrirSaisieVisio(id){
   <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">Un point par sujet abordé, dans l'ordre de la séance. Le titre se lit seul dans la liste ; le texte porte ce qui a été dit. Rien ne remplace une phrase écrite le soir même.</p>
   <div class="form">
     <label><span class="k">Date *</span><input id="vs-date" type="date" value="${g('date', aujourdhui())}"></label>
-    <label><span class="k">Heure</span><input id="vs-heure" type="time" value="${g('heure', '15:00')}"></label>
+    <label><span class="k">Heure</span><input id="vs-heure" type="time" value="${g('heure', heureVisio())}"></label>
     <label class="large"><span class="k">Instance</span>
       <input id="vs-instance" value="${g('instance', "Visio de crise de l'ARS Nouvelle-Aquitaine")}"></label>
     <label class="large"><span class="k">CPTS représentée par</span>
@@ -4857,10 +5067,6 @@ async function validerVisio(id){
   const mc = (document.getElementById('vs-mc') || {}).checked;
   if(mc) consignerVisioEnCourante(champs);
 
-  /* Le point de situation « Points de situation de l'ARS » se
-     réécrit à partir de la séance : c'est ce qui se lit au copil. */
-  majPointARS(champs);
-
   /* Une séance de crise est un échange avec l'ARS au même titre
      qu'un mail ou un appel : elle laisse sa ligne dans « Échanges
      avec l'ARS ». C'était la seule voie de contact à n'en laisser
@@ -4937,18 +5143,6 @@ function consignerVisioEnCourante(v){
   });
 }
 
-function majPointARS(v){
-  const r = rubriqueDe('rb-ars');
-  if(!r) return;
-  const lignes = (v.points||[]).map(p => p.titre + (p.texte ? ' : ' + p.texte : ''));
-  if(!lignes.length && !v.consignes) return;
-  r.etat = `Au point du ${frdateL(v.date)}${v.heure ? ' à ' + v.heure : ''} :\n`
-    + lignes.map(x => '— ' + x).join('\n')
-    + (v.consignes ? `\n\nCe que l'ARS demande : ${v.consignes}` : '');
-  r.maj = horodate();
-  r.par = moi;
-}
-
 async function supprimerVisio(id){
   const v = visios().find(x => x.id === id);
   if(!v) return;
@@ -4958,36 +5152,13 @@ async function supprimerVisio(id){
   await sauver(); rendre(); toast("Séance retirée");
 }
 
-/* --- La situation régionale, en deux modules ---------------
-   Même principe que la réhydratation, et que les onglets d'action
-   du cockpit des incendies : la page portait deux métiers empilés
-   — le rendez-vous quotidien de l'ARS d'un côté, les points de
-   situation de l'autre — et il fallait traverser le premier pour
-   atteindre le second. Le palier garde ce qui vaut pour les deux :
-   qui tient la page, quand elle a bougé, et le mode d'emploi. */
-let moduleVeille = '';
-function allerModuleVeille(m){ moduleVeille = m; rendre(); window.scrollTo(0,0); }
-
-const retourVeille = () =>
-  `<button class="retour-m" onclick="allerModuleVeille('')">Revenir à la situation régionale</button>`;
-
 function vueVeille(){
-  if(moduleVeille === 'ars')    return retourVeille() + vueSalleVisio() + vueVisios();
-  if(moduleVeille === 'points') return retourVeille() + vuePoints(rubriques().filter(pointARafraichir).length);
-  return palierVeille();
-}
-
-function palierVeille(){
   const m = missionVeille();
   const pilote = m && m.pilote ? m.pilote : '';
   const maj = derniereActualisation();
-  const arafraichir = rubriques().filter(pointARafraichir);
-  const l = visios();
-  const aConsigner = l.filter(visioVide).length;
-  const inscrits = presencesDuJour(aujourdhui()).length;
 
   let h = `<h1>Situation régionale</h1>
-  <p class="chapo">L'état de la région, tenu à jour par la CPTS Pau Béarn. Deux choses distinctes, et deux écrans : le rendez-vous quotidien de l'ARS — son lien, qui de l'équipe s'y positionne aujourd'hui, et le compte rendu des séances — d'un côté ; les ${rubriques().length} points de situation, un par sujet, qu'il suffit de reprendre quand quelque chose bouge, de l'autre.</p>`;
+  <p class="chapo">Ce que la CPTS Pau Béarn sait de la région, et d'où elle le tient. La page se lit dans l'ordre : qui la tient et quand elle a bougé pour la dernière fois, le rendez-vous de l'ARS — son lien, son rythme, qui se positionne sur la prochaine séance, et le compte rendu de chacune — puis, dessous, les informations que l'ARS nous a fait parvenir, collées telles quelles.</p>`;
 
   /* --- qui tient la page, et depuis quand elle n'a pas bougé --- */
   h += `<div class="poste ${pilote ? '' : 'vacant'}">
@@ -5008,171 +5179,150 @@ function palierVeille(){
     </div>
   </div>`;
 
-  /* --- le mode d'emploi, pour qui prend la page en cours de route --- */
-  h += `<div class="repli guide">
-    <button class="tete" onclick="basculerGuide()">
-      <div>
-        <div class="t">Tenir cette page : quatre gestes</div>
-        <div class="s">${guideVeille ? "À replier une fois la main prise" : "Déplier si vous prenez la veille pour la première fois"}</div>
-      </div>
-      <span class="chev">${guideVeille ? '▾' : '▸'}</span>
-    </button>
-    ${guideVeille ? `<div class="dedans"><ol class="gestes-g">
-      <li><b>Se positionner sur le créneau du jour.</b> Dans « Le rendez-vous de l'ARS », le lien permanent du salon et le créneau de la séance : posez-y votre prénom avant l'heure, pour que l'équipe sache qui l'y représente — et pour que la CPTS n'y soit ni à deux sans le savoir, ni absente en croyant qu'un autre y est.</li>
-      <li><b>Consigner la visio de l'ARS.</b> Après chaque séance, « Consigner une visio », dans le même module : un point par sujet abordé, dans l'ordre. Le copier-coller de vos notes suffit. Une séance à laquelle on a assisté sans rien en rapporter reste signalée en rouge.</li>
-      <li><b>Reprendre les points qui ont bougé.</b> Dans « Les points de situation », ouvrir le feuillet concerné, coller ce qu'on a trouvé — communiqué, compte rendu, mail — et enregistrer. Pas besoin de reformuler : mieux vaut le texte brut de la source qu'un résumé approximatif.</li>
-      <li><b>Laisser le reste tranquille.</b> Un point qui n'a pas bougé depuis ${SEUIL_POINT_H} h passe en orange : c'est un rappel, pas un reproche. Rien ne part aux adhérents depuis cette page — la diffusion se décide au copil.</li>
-    </ol>
-    <p class="apres">Chaque enregistrement laisse sa trace en <a href="#" onclick="aller('courante');return false;">Main courante</a>. Les échanges avec l'ARS — mails, appels, questions posées — ont leur propre onglet, <a href="#" onclick="aller('ars');return false;">Échanges avec l'ARS</a>.</p>
-    </div>` : ''}
-  </div>`;
+  /* --- le rendez-vous de l'ARS : le lien du salon, et qui y sera --- */
+  h += vueSalleVisio();
 
-  /* --- les deux portes --- */
-  h += `<div class="modules">
-    <button class="module" onclick="allerModuleVeille('ars')">
-      <div class="titre-m">Le rendez-vous de l'ARS</div>
-      <p class="sous-m">Le lien permanent du salon, qui de l'équipe s'y positionne aujourd'hui, et le compte rendu de chaque séance, point par point. C'est la source la plus complète dont dispose la CPTS : elle passe avant tout le reste.</p>
-      <div class="chiffres">
-        <div><strong>${l.length}</strong> séances consignées</div>
-        <div><strong${inscrits ? '' : ' class="alerte"'}>${inscrits}</strong> inscrits aujourd'hui</div>
-        ${aConsigner ? `<div><strong class="alerte">${aConsigner}</strong> à consigner</div>` : ''}
-      </div>
-      <div class="entrer">Ouvrir le module →</div>
-    </button>
+  /* --- ce que l'ARS a dit à sa dernière visio --- */
+  h += vueVisios();
 
-    <button class="module" onclick="allerModuleVeille('points')">
-      <div class="titre-m">Les points de situation</div>
-      <p class="sous-m">Un feuillet par sujet : ce qu'on sait à l'instant, ce qu'on y suit, et où on va le chercher. C'est ce qui se lit au copil, et prendre la veille, c'est reprendre ceux qui ont vieilli.</p>
-      <div class="chiffres">
-        <div><strong>${rubriques().length}</strong> feuillets</div>
-        ${arafraichir.length ? `<div><strong class="alerte">${arafraichir.length}</strong> à rafraîchir</div>`
-                             : `<div><strong>0</strong> à rafraîchir</div>`}
-      </div>
-      <div class="entrer">Ouvrir le module →</div>
-    </button>
-  </div>`;
+  /* --- ce que l'ARS nous a fait parvenir, hors visio --- */
+  h += vueInfosARS();
 
   return h;
 }
 
-/* Les feuillets de la situation régionale. Chacun porte ce qu'on
-   sait à l'instant, ce qu'on y suit, et où on va le chercher :
-   prendre la veille, c'est reprendre ceux qui ont vieilli.
-   `pointSitOuvert` : celui qu'on a déplié. Nom distinct de
-   `pointOuvert`, qui appartient aux points de collecte — deux
-   variables du même nom dans la même page se seraient mangées
-   l'une l'autre. */
-let pointSitOuvert = null;
-function ouvrirPointSit(id){ pointSitOuvert = (pointSitOuvert === id) ? null : id; rendre(); }
+/* =========================================================
+   LES INFORMATIONS DONNÉES PAR L'ARS
 
-function vuePoints(nbRafraichir){
-  const l = rubriques();
-  let h = `<h2>Les points de situation
-    <span class="cpt-h">${l.length} feuillet${l.length > 1 ? 's' : ''}${nbRafraichir ? ' · ' + nbRafraichir + ' à rafraîchir' : ' · tous à jour'}</span></h2>
-  <p class="sous-h">C'est ce qui se lit au copil. Chaque point se réécrit à partir de ce que la veille a retenu — au présent, en quelques lignes.</p>
-  <div class="points">`;
+   Un mail, un communiqué, un message : on colle la date, l'heure,
+   l'objet et le texte, tel quel. Rien à résumer — un communiqué
+   reformulé de mémoire ne vaut rien, et personne n'a le temps de
+   le reformuler.
 
-  h += l.map(r => {
-    const vieux = pointARafraichir(r);
-    const ouvert = pointSitOuvert === r.id;
-    return `<div class="pt ${r.etat ? '' : 'vierge'} ${vieux && r.etat ? 'vieux' : ''} ${ouvert ? 'ouvert' : ''}">
-      <div class="tete-p">
-        <button class="bascule" onclick="ouvrirPointSit('${r.id}')" aria-expanded="${ouvert}">
-          <span class="n">${esc(r.nom)}</span>
-          <span class="chev">${ouvert ? '▴' : '▾'}</span>
-        </button>
-        <button class="modif-p" title="${r.etat ? 'Mettre à jour ce point' : 'Écrire le point'}"
-          onclick="ouvrirPointSituation('${r.id}')">✎</button>
+   Ces informations ne vivent pas à part : ce sont les entrées
+   d'« Échanges avec l'ARS », moins celles qui sortent d'une visio
+   de crise — leur compte rendu se lit juste au-dessus, et le
+   répéter ici ferait deux fois le même texte sur le même écran.
+   Saisir ici, c'est donc écrire là-bas, et laisser sa ligne en
+   main courante, comme toute information recueillie.
+   ========================================================= */
+const infosARS = () => antechrono((etat.ars || []).filter(a => !a.visio && a.canal !== 'Visio'));
+let infoARSOuverte = null;
+function ouvrirInfoARS(id){ infoARSOuverte = (infoARSOuverte === id) ? null : id; rendre(); }
+
+function vueInfosARS(){
+  const l = infosARS();
+
+  let h = `<div class="infos-a">
+    <div class="tete-i">
+      <div>
+        <h2 style="margin:0">Informations données par l'ARS
+          <span class="cpt-h">${l.length} information${l.length > 1 ? 's' : ''}</span></h2>
+        <p class="sous-i">Les mails, communiqués et messages reçus de l'ARS, collés tels quels : date, heure, objet, contenu. Cliquer sur une ligne pour la lire en entier. Les comptes rendus des visios de crise ne sont pas repris ici — ils se lisent au-dessus.</p>
       </div>
-      <div class="e ${r.etat ? '' : 'rien'}">${r.etat
-        ? esc(r.etat).replace(/\n/g,'<br>')
-        : "Point encore vierge — rien n'y a été écrit depuis le début de la crise."}</div>
-      ${r.implique
-        ? `<div class="imp"><span class="k">Ce que ça implique pour nous</span><div class="v">${esc(r.implique).replace(/\n/g,'<br>')}</div></div>`
-        : (r.etat ? `<div class="imp manque"><div class="v">Ce que ça implique pour la CPTS n'a pas été dit.</div></div>` : '')}
-      <div class="q"><span class="k">Ce qu'on y suit</span>${esc(r.quoi)}</div>
-      ${r.ou ? `<div class="q"><span class="k">Où on le trouve</span>${esc(r.ou)}</div>` : ''}
-      <div class="meta">${r.maj
-        ? `Mis à jour ${frdate(r.maj.slice(0,10))} à ${esc(r.maj.slice(11,16))}${r.par ? ' par ' + esc(r.par) : ''}${vieux ? ' · à rafraîchir' : ''}`
-        : 'Jamais renseigné'}</div>
-      <div class="b">
-        <button class="maj" onclick="ouvrirPointSituation('${r.id}')">${r.etat ? 'Mettre à jour ce point' : 'Écrire le point'}</button>
-      </div>
+      <button class="btn" onclick="ouvrirSaisieInfoARS()">Consigner une information</button>
     </div>`;
+
+  if(!l.length){
+    return h + `<div class="carte" style="margin:0"><p class="vide">Rien de consigné pour l'instant. Le prochain mail de l'ARS se colle ici en trois champs : ce qu'on reçoit sur une boîte personnelle n'existe pour l'équipe que le jour où quelqu'un l'y dépose.</p></div></div>`;
+  }
+
+  h += l.map(a => {
+    const ouvert = infoARSOuverte === a.id;
+    const quand = frdate(a.date) + (a.heure ? ' à ' + esc(a.heure) : '');
+    const sous = [a.sens, a.canal, a.interlocuteur,
+                  a.auteur ? 'saisi par ' + a.auteur : ''].filter(Boolean).map(esc).join(' · ');
+
+    let c = `<div class="info-a ${ouvert ? 'ouverte' : ''}">
+      <button class="tete" onclick="ouvrirInfoARS('${a.id}')" aria-expanded="${ouvert}">
+        <span class="q">${quand}</span>
+        <span class="i">
+          <span class="n">${esc(a.objet || 'Sans objet')}</span>
+          <span class="s">${sous}</span>
+        </span>
+        <span class="chev">${ouvert ? '▲' : '▼'}</span>
+      </button>`;
+
+    if(ouvert){
+      c += `<div class="dedans">`;
+      c += a.demande
+        ? `<div class="bloc"><span class="k">Contenu du message</span><div class="d">${esc(a.demande)}</div></div>`
+        : `<div class="bloc"><div class="d" style="color:var(--texte-2);font-style:italic">Le contenu n'a pas été collé — seul l'objet a été noté.</div></div>`;
+      if(a.reponse) c += `<div class="bloc reponse"><span class="k">Notre réponse ou action</span><div class="d">${esc(a.reponse)}</div></div>`;
+      if(a.attendu) c += `<div class="bloc implique"><span class="k">Ce que ça implique pour la CPTS</span><div class="d">${esc(a.attendu)}</div></div>`;
+      const lien = lienVisioPropre(a.lien);
+      if(lien) c += `<a class="doc" href="${esc(lien)}" target="_blank" rel="noopener noreferrer">Ouvrir le document ↗</a>`;
+      c += `<div class="meta">${[a.statut ? 'Statut : ' + a.statut : '',
+        a.auteur ? 'Saisi par ' + a.auteur : 'Saisi sans nom'].filter(Boolean).map(esc).join(' · ')}</div>`;
+      c += `<div class="bas">
+        <button class="btn sec" onclick="ouvrirEdition('ars','${a.id}')">Modifier</button>
+        <button class="btn sec" onclick="aller('ars')">Voir dans les échanges avec l'ARS</button>
+        <button class="btn sec sup" onclick="retirerInfoARS('${a.id}')">Retirer</button>
+      </div></div>`;
+    }
+
+    return c + `</div>`;
   }).join('');
 
   return h + `</div>`;
 }
 
-/* ---------- les points de situation ---------- */
-function ouvrirPointSituation(id){
-  const r = rubriqueDe(id);
-  if(!r) return;
-  brouillonPoint = id;
-  document.getElementById('modale').innerHTML = `<h3>${esc(r.nom)}</h3>
-    <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">${esc(r.quoi)}${r.ou ? ' <em>Où on le trouve : ' + esc(r.ou) + '</em>' : ''}</p>
-    <div class="rappel">Le copier-coller fait l'affaire : collez le passage utile du communiqué, du compte rendu ou du mail. Mieux vaut le texte brut de la source qu'un résumé approximatif.</div>
-    <div class="form">
-      <label class="large"><span class="k">Ce qu'on sait à cet instant</span>
-        <textarea id="p-etat" rows="8" placeholder="Ce qui est établi, ce qui a changé depuis hier, ce qui reste incertain. Dater ce qui est daté.">${esc(r.etat)}</textarea>
-        <span class="aide">Ce texte remplace le précédent — la version d'avant reste tracée en main courante.</span></label>
-      <label class="large"><span class="k">Ce que ça implique pour la CPTS Pau Béarn</span>
-        <textarea id="p-implique" rows="3" placeholder="En une phrase : ce que ce point change pour nous, ou rien du tout.">${esc(r.implique || '')}</textarea>
-        <span class="aide">Un point de situation qui ne dit pas ce qu'il change pour nous se lit et s'oublie. Une amorce pose le début de la phrase, à finir en quelques mots. Répondre « rien à faire » est une réponse : elle évite qu'on se repose la question demain.</span>
-        ${amorces('p-implique', IMPLIQUE_CPTS)}</label>
-    </div>
-    <div style="margin-top:14px"><label class="coche">
-      <input type="checkbox" id="p-mc" checked>
-      <span>Consigner la mise à jour en main courante
-        <span class="d">Coché par défaut : toute information recueillie se retrouve dans la main courante, en plus de sa rubrique.</span></span>
-    </label></div>
-    <div class="actions">
-      <button class="btn" onclick="validerPointSituation()">Enregistrer le point</button>
-      <button class="btn sec" onclick="fermer()">Annuler</button>
-    </div>`;
+/* Quatre champs, et rien de plus : la date, l'heure, l'objet et le
+   texte du message. Le nom de qui saisit se pose tout seul — c'est
+   la session ouverte, et le demander une fois de plus n'apprendrait
+   rien à personne. */
+function ouvrirSaisieInfoARS(){
+  const m = document.getElementById('modale');
+  m.classList.add('large');
+  m.innerHTML = `<h3>Information donnée par l'ARS</h3>
+  <p style="color:var(--texte-2);margin:0 0 14px;font-size:13.5px">Un mail, un communiqué, un message reçu de l'ARS. Le copier-coller suffit et vaut mieux qu'un résumé : c'est le texte de la source qui fera foi au copil.</p>
+  <div class="form">
+    <label><span class="k">Date *</span><input id="ia-date" type="date" value="${esc(aujourdhui())}"></label>
+    <label><span class="k">Heure</span><input id="ia-heure" type="time" value="${esc(maintenant())}"></label>
+    <label class="large"><span class="k">Objet *</span>
+      <input id="ia-objet" placeholder="L'objet du mail, le titre du communiqué"></label>
+    <label class="large"><span class="k">Contenu du message</span>
+      <textarea id="ia-contenu" rows="12" placeholder="Collez ici le message entier, tel qu'il a été reçu."></textarea>
+      <span class="aide">Rien à raccourcir : à l'écran, la ligne ne montrera que l'objet, et le texte ne s'ouvrira que si on clique dessus.</span></label>
+  </div>
+  <div class="rappel" style="margin:14px 0 0">Cette information rejoint « Échanges avec l'ARS » et laisse sa ligne en <a href="#" onclick="fermer();aller('courante');return false;">Main courante</a>, au nom de ${esc(moi === 'Anonyme' ? 'la session en cours' : moi)}.</div>
+  <div class="actions">
+    <button class="btn" onclick="validerInfoARS()">Enregistrer</button>
+    <button class="btn sec" onclick="fermer()">Annuler</button>
+  </div>`;
   ouvrirRideau();
-  setTimeout(()=>{ const i = document.getElementById('p-etat'); if(i) i.focus({preventScroll:true}); }, 60);
+  setTimeout(()=>{ const i = document.getElementById('ia-objet'); if(i) i.focus({preventScroll:true}); }, 60);
 }
-async function validerPointSituation(){
-  const r = rubriqueDe(brouillonPoint);
-  if(!r) return;
-  const v = document.getElementById('p-etat').value.trim();
-  if(!v){ toast("Le point est vide"); document.getElementById('p-etat')?.focus(); return; }
-  const imp = (document.getElementById('p-implique') || {}).value?.trim() || '';
-  const mc = document.getElementById('p-mc').checked;
-  if(v === r.etat && imp === (r.implique || '')){ fermer(); toast("Le point n'a pas changé"); return; }
-  r.etat = v;
-  r.implique = imp;
-  r.maj = horodate();
-  r.par = moi;
-  if(mc) consignerPointSituationEnCourante(r, '');
+
+async function validerInfoARS(){
+  const g = c => ((document.getElementById('ia-' + c) || {}).value || '').trim();
+  const objet = g('objet');
+  if(!objet){ toast("L'objet est obligatoire"); document.getElementById('ia-objet')?.focus(); return; }
+
+  const o = {
+    id: uid(), auteur: moi === 'Anonyme' ? '' : moi, quand: new Date().toISOString(),
+    date: g('date') || aujourdhui(), heure: g('heure'),
+    sens: "Reçu de l'ARS", canal: 'Mail', interlocuteur: "ARS Nouvelle-Aquitaine",
+    objet, demande: g('contenu'), reponse: '', attendu: '', lien: '', echeance: '', statut: 'En cours'
+  };
+
+  etat.ars = etat.ars || [];
+  /* Le registre des échanges peut avoir été classé à la main : une
+     entrée nouvelle s'y place en tête, comme dans son propre onglet. */
+  if(estManuel('ars')) o.rang = Math.min(...etat.ars.map(x => typeof x.rang === 'number' ? x.rang : 0)) - 1;
+  etat.ars.unshift(o);
+  consignerRegistreEnCourante('ars', o);
+
+  infoARSOuverte = o.id;
   await sauver(); fermer(); rendre();
-  toast(mc ? "Point mis à jour, et consigné en main courante" : "Point mis à jour");
+  toast("Information consignée, dans les échanges avec l'ARS et en main courante");
 }
-/* Même règle que pour le reste du cockpit : ce qui est écrit ici se
-   retrouve dans la main courante, qui garde la trace de l'état
-   précédent du point. Le nom dit « point de situation » en toutes
-   lettres : un point de collecte a sa propre entrée, écrite plus
-   bas, et deux fonctions du même nom dans la même page se seraient
-   mangées l'une l'autre — c'est ce qui est arrivé. */
-function consignerPointSituationEnCourante(r, motif){
-  etat.courante = etat.courante || [];
-  etat.courante.unshift({
-    id: uid(),
-    type: 'Situation',
-    date: aujourdhui(),
-    heure: maintenant(),
-    source: '',
-    evenement: "Point de situation — " + r.nom + (motif ? " (" + motif + ")" : '') + "\n" + r.etat,
-    /* Ce que le point change pour la CPTS n'est pas de la matière de
-       situation : c'est une suite à donner, et elle se lit donc là
-       où la main courante range les suites. */
-    suite: (r.implique ? r.implique + "\n" : '')
-      + "Situation régionale : le point « " + r.nom + " » a été repris. Il fait foi jusqu'à la prochaine mise à jour.",
-    qui: moi,
-    auteur: moi,
-    quand: ''
-  });
+
+async function retirerInfoARS(id){
+  const a = (etat.ars || []).find(x => x.id === id);
+  if(!a) return;
+  if(!confirm(`Retirer « ${a.objet || 'cette information'} » ?\n\nElle disparaît aussi des échanges avec l'ARS. Sa ligne de main courante, elle, reste.`)) return;
+  await supprimer('ars', id);
 }
 
 /* =========================================================
