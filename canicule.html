@@ -785,6 +785,27 @@ h2::before{content:"";width:3px;height:15px;background:var(--encre-2);border-rad
   .info-a .q{flex:0 0 auto}
 }
 
+/* ---------- les documents joints ----------
+   Un communiqué de l'ARS arrive le plus souvent en pièce d'un
+   mail. Le retaper n'a pas de sens, le résumer encore moins :
+   c'est la pièce elle-même qui fera foi au copil. Elle se pose
+   donc à côté du texte, avec deux gestes et pas un de plus —
+   l'ouvrir sous les yeux, ou l'emporter. */
+.pj{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.pj .p{display:flex;gap:11px;align-items:center;flex-wrap:wrap;font-size:13px;
+  background:var(--cobalt-clair);border-radius:7px;padding:8px 11px}
+.pj .p .n{font-weight:600;color:var(--encre);flex:1;min-width:130px;word-break:break-word}
+.pj .p .q{font-family:var(--mono);font-size:10.5px;color:var(--texte-2)}
+.pj .p a{color:var(--encre-2);font-weight:600;font-size:12.5px;text-decoration:none;
+  border-bottom:1px solid var(--trait);white-space:nowrap}
+.pj .p a:hover{border-color:var(--encre-2)}
+.pj .p .ret{background:none;border:0;cursor:pointer;color:var(--texte-2);opacity:.45;font-size:14px;padding:0 2px}
+.pj .p .ret:hover{opacity:1;color:var(--braise)}
+.pj-champ > .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--texte-2);display:block;margin-bottom:4px}
+.pj .p.attente{background:var(--surface);border:1px dashed var(--trait)}
+.pj .p.attente .q{color:var(--ambre-fonce)}
+
 /* Le poste de veille : qui la tient, et quand la page a bougé
    pour la dernière fois. Ce que le copil lit sans demander. */
 .poste{background:var(--carte);border:1px solid var(--trait);border-top:4px solid var(--encre-2);border-radius:11px;padding:18px 20px;margin-bottom:16px;display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
@@ -1922,6 +1943,51 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
   font-size:12.5px;color:var(--texte-2)}
 .pr-choix .entrer{color:var(--ambre-fonce);font-weight:700;font-size:13px}
 
+/* Ce qu'on fait de la procédure — l'emporter, la corriger,
+   l'imprimer — se pose sous l'encart d'en-tête, là où le regard
+   arrive après avoir lu de quoi il s'agit, et non au bas d'un
+   déroulé qu'il faut d'abord traverser. */
+.pr-actes{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin:0 0 16px}
+
+/* --- l'écran de modification ---------------------------------
+   Le déroulé avec des champs à la place du texte : même ordre,
+   mêmes intitulés, rien derrière un onglet. Une étape est un bloc,
+   ses deux réponses sont deux encadrés de la couleur qu'elles ont
+   à la lecture — on corrige le vert dans le vert, le rouge dans le
+   rouge. */
+.pe-bloc{margin-bottom:14px}
+.pe-t{font-family:var(--display);font-size:13px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--texte-2);margin:0 0 12px}
+.pe-haut{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pe-outils{display:flex;gap:5px;margin-top:-2px}
+.pe-o{font-family:inherit;font-size:15px;line-height:1;width:30px;height:30px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--trait);border-radius:6px;color:var(--texte-2)}
+.pe-o:hover:not(:disabled){border-color:var(--encre-2);color:var(--encre-2)}
+.pe-o:disabled{opacity:.32;cursor:default}
+.pe-o.ret:hover{border-color:var(--braise);color:var(--braise)}
+/* La case qui ouvre les deux réponses : elle commande la forme du
+   bloc, elle ne se range donc pas parmi les champs. */
+.pe-pose{display:flex;align-items:center;gap:9px;margin-top:14px;padding-top:13px;
+  border-top:1px solid var(--trait);font-size:14px;color:var(--texte);cursor:pointer}
+.pe-pose input{width:17px;height:17px;flex:0 0 auto;margin:0;accent-color:var(--encre-2)}
+.pe-q{margin-top:13px;display:flex;flex-direction:column;gap:11px}
+.pe-rep{border-radius:9px;padding:12px 14px;border:1px solid var(--trait)}
+.pe-rep.oui{background:#F4FAF7;border-color:#BFDDCF}
+.pe-rep.non{background:#FDF6F4;border-color:#EAC4BB}
+.pe-r{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  font-weight:700;margin-bottom:9px}
+.pe-rep.oui .pe-r{color:#1F5B47}
+.pe-rep.non .pe-r{color:#8C3020}
+.pe-rep .form{gap:10px}
+.pe-ajout{display:flex;margin:2px 0 4px}
+/* Enregistrer reste sous la main : un formulaire de cette longueur
+   ne doit pas obliger à remonter ou redescendre pour valider. */
+@media(min-width:760px){
+  .pr-actes-fixe{position:sticky;top:0;z-index:5;background:var(--surface);
+    padding:10px 0;margin-bottom:14px;border-bottom:1px solid var(--trait)}
+}
+@media print{.pr-actes{display:none}}
+
 /* Le déroulé lui-même. */
 .pr-tete{background:var(--ambre-clair);border:1px solid #EBD6AC;border-radius:10px;
   padding:15px 17px;margin-bottom:16px;display:flex;flex-direction:column;gap:9px}
@@ -2067,8 +2133,25 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .rh-c .nom .a{font-family:var(--corps);font-weight:400;font-size:13.5px;color:var(--texte-2)}
 .rh-c .champs .v{font-size:13.5px;color:var(--texte)}
 .rh-c a.tel{color:var(--encre-2);font-weight:600;text-decoration:none;font-size:13.5px}
-.rh-c .barre{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:2px}
+/* La barre d'une fiche sépare deux gestes qui n'ont rien à voir :
+   ce qu'on fait de l'officine — appeler, la situer, y aller — et ce
+   qu'on fait de la fiche elle-même. Les seconds vont à droite, la
+   croix en dernier : on ne la rencontre pas en cherchant le numéro. */
+.rh-c .barre{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:4px;
+  padding-top:11px;border-top:1px dashed var(--trait)}
+.rh-c .barre .actes{display:flex;gap:8px;flex-wrap:wrap;align-items:center;flex:1 1 auto}
+.rh-c .barre .fin{display:flex;gap:2px;align-items:center;margin-left:auto}
 .rh-c .barre .btn{min-height:34px;padding:6px 12px;font-size:13px}
+.rh-c .barre a.btn{display:inline-flex;align-items:center;text-decoration:none;
+  min-height:34px;padding:6px 12px;font-size:13px;color:#fff}
+.rh-c .barre a.btn.sec{color:var(--encre)}
+.rh-c .sup-m{background:none;border:0;color:var(--texte-2);opacity:.45;cursor:pointer;
+  font-size:18px;line-height:1;padding:6px 9px;font-family:inherit}
+.rh-c .sup-m:hover{opacity:1;color:var(--braise)}
+@media(max-width:600px){
+  .rh-c .barre .actes{flex:1 1 100%}
+  .rh-c .barre .fin{width:100%;justify-content:flex-end}
+}
 .rh-idel{border-radius:8px;padding:10px 12px;font-size:13.5px;line-height:1.45;
   background:var(--surface);border:1px solid var(--trait)}
 .rh-idel.pose{background:#EAF4EF;border-color:#BFDDCF;color:#1F5B47}
@@ -2173,6 +2256,116 @@ const CONSIGNES_PROC = {
   ]
 };
 
+/* Les deux procédures de réhydratation à domicile, reprises des
+   schémas arrêtés par la CPTS. Elles amorcent l'état — c'est
+   « procedures » qui fait foi une fois le cockpit ouvert, et il se
+   corrige depuis la page comme le reste.
+
+   Une étape porte trois choses : qui agit, ce qu'on fait, et le
+   détail qu'on lit quand on a le temps. Si elle pose une question,
+   elle porte en plus ses deux réponses, chacune avec ce qu'elle
+   devient — « fin » quand la branche s'arrête, « vers » quand elle
+   rejoint la suite. Le champ « note » signale un point que le
+   schéma ne tranche pas : mieux vaut l'écrire que le combler. */
+const PROC_REHYD = [
+  {
+    id:'ville',
+    rang:'Procédure 1',
+    nom:"Demande d'un médecin de ville",
+    quand:"La personne est vue par son médecin, au cabinet ou à domicile, et le médecin pose l'indication de réhydratation.",
+    appel:"06 29 82 29 10",
+    materiel:"Tout le matériel vient de la pharmacie : c'est l'officine partenaire la plus proche du domicile qui livre le pied à perfusion, le soluté et le set de perfusion, en 30 à 45 minutes.",
+    role:"La CPTS appelle les pharmacies, puis les IDEL. Elle est au centre de la procédure.",
+    etapes:[
+      {qui:"Médecin", t:"Visite au cabinet ou à domicile par le médecin",
+       d:"La personne est vue par son médecin — au cabinet ou chez elle. C'est le point d'entrée : cette procédure vaut pour toute demande qui part d'un médecin de ville."},
+      {qui:"Médecin", t:"Indication de réhydratation par voie IV ou sous-cutanée",
+       d:"L'indication est posée par le médecin qui voit la personne. Sans elle, rien de ce qui suit ne s'engage : la procédure ne se déclenche pas sur la seule inquiétude d'un proche."},
+      {qui:"Médecin", t:"Le médecin rédige les ordonnances — matériel + IDEL",
+       d:"Deux ordonnances : l'une pour le matériel (pied à perfusion, soluté, set de perfusion), l'autre pour les soins infirmiers. Le médecin de ville n'a pas de consommable à laisser sur place — tout viendra de la pharmacie."},
+      {qui:"Médecin", t:"Le médecin s'assure de la présence d'un cabinet IDEL",
+       d:"Avant tout appel à la CPTS : la personne est-elle déjà suivie par un cabinet infirmier libéral ?",
+       q:"Un cabinet IDEL suit-il déjà la personne ?",
+       oui:{t:"STOP PROCÉDURE — gestion avec le cabinet IDEL en place",
+            d:"Le cabinet infirmier qui suit déjà la personne assure la pose et la surveillance. La CPTS n'est pas sollicitée.",
+            fin:"La procédure s'arrête ici."},
+      non:{t:"Le médecin réoriente la demande vers la CPTS",
+            d:"Aucun cabinet infirmier n'est identifié. Le médecin appelle la CPTS au 06 29 82 29 10 : c'est elle qui prend la suite, matériel puis infirmiers.",
+            vers:"On continue à l'étape 5."}},
+      {qui:"CPTS", t:"La CPTS appelle la pharmacie la plus proche du domicile du patient",
+       d:"La CPTS cherche l'officine partenaire la plus proche de chez la personne, et lui demande si elle peut livrer. Le module « Recensement des pharmacies partenaires » donne cette officine sur la carte, avec son numéro.",
+       q:"L'officine peut-elle livrer ?",
+       oui:{t:"La pharmacie livre le matériel à domicile en 30 à 45 minutes",
+            d:"Pied à perfusion, soluté et set de perfusion. Le domicile a alors tout ce qu'il faut pour la pose.",
+            vers:"On continue à l'étape 6."},
+       non:{t:"La CPTS appelle une autre pharmacie partenaire",
+            d:"L'officine la plus proche ne peut pas livrer : la CPTS descend la liste des autres partenaires du secteur. Si l'une d'elles livre, le circuit reprend à l'étape 6.",
+            suite:{t:"Si aucune officine partenaire ne peut livrer",
+                   d:"La CPTS réoriente la demande vers le médecin, pour appel au 15. La réhydratation à domicile n'est plus tenable dans les délais, et la régulation prend le relais."}}},
+      {qui:"CPTS", t:"La CPTS transmet la demande aux IDEL",
+       d:"Le matériel est en route ou livré. La CPTS sollicite les cabinets infirmiers libéraux du secteur pour trouver qui passera poser la perfusion.",
+       q:"Un cabinet infirmier prend-il la demande ?",
+       oui:{t:"Prise en charge par l'IDEL",
+            d:"Le cabinet infirmier assure la pose et la surveillance au domicile.",
+            fin:"La demande est aboutie."},
+       non:{t:"La CPTS réoriente la demande vers le médecin, pour appel au 15",
+            d:"Aucun cabinet ne peut passer. La demande revient au médecin à l'origine de la demande, qui appelle le 15.",
+            fin:"La demande sort du circuit CPTS."}}
+    ]
+  },
+  {
+    id:'sos',
+    rang:'Procédure 2',
+    nom:"Demande de SOS Médecins",
+    quand:"La personne est vue chez elle par SOS Médecins, en visite non programmée, et le médecin pose l'indication de réhydratation.",
+    appel:"06 29 82 29 10",
+    /* Le schéma SOS Médecins parle d'un « numéro dédié » sans le
+       donner. Une fiche de terrain sans numéro à composer ne sert à
+       rien : on porte donc celui que l'autre procédure publie, en
+       disant que c'est une reprise et non une lecture du schéma. */
+    appelNote:"Le schéma SOS Médecins parle d'un « numéro dédié » sans le donner. C'est le numéro canicule de la CPTS qui est repris ici — à confirmer par la vice-présidence.",
+    materiel:"Le set de perfusion et le soluté sont déposés sur place par le médecin de SOS Médecins. Seul le pied à perfusion reste à faire venir — il est loué auprès d'un prestataire de location de matériel, et non délivré par une pharmacie.",
+    role:"SOS Médecins tient le début de la procédure et transmet ensuite à la CPTS, qui cherche l'IDEL.",
+    etapes:[
+      {qui:"SOS Médecins", t:"Visite à domicile SOS Médecins",
+       d:"La personne est vue chez elle par SOS Médecins, en visite non programmée. C'est le point d'entrée : cette procédure ne vaut que pour les demandes qui partent de SOS Médecins."},
+      {qui:"SOS Médecins", t:"Indication de réhydratation par voie IV ou sous-cutanée",
+       d:"L'indication est posée par le médecin qui voit la personne. Sans elle, rien de ce qui suit ne s'engage."},
+      {qui:"SOS Médecins", t:"SOS Médecins rédige les ordonnances",
+       d:"Les ordonnances nécessaires — matériel et soins infirmiers — sont rédigées et laissées au domicile."},
+      {qui:"SOS Médecins", t:"Dépôt sur place d'un set de perfusion et d'un soluté de réhydratation",
+       d:"Le médecin de SOS Médecins a le consommable dans sa sacoche et le laisse au domicile. C'est ce qui distingue cette procédure de l'autre : il ne reste plus à faire venir que le pied à perfusion, et aucune pharmacie n'est appelée."},
+      {qui:"SOS Médecins", t:"S'assure de la présence d'un cabinet IDEL",
+       d:"Avant toute réorientation : la personne est-elle déjà suivie par un cabinet infirmier libéral ?",
+       q:"Un cabinet IDEL suit-il déjà la personne ?",
+       oui:{t:"STOP PROCÉDURE",
+            d:"Le cabinet infirmier en place assure la pose et la surveillance. La CPTS n'est pas sollicitée.",
+            fin:"La procédure s'arrête ici."},
+       non:{t:"Réorientation de la demande vers la CPTS",
+            d:"Aucun cabinet infirmier n'est identifié : la demande passe à la CPTS.",
+            vers:"On continue à l'étape 6."}},
+      {qui:"CPTS", t:"Appel au prestataire de location de matériel",
+       d:"Le pied à perfusion n'est pas déposé par le médecin et ne passe pas par l'officine : il est loué auprès d'un prestataire de location de matériel médical.",
+       note:"Le schéma ne dit pas qui passe cet appel. L'étape suivant la réorientation vers la CPTS, elle est portée ici par la CPTS — à faire confirmer par la vice-présidence, et à corriger ici si c'est SOS Médecins qui appelle."},
+      {qui:"Prestataire", t:"Le prestataire livre le pied à perfusion à domicile en 30 à 45 minutes",
+       d:"Avec le set et le soluté déjà déposés par le médecin, le domicile a alors tout ce qu'il faut pour la pose."},
+      {qui:"SOS Médecins", t:"SOS Médecins transmet la demande à la CPTS",
+       d:"La demande de passage infirmier est transmise à la CPTS, avec ce qu'il faut pour rappeler : la commune, le motif, et le contact."},
+      {qui:"CPTS", t:"La CPTS transmet la demande aux IDEL",
+       d:"La CPTS sollicite les cabinets infirmiers libéraux du secteur pour trouver qui passera poser la perfusion."},
+      {qui:"IDEL", t:"Prise en charge par IDEL",
+       d:"Un cabinet infirmier accepte-t-il de passer au domicile ?",
+       q:"Un cabinet infirmier prend-il la demande ?",
+       oui:{t:"L'IDEL appelle la CPTS au numéro dédié",
+            d:"Le cabinet qui prend la personne en charge le fait savoir à la CPTS en appelant le numéro dédié. C'est cet appel qui clôt la demande et permet de noter le passage sur la fiche de la personne.",
+            fin:"La demande est aboutie."},
+       non:{t:"La CPTS réoriente la demande vers SOS Médecins, pour appel au 15",
+            d:"Aucun cabinet ne peut passer. La demande revient à SOS Médecins, qui appelle le 15 : la réhydratation à domicile n'est plus possible et la régulation prend le relais.",
+            fin:"La demande sort du circuit CPTS."}}
+    ]
+  }
+];
+
 const etatInitial = {
   entete: {
     niveau: 'Vigilance à renseigner',
@@ -2236,15 +2429,135 @@ Quand aucun cabinet infirmier n'est identifié, rappeler le médecin à l'origin
   cpts: [],
 
   /* --- Réhydratation à domicile -------------------------------
-     Les deux procédures en vigueur ne sont pas dans l'état : elles
-     ne se saisissent pas au fil de l'eau, elles sont arrêtées par
-     la CPTS et se lisent telles quelles. Elles vivent dans la
-     constante PROC_REHYD, plus bas — voir l'espace du même nom. */
+     Les deux procédures en vigueur. Elles s'amorcent sur les
+     schémas arrêtés par la CPTS et se corrigent depuis la page :
+     une procédure qui change dans la vraie vie ne doit pas attendre
+     qu'on touche à ce fichier. */
+  procedures: PROC_REHYD,
   /* Les officines qui délivrent. L'adresse sert à deux choses : la
      lire au téléphone, et poser la pharmacie sur la carte — c'est
      elle qui dit laquelle est la plus proche d'une personne
      signalée. */
-  pharmacies: [],
+  /* Les douze officines partenaires de l'action « réhydratation à
+     domicile », telles que la CPTS les a listées le 31/07/2026. La
+     liste transmise ne portait que les courriels : le nom de
+     l'officine a été retrouvé derrière chaque adresse, puis
+     l'adresse postale et le numéro repris du fichier départemental
+     des pharmacies (OPENDATA64, data.le64.fr). Les horaires
+     viennent d'annuaires en ligne et n'engagent personne — ils se
+     confirment au premier appel, comme le stock et le portage, qui
+     restent vides tant qu'on ne les a pas demandés. */
+  pharmacies: [
+    {id:'ph1', date:'2026-07-31', nom:"Pharmacie du Soleil", commune:'Pau',
+     adresse:"92 rue Émile Guichenné, 64000 Pau", tel:"05 59 27 43 64",
+     mail:'pharmaciedusoleil.pau@gmail.com', interlocuteur:'', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi 14h-19h · mardi au vendredi 8h30-19h · samedi 9h-19h · fermée le dimanche",
+     note:"Officine partenaire portée sur la liste du 31/07/2026. Coordonnées reprises du fichier départemental des pharmacies ; horaires relevés en annuaire, à confirmer au premier appel. Reste à demander ce qu'elle tient en solutions de réhydratation et si elle porte à domicile.",
+     auteur:''},
+    {id:'ph2', date:'2026-07-31', nom:"Aprium Pharmacie de la Paix", commune:'Pau',
+     adresse:"155 boulevard de la Paix, 64000 Pau", tel:"05 59 02 66 47",
+     mail:'fredericpinot64@gmail.com', interlocuteur:'Frédéric Pinot', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi au vendredi 8h30-20h · samedi 8h30-19h · fermée le dimanche",
+     note:"Officine partenaire portée sur les deux listes du 31/07/2026 — celle des courriels et celle de la vice-présidente, qui la nomme « Aprium pharmacie de la Paix (Frédéric) » : même officine, même interlocuteur, l'enseigne Aprium est reprise dans le nom. Coordonnées reprises du fichier départemental des pharmacies ; horaires relevés en annuaire, à confirmer au premier appel.",
+     auteur:''},
+    {id:'ph3', date:'2026-07-31', nom:"Pharmacie Tourasse", commune:'Pau',
+     adresse:"53 boulevard Tourasse, 64000 Pau", tel:"05 59 02 60 17",
+     mail:'mariemarchelotossun@gmail.com', interlocuteur:'Marie Marchelot', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi au vendredi 8h30-19h30 · samedi 9h-13h et 14h-19h · fermée le dimanche",
+     note:"Officine partenaire portée sur la liste du 31/07/2026. L'officine est aussi connue sous le nom de Pharmacie Marchelot, du nom de sa titulaire Marie Marchelot — c'est ce qui a permis de la retrouver derrière le courriel. Nom de l'officine à confirmer avec elle. Horaires relevés en annuaire, divergents sur le jeudi.",
+     auteur:''},
+    {id:'ph4', date:'2026-07-31', nom:"Pharmacie des 7 Cantons", commune:'Pau',
+     adresse:"1 rue Montpensier, 64000 Pau", tel:"05 59 27 71 91",
+     mail:'julie@7cantons.fr', interlocuteur:'Julie', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi au samedi 8h30-19h30 · fermée le dimanche",
+     note:"Officine partenaire portée sur la liste du 31/07/2026. À vérifier de près : le domaine 7cantons.fr couvre trois officines du territoire — Pau (1 rue Montpensier), Lons (169 avenue Jean Mermoz, 05 59 32 25 93) et Gan (4 avenue d'Aspe, 05 59 21 55 92). La fiche est posée sur celle de Pau ; demander à Julie si les trois délivrent, auquel cas ouvrir une fiche par officine — la carte cherche la plus proche du domicile, elle a besoin des trois points.",
+     auteur:''},
+    {id:'ph5', date:'2026-07-31', nom:"Pharmacie Lassartesse", commune:'Pau',
+     adresse:"28 boulevard du Recteur Jean Sarrailh, 64000 Pau", tel:"05 59 02 70 13",
+     mail:'marie.lassartesse@gmail.com', interlocuteur:'Marie Lassartesse', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi au vendredi 8h30-12h30 et 13h30-19h30 · samedi 9h-12h30 et 14h-19h · fermée le dimanche",
+     note:"Officine partenaire portée sur la liste du 31/07/2026. Le courriel est celui de la titulaire, Marie Lassartesse. Coordonnées reprises du fichier départemental des pharmacies ; horaires relevés en annuaire, à confirmer au premier appel.",
+     auteur:''},
+    {id:'ph6', date:'2026-07-31', nom:"Pharmacie Les Apothicaires", commune:'Pau',
+     adresse:"21 avenue de l'Europe, 64000 Pau", tel:"05 59 30 78 65",
+     mail:'Alix@lesapothicaires.fr', interlocuteur:'Alix Gastelu', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi, mardi, mercredi, vendredi et samedi 9h-12h30 et 14h-19h30 · jeudi 8h30-12h30 et 14h-19h30 · fermée le dimanche",
+     note:"Officine partenaire portée sur la liste du 31/07/2026. Officine adhérente du réseau Totum, comme la Pharmacie Pilar. Coordonnées reprises du fichier départemental des pharmacies ; horaires relevés en annuaire, à confirmer au premier appel.",
+     auteur:''},
+    {id:'ph7', date:'2026-07-31', nom:"Pharmacie de l'Agora", commune:'Pau',
+     adresse:"41 ter avenue du Loup, 64000 Pau", tel:"05 59 27 22 78",
+     mail:'pharmadelagora@hotmail.com', interlocuteur:'', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Du lundi au samedi — horaires à confirmer, les annuaires divergent (9h-12h30 / 14h-19h d'un côté, 8h30-20h de l'autre). Second numéro : 05 59 27 25 28.",
+     note:"Officine partenaire portée sur la liste du 31/07/2026. Coordonnées reprises du fichier départemental des pharmacies. Les horaires sont le seul point vraiment incertain de cette fiche : à demander au premier appel.",
+     auteur:''},
+    {id:'ph8', date:'2026-07-31', nom:"Pharmacie du Centre Berlioz", commune:'Pau',
+     adresse:"38 rue Berlioz, 64000 Pau", tel:"05 59 02 68 94",
+     mail:'comptapharmaberlioz64@gmail.com', interlocuteur:'Sophie Maréchal', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi au vendredi 8h30-12h30 et 14h-19h30 · samedi 8h30-12h30 · fermée le dimanche",
+     note:"Officine partenaire portée sur les deux listes du 31/07/2026. C'est la vice-présidente qui donne l'interlocutrice, Sophie Maréchal. Le courriel transmis, lui, est celui de la comptabilité : lui demander la boîte qui convient pour une demande de réhydratation, et sa ligne directe. Coordonnées reprises du fichier départemental des pharmacies.",
+     auteur:''},
+    {id:'ph9', date:'2026-07-31', nom:"Pharmacie Cayla-Bernadotte", commune:'Jurançon',
+     adresse:"29 rue Ollé Laprune, 64110 Jurançon", tel:"05 59 06 24 23",
+     mail:'secretariat@caylabernadotte.fr', interlocuteur:'', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi au vendredi 9h-12h30 et 14h-19h30 · samedi 9h-12h30 · fermée le dimanche",
+     note:"Officine partenaire portée sur la liste du 31/07/2026. Attention aux annuaires qui la donnent encore 39 rue du Général Leclerc : elle a déménagé rue Ollé Laprune en 2019, et c'est cette adresse-là qui la pose au bon endroit sur la carte. Le courriel transmis est celui du secrétariat — demander le nom de l'interlocuteur.",
+     auteur:''},
+    {id:'ph10', date:'2026-07-31', nom:"Pharmacie Merivot-Jouanne", commune:'Jurançon',
+     adresse:"15 rue Gaston Cambot, 64110 Jurançon", tel:"05 59 06 24 32",
+     mail:'merivot.jouanne@wanadoo.fr', interlocuteur:'Marie-Claude Merivot', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi au vendredi 9h-12h30 et 14h-19h30 · samedi 9h-12h30 · fermée le dimanche",
+     note:"Officine partenaire portée sur la liste du 31/07/2026. Un annuaire la situe au 17 avenue Gaston Cambot : le fichier départemental dit 15 rue Gaston Cambot, c'est ce qui est retenu. Second numéro : 05 59 06 59 78.",
+     auteur:''},
+    {id:'ph11', date:'2026-07-31', nom:"Pharmacie de Plaisance", commune:'Lescar',
+     adresse:"2 rue Séverin Lacoste, 64230 Lescar", tel:"05 59 81 10 13",
+     mail:'pharmacieplaisance@outlook.fr', interlocuteur:'', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi au samedi 8h30-19h30 · fermée le dimanche",
+     note:"Officine partenaire portée sur la liste du 31/07/2026. Seule officine de Lescar sur la liste : c'est elle qui couvre le nord-ouest du territoire, à surveiller sur la carte. Coordonnées reprises du fichier départemental des pharmacies.",
+     auteur:''},
+    {id:'ph12', date:'2026-07-31', nom:"Pharmacie Gantoise", commune:'Gan',
+     adresse:"148 rue d'Ossau, 64290 Gan", tel:"05 59 21 61 18",
+     mail:'Pharmaciegantoise@gmail.com', interlocuteur:'', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi au vendredi 9h-12h30 et 14h-19h30 · samedi 9h-12h30 et 14h-18h · fermée le dimanche",
+     note:"Officine partenaire portée sur la liste du 31/07/2026. Seule officine de Gan sur la liste : c'est elle qui couvre le sud du territoire. Coordonnées reprises du fichier départemental des pharmacies.",
+     auteur:''},
+    /* Les trois suivantes ne viennent pas de la liste des courriels
+       mais de celle de la vice-présidente, le même jour. Elles n'ont
+       donc pas d'adresse électronique connue de la CPTS : c'est ce
+       qui reste à recueillir sur elles, avec le stock et le portage. */
+    {id:'ph13', date:'2026-07-31', nom:"Pharmacie Pilar — Totum", commune:'Billère',
+     adresse:"119 avenue Jean Mermoz, 64140 Billère", tel:"05 59 32 14 06",
+     mail:'', interlocuteur:'Jibran Benassar', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi au vendredi 9h-12h30 et 14h-19h30 · samedi 9h-12h30 · fermée le dimanche",
+     note:"Portée par la liste de la vice-présidente sous le nom « Totum Benassar (Jibran) », et absente de la liste des courriels. C'est la Pharmacie Pilar, à Billère, tenue par Jibran et Anne Benassar et adhérente du réseau Totum — d'où le nom transmis. Nom d'enseigne et courriel à confirmer avec Jibran Benassar. Seule officine de Billère au recensement.",
+     auteur:''},
+    {id:'ph14', date:'2026-07-31', nom:"Pharmacie Duizabo", commune:'Lescar',
+     adresse:"23 rue Sainte-Catherine, 64230 Lescar", tel:"05 59 81 20 88",
+     mail:'', interlocuteur:'Audrey Duizabo', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"FERMÉE POUR CONGÉS JUSQU'AU 3 AOÛT 2026 — ne pas l'appeler d'ici là. Ensuite : lundi au vendredi 8h30-12h30 et 14h-19h30 · samedi 8h30-12h30 et 14h-19h · fermée le dimanche",
+     note:"Portée par la liste de la vice-présidente, et absente de la liste des courriels : adresse électronique à recueillir. L'interlocutrice, Audrey Duizabo, porte le nom de l'officine — c'est la titulaire. Elle est en congés jusqu'au 3 août 2026 : d'ici là, c'est la Pharmacie de Plaisance qui couvre Lescar. Date exacte de réouverture à confirmer avec elle. Coordonnées reprises du fichier départemental des pharmacies.",
+     auteur:''},
+    {id:'ph15', date:'2026-07-31', nom:"Pharmacie La Croix du Prince", commune:'Pau',
+     adresse:"55 bis rue du 14 Juillet, 64000 Pau", tel:"05 59 06 23 59",
+     mail:'', interlocuteur:'Florie Clavé', telInterlocuteur:'',
+     statut:'Partenaire', stock:'', portage:'À préciser',
+     horaires:"Lundi au vendredi 9h-12h30 et 14h-19h30 · samedi 9h-12h30 et 14h-19h · fermée le dimanche",
+     note:"Portée par la liste de la vice-présidente, et absente de la liste des courriels. Un annuaire donne pharmaciecroixduprince@yahoo.fr : à faire confirmer par Florie Clavé avant de s'en servir, il ne vient pas de la CPTS. Second numéro : 05 59 06 86 18. Le fichier départemental écrit 55 rue du 14 Juillet, l'officine 55 bis — c'est le bis qui est retenu.",
+     auteur:''}
+  ],
   /* Les personnes signalées par les médecins, en initiales. Le
      registre ne porte aucun nom en clair : c'est la consigne du
      cockpit, et elle ne se négocie pas. */
@@ -2649,7 +2962,7 @@ function lancerSondage(){
    et qu'elle n'a pas été retirée à la main : ce qui a été saisi
    par le copil n'est jamais touché. C'est par là qu'arrivent les
    éléments consignés hors ligne, au téléphone notamment. */
-const SEEDS = ['missions','veille','ars','sources','rubriques','salleVisio','visios','lignes','offre','cpts','courante','contacts','referents'];
+const SEEDS = ['missions','veille','ars','sources','rubriques','salleVisio','visios','lignes','offre','cpts','courante','contacts','referents','pharmacies','procedures'];
 function fusionnerNouveautes(){
   etat.retires = etat.retires || [];
   SEEDS.forEach(k => {
@@ -3255,6 +3568,64 @@ const RH_MOTIFS   = ["Personne âgée isolée","Pathologie chronique",
 const dejaVus = (k, c) => [...new Set((etat[k] || [])
   .map(o => String(o[c] || '').trim()).filter(Boolean))].sort((a,b) => a.localeCompare(b,'fr'));
 
+/* Le carnet des médecins qui ont orienté : un nom, l'adresse et le
+   numéro qu'on avait notés pour le joindre, et combien de personnes
+   il a signalées. Il ne se saisit nulle part — il se relit à chaque
+   fois depuis les signalements eux-mêmes, ce qui évite d'avoir un
+   fichier de médecins à tenir à jour en plus du registre.
+
+   Les signalements sont parcourus du plus ancien au plus récent :
+   pour un même médecin, c'est la dernière adresse et le dernier
+   numéro renseignés qui restent, et un champ laissé vide n'efface
+   pas ce qui avait été noté la fois d'avant. */
+function carnetMedecins(){
+  const quand = o => String(o.date || '') + ' ' + cleHeure(o.heure);
+  const par = new Map();
+  [...(etat.rehyd || [])].sort((a,b) => quand(a).localeCompare(quand(b))).forEach(o => {
+    const nom = String(o.decNom || '').trim();
+    if(!nom) return;
+    const cle = nom.toLowerCase();
+    /* L'orthographe retenue est celle du premier signalement : c'est
+       elle que le champ propose ensuite, et « dr untel » tapé vite un
+       soir ne vient pas remplacer le nom écrit proprement. */
+    const m = par.get(cle) || {nom, adresse:'', tel:'', n:0, dernier:'', patients:[]};
+    const a = String(o.decAdresse || '').trim(), t = String(o.decTel || '').trim();
+    if(a) m.adresse = a;
+    if(t) m.tel = t;
+    m.n++;
+    if(o.date) m.dernier = o.date;
+    m.patients.push(o);
+    par.set(cle, m);
+  });
+  return [...par.values()].sort((x,y) => x.nom.localeCompare(y.nom,'fr'));
+}
+
+/* Un nom repris dans le carnet ramène avec lui ce qu'on avait noté
+   pour joindre ce médecin. Deux règles, et elles tiennent en une
+   phrase : on ne réécrit jamais par-dessus ce qui a été tapé à la
+   main, et ce que le carnet a rempli lui-même se corrige tout seul
+   si on change de médecin en cours de saisie. */
+function reprendreCarnet(k, c, el){
+  const f = (CHAMPS[k].f || []).find(x => x.c === c);
+  if(!f || !f.carnet) return;
+  const saisi = String(el.value || '').trim().toLowerCase();
+  const fiche = saisi ? f.carnet.liste().find(x => String(x.nom || '').trim().toLowerCase() === saisi) : null;
+  Object.keys(f.carnet.remplit).forEach(champ => {
+    const cible = document.getElementById(`f-${k}-${champ}`);
+    if(!cible) return;
+    /* Saisi à la main : intouchable, même si le carnet dit autre
+       chose. C'est celui qui remplit la fiche qui a le dernier mot. */
+    if(cible.value && cible.dataset.carnet !== '1') return;
+    const v = fiche ? String(fiche[f.carnet.remplit[champ]] || '') : '';
+    cible.value = v;
+    if(v){
+      cible.dataset.carnet = '1';
+      /* Dès qu'on y touche, le champ cesse d'appartenir au carnet. */
+      cible.oninput = () => { delete cible.dataset.carnet; };
+    }else delete cible.dataset.carnet;
+  });
+}
+
 const CHAMPS = {
   /* --- Les officines qui délivrent ---------------------------
      L'adresse sert à deux choses : la lire au téléphone, et poser
@@ -3268,17 +3639,19 @@ const CHAMPS = {
       {c:'commune', l:"Commune", t:'text', ph:"Pau"},
       {c:'adresse', l:"Adresse", t:'text', large:true,
        aide:"C'est cette adresse qui situe la pharmacie sur la carte. Sans elle, la fiche reste lisible mais l'officine n'apparaît pas."},
-      {c:'tel', l:"Téléphone", t:'text', ph:"05 59 00 00 00"},
+      {c:'tel', l:"Téléphone de l'officine", t:'text', ph:"05 59 00 00 00"},
       {c:'mail', l:"Courriel", t:'text'},
       {c:'interlocuteur', l:"Interlocuteur", t:'text', ph:"Titulaire, préparateur…"},
+      {c:'telInterlocuteur', l:"Ligne directe de l'interlocuteur", t:'text', ph:"06 12 34 56 78",
+       aide:"Le portable ou la ligne directe de la personne qui décroche. C'est celui qu'on compose la nuit, le dimanche, ou quand le numéro de l'officine sonne dans le vide."},
       {c:'statut', l:"Où en est le partenariat", t:'choix', o:PH_STATUTS, d:() => 'À contacter'},
       {c:'stock', l:"Ce qu'elle tient à disposition", t:'text', large:true, multi:PH_STOCK},
       {c:'horaires', l:"Horaires d'ouverture", t:'text', large:true, ph:"Lundi au samedi, 9h-19h30 — fermée le dimanche"},
       {c:'portage', l:"Assure un portage à domicile", t:'choix', o:PH_PORTAGE, d:() => 'À préciser'},
       {c:'note', l:"Observation", t:'textarea', large:true}
     ],
-    cols:['date','nom','commune','adresse','tel','mail','interlocuteur','statut','stock',
-          'horaires','portage','note','auteur']
+    cols:['date','nom','commune','adresse','tel','mail','interlocuteur','telInterlocuteur','statut',
+          'stock','horaires','portage','note','auteur']
   },
   /* --- Les personnes signalées -------------------------------
      Le registre ne porte aucun nom en clair : des initiales, un âge,
@@ -3413,64 +3786,6 @@ function ouvrirAjout(k, mode){
    « non » repartirait quand même au registre. */
 function majDependances(){
   document.querySelectorAll('.form [data-dep]').forEach(el => {
-/* Le carnet des médecins qui ont orienté : un nom, l'adresse et le
-   numéro qu'on avait notés pour le joindre, et combien de personnes
-   il a signalées. Il ne se saisit nulle part — il se relit à chaque
-   fois depuis les signalements eux-mêmes, ce qui évite d'avoir un
-   fichier de médecins à tenir à jour en plus du registre.
-
-   Les signalements sont parcourus du plus ancien au plus récent :
-   pour un même médecin, c'est la dernière adresse et le dernier
-   numéro renseignés qui restent, et un champ laissé vide n'efface
-   pas ce qui avait été noté la fois d'avant. */
-function carnetMedecins(){
-  const quand = o => String(o.date || '') + ' ' + cleHeure(o.heure);
-  const par = new Map();
-  [...(etat.rehyd || [])].sort((a,b) => quand(a).localeCompare(quand(b))).forEach(o => {
-    const nom = String(o.decNom || '').trim();
-    if(!nom) return;
-    const cle = nom.toLowerCase();
-    /* L'orthographe retenue est celle du premier signalement : c'est
-       elle que le champ propose ensuite, et « dr untel » tapé vite un
-       soir ne vient pas remplacer le nom écrit proprement. */
-    const m = par.get(cle) || {nom, adresse:'', tel:'', n:0, dernier:'', patients:[]};
-    const a = String(o.decAdresse || '').trim(), t = String(o.decTel || '').trim();
-    if(a) m.adresse = a;
-    if(t) m.tel = t;
-    m.n++;
-    if(o.date) m.dernier = o.date;
-    m.patients.push(o);
-    par.set(cle, m);
-  });
-  return [...par.values()].sort((x,y) => x.nom.localeCompare(y.nom,'fr'));
-}
-
-/* Un nom repris dans le carnet ramène avec lui ce qu'on avait noté
-   pour joindre ce médecin. Deux règles, et elles tiennent en une
-   phrase : on ne réécrit jamais par-dessus ce qui a été tapé à la
-   main, et ce que le carnet a rempli lui-même se corrige tout seul
-   si on change de médecin en cours de saisie. */
-function reprendreCarnet(k, c, el){
-  const f = (CHAMPS[k].f || []).find(x => x.c === c);
-  if(!f || !f.carnet) return;
-  const saisi = String(el.value || '').trim().toLowerCase();
-  const fiche = saisi ? f.carnet.liste().find(x => String(x.nom || '').trim().toLowerCase() === saisi) : null;
-  Object.keys(f.carnet.remplit).forEach(champ => {
-    const cible = document.getElementById(`f-${k}-${champ}`);
-    if(!cible) return;
-    /* Saisi à la main : intouchable, même si le carnet dit autre
-       chose. C'est celui qui remplit la fiche qui a le dernier mot. */
-    if(cible.value && cible.dataset.carnet !== '1') return;
-    const v = fiche ? String(fiche[f.carnet.remplit[champ]] || '') : '';
-    cible.value = v;
-    if(v){
-      cible.dataset.carnet = '1';
-      /* Dès qu'on y touche, le champ cesse d'appartenir au carnet. */
-      cible.oninput = () => { delete cible.dataset.carnet; };
-    }else delete cible.dataset.carnet;
-  });
-}
-
     const src = document.getElementById(el.dataset.dep);
     const attendu = String(el.dataset.depv || '').split('|');
     const montrer = !!src && attendu.indexOf(String(src.value ?? '').trim()) >= 0;
@@ -3710,6 +4025,16 @@ function formulaire(k, o, mode){
        recensées — équipe de crise, pilotes, suppléants, renforts — et
        accepte un nom qui n'y figure pas encore, qui rejoint alors la
        liste pour les saisies suivantes. */
+    /* Un nom déjà passé par le registre : il se propose à la frappe,
+       sans fermer le champ — un médecin qui déclare pour la première
+       fois s'y écrit comme avant, et rejoint le carnet du même coup.
+       Le reprendre ramène ce qu'on avait noté pour le joindre. */
+    else if(f.t === 'carnet'){
+      const l = f.carnet.liste();
+      h += `<input type="text" id="${id}" list="${id}-l" value="${esc(val)}" autocomplete="off"${ph}`
+        +  ` oninput="reprendreCarnet('${k}','${f.c}',this)">`
+        +  `<datalist id="${id}-l">${l.map(x => `<option value="${esc(x.nom)}"></option>`).join('')}</datalist>`;
+    }
     else if(f.t === 'personne'){
       const noms = nomsMissionnes();
       h += `<input type="text" id="${id}" list="${id}-l" value="${esc(val)}" autocomplete="off"${ph || ' placeholder="Prénom et nom"'}>`
@@ -3869,16 +4194,6 @@ function tableau(k){
          || c === 'verifieLe') v = frdate(v);
       if(typeof v === 'string' && /^https?:\/\//.test(v))
         return `<td><a href="${esc(v)}" target="_blank" rel="noopener">Ouvrir</a></td>`;
-    /* Un nom déjà passé par le registre : il se propose à la frappe,
-       sans fermer le champ — un médecin qui déclare pour la première
-       fois s'y écrit comme avant, et rejoint le carnet du même coup.
-       Le reprendre ramène ce qu'on avait noté pour le joindre. */
-    else if(f.t === 'carnet'){
-      const l = f.carnet.liste();
-      h += `<input type="text" id="${id}" list="${id}-l" value="${esc(val)}" autocomplete="off"${ph}`
-        +  ` oninput="reprendreCarnet('${k}','${f.c}',this)">`
-        +  `<datalist id="${id}-l">${l.map(x => `<option value="${esc(x.nom)}"></option>`).join('')}</datalist>`;
-    }
       return `<td>${esc(v) || '—'}</td>`;
     }).join('') + `<td class="act">${fleches(k, l.id, i, lignes.length)}<button title="Modifier" onclick="ouvrirEdition('${k}','${l.id}')">✎</button><button title="Supprimer" onclick="supprimer('${k}','${l.id}')">×</button></td></tr>`;
   });
@@ -5473,6 +5788,124 @@ const infosARS = () => antechrono((etat.ars || []).filter(a => !a.visio && a.can
 let infoARSOuverte = null;
 function ouvrirInfoARS(id){ infoARSOuverte = (infoARSOuverte === id) ? null : id; rendre(); }
 
+/* --- Les documents joints à une information ---------------
+   Le PDF d'un communiqué, la capture d'un tableau : le fichier
+   part sur l'hébergement par une porte à part et y reste. L'état
+   partagé — relu en entier toutes les quinze secondes par chaque
+   poste — n'en garde que le nom, le poids et l'identifiant ; le
+   contenu ne transite jamais par lui.
+
+   L'adresse rendue est stable et le serveur sert le document en
+   « inline » : le PDF s'ouvre dans l'onglet, l'image s'affiche,
+   sans rien télécharger. Le second lien, lui, l'emporte sur le
+   poste sous son nom d'origine. Les deux valent pour tout le
+   copil, du moment que la session est ouverte : le code d'accès
+   voyage dans l'adresse, faute de quoi un onglet neuf n'aurait
+   aucun moyen de se présenter. */
+const PIECE_MAX_MO = 4;
+const PIECE_FORMATS = '.pdf,.jpg,.jpeg,.png,.webp,.heic,.csv,.xlsx,.docx';
+
+/* Le cockpit de la canicule porte déjà « ?crise= » dans l'adresse
+   de son API : la porte des pièces s'y ajoute, elle ne la remplace
+   pas — sinon les deux crises se serviraient dans le même tas. */
+const portePiece = id => API + (API.indexOf('?') >= 0 ? '&' : '?')
+  + 'piece' + (id ? '=' + encodeURIComponent(id) : '');
+function lienPiece(idp){ return portePiece(idp) + '&code=' + encodeURIComponent(codeAcces); }
+const poids = o => !o ? '' : o < 1024 ? o + ' o'
+  : o < 1048576 ? Math.round(o / 1024) + ' Ko'
+  : (o / 1048576).toFixed(1).replace('.', ',') + ' Mo';
+
+/* Envoi d'un fichier. Rend sa fiche — identifiant, nom, poids —
+   ou rien du tout, en ayant dit pourquoi. */
+async function envoyerPiece(f){
+  if(!modeServeur){ toast("Le serveur ne répond pas : un document ne peut être joint que depuis le cockpit partagé"); return null; }
+  if(f.size > PIECE_MAX_MO * 1000000){ toast("« " + f.name + " » est trop lourd — " + PIECE_MAX_MO + " Mo au maximum"); return null; }
+  const lu = await new Promise(res => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result || ''));
+    r.onerror = () => res('');
+    r.readAsDataURL(f);
+  });
+  if(!lu){ toast("« " + f.name + " » est illisible"); return null; }
+  let r;
+  try{
+    r = await fetch(portePiece(), {
+      method: 'POST',
+      headers: {'X-Code-Acces': codeAcces, 'Content-Type': 'application/json'},
+      body: JSON.stringify({nom: f.name, donnees: lu, par: moi})
+    });
+  }catch(e){ toast("Serveur injoignable — « " + f.name + " » n'a pas été envoyé"); return null; }
+  let d = null;
+  try{ d = await r.json(); }catch(e){}
+  if(!r.ok || !d || !d.id){ toast((d && d.erreur) || "Envoi de « " + f.name + " » impossible"); return null; }
+  return {id: d.id, nom: d.nom, taille: d.taille, le: d.le, par: moi};
+}
+
+/* Le fichier lui-même, effacé de l'hébergement. Sans bruit : on
+   l'appelle quand la ligne qui le portait s'en va. */
+async function effacerPiece(idp){
+  try{
+    await fetch(portePiece(idp), {
+      method: 'POST',
+      headers: {'X-Code-Acces': codeAcces, 'Content-Type': 'application/json'},
+      body: JSON.stringify({supprimer: true})
+    });
+  }catch(e){}
+}
+
+/* La liste telle qu'elle se lit sous une information. Le retrait
+   n'apparaît que si on dit à quelle fiche ces pièces appartiennent. */
+function vuePieces(pieces, idInfo){
+  const l = (pieces || []).filter(p => p && p.id);
+  if(!l.length) return '';
+  return `<div class="pj">` + l.map(p => `<div class="p">
+    <span class="n">${esc(p.nom || 'Document')}</span>
+    <span class="q">${[poids(p.taille), p.par].filter(Boolean).map(esc).join(' · ')}</span>
+    <a href="${esc(lienPiece(p.id))}" target="_blank" rel="noopener noreferrer">Ouvrir ↗</a>
+    <a href="${esc(lienPiece(p.id))}" download="${esc(p.nom || 'document')}">Télécharger</a>
+    ${idInfo ? `<button class="ret" title="Retirer ce document"
+      onclick="retirerPieceInfoARS('${idInfo}','${p.id}')">✕</button>` : ''}
+  </div>`).join('') + `</div>`;
+}
+
+/* Joindre un document à une information déjà consignée : le
+   communiqué arrive parfois après le mail qui l'annonçait. */
+function choisirPieceInfoARS(id){
+  if(!modeServeur){ toast("Le serveur ne répond pas : un document ne peut être joint que depuis le cockpit partagé"); return; }
+  const i = document.getElementById('pj-ars-' + id);
+  if(i) i.click();
+}
+async function joindrePieceInfoARS(id, input){
+  const fs = [...(input.files || [])];
+  input.value = '';
+  const a = (etat.ars || []).find(x => x.id === id);
+  if(!a || !fs.length) return;
+  toast(fs.length > 1 ? "Envoi de " + fs.length + " documents…" : "Envoi de « " + fs[0].name + " »…");
+  const mises = [];
+  for(const f of fs){ const m = await envoyerPiece(f); if(m) mises.push(m); }
+  if(!mises.length) return;
+  a.pieces = Array.isArray(a.pieces) ? a.pieces : [];
+  a.pieces.push(...mises);
+  a.modifiePar = moi;
+  /* La ligne de main courante nomme les documents : elle se
+     réécrit, sinon celui joint après coup n'y figurerait pas. */
+  consignerRegistreEnCourante('ars', a);
+  infoARSOuverte = a.id;
+  await sauver(); rendre();
+  toast(mises.length > 1 ? mises.length + " documents joints à l'information"
+                         : "« " + mises[0].nom + " » joint à l'information");
+}
+async function retirerPieceInfoARS(id, idp){
+  const a = (etat.ars || []).find(x => x.id === id); if(!a) return;
+  const p = (a.pieces || []).find(x => x.id === idp);
+  if(!confirm("Retirer « " + ((p && p.nom) || 'ce document') + " » ?\n\nLe fichier est supprimé de l'hébergement, et son lien ne s'ouvrira plus.")) return;
+  await effacerPiece(idp);
+  a.pieces = (a.pieces || []).filter(x => x.id !== idp);
+  a.modifiePar = moi;
+  consignerRegistreEnCourante('ars', a);
+  await sauver(); rendre(); toast("Document retiré");
+}
+
 function vueInfosARS(){
   const l = infosARS();
 
@@ -5496,12 +5929,14 @@ function vueInfosARS(){
     const sous = [a.sens, a.canal, a.interlocuteur,
                   a.auteur ? 'saisi par ' + a.auteur : ''].filter(Boolean).map(esc).join(' · ');
 
+    const npj = (a.pieces || []).filter(p => p && p.id).length;
+
     let c = `<div class="info-a ${ouvert ? 'ouverte' : ''}">
       <button class="tete" onclick="ouvrirInfoARS('${a.id}')" aria-expanded="${ouvert}">
         <span class="q">${quand}</span>
         <span class="i">
           <span class="n">${esc(a.objet || 'Sans objet')}</span>
-          <span class="s">${sous}</span>
+          <span class="s">${[sous, npj ? '📎 ' + npj + ' document' + (npj > 1 ? 's' : '') : ''].filter(Boolean).join(' · ')}</span>
         </span>
         <span class="chev">${ouvert ? '▲' : '▼'}</span>
       </button>`;
@@ -5513,12 +5948,19 @@ function vueInfosARS(){
         : `<div class="bloc"><div class="d" style="color:var(--texte-2);font-style:italic">Le contenu n'a pas été collé — seul l'objet a été noté.</div></div>`;
       if(a.reponse) c += `<div class="bloc reponse"><span class="k">Notre réponse ou action</span><div class="d">${esc(a.reponse)}</div></div>`;
       if(a.attendu) c += `<div class="bloc implique"><span class="k">Ce que ça implique pour la CPTS</span><div class="d">${esc(a.attendu)}</div></div>`;
+      /* Les documents déposés sur le cockpit : ils s'ouvrent dans
+         l'onglet et s'emportent, sans repasser par la boîte mail
+         de qui les a reçus. */
+      c += vuePieces(a.pieces, a.id);
       const lien = lienVisioPropre(a.lien);
       if(lien) c += `<a class="doc" href="${esc(lien)}" target="_blank" rel="noopener noreferrer">Ouvrir le document ↗</a>`;
       c += `<div class="meta">${[a.statut ? 'Statut : ' + a.statut : '',
         a.auteur ? 'Saisi par ' + a.auteur : 'Saisi sans nom'].filter(Boolean).map(esc).join(' · ')}</div>`;
       c += `<div class="bas">
+        <input type="file" id="pj-ars-${a.id}" multiple accept="${PIECE_FORMATS}"
+          style="display:none" onchange="joindrePieceInfoARS('${a.id}', this)">
         <button class="btn sec" onclick="ouvrirEdition('ars','${a.id}')">Modifier</button>
+        <button class="btn sec" onclick="choisirPieceInfoARS('${a.id}')">Joindre un document</button>
         <button class="btn sec" onclick="aller('ars')">Voir dans les échanges avec l'ARS</button>
         <button class="btn sec sup" onclick="retirerInfoARS('${a.id}')">Retirer</button>
       </div></div>`;
@@ -5533,8 +5975,17 @@ function vueInfosARS(){
 /* Quatre champs, et rien de plus : la date, l'heure, l'objet et le
    texte du message. Le nom de qui saisit se pose tout seul — c'est
    la session ouverte, et le demander une fois de plus n'apprendrait
-   rien à personne. */
+   rien à personne. À quoi s'ajoute, quand il y en a un, le document
+   reçu : un communiqué en PDF ne se recopie pas, et le copil doit
+   pouvoir le lire à la source.
+
+   Les fichiers choisis attendent ici sans partir : ils ne montent
+   sur l'hébergement qu'à l'enregistrement, pour qu'une fenêtre
+   refermée en chemin ne laisse pas de pièces orphelines. */
+let pjEnAttente = [];
+
 function ouvrirSaisieInfoARS(){
+  pjEnAttente = [];
   const m = document.getElementById('modale');
   m.classList.add('large');
   m.innerHTML = `<h3>Information donnée par l'ARS</h3>
@@ -5547,26 +5998,79 @@ function ouvrirSaisieInfoARS(){
     <label class="large"><span class="k">Contenu du message</span>
       <textarea id="ia-contenu" rows="12" placeholder="Collez ici le message entier, tel qu'il a été reçu."></textarea>
       <span class="aide">Rien à raccourcir : à l'écran, la ligne ne montrera que l'objet, et le texte ne s'ouvrira que si on clique dessus.</span></label>
+    <div class="large pj-champ">
+      <span class="k">Document reçu</span>
+      <div id="ia-pj"></div>
+      <input type="file" id="ia-fichier" multiple accept="${PIECE_FORMATS}"
+        style="display:none" onchange="ajouterPJEnAttente(this)">
+      <button class="btn sec" type="button" style="margin-top:6px"
+        onclick="document.getElementById('ia-fichier').click()">Choisir un document…</button>
+      <span class="aide">PDF, image, tableau ou document Word — ${PIECE_MAX_MO} Mo par fichier. Le document reste sur le cockpit : tout le copil pourra l'ouvrir dans son onglet ou l'enregistrer, sans repasser par la boîte mail de qui l'a reçu.</span>
+    </div>
   </div>
   <div class="rappel" style="margin:14px 0 0">Cette information rejoint « Échanges avec l'ARS » et laisse sa ligne en <a href="#" onclick="fermer();aller('courante');return false;">Main courante</a>, au nom de ${esc(moi === 'Anonyme' ? 'la session en cours' : moi)}.</div>
   <div class="actions">
-    <button class="btn" onclick="validerInfoARS()">Enregistrer</button>
+    <button class="btn" id="ia-valider" onclick="validerInfoARS()">Enregistrer</button>
     <button class="btn sec" onclick="fermer()">Annuler</button>
   </div>`;
   ouvrirRideau();
+  rendrePJEnAttente();
   setTimeout(()=>{ const i = document.getElementById('ia-objet'); if(i) i.focus({preventScroll:true}); }, 60);
 }
+
+/* La liste des fichiers en attente, dans la fenêtre. Elle se
+   redessine seule : rendre() reconstruirait la page derrière la
+   fenêtre ouverte et effacerait la saisie en cours. */
+function rendrePJEnAttente(){
+  const d = document.getElementById('ia-pj');
+  if(!d) return;
+  d.innerHTML = pjEnAttente.length
+    ? `<div class="pj">` + pjEnAttente.map((f, i) => `<div class="p attente">
+        <span class="n">${esc(f.name)}</span>
+        <span class="q">${esc(poids(f.size))} · à envoyer</span>
+        <button class="ret" title="Retirer de la liste" onclick="oterPJEnAttente(${i})">✕</button>
+      </div>`).join('') + `</div>`
+    : '';
+}
+function ajouterPJEnAttente(input){
+  [...(input.files || [])].forEach(f => {
+    if(f.size > PIECE_MAX_MO * 1000000){ toast("« " + f.name + " » est trop lourd — " + PIECE_MAX_MO + " Mo au maximum"); return; }
+    pjEnAttente.push(f);
+  });
+  input.value = '';
+  rendrePJEnAttente();
+}
+function oterPJEnAttente(i){ pjEnAttente.splice(i, 1); rendrePJEnAttente(); }
 
 async function validerInfoARS(){
   const g = c => ((document.getElementById('ia-' + c) || {}).value || '').trim();
   const objet = g('objet');
   if(!objet){ toast("L'objet est obligatoire"); document.getElementById('ia-objet')?.focus(); return; }
 
+  /* Les documents montent d'abord : si l'hébergement refuse, on le
+     dit avant d'avoir écrit quoi que ce soit, et rien n'est perdu —
+     la fenêtre est encore là, avec son texte et ses fichiers. */
+  const pieces = [];
+  if(pjEnAttente.length){
+    const b = document.getElementById('ia-valider');
+    if(b){ b.disabled = true; b.textContent = 'Envoi du document…'; }
+    for(const f of pjEnAttente){
+      const m = await envoyerPiece(f);
+      if(!m){
+        if(b){ b.disabled = false; b.textContent = 'Enregistrer'; }
+        return;
+      }
+      pieces.push(m);
+    }
+    if(b){ b.disabled = false; b.textContent = 'Enregistrer'; }
+  }
+
   const o = {
     id: uid(), auteur: moi === 'Anonyme' ? '' : moi, quand: new Date().toISOString(),
     date: g('date') || aujourdhui(), heure: g('heure'),
     sens: "Reçu de l'ARS", canal: 'Mail', interlocuteur: "ARS Nouvelle-Aquitaine",
-    objet, demande: g('contenu'), reponse: '', attendu: '', lien: '', echeance: '', statut: 'En cours'
+    objet, demande: g('contenu'), reponse: '', attendu: '', lien: '', echeance: '', statut: 'En cours',
+    pieces
   };
 
   etat.ars = etat.ars || [];
@@ -5577,14 +6081,24 @@ async function validerInfoARS(){
   consignerRegistreEnCourante('ars', o);
 
   infoARSOuverte = o.id;
+  pjEnAttente = [];
   await sauver(); fermer(); rendre();
-  toast("Information consignée, dans les échanges avec l'ARS et en main courante");
+  toast(pieces.length
+    ? "Information consignée avec son document, dans les échanges avec l'ARS et en main courante"
+    : "Information consignée, dans les échanges avec l'ARS et en main courante");
 }
 
 async function retirerInfoARS(id){
   const a = (etat.ars || []).find(x => x.id === id);
   if(!a) return;
-  if(!confirm(`Retirer « ${a.objet || 'cette information'} » ?\n\nElle disparaît aussi des échanges avec l'ARS. Sa ligne de main courante, elle, reste.`)) return;
+  const npj = (a.pieces || []).filter(p => p && p.id).length;
+  if(!confirm(`Retirer « ${a.objet || 'cette information'} » ?\n\nElle disparaît aussi des échanges avec l'ARS.`
+    + (npj ? `\nLe${npj > 1 ? 's' : ''} ${npj} document${npj > 1 ? 's' : ''} joint${npj > 1 ? 's' : ''} ${npj > 1 ? 'sont supprimés' : 'est supprimé'} de l'hébergement.` : '')
+    + `\nSa ligne de main courante, elle, reste.`)) return;
+  /* Le fichier ne survit pas à la ligne qui le portait : personne
+     n'aurait plus d'adresse pour le retrouver, et il tiendrait la
+     place sur l'hébergement. */
+  for(const p of (a.pieces || [])){ if(p && p.id) await effacerPiece(p.id); }
   await supprimer('ars', id);
 }
 
@@ -6191,9 +6705,16 @@ const MC_REG = {
      dirait rien de plus et ferait doublon. */
   ars: {
     type:'ARS', personne:o => o.auteur,
-    phrase:o => o.visio ? '' :
-      `${o.sens || "Échange avec l'ARS"} — ${o.objet || 'objet non renseigné'}`
-      + (o.interlocuteur ? ` (${o.interlocuteur})` : '') + '.'
+    phrase:o => {
+      if(o.visio) return '';
+      /* Le document reçu se nomme dans la ligne : c'est par la main
+         courante qu'on retrouve, trois jours après, de quel jour
+         datait le communiqué qu'on cherche. */
+      const pj = (o.pieces || []).filter(p => p && p.nom).map(p => p.nom);
+      return `${o.sens || "Échange avec l'ARS"} — ${o.objet || 'objet non renseigné'}`
+        + (o.interlocuteur ? ` (${o.interlocuteur})` : '') + '.'
+        + (pj.length ? ` Document${pj.length > 1 ? 's' : ''} joint${pj.length > 1 ? 's' : ''} : ${pj.join(', ')}.` : '');
+    }
   }
 };
 
@@ -7024,6 +7545,7 @@ function pointsPharmacies(ph, second){
       id: p.id, nom: p.nom || 'Officine sans nom', statut: p.statut || 'À contacter',
       lieu: [p.interlocuteur, p.commune].filter(Boolean).join(' · '),
       adresse: p.adresse || '', commune: p.commune || '', tel: p.tel || '',
+      telInterlocuteur: p.telInterlocuteur || '', interlocuteur: p.interlocuteur || '',
       stock: p.stock || '', horaires: p.horaires || '',
       couleur: CARTO_PH[p.statut] || CARTO_PH['À contacter'],
       lat: bon ? lat : null, lon: bon ? lon : null,
@@ -7308,8 +7830,10 @@ function bullePharmacie(p){
     <div class="l">${esc(p.statut)}${p.approx ? " — située à la commune, l'adresse exacte n'a pas été retrouvée" : ''}</div>
     ${p.stock ? `<div class="l">Tient : ${esc(p.stock)}</div>` : ''}
     ${p.horaires ? `<div class="l">${esc(p.horaires)}</div>` : ''}
-    ${p.tel ? `<a href="tel:${esc(String(p.tel).replace(/[^0-9+]/g,''))}">Appeler ${esc(p.tel)}</a>` : ''}
-    ${p.adresse ? `<a href="${esc(lienCarte(p.adresse, p.commune))}" target="_blank" rel="noopener">Itinéraire</a>` : ''}
+    ${p.tel ? `<a href="${esc(telLien(p.tel))}">Appeler l'officine — ${esc(p.tel)}</a>` : ''}
+    ${p.telInterlocuteur ? `<a href="${esc(telLien(p.telInterlocuteur))}">Ligne directe${
+      p.interlocuteur ? ` de ${esc(p.interlocuteur)}` : ''} — ${esc(p.telInterlocuteur)}</a>` : ''}
+    ${p.adresse ? `<a href="${esc(lienCarte(p.adresse, p.commune))}" target="_blank" rel="noopener">Itinéraire ↗</a>` : ''}
     <button onclick="ouvrirEdition('pharmacies','${p.id}')">Ouvrir la fiche</button>
   </div>`;
 }
@@ -7447,13 +7971,17 @@ const telLien = t => `tel:${String(t || '').replace(/[^0-9+]/g,'')}`;
 /* '' = le palier. Le module ouvert tient d'un rendu à l'autre :
    revenir à l'onglet, c'est retrouver l'écran qu'on y a laissé. */
 let moduleRehyd = '';
-function allerModuleRehyd(m){ moduleRehyd = m; procOuverte = null; rendre(); window.scrollTo(0,0); }
+function allerModuleRehyd(m){
+  moduleRehyd = m; procOuverte = null; brouillonProc = null;
+  rendre(); window.scrollTo(0,0);
+}
 
 function vueRehydratation(){
   const ph = etat.pharmacies || [], pat = etat.rehyd || [];
   if(moduleRehyd === 'procedure')  return retourRehyd() + carteProcedure();
   if(moduleRehyd === 'pharmacies') return retourRehyd() + cartePharmacies(ph);
   if(moduleRehyd === 'patients')   return retourRehyd() + cartePatients(pat, ph);
+  if(moduleRehyd === 'medecins')   return retourRehyd() + carteMedecins();
   return palierRehyd(ph, pat);
 }
 
@@ -7467,10 +7995,11 @@ const retourRehyd = () =>
 function palierRehyd(ph, pat){
   const m = (etat.missions || []).find(x => espaceDe(x) === 'rehydratation');
   const pil = m ? String(m.pilote || '').trim() : '';
-  const proc = PROC_REHYD.length;
+  const proc = lesProc().length;
   const parts = ph.filter(p => p.statut === 'Partenaire').length;
   const aFaire = ph.filter(p => !p.statut || p.statut === 'À contacter').length;
   const attente = pat.filter(enAttenteIdel).length;
+  const med = carnetMedecins();
 
   return `<h1>Réhydratation à domicile</h1>
   <p class="chapo">Faire parvenir de quoi se réhydrater aux personnes qui ne peuvent pas aller le chercher, et faire passer quelqu'un chez elles. Le médecin repère la personne à risque dans sa patientèle et la signale ; la CPTS tient la liste des officines qui délivrent, désigne le cabinet infirmier qui passera, et suit ce qui a effectivement été fait.</p>
@@ -7485,7 +8014,7 @@ function palierRehyd(ph, pat){
       <p class="sous-m">Les deux procédures arrêtées par la CPTS, dans leur déroulé complet : celle des demandes qui partent d'un médecin de ville, celle des demandes qui partent de SOS Médecins. Chacune se lit étape par étape, avec ce qu'on fait à chaque réponse. C'est la page à lire avant de décrocher, et celle qu'on donne à un professionnel qui demande la marche à suivre.</p>
       <div class="chiffres">
         <div><strong>${proc}</strong> procédures</div>
-        <div><strong>${PROC_REHYD.reduce((n,p) => n + p.etapes.length, 0)}</strong> étapes détaillées</div>
+        <div><strong>${lesProc().reduce((n,p) => n + p.etapes.length, 0)}</strong> étapes détaillées</div>
       </div>
       <div class="entrer">Ouvrir le module →</div>
     </button>
@@ -7511,6 +8040,18 @@ function palierRehyd(ph, pat){
       </div>
       <div class="entrer">Ouvrir le module →</div>
     </button>
+
+    <button class="module" onclick="allerModuleRehyd('medecins')">
+      <div class="titre-m">Liste des médecins qui ont orienté</div>
+      <p class="sous-m">Les médecins du territoire qui ont signalé au moins une personne, avec leur adresse et leur téléphone. La liste ne se saisit pas : un médecin s'y ajoute de lui-même au premier signalement qu'il fait, et c'est elle qu'on ouvre pour le rappeler quand le circuit se bloque.</p>
+      <div class="chiffres">
+        <div><strong>${med.length}</strong> médecin${med.length>1?'s':''} déclarant${med.length>1?'s':''}</div>
+        ${med.filter(m => !m.tel).length
+          ? `<div><strong class="alerte">${med.filter(m => !m.tel).length}</strong> sans téléphone noté</div>`
+          : `<div><strong>${med.reduce((n,m) => n + m.n, 0)}</strong> signalements</div>`}
+      </div>
+      <div class="entrer">Ouvrir le module →</div>
+    </button>
   </div>`;
 }
 
@@ -7522,115 +8063,16 @@ function palierRehyd(ph, pat){
    sont pas fondues en un texte unique : devant un téléphone, on
    choisit d'abord la bonne, puis on la suit.
 
-   Elles sont reprises telles quelles des deux schémas arrêtés par
-   la CPTS. Elles ne se saisissent pas depuis la page — ce ne sont
-   pas des notes de travail, ce sont les documents en vigueur, et
-   les modifier suppose de refaire passer le schéma. C'est aussi
-   pourquoi chacune s'imprime seule : elle a vocation à être
-   affichée en cabinet et à circuler sur papier.
+   Leur contenu est plus haut, avec les autres amorces : ce sont
+   désormais des pièces de l'état partagé, corrigeables depuis la
+   page, et non plus des constantes du fichier. Ce qui est écrit
+   ici ne fait que les afficher. */
 
-   Un champ « note » sur une étape signale un point que le schéma
-   ne tranche pas : mieux vaut l'écrire que le combler. */
-const PROC_REHYD = [
-  {
-    id:'ville',
-    rang:'Procédure 1',
-    nom:"Demande d'un médecin de ville",
-    quand:"La personne est vue <b>par son médecin</b>, au cabinet ou à domicile, et le médecin pose l'indication de réhydratation.",
-    appel:"06 29 82 29 10",
-    materiel:"Tout le matériel vient de la pharmacie : c'est <b>l'officine partenaire la plus proche du domicile</b> qui livre le pied à perfusion, le soluté et le set de perfusion, en 30 à 45 minutes.",
-    role:"La CPTS appelle les pharmacies, puis les IDEL. Elle est au centre de la procédure.",
-    etapes:[
-      {qui:"Médecin", t:"Visite au cabinet ou à domicile par le médecin",
-       d:"La personne est vue par son médecin — au cabinet ou chez elle. C'est le point d'entrée : cette procédure vaut pour toute demande qui part d'un médecin de ville."},
-      {qui:"Médecin", t:"Indication de réhydratation par voie IV ou sous-cutanée",
-       d:"L'indication est posée par le médecin qui voit la personne. Sans elle, rien de ce qui suit ne s'engage : la procédure ne se déclenche pas sur la seule inquiétude d'un proche."},
-      {qui:"Médecin", t:"Le médecin rédige les ordonnances — matériel + IDEL",
-       d:"Deux ordonnances : l'une pour le matériel (pied à perfusion, soluté, set de perfusion), l'autre pour les soins infirmiers. Le médecin de ville n'a pas de consommable à laisser sur place — tout viendra de la pharmacie."},
-      {qui:"Médecin", t:"Le médecin s'assure de la présence d'un cabinet IDEL",
-       d:"Avant tout appel à la CPTS : la personne est-elle déjà suivie par un cabinet infirmier libéral ?",
-       q:"Un cabinet IDEL suit-il déjà la personne ?",
-       oui:{t:"STOP PROCÉDURE — gestion avec le cabinet IDEL en place",
-            d:"Le cabinet infirmier qui suit déjà la personne assure la pose et la surveillance. La CPTS n'est pas sollicitée.",
-            fin:"La procédure s'arrête ici."},
-      non:{t:"Le médecin réoriente la demande vers la CPTS",
-            d:"Aucun cabinet infirmier n'est identifié. Le médecin appelle la CPTS au <a href=\"tel:+33629822910\">06 29 82 29 10</a> : c'est elle qui prend la suite, matériel puis infirmiers.",
-            vers:"On continue à l'étape 5."}},
-      {qui:"CPTS", t:"La CPTS appelle la pharmacie la plus proche du domicile du patient",
-       d:"La CPTS cherche l'officine partenaire la plus proche de chez la personne, et lui demande si elle peut livrer. Le module « Recensement des pharmacies partenaires » donne cette officine sur la carte, avec son numéro.",
-       q:"L'officine peut-elle livrer ?",
-       oui:{t:"La pharmacie livre le matériel à domicile en 30 à 45 minutes",
-            d:"Pied à perfusion, soluté et set de perfusion. Le domicile a alors tout ce qu'il faut pour la pose.",
-            vers:"On continue à l'étape 6."},
-       non:{t:"La CPTS appelle une autre pharmacie partenaire",
-            d:"L'officine la plus proche ne peut pas livrer : la CPTS descend la liste des autres partenaires du secteur. Si l'une d'elles livre, le circuit reprend à l'étape 6.",
-            suite:{t:"Si aucune officine partenaire ne peut livrer",
-                   d:"La CPTS réoriente la demande vers le médecin, pour appel au 15. La réhydratation à domicile n'est plus tenable dans les délais, et la régulation prend le relais."}}},
-      {qui:"CPTS", t:"La CPTS transmet la demande aux IDEL",
-       d:"Le matériel est en route ou livré. La CPTS sollicite les cabinets infirmiers libéraux du secteur pour trouver qui passera poser la perfusion.",
-       q:"Un cabinet infirmier prend-il la demande ?",
-       oui:{t:"Prise en charge par l'IDEL",
-            d:"Le cabinet infirmier assure la pose et la surveillance au domicile.",
-            fin:"La demande est aboutie."},
-       non:{t:"La CPTS réoriente la demande vers le médecin, pour appel au 15",
-            d:"Aucun cabinet ne peut passer. La demande revient au médecin à l'origine de la demande, qui appelle le 15.",
-            fin:"La demande sort du circuit CPTS."}}
-    ]
-  },
-  {
-    id:'sos',
-    rang:'Procédure 2',
-    nom:"Demande de SOS Médecins",
-    quand:"La personne est vue <b>chez elle par SOS Médecins</b>, en visite non programmée, et le médecin pose l'indication de réhydratation.",
-    appel:"06 29 82 29 10",
-    /* Le schéma SOS Médecins parle d'un « numéro dédié » sans le
-       donner. Une fiche de terrain sans numéro à composer ne sert à
-       rien : on porte donc celui que l'autre procédure publie, en
-       disant que c'est une reprise et non une lecture du schéma. */
-    appelNote:"Le schéma SOS Médecins parle d'un « numéro dédié » sans le donner. C'est le numéro canicule de la CPTS qui est repris ici — à confirmer par la vice-présidence.",
-    materiel:"Le set de perfusion et le soluté sont <b>déposés sur place par le médecin de SOS Médecins</b>. Seul le pied à perfusion reste à faire venir — il est loué auprès d'un prestataire de location de matériel, et non délivré par une pharmacie.",
-    role:"SOS Médecins tient le début de la procédure et transmet ensuite à la CPTS, qui cherche l'IDEL.",
-    etapes:[
-      {qui:"SOS Médecins", t:"Visite à domicile SOS Médecins",
-       d:"La personne est vue chez elle par SOS Médecins, en visite non programmée. C'est le point d'entrée : cette procédure ne vaut que pour les demandes qui partent de SOS Médecins."},
-      {qui:"SOS Médecins", t:"Indication de réhydratation par voie IV ou sous-cutanée",
-       d:"L'indication est posée par le médecin qui voit la personne. Sans elle, rien de ce qui suit ne s'engage."},
-      {qui:"SOS Médecins", t:"SOS Médecins rédige les ordonnances",
-       d:"Les ordonnances nécessaires — matériel et soins infirmiers — sont rédigées et laissées au domicile."},
-      {qui:"SOS Médecins", t:"Dépôt sur place d'un set de perfusion et d'un soluté de réhydratation",
-       d:"Le médecin de SOS Médecins a le consommable dans sa sacoche et le laisse au domicile. C'est ce qui distingue cette procédure de l'autre : il ne reste plus à faire venir que le pied à perfusion, et aucune pharmacie n'est appelée."},
-      {qui:"SOS Médecins", t:"S'assure de la présence d'un cabinet IDEL",
-       d:"Avant toute réorientation : la personne est-elle déjà suivie par un cabinet infirmier libéral ?",
-       q:"Un cabinet IDEL suit-il déjà la personne ?",
-       oui:{t:"STOP PROCÉDURE",
-            d:"Le cabinet infirmier en place assure la pose et la surveillance. La CPTS n'est pas sollicitée.",
-            fin:"La procédure s'arrête ici."},
-       non:{t:"Réorientation de la demande vers la CPTS",
-            d:"Aucun cabinet infirmier n'est identifié : la demande passe à la CPTS.",
-            vers:"On continue à l'étape 6."}},
-      {qui:"CPTS", t:"Appel au prestataire de location de matériel",
-       d:"Le pied à perfusion n'est pas déposé par le médecin et ne passe pas par l'officine : il est loué auprès d'un prestataire de location de matériel médical.",
-       note:"Le schéma ne dit pas qui passe cet appel. L'étape suivant la réorientation vers la CPTS, elle est portée ici par la CPTS — à faire confirmer par la vice-présidence, et à corriger ici si c'est SOS Médecins qui appelle."},
-      {qui:"Prestataire", t:"Le prestataire livre le pied à perfusion à domicile en 30 à 45 minutes",
-       d:"Avec le set et le soluté déjà déposés par le médecin, le domicile a alors tout ce qu'il faut pour la pose."},
-      {qui:"SOS Médecins", t:"SOS Médecins transmet la demande à la CPTS",
-       d:"La demande de passage infirmier est transmise à la CPTS, avec ce qu'il faut pour rappeler : la commune, le motif, et le contact."},
-      {qui:"CPTS", t:"La CPTS transmet la demande aux IDEL",
-       d:"La CPTS sollicite les cabinets infirmiers libéraux du secteur pour trouver qui passera poser la perfusion."},
-      {qui:"IDEL", t:"Prise en charge par IDEL",
-       d:"Un cabinet infirmier accepte-t-il de passer au domicile ?",
-       q:"Un cabinet infirmier prend-il la demande ?",
-       oui:{t:"L'IDEL appelle la CPTS au numéro dédié",
-            d:"Le cabinet qui prend la personne en charge le fait savoir à la CPTS en appelant le numéro dédié. C'est cet appel qui clôt la demande et permet de noter le passage sur la fiche de la personne.",
-            fin:"La demande est aboutie."},
-       non:{t:"La CPTS réoriente la demande vers SOS Médecins, pour appel au 15",
-            d:"Aucun cabinet ne peut passer. La demande revient à SOS Médecins, qui appelle le 15 : la réhydratation à domicile n'est plus possible et la régulation prend le relais.",
-            fin:"La demande sort du circuit CPTS."}}
-    ]
-  }
-];
-
-const procDe = id => PROC_REHYD.find(p => p.id === id);
+/* L'état fait foi. L'amorce ne sert qu'au premier chargement et de
+   filet si la rubrique arrivait vide d'un poste plus ancien. */
+const lesProc = () => Array.isArray(etat.procedures) && etat.procedures.length
+  ? etat.procedures : PROC_REHYD;
+const procDe = id => lesProc().find(p => p.id === id);
 
 /* null = la liste des deux procédures ; un identifiant = le déroulé
    de celle-là. Ouvrir une procédure et revenir à la liste ne change
@@ -7639,20 +8081,233 @@ let procOuverte = null;
 function ouvrirProc(id){ procOuverte = id; rendre(); window.scrollTo(0,0); }
 
 function carteProcedure(){
+  if(brouillonProc) return editeurProc();
   return procOuverte ? derouleProc(procDe(procOuverte)) : listeProc();
+}
+
+/* --- Modifier une procédure -------------------------------
+   Une procédure change dans la vraie vie : un numéro, un délai, un
+   prestataire, une branche qu'on avait mal lue. Elle doit pouvoir
+   changer ici sans que personne n'ouvre le fichier.
+
+   L'écran d'édition est le déroulé lui-même, avec des champs à la
+   place du texte : on modifie là où on lisait, dans le même ordre,
+   et rien n'est caché derrière un onglet. Une étape porte quatre
+   champs, et deux de plus par réponse quand elle pose une question.
+   Il n'y a pas d'autre grammaire à apprendre.
+
+   Le brouillon est une copie : tant qu'on n'a pas enregistré, la
+   procédure affichée aux autres postes ne bouge pas. Et comme un
+   champ qu'on retape ne doit pas s'effacer quand on ajoute une
+   étape plus bas, toute action de structure commence par ramasser
+   ce qui est saisi à l'écran. */
+let brouillonProc = null;
+
+function modifierProc(id){
+  const p = procDe(id);
+  if(!p) return;
+  brouillonProc = JSON.parse(JSON.stringify(p));
+  rendre(); window.scrollTo(0,0);
+}
+
+function quitterEdition(){ brouillonProc = null; rendre(); window.scrollTo(0,0); }
+
+/* Ramasse ce qui est à l'écran. Appelée avant chaque ajout, retrait
+   ou déplacement : sans elle, la saisie en cours partirait avec le
+   rendu suivant. */
+function lireChampsProc(){
+  const b = brouillonProc;
+  if(!b) return;
+  const v = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  /* Un champ facultatif laissé vide s'efface au lieu de s'écrire
+     vide : sans ça, chaque enregistrement épaissirait la rubrique
+     de clés qui ne disent rien, et deux versions identiques ne se
+     ressembleraient plus. */
+  const pose = (o, k, val) => { if(val) o[k] = val; else delete o[k]; };
+  ['nom','quand','materiel','role','appel'].forEach(k => {
+    const el = document.getElementById('pe-' + k);
+    if(el) b[k] = el.value.trim();
+  });
+  pose(b, 'appelNote', v('pe-appelNote'));
+  b.etapes.forEach((e, i) => {
+    e.qui  = v(`pe-${i}-qui`);
+    e.t    = v(`pe-${i}-t`);
+    e.d    = v(`pe-${i}-d`);
+    pose(e, 'note', v(`pe-${i}-note`));
+    /* C'est le modèle qui dit si l'étape pose une question, pas la
+       case à cocher : quand on la coche, elle a déjà changé d'état
+       et on la lirait à contretemps. La case ne fait qu'appeler
+       basculerQuestionProc, qui tranche. */
+    if(e.q !== undefined){
+      e.q = v(`pe-${i}-q`) || "Quelle est la réponse ?";
+      ['oui','non'].forEach(r => {
+        e[r] = e[r] || {};
+        e[r].t = v(`pe-${i}-${r}-t`);
+        e[r].d = v(`pe-${i}-${r}-d`);
+        /* Une issue qui parle d'une étape renvoie à la suite du
+           déroulé ; sinon, c'est que la branche s'arrête là. Rien à
+           choisir dans un menu : on écrit ce qu'on dirait. */
+        const iss = v(`pe-${i}-${r}-issue`);
+        delete e[r].fin; delete e[r].vers;
+        if(iss) (/étape\s*\d/i.test(iss) ? (e[r].vers = iss) : (e[r].fin = iss));
+      });
+      const st = v(`pe-${i}-non-suite-t`), sd = v(`pe-${i}-non-suite-d`);
+      if(st || sd) e.non.suite = {t:st, d:sd}; else delete e.non.suite;
+    }
+  });
+}
+
+function toucheProc(f){ lireChampsProc(); f(brouillonProc); rendre(); }
+const ajouterEtapeProc = i => toucheProc(b =>
+  b.etapes.splice(i, 0, {qui:'', t:'', d:''}));
+const retirerEtapeProc = i => toucheProc(b => b.etapes.splice(i, 1));
+const bougerEtapeProc = (i, d) => toucheProc(b => {
+  const j = i + d;
+  if(j < 0 || j >= b.etapes.length) return;
+  b.etapes.splice(j, 0, b.etapes.splice(i, 1)[0]);
+});
+const basculerQuestionProc = i => toucheProc(b => {
+  const e = b.etapes[i];
+  if(e.q === undefined){
+    e.q = "Quelle est la réponse ?";
+    e.oui = {t:'', d:'', fin:"La procédure s'arrête ici."};
+    e.non = {t:'', d:''};
+  } else { delete e.q; delete e.oui; delete e.non; }
+});
+
+async function enregistrerProc(){
+  lireChampsProc();
+  const b = brouillonProc;
+  if(!b.nom){ toast("La procédure a besoin d'un nom"); return; }
+  b.etapes = b.etapes.filter(e => e.t || e.d || e.qui);
+  const l = Array.isArray(etat.procedures) && etat.procedures.length
+    ? etat.procedures : JSON.parse(JSON.stringify(PROC_REHYD));
+  const i = l.findIndex(x => x.id === b.id);
+  if(i === -1) l.push(b); else l[i] = b;
+  etat.procedures = l;
+  /* Règle du cockpit : ce qui se décide quelque part se consigne en
+     main courante, en plus de sa rubrique. Une procédure de soins
+     qui bouge est exactement ce qu'on doit pouvoir retrouver plus
+     tard, avec sa date et le nom de qui l'a reprise. */
+  poserEnCourante('mcr-proc-' + b.id, {
+    type:'Réhydratation', date: aujourdhui(), source:'',
+    evenement:`Procédure « ${b.nom} » reprise — ${b.etapes.length} étape${b.etapes.length > 1 ? 's' : ''}.`,
+    suite:"Consultable dans l'espace « Réhydratation à domicile », module « Procédures en vigueur »."
+  });
+  await sauver();
+  procOuverte = b.id;
+  brouillonProc = null;
+  rendre(); window.scrollTo(0,0);
+  toast("Procédure enregistrée, et reprise en main courante");
+}
+
+function editeurProc(){
+  const b = brouillonProc;
+  const ch = (id, lib, val, aide) => `<label class="large"><span class="k">${esc(lib)}</span>
+    <input id="${id}" value="${esc(val || '')}">${aide ? `<div class="aide">${esc(aide)}</div>` : ''}</label>`;
+  const za = (id, lib, val, aide) => `<label class="large"><span class="k">${esc(lib)}</span>
+    <textarea id="${id}" style="min-height:62px">${esc(val || '')}</textarea>${
+      aide ? `<div class="aide">${esc(aide)}</div>` : ''}</label>`;
+
+  return `<button class="retour-m" onclick="quitterEdition()">Abandonner les modifications</button>
+  <h2>Modifier « ${esc(b.nom)} »</h2>
+  <p class="sous-h">Les champs sont dans l'ordre du déroulé : on corrige là où on lisait. Rien n'est enregistré tant qu'on n'a pas appuyé sur « Enregistrer » en bas — et une étape laissée entièrement vide se retire d'elle-même.</p>
+
+  <div class="pr-actes pr-actes-fixe">
+    <button class="btn" onclick="enregistrerProc()">Enregistrer la procédure</button>
+    <button class="btn sec" onclick="quitterEdition()">Annuler</button>
+  </div>
+
+  <div class="carte pe-bloc">
+    <h3 class="pe-t">L'en-tête</h3>
+    <div class="form">
+      ${ch('pe-nom', "Nom de la procédure", b.nom)}
+      ${za('pe-quand', "Quand l'utiliser", sansBalises(b.quand),
+        "La phrase qui permet de choisir entre les deux procédures : d'où part la demande.")}
+      ${za('pe-materiel', "Le matériel", sansBalises(b.materiel),
+        "D'où vient le matériel, qui le livre, et en combien de temps.")}
+      ${za('pe-role', "Le rôle de la CPTS", b.role)}
+      ${ch('pe-appel', "Numéro à appeler", b.appel)}
+      ${ch('pe-appelNote', "Réserve sur ce numéro (facultatif)", b.appelNote,
+        "S'affiche en petit sous le numéro. À vider dès que le numéro est confirmé.")}
+    </div>
+  </div>
+
+  ${b.etapes.map((e, i) => etapeEditeur(e, i, b.etapes.length, ch, za)).join('')}
+
+  <div class="pe-ajout">
+    <button class="btn sec" onclick="ajouterEtapeProc(${b.etapes.length})">+ Ajouter une étape à la fin</button>
+  </div>
+
+  <div class="pr-actes" style="margin:18px 0 0">
+    <button class="btn" onclick="enregistrerProc()">Enregistrer la procédure</button>
+    <button class="btn sec" onclick="quitterEdition()">Annuler</button>
+  </div>`;
+}
+
+function etapeEditeur(e, i, n, ch, za){
+  const pose = e.q !== undefined;
+  const issue = r => (e[r] && (e[r].fin || e[r].vers)) || '';
+  return `<div class="carte pe-bloc">
+    <div class="pe-haut">
+      <h3 class="pe-t">Étape ${i + 1}</h3>
+      <div class="pe-outils">
+        <button class="pe-o" title="Monter" onclick="bougerEtapeProc(${i},-1)" ${i === 0 ? 'disabled' : ''}>↑</button>
+        <button class="pe-o" title="Descendre" onclick="bougerEtapeProc(${i},1)" ${i === n - 1 ? 'disabled' : ''}>↓</button>
+        <button class="pe-o" title="Insérer une étape juste après" onclick="ajouterEtapeProc(${i + 1})">+</button>
+        <button class="pe-o ret" title="Retirer cette étape" onclick="retirerEtapeProc(${i})">×</button>
+      </div>
+    </div>
+    <div class="form">
+      ${ch(`pe-${i}-qui`, "Qui agit", e.qui, "Médecin, CPTS, SOS Médecins, IDEL, Prestataire…")}
+      ${ch(`pe-${i}-t`, "Ce qu'on fait", e.t, "En une ligne : c'est elle qui part sur la fiche PDF.")}
+      ${za(`pe-${i}-d`, "Le détail", e.d, "Ce qu'on lit à l'écran quand on a le temps. Ne part pas sur la fiche PDF.")}
+      ${ch(`pe-${i}-note`, "Remarque en jaune (facultatif)", e.note,
+        "Un point que la procédure ne tranche pas encore. S'affiche en encadré jaune.")}
+    </div>
+
+    <label class="pe-pose"><input type="checkbox" id="pe-${i}-pose" ${pose ? 'checked' : ''}
+      onchange="basculerQuestionProc(${i})"> <span>Cette étape pose une question (oui / non)</span></label>
+
+    ${pose ? `<div class="pe-q">
+      ${ch(`pe-${i}-q`, "La question posée", e.q, "Elle s'affiche en gras sous l'étape.")}
+      <div class="pe-rep oui">
+        <div class="pe-r">Si OUI</div>
+        <div class="form">
+          ${ch(`pe-${i}-oui-t`, "Ce qu'on fait", e.oui.t)}
+          ${za(`pe-${i}-oui-d`, "Le détail", e.oui.d)}
+          ${ch(`pe-${i}-oui-issue`, "Ce que devient la demande", issue('oui'),
+            "Écrire « On continue à l'étape 5 » pour renvoyer à la suite, ou par exemple « La procédure s'arrête ici » si la branche se termine.")}
+        </div>
+      </div>
+      <div class="pe-rep non">
+        <div class="pe-r">Si NON</div>
+        <div class="form">
+          ${ch(`pe-${i}-non-t`, "Ce qu'on fait", e.non.t)}
+          ${za(`pe-${i}-non-d`, "Le détail", e.non.d)}
+          ${ch(`pe-${i}-non-issue`, "Ce que devient la demande", issue('non'),
+            "Même règle : « On continue à l'étape 6 », ou ce qui met fin à la branche.")}
+          ${ch(`pe-${i}-non-suite-t`, "Et si ça ne marche toujours pas (facultatif)",
+            e.non.suite ? e.non.suite.t : '', "Le rattrapage d'un « non » qui rebondit avant de sortir.")}
+          ${za(`pe-${i}-non-suite-d`, "Le détail de ce rattrapage", e.non.suite ? e.non.suite.d : '')}
+        </div>
+      </div>
+    </div>` : ''}
+  </div>`;
 }
 
 /* La liste : ce qui doit suffire à choisir sans ouvrir. La question
    posée est toujours la même — d'où part la demande. */
 function listeProc(){
-  return `<h2>Procédures en vigueur <span class="cpt-h">${PROC_REHYD.length} procédures</span></h2>
+  const L = lesProc();
+  return `<h2>Procédures en vigueur <span class="cpt-h">${L.length} procédure${L.length > 1 ? 's' : ''}</span></h2>
   <p class="sous-h">Deux procédures de réhydratation à domicile sont en vigueur sur le territoire. Elles se choisissent sur un seul critère : <strong>d'où part la demande</strong>. Le reste en découle — qui a le matériel en main, qui le fait venir, et qui rappelle qui à la fin. Ouvrir une procédure, c'est en avoir le déroulé complet, étape par étape, avec ce qu'on fait à chaque réponse.</p>
   <div class="pr-choix">
-    ${PROC_REHYD.map(p => `
+    ${L.map(p => `
       <button class="pr-b" onclick="ouvrirProc('${p.id}')">
         <div class="rang">${esc(p.rang)}</div>
         <div class="nom">${esc(p.nom)}</div>
-        <div class="quand">${p.quand}</div>
+        <div class="quand">${esc(p.quand)}</div>
         <div class="pied-b">
           <span>${p.etapes.length} étapes</span>
           <span>${p.etapes.filter(e => e.q).length} décisions</span>
@@ -7661,7 +8316,7 @@ function listeProc(){
       </button>`).join('')}
   </div>
   <div class="barre-h" style="margin-top:14px">
-    <button class="btn" onclick="pdfProc(PROC_REHYD.map(p => p.id))"
+    <button class="btn" onclick="pdfProc(lesProc().map(p => p.id))"
       title="Ouvre la boîte d'impression : choisir « Enregistrer au format PDF »">Télécharger les deux en PDF — 1 page chacune</button>
   </div>
   <div class="carte" style="margin-top:16px">
@@ -7677,21 +8332,24 @@ function derouleProc(p){
   if(!p) return listeProc();
   return `<button class="retour-m" onclick="ouvrirProc(null)">Revenir aux deux procédures</button>
   <h2>${esc(p.nom)}</h2>
-  <p class="sous-h">${p.quand}</p>
+  <p class="sous-h">${esc(p.quand)}</p>
   <div class="pr-tete">
     <div class="rang">${esc(p.rang)} — réhydratation à domicile</div>
-    <div class="l"><span class="k">Le matériel</span>${p.materiel}</div>
+    <div class="l"><span class="k">Le matériel</span>${esc(p.materiel)}</div>
     <div class="l"><span class="k">Le rôle de la CPTS</span>${esc(p.role)}</div>
     <div class="l"><span class="k">Numéro à appeler</span><a href="${telLien(p.appel)}">${esc(p.appel)}</a>${
       p.appelNote ? ` — ${esc(p.appelNote)}` : ''}</div>
   </div>
+  <div class="pr-actes">
+    <button class="btn" onclick="pdfProc('${p.id}')"
+      title="Ouvre la boîte d'impression : choisir « Enregistrer au format PDF »">Télécharger en PDF — 1 page</button>
+    <button class="btn sec" onclick="modifierProc('${p.id}')">Modifier la procédure</button>
+    <button class="btn sec" onclick="imprimer()">Imprimer le déroulé détaillé</button>
+  </div>
   <div class="pr-flux">
     ${p.etapes.map((e,i) => (i ? '<div class="pr-fl">▼</div>' : '') + etapeProc(e, i + 1)).join('')}
   </div>
-  <div class="barre-h" style="margin-top:16px">
-    <button class="btn" onclick="pdfProc('${p.id}')"
-      title="Ouvre la boîte d'impression : choisir « Enregistrer au format PDF »">Télécharger en PDF — 1 page</button>
-    <button class="btn sec" onclick="imprimer()">Imprimer le déroulé détaillé</button>
+  <div class="pr-actes" style="margin:16px 0 0">
     <button class="btn sec" onclick="ouvrirProc(null)">Voir l'autre procédure</button>
   </div>`;
 }
@@ -7811,22 +8469,21 @@ function issueBranche(b){
 function etapeProc(e, n){
   const branches = e.q ? `
     <div class="pr-br">
-      <div class="pr-r oui"><div class="rep">Oui</div><div class="t">${e.oui.t}</div>
-        <div class="d">${e.oui.d}</div>
+      <div class="pr-r oui"><div class="rep">Oui</div><div class="t">${esc(e.oui.t)}</div>
+        <div class="d">${esc(e.oui.d)}</div>
         ${issueBranche(e.oui)}</div>
-      <div class="pr-r non"><div class="rep">Non</div><div class="t">${e.non.t}</div>
-        <div class="d">${e.non.d}</div>
+      <div class="pr-r non"><div class="rep">Non</div><div class="t">${esc(e.non.t)}</div>
+        <div class="d">${esc(e.non.d)}</div>
         ${e.non.suite ? `<div class="suite"><div class="st">${esc(e.non.suite.t)}</div>
           <div class="sd">${esc(e.non.suite.d)}</div></div>` : ''}
         ${issueBranche(e.non)}</div>
     </div>` : '';
   return `<div class="pr-et${e.q ? ' q' : ''}">
     <div class="n">${n}</div>
-  if(moduleRehyd === 'medecins')   return retourRehyd() + carteMedecins();
     <div class="c">
       <span class="qui">${esc(e.qui)}</span>
       <div class="t">${esc(e.t)}</div>
-      <div class="d">${e.d}</div>
+      <div class="d">${esc(e.d)}</div>
       ${e.q ? `<div class="d"><strong>${esc(e.q)}</strong></div>` : ''}
       ${e.note ? `<div class="rq">${esc(e.note)}</div>` : ''}
     </div>
@@ -7840,7 +8497,6 @@ function cartePharmacies(ph){
   const parts = ph.filter(p => p.statut === 'Partenaire').length;
   const contact = ph.filter(p => p.statut === 'Contactée').length;
   const aFaire = ph.filter(p => !p.statut || p.statut === 'À contacter').length;
-  const med = carnetMedecins();
   const pts = pointsPharmacies(ph);
   /* La liste se lit dans l'ordre où elle sert : celles qui délivrent
      d'abord, celles qu'il reste à appeler ensuite, celles qui ne
@@ -7881,18 +8537,6 @@ function cartePharmacies(ph){
       <button class="btn sec" onclick="imprimer()">PDF</button>
       <button class="btn" onclick="ouvrirAjout('pharmacies')">Ajouter une pharmacie</button>
     </div>
-
-    <button class="module" onclick="allerModuleRehyd('medecins')">
-      <div class="titre-m">Liste des médecins qui ont orienté</div>
-      <p class="sous-m">Les médecins du territoire qui ont signalé au moins une personne, avec leur adresse et leur téléphone. La liste ne se saisit pas : un médecin s'y ajoute de lui-même au premier signalement qu'il fait, et c'est elle qu'on ouvre pour le rappeler quand le circuit se bloque.</p>
-      <div class="chiffres">
-        <div><strong>${med.length}</strong> médecin${med.length>1?'s':''} déclarant${med.length>1?'s':''}</div>
-        ${med.filter(m => !m.tel).length
-          ? `<div><strong class="alerte">${med.filter(m => !m.tel).length}</strong> sans téléphone noté</div>`
-          : `<div><strong>${med.reduce((n,m) => n + m.n, 0)}</strong> signalements</div>`}
-      </div>
-      <div class="entrer">Ouvrir le module →</div>
-    </button>
     ${ph.length ? `<div class="rh-l">${rangees.map(fichePharma).join('')}</div>`
       : `<p class="vide">Rien à afficher pour le moment. La première officine appelée ouvre le recensement.</p>`}`;
 }
@@ -7909,7 +8553,9 @@ function fichePharma(p){
     ${p.adresse || p.commune ? `<div class="meta">${esc([p.adresse, p.commune].filter(Boolean).join(' · '))}${
       p.geoEchec && p.geoEchec === cleGeo(p) ? ` — <strong>adresse non retrouvée</strong>, à corriger` : ''}</div>` : ''}
     <div class="champs">
-      ${p.interlocuteur ? `<div><span class="k">Interlocuteur</span><span class="v">${esc(p.interlocuteur)}</span></div>` : ''}
+      ${p.interlocuteur || p.telInterlocuteur ? `<div><span class="k">Interlocuteur</span><span class="v">${
+        esc(p.interlocuteur || 'Nom non renseigné')}${p.telInterlocuteur
+          ? ` — <a class="tel" href="${esc(telLien(p.telInterlocuteur))}">${esc(p.telInterlocuteur)}</a>` : ''}</span></div>` : ''}
       ${p.horaires ? `<div><span class="k">Horaires</span><span class="v">${esc(p.horaires)}</span></div>` : ''}
       ${p.portage && p.portage !== 'À préciser' ? `<div><span class="k">Portage à domicile</span><span class="v">${esc(p.portage)}</span></div>` : ''}
       ${p.mail ? `<div><span class="k">Courriel</span><span class="v">${esc(p.mail)}</span></div>` : ''}
@@ -7917,11 +8563,16 @@ function fichePharma(p){
     ${p.stock ? `<div class="meta"><span class="k">Tient à disposition</span>${esc(p.stock)}</div>` : ''}
     ${p.note ? `<div class="meta">${esc(p.note)}</div>` : ''}
     <div class="barre">
-      ${p.tel ? `<a class="tel" href="${esc(telLien(p.tel))}">Appeler ${esc(p.tel)}</a>` : ''}
-      ${situable ? `<button class="btn sec" onclick="situerPharma('${p.id}')">Situer sur la carte</button>` : ''}
-      ${p.adresse ? `<a class="tel" href="${esc(lienCarte(p.adresse, p.commune))}" target="_blank" rel="noopener">Itinéraire</a>` : ''}
-      <button class="btn sec" onclick="ouvrirEdition('pharmacies','${p.id}')">Modifier</button>
-      <button class="sup-m" title="Retirer du recensement" onclick="supprimer('pharmacies','${p.id}')">×</button>
+      <div class="actes">
+        ${p.tel ? `<a class="btn" href="${esc(telLien(p.tel))}">Appeler l'officine — ${esc(p.tel)}</a>` : ''}
+        ${situable ? `<button class="btn sec" onclick="situerPharma('${p.id}')">Situer sur la carte ci-dessus</button>` : ''}
+        ${p.adresse ? `<a class="btn sec" href="${esc(lienCarte(p.adresse, p.commune))}" target="_blank" rel="noopener"
+          title="Ouvre l'itinéraire vers l'officine dans votre application de cartes">Itinéraire ↗</a>` : ''}
+      </div>
+      <div class="fin">
+        <button class="btn sec" onclick="ouvrirEdition('pharmacies','${p.id}')">Modifier</button>
+        <button class="sup-m" title="Retirer du recensement" onclick="supprimer('pharmacies','${p.id}')">×</button>
+      </div>
     </div>
   </div>`;
 }
@@ -8027,12 +8678,89 @@ function fichePatient(o){
     ${idel}
     ${o.note ? `<div class="meta">${esc(o.note)}</div>` : ''}
     <div class="barre">
-      <button class="btn" onclick="ouvrirIdel('${o.id}')">${estAffecte(o) ? 'Changer le cabinet IDEL' : 'Désigner le cabinet IDEL'}</button>
-      ${situable ? `<button class="btn sec" onclick="situerPatient('${o.id}')">Situer sur la carte</button>` : ''}
-      <button class="btn sec" onclick="ouvrirEdition('rehyd','${o.id}')">Modifier</button>
-      <button class="sup-m" title="Retirer du registre" onclick="supprimer('rehyd','${o.id}')">×</button>
+      <div class="actes">
+        <button class="btn" onclick="ouvrirIdel('${o.id}')">${estAffecte(o) ? 'Changer le cabinet IDEL' : 'Désigner le cabinet IDEL'}</button>
+        ${situable ? `<button class="btn sec" onclick="situerPatient('${o.id}')">Situer sur la carte ci-dessus</button>` : ''}
+      </div>
+      <div class="fin">
+        <button class="btn sec" onclick="ouvrirEdition('rehyd','${o.id}')">Modifier</button>
+        <button class="sup-m" title="Retirer du registre" onclick="supprimer('rehyd','${o.id}')">×</button>
+      </div>
     </div>
   </div>`;
+}
+
+/* --- Module 4 : les médecins qui ont orienté --------------
+   Rien ne se saisit ici, et c'est le principe : la liste se relit
+   des signalements eux-mêmes, un médecin de plus dès qu'un nom
+   nouveau apparaît en tête d'une fiche. Il n'y a donc pas de
+   fichier de médecins à tenir à jour à côté du registre, et rien
+   qui puisse le contredire.
+
+   C'est la page qu'on ouvre pour rappeler celui qui a déclaré
+   quand aucun cabinet infirmier n'est identifié — la procédure
+   renvoie à lui, et lui seul sait quel cabinet suit la personne. */
+function carteMedecins(){
+  const med = carnetMedecins();
+  const sansTel = med.filter(m => !m.tel).length;
+  const total = med.reduce((n,m) => n + m.n, 0);
+
+  return `<h2>Liste des médecins qui ont orienté
+    <span class="cpt-h">${med.length} médecin${med.length>1?'s':''}</span></h2>
+  <p class="sous-h">Les médecins du territoire qui ont signalé au moins une personne pour une réhydratation à domicile, avec l'adresse et le téléphone notés sur leurs signalements. La liste se remplit d'elle-même : elle n'a pas de saisie propre, et c'est elle que le formulaire de signalement propose à la frappe pour ne pas redemander deux fois les mêmes coordonnées.</p>
+    <div class="compteurs" style="margin-bottom:16px">
+      <div class="compteur"><div class="n">${med.length}</div><div class="l">médecins déclarants</div></div>
+      <div class="compteur"><div class="n">${total}</div><div class="l">personnes signalées par eux</div></div>
+      <div class="compteur"><div class="n">${sansTel}</div><div class="l">sans téléphone noté</div></div>
+    </div>
+    ${sansTel ? `<div class="note">${sansTel} médecin${sansTel>1?'s':''} sans numéro de téléphone : ${sansTel>1?'ils sont':'il est'} injoignable${sansTel>1?'s':''} si le circuit se bloque. Le numéro se rattrape en modifiant l'un de ${sansTel>1?'leurs':'ses'} signalements, et il revient ensuite tout seul sur les suivants.</div>` : ''}
+    <div class="barre-h">
+      <span class="cpt-h">${med.length ? `${total} signalement${total>1?'s':''} au total` : 'aucun signalement'}</span>
+      ${med.length ? `<button class="btn sec" onclick="exporterMedecins()">Excel</button>` : ''}
+      <button class="btn sec" onclick="imprimer()">PDF</button>
+      <button class="btn" onclick="allerModuleRehyd('patients')">Voir les personnes signalées</button>
+    </div>
+    ${med.length ? `<div class="rh-l">${med.map(ficheMedecin).join('')}</div>`
+      : `<p class="vide">Rien à afficher pour le moment. Le premier médecin qui signale une personne ouvre la liste.</p>`}`;
+}
+
+function ficheMedecin(m){
+  /* Les initiales des personnes qu'il a signalées : c'est tout ce que
+     le registre porte, et c'est assez pour retrouver la fiche. */
+  const qui = m.patients.map(o => String(o.nom || '').trim()).filter(Boolean);
+  return `<div class="rh-c ${m.tel ? 'ok' : 'attente'}">
+    <div class="haut">
+      <div class="nom">${esc(m.nom)}</div>
+      <span class="etiq e-cours">${m.n} signalement${m.n>1?'s':''}</span>
+    </div>
+    ${m.dernier ? `<div class="meta">Dernier signalement le ${frdateL(m.dernier)}</div>` : ''}
+    <div class="champs">
+      <div><span class="k">Téléphone</span><span class="v">${m.tel
+        ? `<a class="tel" href="${esc(telLien(m.tel))}">${esc(m.tel)}</a>` : 'non renseigné'}</span></div>
+      <div><span class="k">Adresse</span><span class="v">${m.adresse ? esc(m.adresse) : 'non renseignée'}</span></div>
+    </div>
+    ${qui.length ? `<div class="meta"><span class="k">Personnes signalées</span>${esc(qui.join(' · '))}</div>` : ''}
+    ${m.tel || m.adresse ? `<div class="barre">
+      <div class="actes">
+        ${m.tel ? `<a class="btn" href="${esc(telLien(m.tel))}">Appeler — ${esc(m.tel)}</a>` : ''}
+        ${m.adresse ? `<a class="btn sec" href="${esc(lienCarte(m.adresse, ''))}" target="_blank" rel="noopener"
+          title="Ouvre l'itinéraire vers le cabinet dans votre application de cartes">Itinéraire ↗</a>` : ''}
+      </div>
+    </div>` : ''}
+  </div>`;
+}
+
+/* Le carnet en fichier : un médecin par ligne, avec ce qu'on a pour
+   le joindre. Il n'y a pas de registre derrière — l'export se
+   fabrique de la même relecture que la liste à l'écran. */
+function exporterMedecins(){
+  const rows = [['Médecin','Adresse','Téléphone','Personnes signalées',
+                 'Dernier signalement','Initiales des personnes signalées'].map(csvVal)];
+  carnetMedecins().forEach(m => rows.push([
+    m.nom, m.adresse, m.tel, m.n, m.dernier,
+    m.patients.map(o => String(o.nom || '').trim()).filter(Boolean).join(' · ')
+  ].map(csvVal)));
+  telechargerCSV("Médecins qui ont orienté", rows);
 }
 
 /* --- Désigner le cabinet infirmier -----------------------
@@ -8148,76 +8876,3 @@ charger();
 </script>
 </body>
 </html>
-/* --- Module 4 : les médecins qui ont orienté --------------
-   Rien ne se saisit ici, et c'est le principe : la liste se relit
-   des signalements eux-mêmes, un médecin de plus dès qu'un nom
-   nouveau apparaît en tête d'une fiche. Il n'y a donc pas de
-   fichier de médecins à tenir à jour à côté du registre, et rien
-   qui puisse le contredire.
-
-   C'est la page qu'on ouvre pour rappeler celui qui a déclaré
-   quand aucun cabinet infirmier n'est identifié — la procédure
-   renvoie à lui, et lui seul sait quel cabinet suit la personne. */
-function carteMedecins(){
-  const med = carnetMedecins();
-  const sansTel = med.filter(m => !m.tel).length;
-  const total = med.reduce((n,m) => n + m.n, 0);
-
-  return `<h2>Liste des médecins qui ont orienté
-    <span class="cpt-h">${med.length} médecin${med.length>1?'s':''}</span></h2>
-  <p class="sous-h">Les médecins du territoire qui ont signalé au moins une personne pour une réhydratation à domicile, avec l'adresse et le téléphone notés sur leurs signalements. La liste se remplit d'elle-même : elle n'a pas de saisie propre, et c'est elle que le formulaire de signalement propose à la frappe pour ne pas redemander deux fois les mêmes coordonnées.</p>
-    <div class="compteurs" style="margin-bottom:16px">
-      <div class="compteur"><div class="n">${med.length}</div><div class="l">médecins déclarants</div></div>
-      <div class="compteur"><div class="n">${total}</div><div class="l">personnes signalées par eux</div></div>
-      <div class="compteur"><div class="n">${sansTel}</div><div class="l">sans téléphone noté</div></div>
-    </div>
-    ${sansTel ? `<div class="note">${sansTel} médecin${sansTel>1?'s':''} sans numéro de téléphone : ${sansTel>1?'ils sont':'il est'} injoignable${sansTel>1?'s':''} si le circuit se bloque. Le numéro se rattrape en modifiant l'un de ${sansTel>1?'leurs':'ses'} signalements, et il revient ensuite tout seul sur les suivants.</div>` : ''}
-    <div class="barre-h">
-      <span class="cpt-h">${med.length ? `${total} signalement${total>1?'s':''} au total` : 'aucun signalement'}</span>
-      ${med.length ? `<button class="btn sec" onclick="exporterMedecins()">Excel</button>` : ''}
-      <button class="btn sec" onclick="imprimer()">PDF</button>
-      <button class="btn" onclick="allerModuleRehyd('patients')">Voir les personnes signalées</button>
-    </div>
-    ${med.length ? `<div class="rh-l">${med.map(ficheMedecin).join('')}</div>`
-      : `<p class="vide">Rien à afficher pour le moment. Le premier médecin qui signale une personne ouvre la liste.</p>`}`;
-}
-
-function ficheMedecin(m){
-  /* Les initiales des personnes qu'il a signalées : c'est tout ce que
-     le registre porte, et c'est assez pour retrouver la fiche. */
-  const qui = m.patients.map(o => String(o.nom || '').trim()).filter(Boolean);
-  return `<div class="rh-c ${m.tel ? 'ok' : 'attente'}">
-    <div class="haut">
-      <div class="nom">${esc(m.nom)}</div>
-      <span class="etiq e-cours">${m.n} signalement${m.n>1?'s':''}</span>
-    </div>
-    ${m.dernier ? `<div class="meta">Dernier signalement le ${frdateL(m.dernier)}</div>` : ''}
-    <div class="champs">
-      <div><span class="k">Téléphone</span><span class="v">${m.tel
-        ? `<a class="tel" href="${esc(telLien(m.tel))}">${esc(m.tel)}</a>` : 'non renseigné'}</span></div>
-      <div><span class="k">Adresse</span><span class="v">${m.adresse ? esc(m.adresse) : 'non renseignée'}</span></div>
-    </div>
-    ${qui.length ? `<div class="meta"><span class="k">Personnes signalées</span>${esc(qui.join(' · '))}</div>` : ''}
-    ${m.tel || m.adresse ? `<div class="barre">
-      <div class="actes">
-        ${m.tel ? `<a class="btn" href="${esc(telLien(m.tel))}">Appeler — ${esc(m.tel)}</a>` : ''}
-        ${m.adresse ? `<a class="btn sec" href="${esc(lienCarte(m.adresse, ''))}" target="_blank" rel="noopener"
-          title="Ouvre l'itinéraire vers le cabinet dans votre application de cartes">Itinéraire ↗</a>` : ''}
-      </div>
-    </div>` : ''}
-  </div>`;
-}
-
-/* Le carnet en fichier : un médecin par ligne, avec ce qu'on a pour
-   le joindre. Il n'y a pas de registre derrière — l'export se
-   fabrique de la même relecture que la liste à l'écran. */
-function exporterMedecins(){
-  const rows = [['Médecin','Adresse','Téléphone','Personnes signalées',
-                 'Dernier signalement','Initiales des personnes signalées'].map(csvVal)];
-  carnetMedecins().forEach(m => rows.push([
-    m.nom, m.adresse, m.tel, m.n, m.dernier,
-    m.patients.map(o => String(o.nom || '').trim()).filter(Boolean).join(' · ')
-  ].map(csvVal)));
-  telechargerCSV("Médecins qui ont orienté", rows);
-}
-
