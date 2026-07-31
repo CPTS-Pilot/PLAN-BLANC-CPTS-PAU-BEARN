@@ -3299,8 +3299,9 @@ const CHAMPS = {
       {c:'motif', l:"Motif", t:'text', large:true, sugg:RH_MOTIFS},
       {t:'titre', l:"Le médecin qui déclare",
        sous:"Celui qu'on rappelle si le circuit se bloque."},
-      {c:'decNom', l:"Nom du médecin qui déclare", t:'text', large:true,
-       sugg:() => dejaVus('rehyd','decNom')},
+      {c:'decNom', l:"Nom du médecin qui déclare", t:'carnet', large:true, ph:"Dr …",
+       carnet:{liste:() => carnetMedecins(), remplit:{decAdresse:'adresse', decTel:'tel'}},
+       aide:"Les médecins qui ont déjà signalé quelqu'un sont proposés dès les premières lettres. En reprendre un ramène son adresse et son téléphone tels qu'ils avaient été notés — les deux champs restent modifiables, et ce qu'on y écrit à la main n'est jamais écrasé."},
       {c:'decAdresse', l:"Adresse du médecin", t:'text', large:true},
       {c:'decTel', l:"Téléphone du médecin", t:'text'},
       {t:'titre', l:"Le cabinet infirmier libéral",
@@ -3412,6 +3413,64 @@ function ouvrirAjout(k, mode){
    « non » repartirait quand même au registre. */
 function majDependances(){
   document.querySelectorAll('.form [data-dep]').forEach(el => {
+/* Le carnet des médecins qui ont orienté : un nom, l'adresse et le
+   numéro qu'on avait notés pour le joindre, et combien de personnes
+   il a signalées. Il ne se saisit nulle part — il se relit à chaque
+   fois depuis les signalements eux-mêmes, ce qui évite d'avoir un
+   fichier de médecins à tenir à jour en plus du registre.
+
+   Les signalements sont parcourus du plus ancien au plus récent :
+   pour un même médecin, c'est la dernière adresse et le dernier
+   numéro renseignés qui restent, et un champ laissé vide n'efface
+   pas ce qui avait été noté la fois d'avant. */
+function carnetMedecins(){
+  const quand = o => String(o.date || '') + ' ' + cleHeure(o.heure);
+  const par = new Map();
+  [...(etat.rehyd || [])].sort((a,b) => quand(a).localeCompare(quand(b))).forEach(o => {
+    const nom = String(o.decNom || '').trim();
+    if(!nom) return;
+    const cle = nom.toLowerCase();
+    /* L'orthographe retenue est celle du premier signalement : c'est
+       elle que le champ propose ensuite, et « dr untel » tapé vite un
+       soir ne vient pas remplacer le nom écrit proprement. */
+    const m = par.get(cle) || {nom, adresse:'', tel:'', n:0, dernier:'', patients:[]};
+    const a = String(o.decAdresse || '').trim(), t = String(o.decTel || '').trim();
+    if(a) m.adresse = a;
+    if(t) m.tel = t;
+    m.n++;
+    if(o.date) m.dernier = o.date;
+    m.patients.push(o);
+    par.set(cle, m);
+  });
+  return [...par.values()].sort((x,y) => x.nom.localeCompare(y.nom,'fr'));
+}
+
+/* Un nom repris dans le carnet ramène avec lui ce qu'on avait noté
+   pour joindre ce médecin. Deux règles, et elles tiennent en une
+   phrase : on ne réécrit jamais par-dessus ce qui a été tapé à la
+   main, et ce que le carnet a rempli lui-même se corrige tout seul
+   si on change de médecin en cours de saisie. */
+function reprendreCarnet(k, c, el){
+  const f = (CHAMPS[k].f || []).find(x => x.c === c);
+  if(!f || !f.carnet) return;
+  const saisi = String(el.value || '').trim().toLowerCase();
+  const fiche = saisi ? f.carnet.liste().find(x => String(x.nom || '').trim().toLowerCase() === saisi) : null;
+  Object.keys(f.carnet.remplit).forEach(champ => {
+    const cible = document.getElementById(`f-${k}-${champ}`);
+    if(!cible) return;
+    /* Saisi à la main : intouchable, même si le carnet dit autre
+       chose. C'est celui qui remplit la fiche qui a le dernier mot. */
+    if(cible.value && cible.dataset.carnet !== '1') return;
+    const v = fiche ? String(fiche[f.carnet.remplit[champ]] || '') : '';
+    cible.value = v;
+    if(v){
+      cible.dataset.carnet = '1';
+      /* Dès qu'on y touche, le champ cesse d'appartenir au carnet. */
+      cible.oninput = () => { delete cible.dataset.carnet; };
+    }else delete cible.dataset.carnet;
+  });
+}
+
     const src = document.getElementById(el.dataset.dep);
     const attendu = String(el.dataset.depv || '').split('|');
     const montrer = !!src && attendu.indexOf(String(src.value ?? '').trim()) >= 0;
@@ -3810,6 +3869,16 @@ function tableau(k){
          || c === 'verifieLe') v = frdate(v);
       if(typeof v === 'string' && /^https?:\/\//.test(v))
         return `<td><a href="${esc(v)}" target="_blank" rel="noopener">Ouvrir</a></td>`;
+    /* Un nom déjà passé par le registre : il se propose à la frappe,
+       sans fermer le champ — un médecin qui déclare pour la première
+       fois s'y écrit comme avant, et rejoint le carnet du même coup.
+       Le reprendre ramène ce qu'on avait noté pour le joindre. */
+    else if(f.t === 'carnet'){
+      const l = f.carnet.liste();
+      h += `<input type="text" id="${id}" list="${id}-l" value="${esc(val)}" autocomplete="off"${ph}`
+        +  ` oninput="reprendreCarnet('${k}','${f.c}',this)">`
+        +  `<datalist id="${id}-l">${l.map(x => `<option value="${esc(x.nom)}"></option>`).join('')}</datalist>`;
+    }
       return `<td>${esc(v) || '—'}</td>`;
     }).join('') + `<td class="act">${fleches(k, l.id, i, lignes.length)}<button title="Modifier" onclick="ouvrirEdition('${k}','${l.id}')">✎</button><button title="Supprimer" onclick="supprimer('${k}','${l.id}')">×</button></td></tr>`;
   });
@@ -7753,6 +7822,7 @@ function etapeProc(e, n){
     </div>` : '';
   return `<div class="pr-et${e.q ? ' q' : ''}">
     <div class="n">${n}</div>
+  if(moduleRehyd === 'medecins')   return retourRehyd() + carteMedecins();
     <div class="c">
       <span class="qui">${esc(e.qui)}</span>
       <div class="t">${esc(e.t)}</div>
@@ -7770,6 +7840,7 @@ function cartePharmacies(ph){
   const parts = ph.filter(p => p.statut === 'Partenaire').length;
   const contact = ph.filter(p => p.statut === 'Contactée').length;
   const aFaire = ph.filter(p => !p.statut || p.statut === 'À contacter').length;
+  const med = carnetMedecins();
   const pts = pointsPharmacies(ph);
   /* La liste se lit dans l'ordre où elle sert : celles qui délivrent
      d'abord, celles qu'il reste à appeler ensuite, celles qui ne
@@ -7810,6 +7881,18 @@ function cartePharmacies(ph){
       <button class="btn sec" onclick="imprimer()">PDF</button>
       <button class="btn" onclick="ouvrirAjout('pharmacies')">Ajouter une pharmacie</button>
     </div>
+
+    <button class="module" onclick="allerModuleRehyd('medecins')">
+      <div class="titre-m">Liste des médecins qui ont orienté</div>
+      <p class="sous-m">Les médecins du territoire qui ont signalé au moins une personne, avec leur adresse et leur téléphone. La liste ne se saisit pas : un médecin s'y ajoute de lui-même au premier signalement qu'il fait, et c'est elle qu'on ouvre pour le rappeler quand le circuit se bloque.</p>
+      <div class="chiffres">
+        <div><strong>${med.length}</strong> médecin${med.length>1?'s':''} déclarant${med.length>1?'s':''}</div>
+        ${med.filter(m => !m.tel).length
+          ? `<div><strong class="alerte">${med.filter(m => !m.tel).length}</strong> sans téléphone noté</div>`
+          : `<div><strong>${med.reduce((n,m) => n + m.n, 0)}</strong> signalements</div>`}
+      </div>
+      <div class="entrer">Ouvrir le module →</div>
+    </button>
     ${ph.length ? `<div class="rh-l">${rangees.map(fichePharma).join('')}</div>`
       : `<p class="vide">Rien à afficher pour le moment. La première officine appelée ouvre le recensement.</p>`}`;
 }
@@ -8065,3 +8148,76 @@ charger();
 </script>
 </body>
 </html>
+/* --- Module 4 : les médecins qui ont orienté --------------
+   Rien ne se saisit ici, et c'est le principe : la liste se relit
+   des signalements eux-mêmes, un médecin de plus dès qu'un nom
+   nouveau apparaît en tête d'une fiche. Il n'y a donc pas de
+   fichier de médecins à tenir à jour à côté du registre, et rien
+   qui puisse le contredire.
+
+   C'est la page qu'on ouvre pour rappeler celui qui a déclaré
+   quand aucun cabinet infirmier n'est identifié — la procédure
+   renvoie à lui, et lui seul sait quel cabinet suit la personne. */
+function carteMedecins(){
+  const med = carnetMedecins();
+  const sansTel = med.filter(m => !m.tel).length;
+  const total = med.reduce((n,m) => n + m.n, 0);
+
+  return `<h2>Liste des médecins qui ont orienté
+    <span class="cpt-h">${med.length} médecin${med.length>1?'s':''}</span></h2>
+  <p class="sous-h">Les médecins du territoire qui ont signalé au moins une personne pour une réhydratation à domicile, avec l'adresse et le téléphone notés sur leurs signalements. La liste se remplit d'elle-même : elle n'a pas de saisie propre, et c'est elle que le formulaire de signalement propose à la frappe pour ne pas redemander deux fois les mêmes coordonnées.</p>
+    <div class="compteurs" style="margin-bottom:16px">
+      <div class="compteur"><div class="n">${med.length}</div><div class="l">médecins déclarants</div></div>
+      <div class="compteur"><div class="n">${total}</div><div class="l">personnes signalées par eux</div></div>
+      <div class="compteur"><div class="n">${sansTel}</div><div class="l">sans téléphone noté</div></div>
+    </div>
+    ${sansTel ? `<div class="note">${sansTel} médecin${sansTel>1?'s':''} sans numéro de téléphone : ${sansTel>1?'ils sont':'il est'} injoignable${sansTel>1?'s':''} si le circuit se bloque. Le numéro se rattrape en modifiant l'un de ${sansTel>1?'leurs':'ses'} signalements, et il revient ensuite tout seul sur les suivants.</div>` : ''}
+    <div class="barre-h">
+      <span class="cpt-h">${med.length ? `${total} signalement${total>1?'s':''} au total` : 'aucun signalement'}</span>
+      ${med.length ? `<button class="btn sec" onclick="exporterMedecins()">Excel</button>` : ''}
+      <button class="btn sec" onclick="imprimer()">PDF</button>
+      <button class="btn" onclick="allerModuleRehyd('patients')">Voir les personnes signalées</button>
+    </div>
+    ${med.length ? `<div class="rh-l">${med.map(ficheMedecin).join('')}</div>`
+      : `<p class="vide">Rien à afficher pour le moment. Le premier médecin qui signale une personne ouvre la liste.</p>`}`;
+}
+
+function ficheMedecin(m){
+  /* Les initiales des personnes qu'il a signalées : c'est tout ce que
+     le registre porte, et c'est assez pour retrouver la fiche. */
+  const qui = m.patients.map(o => String(o.nom || '').trim()).filter(Boolean);
+  return `<div class="rh-c ${m.tel ? 'ok' : 'attente'}">
+    <div class="haut">
+      <div class="nom">${esc(m.nom)}</div>
+      <span class="etiq e-cours">${m.n} signalement${m.n>1?'s':''}</span>
+    </div>
+    ${m.dernier ? `<div class="meta">Dernier signalement le ${frdateL(m.dernier)}</div>` : ''}
+    <div class="champs">
+      <div><span class="k">Téléphone</span><span class="v">${m.tel
+        ? `<a class="tel" href="${esc(telLien(m.tel))}">${esc(m.tel)}</a>` : 'non renseigné'}</span></div>
+      <div><span class="k">Adresse</span><span class="v">${m.adresse ? esc(m.adresse) : 'non renseignée'}</span></div>
+    </div>
+    ${qui.length ? `<div class="meta"><span class="k">Personnes signalées</span>${esc(qui.join(' · '))}</div>` : ''}
+    ${m.tel || m.adresse ? `<div class="barre">
+      <div class="actes">
+        ${m.tel ? `<a class="btn" href="${esc(telLien(m.tel))}">Appeler — ${esc(m.tel)}</a>` : ''}
+        ${m.adresse ? `<a class="btn sec" href="${esc(lienCarte(m.adresse, ''))}" target="_blank" rel="noopener"
+          title="Ouvre l'itinéraire vers le cabinet dans votre application de cartes">Itinéraire ↗</a>` : ''}
+      </div>
+    </div>` : ''}
+  </div>`;
+}
+
+/* Le carnet en fichier : un médecin par ligne, avec ce qu'on a pour
+   le joindre. Il n'y a pas de registre derrière — l'export se
+   fabrique de la même relecture que la liste à l'écran. */
+function exporterMedecins(){
+  const rows = [['Médecin','Adresse','Téléphone','Personnes signalées',
+                 'Dernier signalement','Initiales des personnes signalées'].map(csvVal)];
+  carnetMedecins().forEach(m => rows.push([
+    m.nom, m.adresse, m.tel, m.n, m.dernier,
+    m.patients.map(o => String(o.nom || '').trim()).filter(Boolean).join(' · ')
+  ].map(csvVal)));
+  telechargerCSV("Médecins qui ont orienté", rows);
+}
+
