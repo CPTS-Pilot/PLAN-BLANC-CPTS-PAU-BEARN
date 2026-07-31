@@ -2183,17 +2183,102 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .proches .pr .d{font-size:12.5px;color:var(--texte-2)}
 .proches .pr .d strong{color:var(--texte);font-weight:600}
 .proches .a{font-size:11.5px;line-height:1.4;color:var(--texte-2);margin-top:8px}
-/* Le bilan du parcours : ce qui a été décidé, relu ligne à ligne
-   avant d'enregistrer. Deux colonnes sur large, empilées sur
-   téléphone — c'est là qu'on relit, souvent debout. */
-.bilan-p{border:1px solid var(--trait);border-radius:10px;background:#fff;overflow:hidden}
-.bilan-p .l{display:grid;grid-template-columns:190px 1fr;gap:12px;
-  padding:10px 14px;border-bottom:1px solid var(--trait)}
-.bilan-p .l:last-child{border-bottom:0}
-.bilan-p .l .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--texte-2);padding-top:3px}
-.bilan-p .l .v{font-size:14px;line-height:1.45;color:var(--texte)}
-@media(max-width:700px){.bilan-p .l{grid-template-columns:1fr;gap:3px}}
+/* --- Le bilan du parcours ---------------------------------
+   Une grille d'étiquettes en colonne se lit comme un formulaire de
+   plus : on la parcourt sans rien y voir. Le bilan se lit en trois
+   temps, et chacun a sa forme — de qui l'on parle, ce que chaque
+   question a répondu, ce que la fiche va devenir. On cherche le
+   premier et le dernier du regard, sans lire le milieu. */
+
+/* 1. La personne, en tête et en grand : c'est le seul endroit du
+      parcours où l'on vérifie qu'on a bien la bonne. */
+.bil-tete{border:1px solid var(--trait);border-left:3px solid var(--encre);
+  border-radius:11px;padding:15px 17px;
+  background:linear-gradient(175deg,var(--cobalt-clair) 0%,#fff 65%)}
+.bil-tete .n{font-family:var(--display);font-weight:700;font-size:21px;
+  color:var(--encre);line-height:1.2}
+.bil-tete .n .a{font-family:var(--corps);font-size:13.5px;font-weight:600;
+  color:var(--texte-2);margin-left:9px}
+.bil-tete .ou{font-size:14.5px;line-height:1.4;color:var(--texte);margin-top:6px}
+.bil-tete .ou.vide{color:var(--texte-2);font-style:italic}
+.bil-tete .d{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+.bil-tete .d span{font-size:12.5px;background:#fff;border:1px solid var(--trait);
+  border-radius:20px;padding:3px 11px;color:var(--texte-2)}
+
+/* 2. Les réponses, en fil : le parcours s'est déroulé dans cet
+      ordre, et le relire dans le même ordre évite de chercher où
+      l'on a répondu quoi. */
+.bil-fil{position:relative;margin-top:18px;padding-left:26px;
+  border-left:2px solid var(--trait)}
+.bil-fil .p{position:relative;padding-bottom:16px}
+.bil-fil .p:last-child{padding-bottom:0}
+.bil-fil .p::before{content:"";position:absolute;left:-34px;top:2px;
+  width:14px;height:14px;box-sizing:border-box;border-radius:50%;
+  background:#fff;border:2px solid var(--encre-2)}
+.bil-fil .k{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--texte-2);margin-bottom:3px}
+.bil-fil .v{display:block;font-size:15px;line-height:1.45;color:var(--texte)}
+
+/* 3. Ce que la fiche devient, dit par sa couleur avant d'être lu. */
+.bil-fin{margin-top:18px;border:1px solid;border-radius:11px;padding:14px 16px}
+.bil-fin .pastille{display:inline-block;font-family:var(--mono);font-size:9.5px;
+  letter-spacing:.09em;text-transform:uppercase;color:#fff;
+  border-radius:20px;padding:4px 11px;margin-bottom:9px}
+.bil-fin .t{font-family:var(--display);font-weight:700;font-size:15.5px;margin-bottom:4px}
+.bil-fin .d{font-size:13.5px;line-height:1.5;opacity:.92}
+.bil-fin.fait{background:#EAF3EF;border-color:#BFDCD0;color:#1F5B46}
+.bil-fin.fait .pastille{background:var(--stable)}
+.bil-fin.attente{background:#FCF3E4;border-color:#EBD6AC;color:#8A5D12}
+.bil-fin.attente .pastille{background:#B37A1C}
+.bil-fin.cours{background:var(--cobalt-clair);border-color:#C3D8F2;color:var(--encre)}
+.bil-fin.cours .pastille{background:var(--encre-2)}
+.bil-fin.clos{background:var(--surface);border-color:var(--trait);color:var(--texte-2)}
+.bil-fin.clos .pastille{background:#8494A9}
+
+/* --- Les boutons du parcours ------------------------------
+   Quatre boutons qui se ressemblent se valent, et on finit par
+   cliquer celui du milieu. Ils ne font pourtant pas la même chose :
+   l'un mène au bout, l'un revient sur ses pas, l'un met en pause,
+   l'un jette ce qui est saisi. Chacun prend donc la forme de ce
+   qu'il engage — et les deux qui font sortir du parcours se rangent
+   à part, de l'autre côté de la barre. */
+.actions-r{align-items:center}
+.actions-r .g{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+.actions-r .g.sorties{margin-left:auto}
+
+/* Ce qui fait avancer : plein, sombre, et seul de son espèce. */
+.btn.principal{box-shadow:0 1px 2px rgba(6,43,99,.22)}
+
+/* Revenir : la même encre, mais creux — c'est une navigation, pas
+   une décision. */
+.btn.retour{background:#fff;color:var(--encre);border:1px solid var(--trait);font-weight:600}
+.btn.retour:hover{border-color:var(--encre);background:var(--cobalt-clair)}
+.btn.retour .f{margin-right:8px;opacity:.5;font-size:17px;line-height:0}
+
+/* Mettre en pause : l'ambre du cockpit, celui de tout ce qui reste
+   en attente. On enregistre, mais on n'a pas fini. */
+.btn.pause{background:#FCF3E4;color:#8A5D12;border:1px solid #EBD6AC;font-weight:600}
+.btn.pause:hover{background:#F8E8CB;border-color:#D9BC85}
+
+/* Un autre chemin que celui qu'on propose : ni un pas en avant, ni
+   une sortie. Le trait pointillé dit qu'on quitte la voie normale
+   sans quitter le parcours. */
+.btn.autre{background:#fff;color:var(--texte-2);border:1px dashed var(--trait);font-weight:600}
+.btn.autre:hover{color:var(--encre);border-color:var(--encre-2);border-style:solid;
+  background:var(--cobalt-clair)}
+
+/* Jeter : rien qu'un mot gris, qui ne devient rouge qu'au moment
+   où la main s'en approche. */
+.btn.quitter{background:transparent;color:var(--texte-2);border:1px solid transparent;font-weight:500}
+.btn.quitter:hover{color:var(--braise);border-color:#E7C4BB;background:#FCF1EE}
+
+@media(max-width:760px){
+  /* En colonne, l'ordre de lecture prime : avancer, revenir, mettre
+     en pause, et abandonner tout en bas. */
+  .actions-r .g{width:100%}
+  .actions-r .g.sorties{margin-left:0}
+  .actions-r .g .btn{flex:1 1 100%;width:100%}
+}
 /* Le parcours s'ouvre en fenêtre : la carte de recueil n'y a plus
    de bord à elle, la fenêtre en tient lieu. */
 .modale .recueil{border:0;border-top:0;border-radius:0;padding:0;background:transparent;box-shadow:none}
@@ -9417,12 +9502,20 @@ function teteParcours(titre, sous){
    la personne au registre. C'est ce qui distingue « Abandonner »,
    qui ne laisse rien, d'un enregistrement qui garde ce qu'on a. */
 function piedParcours(suivant, action){
+  const enChemin = parc.pile.length > 0;
   return `<div class="actions actions-r">
-    ${suivant ? `<button class="btn" onclick="${action}">${esc(suivant)}</button>` : ''}
-    <button class="btn sec" onclick="parcRetour()">${parc.pile.length ? 'Précédent' : 'Annuler'}</button>
-    <button class="btn sec" onclick="enregistrerParcours(true)"
-      title="Garde ce qui est saisi ; la suite se reprend depuis la ligne de la personne">Enregistrer et reprendre plus tard</button>
-    ${parc.pile.length ? `<button class="btn sec" onclick="fermerParcours()">Abandonner</button>` : ''}
+    <div class="g">
+      ${suivant ? `<button class="btn principal" onclick="${action}">${esc(suivant)}</button>` : ''}
+      ${enChemin ? `<button class="btn retour" onclick="parcRetour()"
+        title="Revenir à la question précédente. Rien de ce qui est saisi n'est perdu."><span class="f">←</span>Étape précédente</button>` : ''}
+    </div>
+    <div class="g sorties">
+      <button class="btn pause" onclick="enregistrerParcours(true)"
+        title="Enregistre la personne avec ce qui est déjà répondu. La suite se reprend depuis sa ligne au registre, bouton « Reprendre la saisie ».">Enregistrer et reprendre plus tard</button>
+      <button class="btn quitter" onclick="${enChemin ? 'fermerParcours()' : 'parcRetour()'}"
+        title="Ferme le parcours. Rien de ce qui est saisi ne sera gardé.">${
+        enChemin ? 'Abandonner sans enregistrer' : 'Annuler'}</button>
+    </div>
   </div>`;
 }
 
@@ -9605,9 +9698,20 @@ function ecranParcours(){
         o.commune ? ` — ${esc(o.commune)}` : ''}, avec le temps de route à prévoir.`)}
     <div id="parc-pharma"></div>
     <div class="actions actions-r">
-      <button class="btn" onclick="parcSuivantPharma()">Suivant</button>
-      <button class="btn sec" onclick="parcSansPharma()">Pas de relais pharmacie possible</button>
-      <button class="btn sec" onclick="parcRetour()">Précédent</button>
+      <div class="g">
+        <button class="btn principal" onclick="parcSuivantPharma()"
+          title="Poursuivre avec l'officine retenue ci-dessus">Suivant</button>
+        <button class="btn autre" onclick="parcSansPharma()"
+          title="Aucune officine ne peut porter le matériel : la CPTS appellera le médecin ou le 15">Pas de relais pharmacie possible</button>
+        <button class="btn retour" onclick="parcRetour()"
+          title="Revenir à la question précédente. Rien de ce qui est saisi n'est perdu."><span class="f">←</span>Étape précédente</button>
+      </div>
+      <div class="g sorties">
+        <button class="btn pause" onclick="enregistrerParcours(true)"
+          title="Enregistre la personne avec ce qui est déjà répondu. La suite se reprend depuis sa ligne au registre.">Enregistrer et reprendre plus tard</button>
+        <button class="btn quitter" onclick="fermerParcours()"
+          title="Ferme le parcours. Rien de ce qui est saisi ne sera gardé.">Abandonner sans enregistrer</button>
+      </div>
     </div>
   </div>`;
 
@@ -9851,10 +9955,22 @@ function parcSuite(i){
 /* Ce que le parcours a décidé, relu à haute voix avant
    d'enregistrer : c'est le dernier moment pour voir qu'on s'est
    trompé de branche, et « Précédent » remonte le chemin pris. */
+/* Qui est cette personne : le seul bloc du bilan qu'on lit pour
+   vérifier, et non pour relire. Il tient donc à part, en tête, et
+   en plus gros que le reste. */
+function identiteBilan(o){
+  const ou = libelleDomicile(o);
+  const puces = [o.motif, o.tel].filter(Boolean);
+  return `<div class="bil-tete">
+    <div class="n">${esc(String(o.nom || '').trim() || 'Initiales non renseignées')}${
+      o.age ? `<span class="a">${esc(o.age)} ans</span>` : ''}</div>
+    <div class="ou${ou ? '' : ' vide'}">${ou ? esc(ou) : 'Adresse non renseignée'}</div>
+    ${puces.length ? `<div class="d">${puces.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}
+  </div>`;
+}
+
 function lignesBilan(o){
-  const l = [["La personne", [String(o.nom || '').trim() || 'initiales non renseignées',
-    o.age ? o.age + ' ans' : '', libelleDomicile(o), o.motif].filter(Boolean).join(' · ')]];
-  if(o.tel) l.push(["Téléphone", o.tel]);
+  const l = [];
   l.push(["Voie du signalement", o.voie || 'non renseignée']);
   if(o.decNom) l.push(["Médecin qui déclare", [o.decNom, o.decTel, o.decAdresse].filter(Boolean).join(' — ')]);
   if(estSOS(o)) l.push(["Cabinet infirmier libéral",
@@ -9890,23 +10006,39 @@ function statutParcours(o){
   return 'À orienter';
 }
 
+/* Ce que la fiche devient : dit par sa couleur avant d'être lu,
+   et nommé du mot qui figurera sur sa ligne au registre — pour
+   qu'on retrouve la personne sous le nom qu'on lui a vu ici. */
+const BIL_FIN = {
+  'Orienté': {c:'fait', t:"Le parcours est allé au bout",
+    d:"La personne sera enregistrée comme orientée : la CPTS n'a plus rien à organiser pour elle."},
+  'En attente de finalisation': {c:'attente', t:"La saisie reste en attente",
+    d:"Sa ligne au registre portera « Reprendre la saisie » pour continuer là où on s'arrête, et « Confirmer la mise en place » pour dire par qui la réhydratation a été posée. C'est cette confirmation qui l'orientera pour de bon."},
+  'Sans suite': {c:'clos', t:"Rien n'est à organiser",
+    d:"Le signalement reste au registre, clos sans suite."},
+  'À orienter': {c:'cours', t:"Le parcours n'est pas allé au bout",
+    d:"La personne reste à orienter, et la saisie se reprend depuis sa ligne au registre."}
+};
+
 function ecranBilanParcours(){
   const o = parc.o;
   const st = statutParcours(o);
-  const dit = st === 'En attente de finalisation'
-    ? "Le signalement sera enregistré <strong>en attente de finalisation</strong> : un bouton apparaîtra sur sa ligne au registre pour confirmer que la réhydratation a bien été mise en place, et c'est cette confirmation qui l'orientera pour de bon."
-    : st === 'Orienté' ? "Le signalement sera enregistré comme <strong>orienté</strong> : le parcours est allé au bout."
-    : st === 'Sans suite' ? "Le signalement sera enregistré <strong>sans suite</strong> : il reste au registre, mais rien n'est à organiser."
-    : "Le signalement sera enregistré <strong>à orienter</strong> : le parcours n'a pas été jusqu'au bout, il se reprendra depuis sa ligne.";
+  const fin = BIL_FIN[st] || BIL_FIN['À orienter'];
 
   return `<div class="recueil">
     ${teteParcours("Relire avant d'enregistrer",
       "Ce que le parcours a retenu. « Précédent » remonte le chemin pris si quelque chose ne va pas.")}
-    <div class="bilan-p">
-      ${lignesBilan(o).map(([k, v]) => `<div class="l"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}
+    ${identiteBilan(o)}
+    <div class="bil-fil">
+      ${lignesBilan(o).map(([k, v]) => `<div class="p">
+        <span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}
     </div>
-    <div class="note-dep" style="margin-top:14px">${dit}</div>
-    <div class="form" style="margin-top:14px">
+    <div class="bil-fin ${fin.c}">
+      <span class="pastille">${esc(st)}</span>
+      <div class="t">${esc(fin.t)}</div>
+      <div class="d">${esc(fin.d)}</div>
+    </div>
+    <div class="form" style="margin-top:18px">
       <label class="large"><span class="k">Observation</span>
         <textarea id="pc-note" placeholder="Ce qui ne rentre dans aucune case">${esc(o.note || '')}</textarea></label>
     </div>
