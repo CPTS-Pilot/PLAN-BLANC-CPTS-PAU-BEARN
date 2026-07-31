@@ -2164,6 +2164,40 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--ambre);outline-o
 .note-dep strong{color:#6E4A0E}
 .note-dep a{color:#6E4A0E;font-weight:700}
 .form .note-dep{grid-column:1/-1}
+/* Les officines rangées de la plus proche à la plus lointaine, sous
+   la commune qu'on vient de saisir. Chacune est un bouton : la
+   toucher remplit la pharmacie qui livre, sans quitter le
+   formulaire ni retourner chercher son numéro ailleurs. */
+.form #pharma-proches{grid-column:1/-1}
+.proches{border:1px solid var(--trait);border-radius:10px;padding:12px 13px;background:var(--surface)}
+.proches .t{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--texte-2);margin-bottom:9px}
+.proches .pr{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;
+  text-align:left;background:#fff;border:1px solid var(--trait);border-radius:8px;
+  padding:9px 11px;margin-bottom:6px;cursor:pointer}
+.proches .pr:hover{border-color:var(--encre-2)}
+.proches .pr.on{border-color:var(--encre);background:var(--cobalt-clair);box-shadow:inset 0 0 0 1px var(--encre)}
+.proches .pr .n{font-family:var(--display);font-weight:600;font-size:14px;color:var(--encre)}
+.proches .pr .n .b{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:#fff;background:var(--stable);border-radius:20px;padding:2px 7px;margin-left:7px;vertical-align:1px}
+.proches .pr .d{font-size:12.5px;color:var(--texte-2)}
+.proches .pr .d strong{color:var(--texte);font-weight:600}
+.proches .a{font-size:11.5px;line-height:1.4;color:var(--texte-2);margin-top:8px}
+/* Le bilan du parcours : ce qui a été décidé, relu ligne à ligne
+   avant d'enregistrer. Deux colonnes sur large, empilées sur
+   téléphone — c'est là qu'on relit, souvent debout. */
+.bilan-p{border:1px solid var(--trait);border-radius:10px;background:#fff;overflow:hidden}
+.bilan-p .l{display:grid;grid-template-columns:190px 1fr;gap:12px;
+  padding:10px 14px;border-bottom:1px solid var(--trait)}
+.bilan-p .l:last-child{border-bottom:0}
+.bilan-p .l .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--texte-2);padding-top:3px}
+.bilan-p .l .v{font-size:14px;line-height:1.45;color:var(--texte)}
+@media(max-width:700px){.bilan-p .l{grid-template-columns:1fr;gap:3px}}
+/* Le parcours s'ouvre en fenêtre : la carte de recueil n'y a plus
+   de bord à elle, la fenêtre en tient lieu. */
+.modale .recueil{border:0;border-top:0;border-radius:0;padding:0;background:transparent;box-shadow:none}
+.modale .recueil .actions-r{margin:22px -22px -22px;padding:14px 22px}
 /* Un champ qu'une réponse précédente rend sans objet se retire du
    formulaire. « label » porte un display d'auteur : la règle du
    navigateur pour [hidden] ne suffirait pas à le masquer. */
@@ -3559,9 +3593,29 @@ const PH_PORTAGE  = ['À préciser','Oui','Non'];
    s'additionnent, sur un champ qui reste libre. */
 const PH_STOCK    = ["Sachets de réhydratation orale","Solution prête à l'emploi",
                      "Eau en bouteille","Compléments d'électrolytes","Brumisateurs"];
-const RH_STATUTS  = ['À orienter','Cabinet IDEL désigné','Passage assuré','Sans suite'];
-const RH_ET       = {'À orienter':'e-attente','Cabinet IDEL désigné':'e-lancer',
-                     'Passage assuré':'e-cours','Sans suite':'e-fini'};
+/* Le parcours de signalement a trois issues, et le statut les dit :
+   la personne attend qu'on s'en occupe, elle attend qu'on confirme
+   que la réhydratation a bien été mise en place, ou son orientation
+   est faite. « Sans suite » reste pour ce qui s'arrête en chemin.
+
+   Les deux statuts d'avant — « Cabinet IDEL désigné », « Passage
+   assuré » — ne sont plus proposés mais restent lisibles : une
+   fiche qui les porte garde son étiquette et sa couleur, et c'est
+   le parcours qui la fera passer aux nouveaux le jour où on la
+   reprend. Rien à migrer, rien à perdre. */
+const RH_STATUTS  = ['À orienter','En attente de finalisation','Orienté','Sans suite'];
+const RH_ET       = {'À orienter':'e-attente','En attente de finalisation':'e-lancer',
+                     'Orienté':'e-cours','Sans suite':'e-fini',
+                     'Cabinet IDEL désigné':'e-lancer','Passage assuré':'e-cours'};
+/* Les deux voies par lesquelles une personne arrive au registre.
+   Ce n'est pas un détail de traçabilité : la suite du parcours
+   n'est pas la même, et c'est la première question posée. */
+const RH_VOIES = ['Visite à domicile SOS Médecins', 'Déclaration d\'un médecin généraliste'];
+const estSOS = o => String(o.voie || '') === RH_VOIES[0];
+/* Ce que la CPTS fait après avoir trouvé — ou non — une officine. */
+const RH_SUITES = ["La CPTS met en lien avec le cabinet infirmier libéral du patient",
+                   "La CPTS oriente vers une demande de relais par le médecin ou le 15"];
+const RH_MISES  = ["Le cabinet infirmier libéral", "SOS Médecins"];
 const RH_MOTIFS   = ["Personne âgée isolée","Pathologie chronique",
                      "Traitement sensible à la chaleur","Perte d'autonomie",
                      "Logement mal ventilé","Signes de déshydratation débutante"];
@@ -3591,11 +3645,18 @@ function carnetMedecins(){
     /* L'orthographe retenue est celle du premier signalement : c'est
        elle que le champ propose ensuite, et « dr untel » tapé vite un
        soir ne vient pas remplacer le nom écrit proprement. */
-    const m = par.get(cle) || {nom, adresse:'', tel:'', n:0, dernier:'', patients:[]};
+    const m = par.get(cle) || {cle, nom, adresse:'', tel:'', n:0,
+                               premier:'', premierHeure:'', auteur:'', dernier:'', patients:[]};
     const a = String(o.decAdresse || '').trim(), t = String(o.decTel || '').trim();
     if(a) m.adresse = a;
     if(t) m.tel = t;
     m.n++;
+    /* Le jour où ce médecin est apparu : c'est à cette date-là que
+       la main courante porte son entrée, pas à celle de son dernier
+       signalement. La boucle remonte le temps à l'endroit, le
+       premier qu'on voit est donc bien le premier. */
+    if(o.date && !m.premier){ m.premier = o.date; m.premierHeure = o.heure || ''; }
+    if(!m.auteur) m.auteur = o.auteur || '';
     if(o.date) m.dernier = o.date;
     m.patients.push(o);
     par.set(cle, m);
@@ -3665,12 +3726,14 @@ const CHAMPS = {
     chapo:"Chaque personne signalée par un médecin du territoire pour une réhydratation à domicile, et ce qu'elle est devenue. Le registre est tenu en initiales, sans aucun élément clinique au-delà du motif. La commune sert à situer la personne sur la carte et à trouver la pharmacie partenaire la plus proche — l'adresse exacte n'est jamais demandée.",
     f:[
       {c:'heure', l:"Heure du signalement", t:'time', d:maintenant},
+      {c:'voie', l:"D'où vient le signalement", t:'choix', o:RH_VOIES,
+       aide:"C'est la première question du parcours de signalement, et c'est elle qui décide de la suite."},
       {t:'titre', l:"La personne signalée",
        sous:"Des initiales, jamais un nom en clair."},
       {c:'nom', l:"Nom du patient — initiales", t:'text', req:true, ph:"D. M."},
       {c:'age', l:"Âge", t:'text', ph:"82"},
-      {c:'commune', l:"Commune", t:'text', ph:"Pau",
-       aide:"C'est la commune qui situe la personne sur la carte, et rien d'autre : ni la rue, ni le numéro."},
+      {c:'commune', l:"Commune", t:'text', ph:"Pau", ev:"majPharmaProches()",
+       aide:"C'est la commune qui situe la personne sur la carte, et rien d'autre : ni la rue, ni le numéro. C'est elle aussi qui range les officines partenaires par proximité, plus bas dans ce formulaire."},
       {c:'tel', l:"Numéro de téléphone", t:'text', ph:"06 12 34 56 78"},
       {c:'motif', l:"Motif", t:'text', large:true, sugg:RH_MOTIFS},
       {t:'titre', l:"Le médecin qui déclare",
@@ -3694,23 +3757,73 @@ const CHAMPS = {
       {c:'idelPar', l:"Cabinet désigné par", t:'personne', hors:true},
       {t:'note', dep:'idel', depV:'Non',
        h:"<strong>Contacter le médecin à l'origine de la demande.</strong> Aucun cabinet infirmier n'est identifié pour cette personne : c'est le médecin qui a déclaré qui sait lequel la suit. La fiche reste en attente jusqu'à ce qu'un cabinet y soit inscrit."},
+      /* --- L'officine qui livre ---------------------------------
+         Le cabinet infirmier passe, la pharmacie livre : ce sont
+         deux questions, et pas deux réponses à la même. Le matériel
+         — pied à perfusion, soluté, set — vient de l'officine
+         partenaire la plus proche du domicile, et la procédure le
+         dit en 30 à 45 minutes. C'est donc ici, au moment où la
+         commune vient d'être tapée, qu'on la choisit. */
+      {t:'titre', l:"La pharmacie qui livre",
+       sous:"L'officine partenaire qui portera le matériel au domicile."},
+      {c:'phNom', l:"Pharmacie qui livre", t:'text', large:true,
+       ph:"Nom de l'officine", sugg:() => dejaVus('rehyd','phNom'),
+       aide:"À choisir dans la liste ci-dessous, rangée par proximité de la commune saisie plus haut — ou à écrire à la main si l'officine qui livre n'est pas au recensement."},
+      {c:'phTel', l:"Téléphone de la pharmacie", t:'text'},
+      {t:'proches'},
+      /* Quand l'officine a été retenue, et par qui : posé par le
+         cockpit au moment où son nom est inscrit. Ne se saisit pas
+         à la main. */
+      {c:'phLe', l:"Pharmacie retenue le", t:'date', hors:true},
+      {c:'phPar', l:"Pharmacie retenue par", t:'personne', hors:true},
+      /* --- Ce que le parcours a décidé --------------------------
+         Ces réponses se donnent au parcours de signalement, une
+         question à la fois. Elles sont reprises ici pour qu'une
+         erreur puisse se corriger sans refaire tout le parcours —
+         et parce qu'une fiche dont on ne peut pas rattraper un
+         champ finit par être doublée. */
+      {t:'titre', l:"Ce que le parcours a décidé",
+       sous:"Les réponses données au signalement, rattrapables une à une."},
+      {c:'indication', l:"Indication de réhydratation IV ou sous-cutanée", t:'choix', o:['Oui','Non'],
+       dep:'voie', depV:RH_VOIES[1]},
+      {c:'relaisIdel', l:"Relais vers le cabinet IDEL du patient fait", t:'choix', o:['Oui','Non'],
+       dep:'voie', depV:RH_VOIES[1]},
+      {c:'suiteCpts', l:"Ce que fait la CPTS", t:'select', o:['', ...RH_SUITES],
+       dep:'voie', depV:RH_VOIES[1]},
+      {c:'misePar', l:"Réhydratation mise en place par", t:'choix', o:RH_MISES,
+       dep:'voie', depV:RH_VOIES[0],
+       aide:"Se donne d'ordinaire par le bouton « Confirmer la mise en place », sur la ligne de la personne au registre."},
+      {c:'miseLe', l:"Mise en place confirmée le", t:'date', hors:true},
+      {c:'miseQui', l:"Mise en place confirmée par", t:'personne', hors:true},
+      {c:'pharmaRelais', l:"Relais par une officine", t:'choix', o:['Oui','Non'], hors:true},
+      {c:'phKm', l:"Distance de l'officine, en km", t:'text', hors:true},
+      {c:'phCommune', l:"Commune de l'officine", t:'text', hors:true},
+      {c:'phHors', l:"Officine hors recensement", t:'text', hors:true},
       {c:'statut', l:"Où en est la personne", t:'choix', o:RH_STATUTS, d:() => 'À orienter'},
       {c:'note', l:"Observation", t:'textarea', large:true}
     ],
-    cols:['date','heure','nom','age','commune','tel','motif','decNom','decAdresse','decTel',
-          'idel','idelNom','idelTel','statut','note','auteur'],
-    /* « Si oui, le renseigner et faire en sorte qu'il soit
-       affecté » : nommer le cabinet suffit à affecter la personne.
-       On ne demande pas de le redire dans la liste des statuts —
-       et on ne touche pas à un statut déjà avancé à la main. */
+    cols:['date','heure','voie','nom','age','commune','tel','motif','decNom','decAdresse','decTel',
+          'indication','idel','idelNom','idelTel','relaisIdel','phNom','phCommune','phTel','phHors',
+          'suiteCpts','misePar','miseLe','statut','note','auteur'],
+    /* Le statut ne se déduit plus de la présence d'un cabinet : il
+       appartient au parcours, qui seul sait si l'orientation est
+       allée au bout. Nommer un cabinet en modifiant une fiche
+       n'orientera donc personne — ça ne l'a jamais organisé, ça ne
+       faisait que le prétendre. Ce qui reste ici, c'est
+       l'horodatage : le jour et le nom de qui a désigné. */
     apres: o => {
-      const pose = o.idel === 'Oui' && !!String(o.idelNom || '').trim();
-      if(pose){
-        if(!o.statut || o.statut === 'À orienter') o.statut = 'Cabinet IDEL désigné';
+      if(o.idel === 'Oui' && String(o.idelNom || '').trim()){
         if(!o.idelLe){ o.idelLe = o.date || aujourdhui(); o.idelPar = moi === 'Anonyme' ? '' : moi; }
       }else{
-        if(o.statut === 'Cabinet IDEL désigné') o.statut = 'À orienter';
         o.idelLe = ''; o.idelPar = '';
+      }
+      /* L'officine retenue s'horodate comme le cabinet : le jour et
+         le nom de qui l'a retenue, posés une fois, et effacés si
+         l'officine est retirée de la fiche. */
+      if(String(o.phNom || '').trim()){
+        if(!o.phLe){ o.phLe = o.date || aujourdhui(); o.phPar = moi === 'Anonyme' ? '' : moi; }
+      }else{
+        o.phLe = ''; o.phPar = '';
       }
     }
   },
@@ -3777,7 +3890,75 @@ const CHAMPS = {
 function ouvrirAjout(k, mode){
   document.getElementById('modale').innerHTML = formulaire(k, null, mode);
   majDependances();
+  /* Le bloc des officines se lit dans le champ commune : il ne peut
+     donc s'écrire qu'une fois le formulaire posé dans la page. */
+  rendrePharmaProches();
   ouvrirRideau();
+}
+
+/* --- Les officines proposées pendant la saisie -----------
+   Le matériel vient de la pharmacie, et c'est l'officine partenaire
+   la plus proche du domicile qui livre : autant la donner au moment
+   où la commune est tapée, plutôt que d'obliger à ouvrir la carte
+   et à comparer à l'œil. Le bloc se réécrit à chaque frappe, une
+   fois la main levée — on ne lance pas une recherche de commune sur
+   « P », puis « Pa », puis « Pau ». */
+let pharmaMinuteur = 0;
+
+const communeSaisie = () => {
+  const el = document.getElementById('f-rehyd-commune');
+  return el ? String(el.value || '').trim().replace(/\s+/g, ' ') : '';
+};
+
+function majPharmaProches(){
+  clearTimeout(pharmaMinuteur);
+  pharmaMinuteur = setTimeout(rendrePharmaProches, 450);
+}
+
+function rendrePharmaProches(){
+  const hote = document.getElementById('pharma-proches');
+  if(hote) hote.innerHTML = blocPharmaProches();
+}
+
+function blocPharmaProches(){
+  const commune = communeSaisie();
+  if(!commune) return `<div class="note-dep">Renseigner la commune ci-dessus : les officines partenaires s'y rangeront de la plus proche à la plus lointaine, avec le temps de route à prévoir pour la livraison.</div>`;
+
+  const l = officinesProches(commune, rendrePharmaProches);
+  if(l === undefined) return `<div class="note-dep">Recherche des officines les plus proches de ${esc(commune)}…</div>`;
+  if(l === null) return `<div class="note-dep">La commune « ${esc(commune)} » n'a pas été reconnue : les officines ne peuvent pas être classées par proximité. Vérifier l'orthographe, ou nommer l'officine à la main ci-dessus.</div>`;
+  if(!l.length) return `<div class="note-dep">Aucune officine partenaire n'est encore située sur la carte. Le classement par proximité s'ouvrira dès qu'une adresse sera renseignée au module « Recensement des pharmacies partenaires ».</div>`;
+
+  const posee = String((document.getElementById('f-rehyd-phNom') || {}).value || '').trim().toLowerCase();
+  return `<div class="proches">
+    <div class="t">Officines partenaires les plus proches de ${esc(commune)}</div>
+    ${l.slice(0, 6).map((x, i) => `<button type="button" class="pr${
+      String(x.nom || '').trim().toLowerCase() === posee && posee ? ' on' : ''}" onclick="choisirPharma(${i})">
+      <span class="n">${esc(x.nom || 'Officine non nommée')}${i === 0 ? `<span class="b">la plus proche</span>` : ''}</span>
+      <span class="d">${x.commune ? esc(x.commune) + ' · ' : ''}${esc(fmtKm(x.km))} — <strong>${esc(fmtTrajet(x.km))}</strong>${
+        x.tel ? ` · ${esc(x.tel)}` : ' · téléphone non renseigné'}${
+        x.portage ? ` · portage : ${esc(x.portage)}` : ''}</span>
+    </button>`).join('')}
+    <div class="a">Temps de route estimé : la distance à vol d'oiseau majorée du détour des vallées, à 45 km/h de moyenne. Ce n'est pas un calcul d'itinéraire — c'est de quoi savoir laquelle appeler en premier. Toucher une officine la porte au champ « Pharmacie qui livre » avec son numéro.</div>
+  </div>`;
+}
+
+function choisirPharma(i){
+  const commune = communeSaisie();
+  const l = officinesProches(commune);
+  const x = l && l[i]; if(!x) return;
+  const n = document.getElementById('f-rehyd-phNom');
+  const t = document.getElementById('f-rehyd-phTel');
+  /* Un numéro tapé à la main ne se fait pas écraser par celui du
+     recensement : c'est celui qui remplit la fiche qui a le dernier
+     mot, la même règle qu'au carnet des médecins. */
+  if(n) n.value = x.nom || '';
+  if(t && (!t.value.trim() || t.dataset.officine === '1')){
+    t.value = x.tel || '';
+    t.dataset.officine = '1';
+  }
+  rendrePharmaProches();
+  toast(`${x.nom || 'Officine'} — ${fmtTrajet(x.km)} depuis ${commune}`);
 }
 
 /* --- Un champ qui dépend d'une réponse précédente -------------
@@ -3985,6 +4166,14 @@ function formulaire(k, o, mode){
       h += `<div class="note-dep"${dep(k, f)}>${f.h}</div>`;
       return;
     }
+    /* Le bloc qui se réécrit pendant la saisie : les officines
+       partenaires classées par proximité de la commune qu'on vient
+       de taper. Il n'enregistre rien lui-même — il remplit les
+       champs au-dessus de lui. */
+    if(f.t === 'proches'){
+      h += `<div id="pharma-proches">${blocPharmaProches()}</div>`;
+      return;
+    }
     const val = ed ? (o[f.c] ?? '') : (typeof f.d === 'function' ? f.d() : '');
     const id = `f-${k}-${f.c}`;
     const ph = f.ph ? ` placeholder="${esc(f.ph)}"` : '';
@@ -4043,7 +4232,10 @@ function formulaire(k, o, mode){
       h += `<input type="text" id="${id}" list="${id}-l" value="${esc(val)}" autocomplete="off"${ph || ' placeholder="Prénom et nom"'}>`
         +  `<datalist id="${id}-l">${noms.map(n=>`<option value="${esc(n)}"></option>`).join('')}</datalist>`;
     }
-    else h += `<input type="${f.t}" id="${id}" value="${esc(val)}"${ph}>`;
+    /* Un champ dont la saisie fait bouger autre chose dans le
+       formulaire : la commune, qui range les officines. */
+    else h += `<input type="${f.t}" id="${id}" value="${esc(val)}"${ph}${
+      f.ev ? ` oninput="${esc(f.ev)}"` : ''}>`;
     /* Un champ libre peut porter ses réponses les plus fréquentes en
        pastilles : on touche plutôt que de taper, sans que le champ
        cesse d'accepter n'importe quoi d'autre. */
@@ -4064,6 +4256,7 @@ function ouvrirEdition(k, id){
   const o = (etat[k]||[]).find(x => x.id === id); if(!o) return;
   document.getElementById('modale').innerHTML = formulaire(k, o);
   majDependances();
+  rendrePharmaProches();
   ouvrirRideau();
 }
 
@@ -6698,10 +6891,18 @@ const MC_REG = {
     phrase:o => `Personne signalée pour une réhydratation à domicile — ${o.nom || 'initiales non renseignées'}`
       + (o.age ? `, ${o.age} ans` : '') + (o.commune ? `, ${o.commune}` : '')
       + (o.motif ? ` : ${o.motif}` : '')
-      + (o.decNom ? `. Signalée par ${o.decNom}` : '')
-      + (String(o.idelNom || '').trim() ? `. Cabinet IDEL désigné : ${o.idelNom}`
-         : o.idel === 'Non' ? `. Aucun cabinet IDEL identifié — médecin déclarant à rappeler` : '')
-      + '.'
+      + (o.voie ? `. ${o.voie}` : '')
+      + (o.decNom ? `, signalée par ${o.decNom}` : '')
+      + (o.indication === 'Non' ? `. Pas d'indication de réhydratation IV ou sous-cutanée` : '')
+      + (String(o.idelNom || '').trim() ? `. Cabinet IDEL : ${o.idelNom}`
+         : o.idel === 'Non' ? `. Aucun cabinet IDEL identifié — prestataire de location de matériel à appeler` : '')
+      + (o.relaisIdel === 'Oui' ? `. Relais vers le cabinet du patient fait par le médecin` : '')
+      + (String(o.phNom || '').trim() ? `. Relais par ${o.phNom}${
+           o.phHors === 'Oui' ? ' (hors recensement des partenaires)' : ''}` : '')
+      + (o.pharmaRelais === 'Non' ? `. Aucun relais officine possible — médecin ou 15 à appeler` : '')
+      + (o.suiteCpts ? `. ${o.suiteCpts}` : '')
+      + (o.misePar ? `. Réhydratation mise en place par ${o.misePar}` : '')
+      + `. ${o.statut || 'À orienter'}.`
   },
   /* Un échange né d'une visio de crise en est déjà sorti consigné,
      avec son compte rendu : on ne le réécrit pas ici, où il ne
@@ -6744,6 +6945,48 @@ function consignerRegistreEnCourante(k, o){
     evenement: phrase,
     suite: ''
   });
+  /* Le registre des personnes signalées fait vivre une seconde
+     liste — les médecins qui ont orienté — qui n'a pas de saisie
+     propre : un nom nouveau y entre de lui-même, au premier
+     signalement. Il doit donc y entrer aussi en main courante,
+     sinon l'arrivée d'un médecin dans le circuit n'aurait d'autre
+     trace horodatée que la fiche d'un patient. */
+  if(k === 'rehyd') consignerMedecinEnCourante(o.decNom);
+}
+
+const idMCMed = cle => 'mcmed-' + cle;
+
+/* Un médecin, une ligne, à la date de son premier signalement. La
+   ligne est réécrite à chaque fois qu'il déclare — le compte suit,
+   la date ne bouge pas — et poserEnCourante corrige l'entrée au
+   lieu d'en ajouter une. */
+function consignerMedecinEnCourante(nom){
+  const cle = String(nom || '').trim().toLowerCase();
+  if(!cle) return;
+  const m = carnetMedecins().find(x => x.cle === cle);
+  if(!m) return;
+  poserEnCourante(idMCMed(cle), {
+    type:'Réhydratation',
+    date: m.premier || '',
+    heure: m.premierHeure || '',
+    qui: m.auteur || '',
+    quiStrict: true,
+    source: '',
+    evenement: `Médecin déclarant au registre de réhydratation — ${m.nom}`
+      + (m.adresse ? `, ${m.adresse}` : '')
+      + (m.tel ? ` — ${m.tel}` : '')
+      + `. ${m.n} personne${m.n > 1 ? 's' : ''} signalée${m.n > 1 ? 's' : ''} à ce jour.`,
+    suite: m.tel ? '' : "Aucun téléphone noté pour ce médecin : il est injoignable si le circuit se bloque."
+  });
+}
+
+/* Retirer une ligne posée par une fiche, sans la marquer comme
+   retirée à la main : ce qui la faisait naître vient de disparaître
+   — un médecin renommé, un médecin ôté de la liste — et rien ne la
+   reposera. La marquer interdirait au contraire qu'elle revienne
+   le jour où ce nom réapparaît au registre. */
+function oterDeCourante(id){
+  etat.courante = (etat.courante || []).filter(x => x.id !== id);
 }
 
 /* Les fiches arrivées sans passer par le cockpit — le formulaire
@@ -7502,11 +7745,22 @@ const croixSVG = (teinte, t) => `<svg viewBox="0 0 24 24" width="${t}" height="$
    affectée : c'est le seul témoin, et il vaut mieux qu'un statut
    qu'on oublie de changer. */
 const estAffecte = o => !!String(o.idelNom || '').trim();
+/* La couleur du point suit le parcours, pas le seul nom d'un
+   cabinet : une personne dont le parcours est allé au bout est
+   orientée, même si c'est une officine et non un cabinet qui a
+   pris le relais. Les deux statuts d'avant se rangent avec ceux
+   qui leur correspondent. */
 const RH_ETAT = o => o.statut === 'Sans suite' ? 'clos'
-  : o.statut === 'Passage assuré' ? 'assure'
-  : estAffecte(o) ? 'pose' : 'attente';
+  : (o.statut === 'Orienté' || o.statut === 'Passage assuré') ? 'assure'
+  : (o.statut === 'En attente de finalisation' || o.statut === 'Cabinet IDEL désigné'
+     || estAffecte(o)) ? 'pose'
+  : 'attente';
 /* Ce qui attend encore quelqu'un pour passer. */
-const enAttenteIdel = o => !estAffecte(o) && o.statut !== 'Sans suite';
+const enAttenteIdel = o => !estAffecte(o) && o.statut !== 'Sans suite'
+  && o.statut !== 'Orienté' && o.statut !== 'Passage assuré';
+/* Ce qui attend qu'on confirme la mise en place. */
+const aFinaliser = o => o.statut === 'En attente de finalisation';
+const estOriente = o => o.statut === 'Orienté' || o.statut === 'Passage assuré';
 
 let leafletEtat = 'absent';   // absent | charge | pret | echec
 const cartesVives = {};       // les cartes montées, par identifiant de toile
@@ -7594,7 +7848,7 @@ function pointsPatients(pat, vivier){
     return {
       id: o.id, nom: o.nom || 'Personne signalée', statut: o.statut || 'À orienter',
       lieu: [o.motif, o.commune].filter(Boolean).join(' · '),
-      age: o.age || '', idelNom: o.idelNom || '', decNom: o.decNom || '',
+      age: o.age || '', idelNom: o.idelNom || '', phNom: o.phNom || '', decNom: o.decNom || '',
       rappel: !estAffecte(o) && o.idel === 'Non',
       couleur: CARTO_PAT[RH_ETAT(o)], proche,
       lat: bon ? lat + dlat : null, lon: bon ? lon + dlon : null,
@@ -7630,6 +7884,83 @@ function plusProche(lat, lon, vivier){
     if(d < mieux){ mieux = d; gagnant = m; }
   });
   return gagnant ? {nom: gagnant.nom, id: gagnant.id, km: mieux} : null;
+}
+
+/* --- le temps de route ---------------------------------
+   À la louche, et annoncé comme tel : la distance à vol d'oiseau
+   majorée du détour qu'impose le relief, puis rapportée à 45 km/h
+   de moyenne — ce qu'on tient réellement d'une commune à l'autre
+   dans le piémont. Ce n'est pas un calcul d'itinéraire, et le
+   cockpit ne prétend pas en faire un : c'est de quoi savoir quelle
+   officine appeler en premier quand il faut faire livrer vite. Un
+   temps arrondi au pas de cinq minutes le dit mieux qu'un chiffre
+   à la minute, qui laisserait croire à une précision qu'on n'a
+   pas. */
+function minutesTrajet(km){
+  const m = km * 1.3 / 45 * 60;
+  return m <= 10 ? Math.max(5, Math.round(m)) : Math.round(m / 5) * 5;
+}
+function fmtTrajet(km){
+  const m = minutesTrajet(km);
+  return m < 60 ? `~${m} min de route`
+                : `~${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')} de route`;
+}
+
+/* --- les officines les plus proches d'une commune -------
+   Le point du bourg, sans repasser par le service d'adresses quand
+   on l'a déjà sous la main : une personne déjà située dans cette
+   commune le porte, une officine qui y est installée le donne à
+   quelques centaines de mètres près. Le service n'est appelé qu'en
+   dernier, une fois par commune, et sa réponse est gardée le temps
+   de la session.
+
+   Trois réponses possibles, et l'appelant les distingue : un point,
+   `undefined` tant que la recherche court, `null` quand la commune
+   n'a pas été reconnue. */
+const pointsCommunes = {};   // commune en minuscules -> {lat, lon} | null
+const communesEnVol = {};
+
+function pointCommune(commune, quandPret){
+  const cle = String(commune || '').trim().toLowerCase();
+  if(!cle) return null;
+  if(Object.prototype.hasOwnProperty.call(pointsCommunes, cle)) return pointsCommunes[cle];
+
+  const situe = (etat.rehyd || []).find(o => cleGeoPat(o).toLowerCase() === cle
+    && o.geoCle === cleGeoPat(o) && nombreOuNul(o.lat) !== null);
+  if(situe) return (pointsCommunes[cle] = {lat: nombreOuNul(situe.lat), lon: nombreOuNul(situe.lon)});
+
+  const off = (etat.pharmacies || []).find(p => String(p.commune || '').trim().toLowerCase() === cle
+    && nombreOuNul(p.lat) !== null);
+  if(off) return (pointsCommunes[cle] = {lat: nombreOuNul(off.lat), lon: nombreOuNul(off.lon)});
+
+  if(communesEnVol[cle]) return undefined;
+  if(navigator.onLine === false) return null;
+  communesEnVol[cle] = true;
+  fetch(CARTO_BAN + encodeURIComponent(commune) + '&type=municipality')
+    .then(r => r.ok ? r.json() : null)
+    .then(d => {
+      const f = d && d.features && d.features[0];
+      const c = f && f.geometry && f.geometry.coordinates;
+      pointsCommunes[cle] = (c && c.length === 2 && (f.properties || {}).score >= 0.35)
+        ? {lat: c[1], lon: c[0]} : null;
+    })
+    .catch(() => { pointsCommunes[cle] = null; })
+    .then(() => { delete communesEnVol[cle]; if(quandPret) quandPret(); });
+  return undefined;
+}
+
+/* Les officines partenaires rangées de la plus proche à la plus
+   lointaine. Seules les partenaires sont proposées : une officine
+   qu'on n'a pas encore appelée n'a rien promis, et l'envoyer
+   livrer sur la foi d'une distance serait la mettre devant le fait
+   accompli. */
+function officinesProches(commune, quandPret){
+  const p = pointCommune(commune, quandPret);
+  if(!p) return p;
+  return (etat.pharmacies || [])
+    .filter(x => x.statut === 'Partenaire' && nombreOuNul(x.lat) !== null)
+    .map(x => ({...x, km: distanceKm(p.lat, p.lon, nombreOuNul(x.lat), nombreOuNul(x.lon))}))
+    .sort((a, b) => a.km - b.km);
 }
 
 /* --- le géocodage -------------------------------------
@@ -7782,7 +8113,7 @@ function dessinerCarte(hote){
   /* Les points ne se redessinent que s'ils ont changé : le reste du
      temps, le re-rendu de la page ne touche pas à la carte. */
   const signe = pts.map(p =>
-    [p.id, p.lat, p.lon, p.statut, p.approx, p.forme, p.croix, p.couleur, p.idelNom].join(':')).join('|');
+    [p.id, p.lat, p.lon, p.statut, p.approx, p.forme, p.croix, p.couleur, p.idelNom, p.phNom].join(':')).join('|');
   if(signe !== carte._signe){
     carte._couche.clearLayers();
     carte._reperes = {};
@@ -7851,8 +8182,9 @@ function bullePatient(p){
     ${p.lieu ? `<div class="l">${esc(p.lieu)}${p.age ? ` · ${esc(p.age)} ans` : ''}</div>` : ''}
     <div class="l">${esc(p.statut)}</div>
     ${p.idelNom ? `<div class="l">Cabinet IDEL : ${esc(p.idelNom)}</div>` : ''}
+    ${p.phNom ? `<div class="l">Livraison : ${esc(p.phNom)}</div>` : ''}
     ${p.proche ? `<div class="pres"><span class="k">Pharmacie partenaire la plus proche</span>
-        ${esc(p.proche.nom)} — ${esc(fmtKm(p.proche.km))} à vol d'oiseau</div>` : ''}
+        ${esc(p.proche.nom)} — ${esc(fmtKm(p.proche.km))} à vol d'oiseau, ${esc(fmtTrajet(p.proche.km))}</div>` : ''}
     <button onclick="fermerBulles();ouvrirIdel('${p.id}')">${
       p.idelNom ? 'Changer le cabinet IDEL' : 'Désigner le cabinet IDEL'}</button>
   </div>`;
@@ -8586,9 +8918,12 @@ function fichePharma(p){
    autour d'elles les officines — c'est la seule façon de voir d'un
    coup d'œil qui est loin de tout. */
 function cartePatients(pat, ph){
+  /* Les compteurs suivent le parcours : ce qui n'a pas commencé, ce
+     qui attend une confirmation, ce qui est allé au bout. */
+  const aOrienter = pat.filter(o => !estOriente(o) && !aFinaliser(o) && o.statut !== 'Sans suite').length;
+  const aConfirmer = pat.filter(aFinaliser).length;
+  const orientes = pat.filter(estOriente).length;
   const attente = pat.filter(enAttenteIdel).length;
-  const poses = pat.filter(estAffecte).length;
-  const faits = pat.filter(o => o.statut === 'Passage assuré').length;
   const rappels = pat.filter(o => enAttenteIdel(o) && o.idel === 'Non').length;
 
   /* Les officines qui peuvent délivrer, situées : c'est parmi elles
@@ -8608,21 +8943,25 @@ function cartePatients(pat, ph){
   return `<h2>Patients signalés / orientés
     <span class="cpt-h">${pat.length} personne${pat.length>1?'s':''} au registre</span></h2>
   <p class="sous-h">Chaque personne signalée par un médecin du territoire, et ce qu'elle est devenue. Le registre est tenu en initiales, sans élément clinique au-delà du motif : la commune sert à situer la personne sur la carte et à trouver l'officine la plus proche, l'adresse exacte n'est jamais demandée.</p>
+    <div class="actions" style="margin:0 0 14px">
+      <button class="btn" onclick="ouvrirParcours()">Signaler un patient</button>
+    </div>
     <div class="compteurs" style="margin-bottom:16px">
       <div class="compteur"><div class="n">${pat.length}</div><div class="l">personnes signalées</div></div>
-      <div class="compteur"><div class="n">${attente}</div><div class="l">sans cabinet IDEL désigné</div></div>
-      <div class="compteur"><div class="n">${poses}</div><div class="l">cabinets IDEL désignés</div></div>
-      <div class="compteur"><div class="n">${faits}</div><div class="l">passages assurés</div></div>
+      <div class="compteur"><div class="n">${aOrienter}</div><div class="l">restent à orienter</div></div>
+      <div class="compteur"><div class="n"${aConfirmer ? ' style="color:var(--ambre)"' : ''}>${aConfirmer}</div><div class="l">mises en place à confirmer</div></div>
+      <div class="compteur"><div class="n"${orientes ? ' style="color:var(--stable)"' : ''}>${orientes}</div><div class="l">personnes orientées</div></div>
     </div>
+    ${aConfirmer ? `<div class="note"><strong>${aConfirmer} signalement${aConfirmer>1?'s attendent':' attend'} une confirmation de mise en place.</strong> ${aConfirmer>1?'Ce sont':'C\'est'} ${aConfirmer>1?'des visites':'une visite'} à domicile SOS Médecins : le bouton « Confirmer la mise en place » sur ${aConfirmer>1?'leur':'sa'} ligne dit par qui la réhydratation a été posée, et clôt le parcours.</div>` : ''}
     ${rappels ? `<div class="note">${rappels} personne${rappels>1?'s':''} pour ${rappels>1?'lesquelles':'laquelle'} aucun cabinet infirmier n'est identifié : c'est le médecin à l'origine de la demande qu'il faut rappeler — lui sait quel cabinet ${rappels>1?'les':'la'} suit.</div>` : ''}
     ${blocCarte('carte-patients', [...pts, ...autour], {
       titre:"Les personnes signalées, et les officines autour d'elles",
       sous:"Chaque personne est posée sur le bourg de sa commune, jamais à son adresse. Les croix sont les officines : toucher un point donne la pharmacie partenaire la plus proche, et de quoi désigner le cabinet infirmier sans quitter la carte.",
       compte:"personnes situées",
       legende:[
-        {c:CARTO_PAT.attente, l:"Sans cabinet IDEL"},
-        {c:CARTO_PAT.pose, l:"Cabinet IDEL désigné"},
-        {c:CARTO_PAT.assure, l:"Passage assuré"},
+        {c:CARTO_PAT.attente, l:"À orienter"},
+        {c:CARTO_PAT.pose, l:"En attente de finalisation"},
+        {c:CARTO_PAT.assure, l:"Orienté"},
         {c:CARTO_PAT.clos, l:"Sans suite"},
         {c:CARTO_PH['Partenaire'], l:"Pharmacie partenaire", croix:true},
         {c:CARTO_PH['Contactée'], l:"Officine contactée", croix:true},
@@ -8637,7 +8976,6 @@ function cartePatients(pat, ph){
       <span class="cpt-h">${attente ? attente + ' en attente d\'un cabinet' : 'toutes affectées'}</span>
       ${pat.length ? `<button class="btn sec" onclick="exporterCSV('rehyd')">Excel</button>` : ''}
       <button class="btn sec" onclick="imprimer()">PDF</button>
-      <button class="btn" onclick="ouvrirAjout('rehyd')">Signaler un patient</button>
     </div>
     ${pat.length ? `<div class="rh-l">${rangees.map(fichePatient).join('')}</div>`
       : `<p class="vide">Rien à afficher pour le moment. Le premier signalement ouvre le registre.</p>`}`;
@@ -8657,6 +8995,12 @@ function fichePatient(o){
     idel = `<div class="rh-idel pose"><span class="k">Cabinet IDEL affecté</span>
       ${esc(o.idelNom)}${o.idelTel ? ` — <a href="${esc(telLien(o.idelTel))}">${esc(o.idelTel)}</a>` : ''}${
       o.idelLe ? ` · désigné le ${frdateL(o.idelLe)}${o.idelPar ? ` par ${esc(o.idelPar)}` : ''}` : ''}</div>`;
+  }else if(o.idel === 'Non' && estSOS(o)){
+    /* Sur une visite à domicile, il n'y a pas de médecin déclarant
+       à rappeler : c'est le prestataire de matériel qu'il faut
+       appeler, et la procédure le dit ainsi. */
+    idel = `<div class="rh-idel rappel"><strong>Appeler le prestataire de location de matériel.</strong>
+      Aucun cabinet infirmier ne suit cette personne : c'est le prestataire qui fournira de quoi poser la réhydratation.</div>`;
   }else if(o.idel === 'Non'){
     idel = `<div class="rh-idel rappel"><strong>Contacter le médecin à l'origine de la demande.</strong>
       Aucun cabinet infirmier n'est identifié pour cette personne : c'est le médecin qui a déclaré qui sait lequel la suit.${
@@ -8671,7 +9015,8 @@ function fichePatient(o){
       <span class="etiq ${RH_ET[st] || 'e-attente'}">${esc(st)}</span>
     </div>
     <div class="meta">${esc([o.commune, o.motif].filter(Boolean).join(' · ')) || 'Ni commune ni motif renseignés'}${
-      o.date ? ` · signalée le ${frdateL(o.date)}${o.heure ? ` à ${esc(o.heure)}` : ''}` : ''}</div>
+      o.date ? ` · signalée le ${frdateL(o.date)}${o.heure ? ` à ${esc(o.heure)}` : ''}` : ''}${
+      o.voie ? ` · ${esc(o.voie)}` : ''}</div>
     <div class="champs">
       ${o.tel ? `<div><span class="k">Téléphone</span><span class="v"><a class="tel" href="${esc(telLien(o.tel))}">${esc(o.tel)}</a></span></div>` : ''}
       ${o.decNom ? `<div><span class="k">Médecin déclarant</span><span class="v">${esc(o.decNom)}</span></div>` : ''}
@@ -8679,10 +9024,24 @@ function fichePatient(o){
       ${o.decAdresse ? `<div><span class="k">Adresse du médecin</span><span class="v">${esc(o.decAdresse)}</span></div>` : ''}
     </div>
     ${idel}
+    ${String(o.phNom || '').trim() ? `<div class="rh-idel pose"><span class="k">Pharmacie qui livre</span>
+      ${esc(o.phNom)}${o.phCommune ? ` (${esc(o.phCommune)})` : ''}${
+      o.phTel ? ` — <a href="${esc(telLien(o.phTel))}">${esc(o.phTel)}</a>` : ''}${
+      o.phLe ? ` · retenue le ${frdateL(o.phLe)}${o.phPar ? ` par ${esc(o.phPar)}` : ''}` : ''}${
+      o.phHors === 'Oui' ? ` · <strong>hors recensement des partenaires</strong>` : ''}</div>` : ''}
+    ${o.suiteCpts ? `<div class="rh-idel"><span class="k">Ce que fait la CPTS</span>${esc(o.suiteCpts)}</div>` : ''}
+    ${o.pharmaRelais === 'Non' ? `<div class="rh-idel rappel"><strong>Appeler le médecin ou le 15.</strong>
+      Aucune officine partenaire ne pouvait faire le relais pour cette personne.</div>` : ''}
+    ${o.misePar ? `<div class="rh-idel pose"><span class="k">Réhydratation mise en place</span>
+      par ${esc(o.misePar)}${o.miseLe ? ` · confirmée le ${frdateL(o.miseLe)}${o.miseQui ? ` par ${esc(o.miseQui)}` : ''}` : ''}</div>` : ''}
     ${o.note ? `<div class="meta">${esc(o.note)}</div>` : ''}
     <div class="barre">
       <div class="actes">
-        <button class="btn" onclick="ouvrirIdel('${o.id}')">${estAffecte(o) ? 'Changer le cabinet IDEL' : 'Désigner le cabinet IDEL'}</button>
+        ${aFinaliser(o) ? `<button class="btn" onclick="ouvrirFinalisation('${o.id}')"
+          title="Dire qui a posé la réhydratation, et clore le parcours">Confirmer la mise en place</button>` : ''}
+        ${!estOriente(o) && !aFinaliser(o) ? `<button class="btn" onclick="ouvrirParcours('${o.id}')"
+          title="Reprendre le parcours de signalement là où il s'est arrêté">Reprendre le parcours</button>` : ''}
+        <button class="btn sec" onclick="ouvrirIdel('${o.id}')">${estAffecte(o) ? 'Changer le cabinet IDEL' : 'Désigner le cabinet IDEL'}</button>
         ${situable ? `<button class="btn sec" onclick="situerPatient('${o.id}')">Situer sur la carte ci-dessus</button>` : ''}
       </div>
       <div class="fin">
@@ -8743,14 +9102,90 @@ function ficheMedecin(m){
       <div><span class="k">Adresse</span><span class="v">${m.adresse ? esc(m.adresse) : 'non renseignée'}</span></div>
     </div>
     ${qui.length ? `<div class="meta"><span class="k">Personnes signalées</span>${esc(qui.join(' · '))}</div>` : ''}
-    ${m.tel || m.adresse ? `<div class="barre">
+    <div class="barre">
       <div class="actes">
         ${m.tel ? `<a class="btn" href="${esc(telLien(m.tel))}">Appeler — ${esc(m.tel)}</a>` : ''}
         ${m.adresse ? `<a class="btn sec" href="${esc(lienCarte(m.adresse, ''))}" target="_blank" rel="noopener"
           title="Ouvre l'itinéraire vers le cabinet dans votre application de cartes">Itinéraire ↗</a>` : ''}
       </div>
-    </div>` : ''}
+      <div class="fin">
+        <button class="btn sec" onclick="ouvrirMedecin('${encodeURIComponent(m.cle)}')">Modifier</button>
+        <button class="sup-m" title="Retirer de la liste des déclarants"
+          onclick="retirerMedecin('${encodeURIComponent(m.cle)}')">×</button>
+      </div>
+    </div>
   </div>`;
+}
+
+/* --- Corriger un médecin, ou l'ôter de la liste -----------
+   La liste n'a pas de registre derrière elle : elle se relit des
+   signalements. Corriger un médecin, c'est donc corriger ce que
+   portent ses signalements — tous à la fois, sinon une orthographe
+   différente dédoublerait la ligne au lieu de la remplacer. */
+const signalementsDe = cle =>
+  (etat.rehyd || []).filter(o => String(o.decNom || '').trim().toLowerCase() === cle);
+
+function ouvrirMedecin(cleEnc){
+  const cle = decodeURIComponent(cleEnc);
+  const m = carnetMedecins().find(x => x.cle === cle); if(!m) return;
+  document.getElementById('modale').innerHTML = `<h3>${esc(m.nom)} — modifier</h3>
+  <p class="chapo" style="margin:-6px 0 14px">Ce qui est corrigé ici l'est sur ${
+    m.n > 1 ? `les ${m.n} signalements` : 'le signalement'} de ce médecin, et repris en main courante. Un numéro rattrapé ici revient ensuite tout seul sur les signalements suivants.</p>
+  <div class="form">
+    <label class="large"><span class="k">Nom du médecin</span>
+      <input type="text" id="md-nom" value="${esc(m.nom)}" placeholder="Dr …"></label>
+    <label class="large"><span class="k">Adresse du cabinet</span>
+      <input type="text" id="md-adresse" value="${esc(m.adresse)}"></label>
+    <label><span class="k">Téléphone</span>
+      <input type="text" id="md-tel" value="${esc(m.tel)}" placeholder="05 59 12 34 56"></label>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="validerMedecin('${encodeURIComponent(cle)}')">Enregistrer</button>
+    <button class="btn sec" onclick="fermer()">Annuler</button>
+  </div>`;
+  ouvrirRideau();
+}
+
+async function validerMedecin(cleEnc){
+  const cle = decodeURIComponent(cleEnc);
+  const nom = document.getElementById('md-nom').value.trim();
+  if(!nom){ toast("Nommer le médecin, ou le retirer de la liste"); return; }
+  const adresse = document.getElementById('md-adresse').value.trim();
+  const tel = document.getElementById('md-tel').value.trim();
+  const fiches = signalementsDe(cle);
+  if(!fiches.length){ fermer(); return; }
+  fiches.forEach(o => {
+    o.decNom = nom; o.decAdresse = adresse; o.decTel = tel;
+    o.modifiePar = moi;
+    consignerRegistreEnCourante('rehyd', o);
+  });
+  /* Le nom a changé : l'entrée du médecin sous l'ancien nom ne
+     désigne plus personne, et celle sous le nouveau vient d'être
+     posée par la consignation ci-dessus. */
+  if(nom.toLowerCase() !== cle) oterDeCourante(idMCMed(cle));
+  await sauver(); fermer(); rendre();
+  toast(`Médecin modifié sur ${fiches.length} signalement${fiches.length > 1 ? 's' : ''}, et repris en main courante`);
+}
+
+/* Retirer un médecin ne retire pas ses signalements : les personnes
+   restent au registre, elles perdent seulement le nom de qui les a
+   déclarées. C'est ce que la confirmation dit, parce que c'est ce
+   qui coûte — plus personne à rappeler quand aucun cabinet
+   infirmier n'est identifié. */
+async function retirerMedecin(cleEnc){
+  const cle = decodeURIComponent(cleEnc);
+  const m = carnetMedecins().find(x => x.cle === cle); if(!m) return;
+  if(!confirm(`Retirer ${m.nom} de la liste des médecins qui ont orienté ?\n\n`
+    + `${m.n > 1 ? `Les ${m.n} personnes qu'il a signalées restent` : `La personne qu'il a signalée reste`} au registre, `
+    + `mais sans nom de déclarant : plus personne à rappeler si aucun cabinet infirmier n'est identifié.`)) return;
+  signalementsDe(cle).forEach(o => {
+    o.decNom = ''; o.decAdresse = ''; o.decTel = '';
+    o.modifiePar = moi;
+    consignerRegistreEnCourante('rehyd', o);
+  });
+  oterDeCourante(idMCMed(cle));
+  await sauver(); rendre();
+  toast("Médecin retiré de la liste, et sa ligne de main courante avec");
 }
 
 /* Le carnet en fichier : un médecin par ligne, avec ce qu'on a pour
@@ -8764,6 +9199,659 @@ function exporterMedecins(){
     m.patients.map(o => String(o.nom || '').trim()).filter(Boolean).join(' · ')
   ].map(csvVal)));
   telechargerCSV("Médecins qui ont orienté", rows);
+}
+
+/* ==========================================================
+   LE PARCOURS DE SIGNALEMENT
+   ==========================================================
+   Signaler quelqu'un n'est pas remplir un formulaire : c'est
+   suivre une procédure, et la procédure bifurque à la deuxième
+   question. Un formulaire d'un seul tenant obligerait à lire
+   quinze champs pour comprendre lesquels concernent le cas qu'on
+   a au téléphone — et laisserait renseigner un relais pharmacie
+   sur une visite SOS Médecins, où il n'a rien à faire.
+
+   Le parcours pose donc une question à la fois, et ne montre que
+   la suite qu'appelle la réponse donnée. Ce qui est saisi vit dans
+   un brouillon tant qu'on n'a pas atteint le bilan : abandonner en
+   cours de route ne laisse rien au registre.
+
+   Les deux voies, et ce qu'elles enchaînent :
+
+     SOS Médecins ──┬─ cabinet IDEL oui ──────────────┐
+                    └─ non → prestataire de matériel ─┤
+                                                      └→ En attente
+                                                         de finalisation
+                                                         (confirmée depuis
+                                                          la fiche)
+
+     Médecin       → médecin → indication IV/SC ─ non → Sans suite
+     généraliste                     │
+                                    oui
+                                     ↓
+                              relais IDEL fait ─ oui ──────────→ Orienté
+                                     │ non
+                                     ↓
+                              officines par proximité
+                                     ├─ une officine → ce que fait
+                                     │                 la CPTS → Orienté
+                                     └─ pas de relais → appeler le
+                                                        médecin ou le 15
+                                                             → Orienté
+   ---------------------------------------------------------- */
+let parc = null;
+
+/* Chaque écran dit son rang pour que l'on sache où l'on en est :
+   un parcours dont on ne voit pas la fin se referme. Le total
+   dépend de la voie prise — on ne promet pas huit écrans à qui
+   n'en aura que quatre. */
+const PARC_RANG = {
+  personne:1, voie:2,
+  sosIdel:3, sosMateriel:4,
+  medecin:3, indication:4, relais:5, pharma:6, suite:7, sansPharma:7,
+  bilan:0
+};
+function parcTotal(){
+  if(!parc) return 0;
+  const o = parc.o;
+  if(!o.voie) return 8;                                  // la voie la plus longue, faute de mieux
+  if(estSOS(o)) return o.idel === 'Oui' ? 4 : 5;
+  if(o.indication === 'Non') return 5;
+  if(o.relaisIdel === 'Oui') return 6;
+  return 8;
+}
+
+function ouvrirParcours(id){
+  const src = id ? (etat.rehyd || []).find(x => x.id === id) : null;
+  parc = {
+    pile: [],
+    etape: 'personne',
+    ed: !!src,
+    o: src ? {...src} : {
+      id: uid(), auteur: moi, quand: new Date().toISOString(), source: 'saisie',
+      date: aujourdhui(), heure: maintenant(), statut: 'À orienter'
+    }
+  };
+  rendreParcours();
+  ouvrirRideau();
+}
+
+function rendreParcours(){
+  if(!parc) return;
+  const el = document.getElementById('modale');
+  if(!el) return;
+  el.innerHTML = ecranParcours();
+  /* L'écran des officines lit la commune dans le brouillon, pas
+     dans un champ : il peut s'écrire tout de suite, mais la
+     recherche de la commune, elle, redessine le bloc quand elle
+     revient. */
+  if(parc.etape === 'pharma') rendreParcoursPharma();
+  const p = el.querySelector('input,textarea');
+  if(p && parc.etape !== 'pharma') try{ p.focus(); }catch(e){}
+}
+
+/* Avancer, c'est empiler l'écran qu'on quitte : le retour se relit
+   du chemin réellement pris, et non d'un ordre supposé des écrans
+   — sans quoi « Précédent » depuis « pas de relais pharmacie »
+   ramènerait à un écran qu'on n'a jamais vu. */
+function parcVers(etape){
+  parc.pile.push(parc.etape);
+  parc.etape = etape;
+  rendreParcours();
+  const m = document.getElementById('modale');
+  if(m) m.scrollTop = 0;
+}
+function parcRetour(){
+  if(!parc.pile.length){ fermer(); parc = null; return; }
+  parc.etape = parc.pile.pop();
+  rendreParcours();
+}
+function fermerParcours(){ parc = null; fermer(); }
+
+/* Ce que l'écran courant écrit dans le brouillon avant qu'on le
+   quitte. Les écrans qui ne portent que des boutons n'ont rien à
+   relire — ils ont déjà écrit au clic. */
+function parcRelire(){
+  const v = id => { const el = document.getElementById(id); return el ? String(el.value || '').trim() : null; };
+  const poser = (id, champ) => { const x = v(id); if(x !== null) parc.o[champ] = x; };
+  poser('pc-date','date'); poser('pc-heure','heure');
+  poser('pc-nom','nom'); poser('pc-age','age'); poser('pc-commune','commune');
+  poser('pc-tel','tel'); poser('pc-motif','motif');
+  poser('pc-decNom','decNom'); poser('pc-decAdresse','decAdresse'); poser('pc-decTel','decTel');
+  poser('pc-idelNom','idelNom'); poser('pc-idelTel','idelTel');
+  poser('pc-note','note');
+}
+
+/* L'en-tête commun : où l'on en est, et de qui l'on parle. Le nom
+   n'apparaît qu'une fois saisi — au premier écran il n'y a encore
+   personne. */
+function teteParcours(titre, sous){
+  const o = parc.o, r = PARC_RANG[parc.etape] || 0, t = parcTotal();
+  const qui = [String(o.nom || '').trim(), o.commune].filter(Boolean).join(' · ');
+  return `<div class="tete-r">
+    <span class="v">${r ? `Étape ${r} sur ${t}` : 'Bilan du signalement'}${
+      qui ? ` — ${esc(qui)}` : ''}</span>
+    <h2>${esc(titre)}</h2>
+    ${sous ? `<p class="sous-f">${sous}</p>` : ''}
+  </div>`;
+}
+
+/* Les boutons du bas, toujours au même endroit : avancer à droite,
+   revenir à gauche. */
+function piedParcours(suivant, action){
+  return `<div class="actions actions-r">
+    ${suivant ? `<button class="btn" onclick="${action}">${esc(suivant)}</button>` : ''}
+    <button class="btn sec" onclick="parcRetour()">${parc.pile.length ? 'Précédent' : 'Annuler'}</button>
+    ${parc.pile.length ? `<button class="btn sec" onclick="fermerParcours()">Abandonner</button>` : ''}
+  </div>`;
+}
+
+function ecranParcours(){
+  const o = parc.o;
+  const f = (id, l, val, opts) => `<label class="${(opts||{}).large ? 'large' : ''}">
+    <span class="k">${esc(l)}</span>
+    <input type="${(opts||{}).t || 'text'}" id="${id}" value="${esc(val || '')}"${
+      (opts||{}).ph ? ` placeholder="${esc(opts.ph)}"` : ''}${
+      (opts||{}).ev ? ` oninput="${esc(opts.ev)}"` : ''}>
+    ${(opts||{}).aide ? `<span class="aide">${esc(opts.aide)}</span>` : ''}</label>`;
+
+  switch(parc.etape){
+
+  /* ---- 1. Qui est signalé ------------------------------- */
+  case 'personne':
+    return `<div class="recueil">
+    ${teteParcours("La personne signalée",
+      "Des initiales, jamais un nom en clair. La commune situe la personne sur la carte et sert à ranger les officines par proximité — ni la rue, ni le numéro ne sont demandés.")}
+    <div class="form">
+      ${f('pc-date', "Date du signalement", o.date, {t:'date'})}
+      ${f('pc-heure', "Heure du signalement", o.heure, {t:'time'})}
+      ${f('pc-nom', "Nom du patient — initiales", o.nom, {ph:"D. M.", large:true})}
+      ${f('pc-age', "Âge", o.age, {ph:"82"})}
+      ${f('pc-commune', "Commune", o.commune, {ph:"Pau"})}
+      ${f('pc-tel', "Numéro de téléphone", o.tel, {ph:"06 12 34 56 78"})}
+      <label class="large"><span class="k">Motif</span>
+        <input type="text" id="pc-motif" value="${esc(o.motif || '')}">
+        ${pastilles('pc-motif', RH_MOTIFS, '', o.motif || '')}</label>
+    </div>
+    ${piedParcours("Suivant", "parcSuivantPersonne()")}
+  </div>`;
+
+  /* ---- 2. Par quelle voie ------------------------------- */
+  case 'voie':
+    return `<div class="recueil">
+    ${teteParcours("D'où vient ce signalement ?",
+      "La suite n'est pas la même : une visite à domicile a déjà vu la personne, un médecin qui déclare demande à la CPTS d'organiser le relais.")}
+    <div class="voies">
+      <button onclick="parcVoie(0)">
+        <span class="t">Visite à domicile SOS Médecins</span>
+        <span class="d">SOS Médecins a vu la personne chez elle et signale la situation à la CPTS.</span>
+      </button>
+      <button onclick="parcVoie(1)">
+        <span class="t">Déclaration d'un médecin généraliste</span>
+        <span class="d">Un médecin du territoire signale une de ses patientes ou un de ses patients, et demande le relais.</span>
+      </button>
+    </div>
+    ${piedParcours('', '')}
+  </div>`;
+
+  /* ---- A3. SOS Médecins : y a-t-il un cabinet IDEL ? ----- */
+  case 'sosIdel':
+    return `<div class="recueil">
+    ${teteParcours("Le patient a-t-il un cabinet infirmier libéral ?",
+      "S'il en a un, la procédure s'arrête là : c'est ce cabinet qui prend le relais, et la CPTS n'a rien à organiser de plus.")}
+    <div class="voies">
+      <button onclick="parcSosIdel('Oui')">
+        <span class="t">Oui, un cabinet le suit</span>
+        <span class="d">La procédure s'arrête. Il restera à confirmer, depuis sa ligne au registre, que la réhydratation a bien été mise en place.</span>
+      </button>
+      <button onclick="parcSosIdel('Non')">
+        <span class="t">Non, aucun cabinet</span>
+        <span class="d">La CPTS devra appeler le prestataire de location de matériel.</span>
+      </button>
+    </div>
+    <div class="form" style="margin-top:18px">
+      ${f('pc-idelNom', "Nom du cabinet infirmier, s'il est connu", o.idelNom, {large:true, ph:"Cabinet infirmier…"})}
+      ${f('pc-idelTel', "Téléphone du cabinet", o.idelTel)}
+    </div>
+    ${piedParcours('', '')}
+  </div>`;
+
+  /* ---- A4. Le prestataire de matériel -------------------- */
+  case 'sosMateriel':
+    return `<div class="recueil">
+    ${teteParcours("Aucun cabinet infirmier ne suit cette personne")}
+    <div class="note-dep" style="font-size:15px">
+      <strong>La CPTS doit appeler le prestataire de location de matériel.</strong>
+      C'est lui qui fournira de quoi poser la réhydratation, puisqu'aucun cabinet ne l'a en charge.
+      Passer cet appel, puis enregistrer le signalement : il restera en attente de finalisation
+      jusqu'à ce que la mise en place soit confirmée.
+    </div>
+    ${piedParcours("Suivant", "parcVers('bilan')")}
+  </div>`;
+
+  /* ---- B3. Le médecin qui déclare ------------------------ */
+  case 'medecin': {
+    const carnet = carnetMedecins();
+    return `<div class="recueil">
+    ${teteParcours("Le médecin qui déclare",
+      "C'est lui qu'on rappelle si le circuit se bloque. Son nom le fait entrer dans la liste des médecins qui ont orienté, et en main courante.")}
+    <div class="form">
+      <label class="large"><span class="k">Nom et prénom du médecin *</span>
+        <input type="text" id="pc-decNom" list="pc-decNom-l" autocomplete="off"
+          value="${esc(o.decNom || '')}" placeholder="Dr …" oninput="parcCarnetMedecin(this)">
+        <datalist id="pc-decNom-l">${carnet.map(x => `<option value="${esc(x.nom)}"></option>`).join('')}</datalist>
+        <span class="aide">Un médecin qui a déjà déclaré se propose dès les premières lettres, et son adresse et son numéro reviennent avec lui.</span></label>
+      ${f('pc-decAdresse', "Adresse du cabinet", o.decAdresse, {large:true})}
+      ${f('pc-decTel', "Numéro de téléphone", o.decTel, {ph:"05 59 12 34 56"})}
+    </div>
+    ${piedParcours("Suivant", "parcSuivantMedecin()")}
+  </div>`;
+  }
+
+  /* ---- B4. L'indication ---------------------------------- */
+  case 'indication':
+    return `<div class="recueil">
+    ${teteParcours("Indication de réhydratation intraveineuse ou sous-cutanée ?",
+      "C'est le médecin qui la pose. Sans indication, il n'y a pas de relais à organiser et le signalement se clôt sans suite.")}
+    <div class="voies">
+      <button onclick="parcIndication('Oui')">
+        <span class="t">Oui, l'indication est posée</span>
+        <span class="d">Le relais peut s'organiser : cabinet infirmier, ou officine partenaire.</span>
+      </button>
+      <button onclick="parcIndication('Non')">
+        <span class="t">Non</span>
+        <span class="d">Le signalement reste au registre, clos sans suite. Rien n'est à organiser.</span>
+      </button>
+    </div>
+    ${piedParcours('', '')}
+  </div>`;
+
+  /* ---- B5. Le relais vers le cabinet du patient ---------- */
+  case 'relais':
+    return `<div class="recueil">
+    ${teteParcours("Le relais vers le cabinet infirmier libéral du patient est-il fait ?",
+      "Si le médecin l'a déjà organisé, la CPTS n'a rien à reprendre : l'orientation est faite.")}
+    <div class="voies">
+      <button onclick="parcRelais('Oui')">
+        <span class="t">Oui, le relais est fait</span>
+        <span class="d">Le cabinet du patient prend la suite. Le signalement se clôt, orienté.</span>
+      </button>
+      <button onclick="parcRelais('Non')">
+        <span class="t">Non, il reste à organiser</span>
+        <span class="d">Les officines partenaires vont être proposées, de la plus proche à la plus lointaine.</span>
+      </button>
+    </div>
+    <div class="form" style="margin-top:18px">
+      ${f('pc-idelNom', "Nom du cabinet infirmier, s'il est connu", o.idelNom, {large:true, ph:"Cabinet infirmier…"})}
+      ${f('pc-idelTel', "Téléphone du cabinet", o.idelTel)}
+    </div>
+    ${piedParcours('', '')}
+  </div>`;
+
+  /* ---- B6. Les officines par proximité -------------------- */
+  case 'pharma':
+    return `<div class="recueil">
+    ${teteParcours("Quelle officine partenaire peut faire le relais ?",
+      `Les officines partenaires du territoire, rangées de la plus proche à la plus lointaine du domicile${
+        o.commune ? ` — ${esc(o.commune)}` : ''}, avec le temps de route à prévoir.`)}
+    <div id="parc-pharma"></div>
+    <div class="actions actions-r">
+      <button class="btn" onclick="parcSuivantPharma()">Suivant</button>
+      <button class="btn sec" onclick="parcSansPharma()">Pas de relais pharmacie possible</button>
+      <button class="btn sec" onclick="parcRetour()">Précédent</button>
+    </div>
+  </div>`;
+
+  /* ---- B7a. Ce que la CPTS fait ensuite ------------------- */
+  case 'suite':
+    return `<div class="recueil">
+    ${teteParcours("Ce que la CPTS fait ensuite",
+      `${esc(o.phNom || "L'officine")} s'engage sur la suite. Reste à dire ce que la CPTS fait de son côté — les deux réponses closent le signalement comme orienté.`)}
+    <div class="voies">
+      ${RH_SUITES.map((s, i) => `<button onclick="parcSuite(${i})">
+        <span class="t">${i ? 'Relais médecin ou 15' : 'Mise en lien avec le cabinet IDEL'}</span>
+        <span class="d">${esc(s)}.</span>
+      </button>`).join('')}
+    </div>
+    ${piedParcours('', '')}
+  </div>`;
+
+  /* ---- B7b. Aucune officine ne peut faire le relais ------- */
+  case 'sansPharma':
+    return `<div class="recueil">
+    ${teteParcours("Aucune officine ne peut faire le relais")}
+    <div class="note-dep" style="font-size:15px">
+      <strong>La CPTS doit appeler le médecin ou le 15.</strong>
+      Aucune officine partenaire ne peut porter le matériel à cette personne : le relais se demande
+      au médecin qui a déclaré, ou au centre 15. Passer cet appel, puis enregistrer : le signalement
+      se clôt comme orienté.
+    </div>
+    ${piedParcours("Suivant", "parcVers('bilan')")}
+  </div>`;
+
+  /* ---- Le bilan ------------------------------------------ */
+  default:
+    return ecranBilanParcours();
+  }
+}
+
+/* ---- les gestes de chaque écran ------------------------- */
+
+function parcSuivantPersonne(){
+  parcRelire();
+  if(!String(parc.o.nom || '').trim()){ toast("Les initiales de la personne sont obligatoires"); return; }
+  parcVers('voie');
+}
+
+function parcVoie(i){
+  parc.o.voie = RH_VOIES[i];
+  parcVers(i === 0 ? 'sosIdel' : 'medecin');
+}
+
+function parcSosIdel(rep){
+  parcRelire();
+  parc.o.idel = rep;
+  if(rep === 'Non'){ parc.o.idelNom = ''; parc.o.idelTel = ''; }
+  parcVers(rep === 'Oui' ? 'bilan' : 'sosMateriel');
+}
+
+/* Reprendre un médecin du carnet ramène ce qu'on avait noté pour le
+   joindre — sans écraser ce qui vient d'être tapé à la main, comme
+   au formulaire. */
+function parcCarnetMedecin(el){
+  const saisi = String(el.value || '').trim().toLowerCase();
+  const m = saisi ? carnetMedecins().find(x => x.cle === saisi) : null;
+  [['pc-decAdresse','adresse'], ['pc-decTel','tel']].forEach(([id, champ]) => {
+    const c = document.getElementById(id);
+    if(!c) return;
+    if(c.value && c.dataset.carnet !== '1') return;
+    c.value = m ? (m[champ] || '') : '';
+    c.dataset.carnet = c.value ? '1' : '';
+  });
+}
+
+function parcSuivantMedecin(){
+  parcRelire();
+  if(!String(parc.o.decNom || '').trim()){ toast("Nommer le médecin qui déclare"); return; }
+  parcVers('indication');
+}
+
+function parcIndication(rep){
+  parc.o.indication = rep;
+  if(rep === 'Non'){ parc.o.statut = 'Sans suite'; parcVers('bilan'); return; }
+  parcVers('relais');
+}
+
+function parcRelais(rep){
+  parcRelire();
+  parc.o.relaisIdel = rep;
+  parcVers(rep === 'Oui' ? 'bilan' : 'pharma');
+}
+
+/* Les officines de l'écran, rangées, et le bloc qui les montre. Le
+   point de la commune peut se faire attendre : le bloc se redessine
+   quand il arrive. */
+function rendreParcoursPharma(){
+  const hote = document.getElementById('parc-pharma');
+  if(!hote || !parc) return;
+  const commune = String(parc.o.commune || '').trim();
+
+  /* La liste des partenaires, quand elle peut se faire. Chacun des
+     empêchements dit lequel il est : une commune absente ne se
+     répare pas au même endroit qu'un recensement vide. */
+  let liste;
+  if(!commune){
+    liste = `<div class="note-dep">Aucune commune n'a été renseignée pour cette personne : les officines ne peuvent pas être rangées par proximité. Revenir au premier écran pour l'ajouter — ou renseigner l'officine à la main ci-dessous.</div>`;
+  }else{
+    const l = officinesProches(commune, rendreParcoursPharma);
+    if(l === undefined){
+      liste = `<div class="note-dep">Recherche des officines les plus proches de ${esc(commune)}…</div>`;
+    }else if(l === null){
+      liste = `<div class="note-dep">La commune « ${esc(commune)} » n'a pas été reconnue : les officines ne peuvent pas être rangées par proximité.</div>`;
+    }else if(!l.length){
+      liste = `<div class="note-dep">Aucune officine partenaire n'est encore située sur la carte. Le classement par proximité s'ouvrira dès qu'une adresse sera renseignée au module « Recensement des pharmacies partenaires ».</div>`;
+    }else{
+      const posee = !parc.o.phHors && String(parc.o.phNom || '').trim().toLowerCase();
+      liste = `<div class="proches">
+        <div class="t">Officines partenaires les plus proches de ${esc(commune)}</div>
+        ${l.slice(0, 8).map((x, i) => `<button type="button" class="pr${
+          posee && String(x.nom || '').trim().toLowerCase() === posee ? ' on' : ''}" onclick="parcChoisirPharma(${i})">
+          <span class="n">${esc(x.nom || 'Officine non nommée')}${i === 0 ? `<span class="b">la plus proche</span>` : ''}</span>
+          <span class="d">${x.commune ? esc(x.commune) + ' · ' : ''}${esc(fmtKm(x.km))} — <strong>${esc(fmtTrajet(x.km))}</strong>${
+            x.tel ? ` · ${esc(x.tel)}` : ' · téléphone non renseigné'}${
+            x.portage ? ` · portage : ${esc(x.portage)}` : ''}</span>
+        </button>`).join('')}
+        <div class="a">Temps de route estimé : la distance à vol d'oiseau majorée du détour des vallées, à 45 km/h de moyenne. Ce n'est pas un calcul d'itinéraire — c'est de quoi savoir laquelle appeler en premier. Toucher une officine la retient ; « Suivant » ne passe qu'une fois l'une d'elles retenue.</div>
+      </div>`;
+    }
+  }
+  hote.innerHTML = liste + champPharmaMain();
+}
+
+/* --- Une officine qui n'est pas au recensement ------------
+   Le recensement ne suit jamais tout à fait le terrain : une
+   officine acceptera de dépanner sans avoir été inscrite, une
+   autre du département voisin sera la seule à pouvoir livrer un
+   jour donné. Refuser de la noter ferait sortir le circuit du
+   cockpit — on l'appellerait quand même, et le registre dirait
+   qu'on n'a trouvé personne.
+
+   Elle est donc saisissable, et marquée pour ce qu'elle est :
+   hors recensement. Le registre ne la compte pas comme partenaire,
+   et la fiche le dit — c'est ce qui permettra de l'inscrire pour
+   de bon, ou de savoir qu'on ne l'a pas fait. */
+function champPharmaMain(){
+  const o = parc.o;
+  if(!parc.pharmaMain && !o.phHors){
+    return `<div class="actions" style="margin-top:12px">
+      <button class="btn sec" onclick="parcPharmaMain()">Renseigner une pharmacie supplémentaire</button>
+    </div>
+    <p class="aide" style="display:block;margin:8px 2px 0">Pour une officine qui n'est pas au recensement des partenaires — un dépannage accepté au téléphone, une officine hors territoire.</p>`;
+  }
+  return `<div class="form" style="margin-top:14px;border-top:1px dashed var(--trait);padding-top:14px">
+    <label class="large"><span class="k">Pharmacie hors recensement</span>
+      <input type="text" id="pc-phNom" value="${esc(o.phHors ? (o.phNom || '') : '')}"
+        placeholder="Nom de l'officine" oninput="parcPharmaHors(this)">
+      <span class="aide">Elle n'est pas comptée comme partenaire : le registre dira « hors recensement », et il restera à l'inscrire au module « Recensement des pharmacies partenaires » si elle accepte d'en être.</span></label>
+    <label><span class="k">Téléphone</span>
+      <input type="text" id="pc-phTel" value="${esc(o.phHors ? (o.phTel || '') : '')}"
+        oninput="parc.o.phTel=this.value.trim()"></label>
+    <label><span class="k">Commune de l'officine</span>
+      <input type="text" id="pc-phCommune" value="${esc(o.phHors ? (o.phCommune || '') : '')}"
+        oninput="parc.o.phCommune=this.value.trim()"></label>
+  </div>`;
+}
+
+function parcPharmaMain(){
+  parc.pharmaMain = true;
+  rendreParcoursPharma();
+  const el = document.getElementById('pc-phNom');
+  if(el) try{ el.focus(); }catch(e){}
+}
+
+/* Nommer une officine hors recensement retire celle qu'on avait
+   retenue dans la liste : c'est l'une ou l'autre, jamais les deux —
+   sinon la fiche porterait deux relais et personne ne saurait
+   lequel a été appelé. */
+function parcPharmaHors(el){
+  const v = String(el.value || '').trim();
+  if(v){
+    parc.o.phHors = 'Oui';
+    parc.o.phNom = v;
+    parc.o.phKm = '';
+  }else{
+    parc.o.phHors = '';
+    parc.o.phNom = ''; parc.o.phTel = ''; parc.o.phCommune = '';
+  }
+  /* Seule la liste au-dessus change d'état : réécrire tout le bloc
+     reprendrait le champ sous les doigts de qui est en train d'y
+     taper. */
+  const prs = document.querySelectorAll('#parc-pharma .proches .pr');
+  Array.prototype.forEach.call(prs, b => b.classList.remove('on'));
+}
+
+function parcChoisirPharma(i){
+  const l = officinesProches(String(parc.o.commune || '').trim());
+  const x = l && l[i]; if(!x) return;
+  /* Retoucher l'officine déjà retenue la retire : c'est le geste
+     attendu quand on s'est trompé de ligne. Retenir une partenaire
+     efface la saisie hors recensement, et réciproquement. */
+  const meme = !parc.o.phHors
+    && String(parc.o.phNom || '').trim().toLowerCase() === String(x.nom || '').trim().toLowerCase();
+  parc.o.phHors = '';
+  parc.o.phCommune = meme ? '' : (x.commune || '');
+  parc.o.phNom = meme ? '' : (x.nom || '');
+  parc.o.phTel = meme ? '' : (x.tel || '');
+  parc.o.phKm  = meme ? '' : Math.round(x.km * 10) / 10;
+  parc.pharmaMain = false;
+  rendreParcoursPharma();
+  if(!meme) toast(`${x.nom || 'Officine'} retenue — ${fmtTrajet(x.km)}`);
+}
+
+function parcSuivantPharma(){
+  if(!String(parc.o.phNom || '').trim()){
+    toast("Retenir une officine, en renseigner une hors recensement, ou choisir « Pas de relais pharmacie possible »");
+    return;
+  }
+  parc.o.pharmaRelais = 'Oui';
+  parcVers('suite');
+}
+
+function parcSansPharma(){
+  parc.o.pharmaRelais = 'Non';
+  parc.o.phNom = ''; parc.o.phTel = ''; parc.o.phKm = '';
+  parc.o.phHors = ''; parc.o.phCommune = '';
+  parc.pharmaMain = false;
+  parcVers('sansPharma');
+}
+
+function parcSuite(i){
+  parc.o.suiteCpts = RH_SUITES[i];
+  parcVers('bilan');
+}
+
+/* ---- le bilan, et l'enregistrement ---------------------- */
+
+/* Ce que le parcours a décidé, relu à haute voix avant
+   d'enregistrer : c'est le dernier moment pour voir qu'on s'est
+   trompé de branche, et « Précédent » remonte le chemin pris. */
+function lignesBilan(o){
+  const l = [["La personne", [String(o.nom || '').trim() || 'initiales non renseignées',
+    o.age ? o.age + ' ans' : '', o.commune, o.motif].filter(Boolean).join(' · ')]];
+  if(o.tel) l.push(["Téléphone", o.tel]);
+  l.push(["Voie du signalement", o.voie || 'non renseignée']);
+  if(o.decNom) l.push(["Médecin qui déclare", [o.decNom, o.decTel, o.decAdresse].filter(Boolean).join(' — ')]);
+  if(estSOS(o)) l.push(["Cabinet infirmier libéral",
+    o.idel === 'Oui' ? (String(o.idelNom || '').trim() || 'oui, cabinet non nommé')
+                     : "aucun — la CPTS appelle le prestataire de location de matériel"]);
+  if(o.indication) l.push(["Indication IV ou sous-cutanée", o.indication]);
+  if(o.relaisIdel) l.push(["Relais vers le cabinet du patient",
+    o.relaisIdel === 'Oui' ? (String(o.idelNom || '').trim() ? 'fait — ' + o.idelNom : 'fait')
+                           : "à organiser"]);
+  if(o.pharmaRelais === 'Oui' || String(o.phNom || '').trim())
+    l.push(["Officine qui fait le relais", [o.phNom, o.phCommune, o.phTel,
+      o.phKm !== '' && o.phKm !== undefined ? fmtTrajet(Number(o.phKm)) : '',
+      o.phHors === 'Oui' ? 'hors recensement des partenaires' : ''].filter(Boolean).join(' — ')]);
+  if(o.pharmaRelais === 'Non') l.push(["Officine", "aucune — la CPTS appelle le médecin ou le 15"]);
+  if(o.suiteCpts) l.push(["Ce que fait la CPTS", o.suiteCpts]);
+  return l;
+}
+
+/* Le statut que le parcours a mérité. Il n'est pas choisi à la
+   main : c'est le chemin pris qui le dit, et c'est pour ça qu'on
+   ne peut pas se retrouver « orienté » sans être passé par une
+   issue. */
+function statutParcours(o){
+  if(o.statut === 'Sans suite') return 'Sans suite';
+  if(estSOS(o)) return 'En attente de finalisation';
+  if(o.relaisIdel === 'Oui') return 'Orienté';
+  if(o.suiteCpts || o.pharmaRelais === 'Non') return 'Orienté';
+  return 'À orienter';
+}
+
+function ecranBilanParcours(){
+  const o = parc.o;
+  const st = statutParcours(o);
+  const dit = st === 'En attente de finalisation'
+    ? "Le signalement sera enregistré <strong>en attente de finalisation</strong> : un bouton apparaîtra sur sa ligne au registre pour confirmer que la réhydratation a bien été mise en place, et c'est cette confirmation qui l'orientera pour de bon."
+    : st === 'Orienté' ? "Le signalement sera enregistré comme <strong>orienté</strong> : le parcours est allé au bout."
+    : st === 'Sans suite' ? "Le signalement sera enregistré <strong>sans suite</strong> : il reste au registre, mais rien n'est à organiser."
+    : "Le signalement sera enregistré <strong>à orienter</strong> : le parcours n'a pas été jusqu'au bout, il se reprendra depuis sa ligne.";
+
+  return `<div class="recueil">
+    ${teteParcours("Relire avant d'enregistrer",
+      "Ce que le parcours a retenu. « Précédent » remonte le chemin pris si quelque chose ne va pas.")}
+    <div class="bilan-p">
+      ${lignesBilan(o).map(([k, v]) => `<div class="l"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('')}
+    </div>
+    <div class="note-dep" style="margin-top:14px">${dit}</div>
+    <div class="form" style="margin-top:14px">
+      <label class="large"><span class="k">Observation</span>
+        <textarea id="pc-note" placeholder="Ce qui ne rentre dans aucune case">${esc(o.note || '')}</textarea></label>
+    </div>
+    ${piedParcours("Enregistrer le signalement", "enregistrerParcours()")}
+  </div>`;
+}
+
+async function enregistrerParcours(){
+  parcRelire();
+  const o = parc.o;
+  o.statut = statutParcours(o);
+  /* Le cabinet et l'officine s'horodatent au moment où le parcours
+     les retient, comme partout ailleurs dans le cockpit. */
+  if(String(o.idelNom || '').trim()){
+    if(!o.idelLe){ o.idelLe = o.date || aujourdhui(); o.idelPar = moi === 'Anonyme' ? '' : moi; }
+  }else{ o.idelLe = ''; o.idelPar = ''; }
+  if(String(o.phNom || '').trim()){
+    if(!o.phLe){ o.phLe = o.date || aujourdhui(); o.phPar = moi === 'Anonyme' ? '' : moi; }
+  }else{ o.phLe = ''; o.phPar = ''; }
+
+  etat.rehyd = etat.rehyd || [];
+  const existant = etat.rehyd.find(x => x.id === o.id);
+  if(existant){ Object.assign(existant, o); existant.modifiePar = moi; }
+  else etat.rehyd.unshift(o);
+  const fiche = existant || o;
+
+  consignerRegistreEnCourante('rehyd', fiche);
+  const etait = parc.ed;
+  parc = null;
+  await sauver(); fermer(); rendre();
+  toast(etait ? "Parcours repris, et consigné en main courante"
+              : "Signalement enregistré et consigné en main courante");
+}
+
+/* --- Confirmer la mise en place --------------------------
+   La branche SOS Médecins ne se clôt pas à la saisie : au moment
+   où l'on raccroche, personne ne sait encore si la réhydratation a
+   été posée. La fiche attend donc, et c'est ce bouton — sur sa
+   ligne, là où on la relit — qui dit par qui elle l'a été. */
+function ouvrirFinalisation(id){
+  const o = (etat.rehyd || []).find(x => x.id === id); if(!o) return;
+  document.getElementById('modale').innerHTML = `<h3>Confirmer la mise en place de la réhydratation</h3>
+  <p class="chapo" style="margin:-6px 0 14px">${esc(String(o.nom || '').trim() || 'Cette personne')}${
+    o.commune ? ` — ${esc(o.commune)}` : ''}. Qui a posé la réhydratation ? La réponse clôt le parcours et marque la personne comme orientée.</p>
+  <div class="voies">
+    ${RH_MISES.map((m, i) => `<button onclick="validerFinalisation('${o.id}',${i})">
+      <span class="t">${esc(m)}</span>
+      <span class="d">${i === 0
+        ? "Le cabinet qui suit la personne s'en est chargé."
+        : "SOS Médecins l'a posée au cours de la visite à domicile."}</span>
+    </button>`).join('')}
+  </div>
+  <div class="actions"><button class="btn sec" onclick="fermer()">Annuler</button></div>`;
+  ouvrirRideau();
+}
+
+async function validerFinalisation(id, i){
+  const o = (etat.rehyd || []).find(x => x.id === id); if(!o) return;
+  o.misePar = RH_MISES[i] || '';
+  o.miseLe = aujourdhui();
+  o.miseQui = moi === 'Anonyme' ? '' : moi;
+  o.statut = 'Orienté';
+  o.modifiePar = moi;
+  consignerRegistreEnCourante('rehyd', o);
+  await sauver(); fermer(); rendre();
+  toast(`Réhydratation mise en place par ${o.misePar} — personne orientée`);
 }
 
 /* --- Désigner le cabinet infirmier -----------------------
@@ -8828,12 +9916,13 @@ async function validerIdel(id){
     o.idelNom = nom;
     o.idelTel = document.getElementById('id-tel').value.trim();
     if(!o.idelLe){ o.idelLe = aujourdhui(); o.idelPar = moi === 'Anonyme' ? '' : moi; }
-    if(!o.statut || o.statut === 'À orienter') o.statut = 'Cabinet IDEL désigné';
   }else{
     o.idel = 'Non';
     o.idelNom = ''; o.idelTel = ''; o.idelLe = ''; o.idelPar = '';
-    if(o.statut === 'Cabinet IDEL désigné') o.statut = 'À orienter';
   }
+  /* Nommer un cabinet n'oriente personne : c'est le parcours qui
+     clôt, parce que lui seul est passé par les questions. Une fiche
+     déjà close le reste, une fiche en cours reste en cours. */
   o.modifiePar = moi;
   consignerRegistreEnCourante('rehyd', o);
   await sauver(); fermer(); rendre();
